@@ -1,0 +1,29 @@
+/* Corpo */
+body {
+	margin: 0px;
+	padding: 0px;
+	background-color: #FFFFFF;
+	/* font-family: 'Open Sans Condensed', sans-serif; */
+	font-family: 'Titillium Web', sans-serif;
+	/* font-size: 100%; */
+	color: #333333;
+}
+
+/* Font size */
+.small, .small a
+	{
+		font-size: 70%;
+	}
+.std, .std a
+	{
+		font-size: 100%;
+	}
+.middle, .middle a
+	{
+		font-size: 150%;
+		color: #4040ef;
+	}
+.big, .big a
+	{
+		font-size: 200%;
+	}
