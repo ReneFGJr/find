@@ -16,35 +16,19 @@ $ac[$pag] = 'active';
 				<a class="nav-link" href="<?php echo base_url('index.php/main/library'); ?>">Catálogo <span class="sr-only">(current)</span></a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link" href="<?php echo base_url('index.php/main/authority'); ?>">Autoridade</a>
-			</li>
-			<li class="nav-item">
 				<a class="nav-link" href="<?php echo base_url('index.php/main/contact'); ?>">Contato</a>
 			</li>
 			<?php 
-			if ((isset($_SESSION['user'])) and ($_SESSION['user']=='FIND')) { ?>
+			//if ((isset($_SESSION['user'])) and ($_SESSION['user']=='FIND')) 
+			{ ?>
 			<li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Acompanhamento discente </a>
+				<a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Catalogação </a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/persons'); ?>">Estudantes</a>
-					<a class="dropdown-item" href="<?php echo base_url('index.php/main/persons_list'); ?>">Lista de acompanhados</a>
-					<a class="dropdown-item" href="<?php echo base_url('index.php/main/import_ROD'); ?>">Lançar acompanhamento</a>
+				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/catalog'); ?>">Novo Work (trabalho)</a>
+				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/bibliographic'); ?>">Bibliográfico</a>
+                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/authority'); ?>">Autoridade</a>
 				</div>
 			</li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Indicadores </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/relatorio/1'); ?>">Total de estudantes</a>
-                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/relatorio/2'); ?>">Período dos estudantes</a>
-                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/relatorio/3'); ?>">Tempo de integralização</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Campanhas </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/campanhas'); ?>">Campanhas</a>
-                </div>
-            </li> 
             <?php } ?>           			
 		</ul>
 	</div>

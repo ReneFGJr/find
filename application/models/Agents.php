@@ -12,6 +12,7 @@ class Agents extends CI_model {
         
         $dt = array();
         $dt['400'] = array();
+        $dt['670'] = array();
         
         for ($r = 0; $r < count($ln); $r++) {
             $fld = sonumero(substr($ln[$r], 0, 4));
@@ -40,6 +41,18 @@ class Agents extends CI_model {
                         $n = count($dt['400']);
                         $dt['400'][$n] = $ar;
                     }
+                    break;
+                case '670' :
+                    $ar = array();
+                    $fn = $this -> bfield($t, '$a');
+                    $ar['670a'] = $fn; 
+                    $ar['670b'] = $this -> bfield($t, '$b');
+                    $ar['670c'] = $this -> bfield($t, '$c');
+                    if (strlen($fn) > 0) {
+                        $n = count($dt['670']);
+                        $dt['670'][$n] = $ar;
+                    }
+                    break;                    
             }
         }
         return ($dt);

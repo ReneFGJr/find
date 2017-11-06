@@ -38,48 +38,175 @@ class Main extends CI_controller {
     public function index() {
         $this -> cab();
         $this -> load -> view('welcome');
-        $this -> load -> view('find/search_simple',null);
+        $this -> load -> view('find/search_simple', null);
         $this -> foot();
     }
-    
-    public function authority() {
+
+    function a($id = '') {
+        $this -> load -> model('frbr');
+        $data = $this -> frbr -> le($id);
+
         $this -> cab();
-        $this -> load -> view('authority');
-        $this -> load -> view('find/search_authority',null);
-        $tela = '<a href="'.base_url('index.php/main/authority_inport').'" class="btn btn-secundary">';
-        $tela .= 'Importar MARC21';
-        $tela .= '</a>';
+
+        $tela = $this -> frbr -> show($id);
+        $tela .= $this -> frbr -> form($id, $data);
+
+        $data['title'] = '';
+        $data['content'] = $tela;
+
+        $this -> load -> view('content', $data);
+        $this -> foot();
+    }
+
+    public function ajax($path = '', $id = '') {
+        $this -> load -> model('frbr');
+        $tela = $this -> frbr -> ajax($path, $id);
+        echo $tela;
+    }
+
+    public function ajax2($path = '', $id = '') {
+        $this -> load -> model('frbr');
+        $tela = $path;
+        switch($path) {
+            case 'hasOrganizator':
+                $tela .= $this->frbr->ajax2($path,$id);
+                break;
+            case 'hasAuthor' :
+                $tela .= $this->frbr->ajax2($path,$id);             
+                break;
+            default :
+                $tela .= '
+                    <div class="alert alert-danger" role="alert">
+                      <strong>Error!</strong> Método não implementado "' . $path . '".
+                    </div>
+                    ';
+                break;
+        }
+        echo $tela;
+    }
+
+    public function ajax3($path = '', $id = '') {
+        $this -> load -> model('frbr');
+        $val = get("q");
+        $this->frbr->set_propriety($id, $path, $val, 0);
+        echo '<meta http-equiv="refresh" content="0;">';
+        return("");        
+    }
+    public function catalog() {
+        $this -> load -> model('frbr');
+
+        $this -> cab();
+        $this -> load -> view('find/bibliographic');
+
+        $data = array();
+        $this -> load -> view('find/cat_work', $data);
+
+        /* save work */
+        if (strlen(get("action")) > 0) {
+            $title = trim(get("dd1"));
+            $subtitle = trim(get("dd2"));
+            $idt = $this -> frbr -> work($title, $subtitle);
+            redirect(base_url('index.php/main/a/' . $idt));
+        }
+
+        $tela = '';
         $data['content'] = $tela;
         $data['title'] = '';
-        $this->load->view('content',$data);
+        $this -> load -> view('content', $data);
+
         $this -> foot();
-    } 
-    
+    }
+
+    public function bibliographic() {
+        $this -> load -> model('frbr');
+
+        $this -> cab();
+        $this -> load -> view('find/bibliographic');
+        $this -> load -> view('find/search_bibliographic', null);
+        $tela = '<a href="' . base_url('index.php/main/bibliographic_inport') . '" class="btn btn-secundary">';
+        $tela .= 'Importar MARC21';
+        $tela .= '</a>';
+
+        $data['content'] = $tela;
+        $data['title'] = '';
+        $this -> load -> view('content', $data);
+
+        $this -> foot();
+    }
+
+    public function bibliographic_inport() {
+        $this -> load -> model('agents');
+        $this -> load -> model('frbr');
+
+        $this -> cab();
+        $this -> load -> view('find/bibliographic');
+
+        $form = new form;
+        $cp = array();
+        array_push($cp, array('$H8', '', '', False, False));
+        array_push($cp, array('$T80:12', '', 'MARC21', True, True));
+        array_push($cp, array('$B8', '', 'Import Marc >>>', False, False));
+        $tela = $form -> editar($cp, '');
+
+        /********************/
+        $txt = get("dd1");
+        $marc21 = $this -> agents -> inport_marc21($txt);
+
+        $marc21 = $this -> frbr -> marc_to_frbr($marc21);
+
+        $data['content'] = $tela;
+        $data['title'] = '';
+        $this -> load -> view('content', $data);
+        $this -> foot();
+    }
+
+    public function authority() {
+        $this -> load -> model('frbr');
+
+        $this -> cab();
+        $this -> load -> view('find/authority');
+        $this -> load -> view('find/search_authority', null);
+        $tela = '<a href="' . base_url('index.php/main/authority_inport') . '" class="btn btn-secundary">';
+        $tela .= 'Importar MARC21';
+        $tela .= '</a>';
+
+        /* recupera */
+        $dd1 = get("search");
+        if (strlen($dd1) > 0) {
+            $tela .= $this -> frbr -> recupera_nomes($dd1);
+        }
+
+        $data['content'] = $tela;
+        $data['title'] = '';
+        $this -> load -> view('content', $data);
+        $this -> foot();
+    }
+
     public function authority_inport() {
         $this -> load -> model('agents');
         $this -> load -> model('frbr');
-        
-        $this -> cab();     
-        $this -> load -> view('authority');
-        
+
+        $this -> cab();
+        $this -> load -> view('find/authority');
+
         $form = new form;
         $cp = array();
-        array_push($cp,array('$H8','','',False,False));
-        array_push($cp,array('$T80:12','','MARC21',True,True));
-        array_push($cp,array('$B8','','Import Marc >>>',False,False));
-        $tela = $form->editar($cp,'');
-        
+        array_push($cp, array('$H8', '', '', False, False));
+        array_push($cp, array('$T80:12', '', 'MARC21', True, True));
+        array_push($cp, array('$B8', '', 'Import Marc >>>', False, False));
+        $tela = $form -> editar($cp, '');
+
         /********************/
         $txt = get("dd1");
-        $marc21 = $this->agents->inport_marc21($txt);
-        
-        $marc21 = $this->frbr->marc_to_frbr($marc21);        
-        
+        $marc21 = $this -> agents -> inport_marc21($txt);
+
+        $marc21 = $this -> frbr -> marc_to_frbr($marc21);
+
         $data['content'] = $tela;
         $data['title'] = '';
-        $this->load->view('content',$data);        
+        $this -> load -> view('content', $data);
         $this -> foot();
-    }        
+    }
 
     public function contact() {
         $this -> load -> model('comgrads');
@@ -98,5 +225,6 @@ class Main extends CI_controller {
         $data['content'] = $this -> comgrads -> about();
         $this -> load -> view('content', $data);
     }
+
 }
 ?>
