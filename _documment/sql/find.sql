@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.7.1
+-- version 4.5.4.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 06, 2017 at 11:10 AM
--- Server version: 5.6.20-log
--- PHP Version: 5.4.31
+-- Generation Time: Nov 07, 2017 at 02:12 PM
+-- Server version: 5.7.11
+-- PHP Version: 5.6.18
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -14,7 +14,7 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `find`
@@ -26,10 +26,10 @@ SET time_zone = "+00:00";
 -- Table structure for table `ci_sessions`
 --
 
-CREATE TABLE IF NOT EXISTS `ci_sessions` (
+CREATE TABLE `ci_sessions` (
   `id` varchar(40) NOT NULL,
   `ip_address` varchar(45) NOT NULL,
-  `timestamp` int(10) unsigned NOT NULL DEFAULT '0',
+  `timestamp` int(10) UNSIGNED NOT NULL DEFAULT '0',
   `data` blob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -42,10 +42,13 @@ INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES
 ('cpfvkukj98g9f9rn1ou0cgqhdk396kcu', '::1', 1509926433, 0x5f5f63695f6c6173745f726567656e65726174657c693a313530393932363336383b69647c693a313b),
 ('edc4k3q0q8aeh5bj6n714ie2eqjsi6e5', '::1', 1509898340, 0x5f5f63695f6c6173745f726567656e65726174657c693a313530393839383039373b69647c693a313b),
 ('gmoj9nhb8cnqk6c34elqkpro81d1klv1', '::1', 1509926313, 0x5f5f63695f6c6173745f726567656e65726174657c693a313530393932353732333b69647c693a313b),
+('l44an9t6n6oi7j38lqgvtjug4bpqi7fu', '::1', 1510063447, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303036333434373b69647c693a313b),
 ('m9fia6s6gk86mcntl4ti8eanuc2fnint', '::1', 1509902210, 0x5f5f63695f6c6173745f726567656e65726174657c693a313530393930313935303b69647c693a313b),
 ('noqn5b12h0nv3b84abs12rc0r1vmm90v', '::1', 1509901940, 0x5f5f63695f6c6173745f726567656e65726174657c693a313530393930313631393b69647c693a313b),
+('r3890j35mg2g78nc5ihf2827r94emmg9', '::1', 1510063831, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303036333739343b69647c693a313b),
 ('rr78tp9rdlkj1pkcrcber8q4juktjmqk', '::1', 1509901615, 0x5f5f63695f6c6173745f726567656e65726174657c693a313530393930303437393b69647c693a313b),
-('sc783rftrfn439sptn13gfv7k2m2lu1b', '::1', 1509898435, 0x5f5f63695f6c6173745f726567656e65726174657c693a313530393839383433353b69647c693a313b);
+('sc783rftrfn439sptn13gfv7k2m2lu1b', '::1', 1509898435, 0x5f5f63695f6c6173745f726567656e65726174657c693a313530393839383433353b69647c693a313b),
+('vjglhuhh69p4715pvq2pt40fhrb5tng1', '::1', 1510063652, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303036333435323b69647c693a313b);
 
 -- --------------------------------------------------------
 
@@ -53,11 +56,11 @@ INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES
 -- Table structure for table `cutter`
 --
 
-CREATE TABLE IF NOT EXISTS `cutter` (
-`id_cutter` bigint(20) unsigned NOT NULL,
+CREATE TABLE `cutter` (
+  `id_cutter` bigint(20) UNSIGNED NOT NULL,
   `cutter_code` varchar(5) NOT NULL,
   `cutter_abrev` varchar(25) NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12330 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `cutter`
@@ -12405,8 +12408,8 @@ INSERT INTO `cutter` (`id_cutter`, `cutter_code`, `cutter_abrev`) VALUES
 -- Table structure for table `rdf_class`
 --
 
-CREATE TABLE IF NOT EXISTS `rdf_class` (
-`id_c` bigint(20) unsigned NOT NULL,
+CREATE TABLE `rdf_class` (
+  `id_c` bigint(20) UNSIGNED NOT NULL,
   `c_class` varchar(200) NOT NULL,
   `c_prefix` int(11) NOT NULL,
   `c_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -12414,7 +12417,7 @@ CREATE TABLE IF NOT EXISTS `rdf_class` (
   `c_type` char(1) NOT NULL,
   `c_order` int(11) NOT NULL DEFAULT '99',
   `c_pa` int(11) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=33 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `rdf_class`
@@ -12460,13 +12463,13 @@ INSERT INTO `rdf_class` (`id_c`, `c_class`, `c_prefix`, `c_created`, `c_class_ma
 -- Table structure for table `rdf_concept`
 --
 
-CREATE TABLE IF NOT EXISTS `rdf_concept` (
-`id_cc` bigint(20) unsigned NOT NULL,
+CREATE TABLE `rdf_concept` (
+  `id_cc` bigint(20) UNSIGNED NOT NULL,
   `cc_class` int(11) NOT NULL,
   `cc_use` int(11) NOT NULL DEFAULT '0',
   `cc_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `cc_pref_term` int(11) NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `rdf_concept`
@@ -12490,7 +12493,12 @@ INSERT INTO `rdf_concept` (`id_cc`, `cc_class`, `cc_use`, `cc_created`, `cc_pref
 (15, 2, 0, '2017-11-05 02:42:44', 38),
 (16, 16, 0, '2017-11-05 02:43:16', 39),
 (17, 2, 0, '2017-11-05 17:19:58', 40),
-(18, 12, 0, '2017-11-05 17:19:58', 41);
+(18, 12, 0, '2017-11-05 17:19:58', 41),
+(19, 16, 0, '2017-11-07 14:05:30', 45),
+(20, 2, 0, '2017-11-07 14:06:12', 46),
+(21, 12, 0, '2017-11-07 14:06:12', 47),
+(22, 2, 0, '2017-11-07 14:09:54', 53),
+(23, 16, 0, '2017-11-07 14:10:22', 54);
 
 -- --------------------------------------------------------
 
@@ -12498,14 +12506,14 @@ INSERT INTO `rdf_concept` (`id_cc`, `cc_class`, `cc_use`, `cc_created`, `cc_pref
 -- Table structure for table `rdf_data`
 --
 
-CREATE TABLE IF NOT EXISTS `rdf_data` (
-`id_d` bigint(20) unsigned NOT NULL,
+CREATE TABLE `rdf_data` (
+  `id_d` bigint(20) UNSIGNED NOT NULL,
   `d_r1` int(11) NOT NULL,
   `d_p` int(11) NOT NULL,
   `d_r2` int(11) NOT NULL,
   `d_literal` int(11) NOT NULL DEFAULT '0',
   `d_creadted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=53 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `rdf_data`
@@ -12563,7 +12571,20 @@ INSERT INTO `rdf_data` (`id_d`, `d_r1`, `d_p`, `d_r2`, `d_literal`, `d_creadted`
 (49, 17, 8, 18, 0, '2017-11-05 17:19:58'),
 (50, 17, 6, 0, 42, '2017-11-05 17:19:58'),
 (51, 17, 14, 0, 43, '2017-11-05 17:19:58'),
-(52, 17, 14, 0, 44, '2017-11-05 17:19:58');
+(52, 17, 14, 0, 44, '2017-11-05 17:19:58'),
+(53, 19, 17, 0, 45, '2017-11-07 14:05:30'),
+(54, 20, 5, 0, 46, '2017-11-07 14:06:12'),
+(55, 20, 8, 21, 0, '2017-11-07 14:06:12'),
+(56, 20, 6, 0, 48, '2017-11-07 14:06:12'),
+(57, 20, 14, 0, 49, '2017-11-07 14:06:12'),
+(58, 20, 14, 0, 50, '2017-11-07 14:06:12'),
+(59, 20, 14, 0, 51, '2017-11-07 14:06:12'),
+(60, 20, 14, 0, 52, '2017-11-07 14:06:12'),
+(61, 19, 19, 20, 0, '2017-11-07 14:07:17'),
+(62, 22, 5, 0, 53, '2017-11-07 14:09:54'),
+(63, 23, 17, 0, 54, '2017-11-07 14:10:22'),
+(64, 23, 18, 0, 55, '2017-11-07 14:10:22'),
+(65, 23, 20, 22, 0, '2017-11-07 14:10:30');
 
 -- --------------------------------------------------------
 
@@ -12571,13 +12592,13 @@ INSERT INTO `rdf_data` (`id_d`, `d_r1`, `d_p`, `d_r2`, `d_literal`, `d_creadted`
 -- Table structure for table `rdf_form_class`
 --
 
-CREATE TABLE IF NOT EXISTS `rdf_form_class` (
-`id_sc` bigint(20) unsigned NOT NULL,
+CREATE TABLE `rdf_form_class` (
+  `id_sc` bigint(20) UNSIGNED NOT NULL,
   `sc_class` int(11) NOT NULL,
   `sc_propriety` int(11) NOT NULL,
   `sc_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `sc_range` int(11) NOT NULL
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `rdf_form_class`
@@ -12606,11 +12627,11 @@ INSERT INTO `rdf_form_class` (`id_sc`, `sc_class`, `sc_propriety`, `sc_created`,
 -- Table structure for table `rdf_name`
 --
 
-CREATE TABLE IF NOT EXISTS `rdf_name` (
-`id_n` bigint(20) unsigned NOT NULL,
+CREATE TABLE `rdf_name` (
+  `id_n` bigint(20) UNSIGNED NOT NULL,
   `n_name` varchar(250) NOT NULL,
   `n_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=45 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `rdf_name`
@@ -12659,7 +12680,18 @@ INSERT INTO `rdf_name` (`id_n`, `n_name`, `n_created`) VALUES
 (41, '1942', '2017-11-05 17:19:58'),
 (42, 'Santiago Bufrem, Leilah,', '2017-11-05 17:19:58'),
 (43, 'Lima, E.R. Aspectos editoriais no Brasil, 1988:', '2017-11-05 17:19:58'),
-(44, 'LC data base, 11-14-90', '2017-11-05 17:19:58');
+(44, 'LC data base, 11-14-90', '2017-11-05 17:19:58'),
+(45, 'Sociedade sem escolas', '2017-11-07 14:05:30'),
+(46, 'Illich, Ivan', '2017-11-07 14:06:12'),
+(47, '1926', '2017-11-07 14:06:12'),
+(48, 'Illich, Ivan D.', '2017-11-07 14:06:12'),
+(49, 'Autor de: Sociedade sem escolas. 1973', '2017-11-07 14:06:12'),
+(50, 'LC 1968/72', '2017-11-07 14:06:12'),
+(51, 'LC 1976', '2017-11-07 14:06:12'),
+(52, 'LC microf. 77/86', '2017-11-07 14:06:12'),
+(53, 'Nunes, Helena de Souza', '2017-11-07 14:09:54'),
+(54, 'EAD na formação de professores de música', '2017-11-07 14:10:22'),
+(55, 'fundamentos e prospecções', '2017-11-07 14:10:22');
 
 -- --------------------------------------------------------
 
@@ -12667,12 +12699,12 @@ INSERT INTO `rdf_name` (`id_n`, `n_name`, `n_created`) VALUES
 -- Table structure for table `rdf_prefix`
 --
 
-CREATE TABLE IF NOT EXISTS `rdf_prefix` (
-`id_prefix` bigint(20) unsigned NOT NULL,
+CREATE TABLE `rdf_prefix` (
+  `id_prefix` bigint(20) UNSIGNED NOT NULL,
   `prefix_ref` char(30) NOT NULL,
   `prefix_url` char(250) NOT NULL,
   `prefix_ativo` int(11) NOT NULL DEFAULT '1'
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `rdf_prefix`
@@ -12697,49 +12729,50 @@ INSERT INTO `rdf_prefix` (`id_prefix`, `prefix_ref`, `prefix_url`, `prefix_ativo
 -- Indexes for table `ci_sessions`
 --
 ALTER TABLE `ci_sessions`
- ADD PRIMARY KEY (`id`), ADD KEY `ci_sessions_timestamp` (`timestamp`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `ci_sessions_timestamp` (`timestamp`);
 
 --
 -- Indexes for table `cutter`
 --
 ALTER TABLE `cutter`
- ADD UNIQUE KEY `id_cutter` (`id_cutter`);
+  ADD UNIQUE KEY `id_cutter` (`id_cutter`);
 
 --
 -- Indexes for table `rdf_class`
 --
 ALTER TABLE `rdf_class`
- ADD UNIQUE KEY `id_c` (`id_c`);
+  ADD UNIQUE KEY `id_c` (`id_c`);
 
 --
 -- Indexes for table `rdf_concept`
 --
 ALTER TABLE `rdf_concept`
- ADD UNIQUE KEY `id_c` (`id_cc`);
+  ADD UNIQUE KEY `id_c` (`id_cc`);
 
 --
 -- Indexes for table `rdf_data`
 --
 ALTER TABLE `rdf_data`
- ADD UNIQUE KEY `id_d` (`id_d`);
+  ADD UNIQUE KEY `id_d` (`id_d`);
 
 --
 -- Indexes for table `rdf_form_class`
 --
 ALTER TABLE `rdf_form_class`
- ADD UNIQUE KEY `id_sc` (`id_sc`);
+  ADD UNIQUE KEY `id_sc` (`id_sc`);
 
 --
 -- Indexes for table `rdf_name`
 --
 ALTER TABLE `rdf_name`
- ADD UNIQUE KEY `id_n` (`id_n`);
+  ADD UNIQUE KEY `id_n` (`id_n`);
 
 --
 -- Indexes for table `rdf_prefix`
 --
 ALTER TABLE `rdf_prefix`
- ADD UNIQUE KEY `id_prefix` (`id_prefix`);
+  ADD UNIQUE KEY `id_prefix` (`id_prefix`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -12749,37 +12782,37 @@ ALTER TABLE `rdf_prefix`
 -- AUTO_INCREMENT for table `cutter`
 --
 ALTER TABLE `cutter`
-MODIFY `id_cutter` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12330;
+  MODIFY `id_cutter` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12330;
 --
 -- AUTO_INCREMENT for table `rdf_class`
 --
 ALTER TABLE `rdf_class`
-MODIFY `id_c` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=33;
+  MODIFY `id_c` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 --
 -- AUTO_INCREMENT for table `rdf_concept`
 --
 ALTER TABLE `rdf_concept`
-MODIFY `id_cc` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=19;
+  MODIFY `id_cc` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 --
 -- AUTO_INCREMENT for table `rdf_data`
 --
 ALTER TABLE `rdf_data`
-MODIFY `id_d` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=53;
+  MODIFY `id_d` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 --
 -- AUTO_INCREMENT for table `rdf_form_class`
 --
 ALTER TABLE `rdf_form_class`
-MODIFY `id_sc` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=16;
+  MODIFY `id_sc` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT for table `rdf_name`
 --
 ALTER TABLE `rdf_name`
-MODIFY `id_n` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=45;
+  MODIFY `id_n` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 --
 -- AUTO_INCREMENT for table `rdf_prefix`
 --
 ALTER TABLE `rdf_prefix`
-MODIFY `id_prefix` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=10;
+  MODIFY `id_prefix` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

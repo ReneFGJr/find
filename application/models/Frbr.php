@@ -25,7 +25,10 @@ class frbr extends CI_model {
             case 'Date' :
                 $tela .= 'Date';
                 //$this->case_author($path,$id);
-                break;            
+                break;
+            case 'Agent' :
+                $tela .= $this->case_author($path,$id);
+                break;				            
             case 'hasAuthor' :
                 $tela .= $this->case_author($path,$id);
                 break;
