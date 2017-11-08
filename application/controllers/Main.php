@@ -64,20 +64,36 @@ class Main extends CI_controller {
         echo $tela;
     }
 
-    public function ajax2($path = '', $id = '') {
+    public function ajax2($path = '', $id = '', $type = '') {
         $this -> load -> model('frbr');
         $tela = $path;
+        if (strlen($type)) {
+            $path = $type;
+        }
+
         switch($path) {
-            case 'hasOrganizator':
-                $tela .= $this->frbr->ajax2($path,$id);
+            case 'Agent' :
+                $tela .= $this -> frbr -> ajax2($path, $id);
+                break;
+            case 'FormWork' :
+                $tela .= $this -> frbr -> ajax2($path, $id);
+                break;
+            case 'Date' :
+                $tela .= $this -> frbr -> ajax2($path, $id);
+                break;
+            case 'hasFormWork' :
+                $tela .= $this -> frbr -> ajax2($path, $id);
+                break;
+            case 'hasOrganizator' :
+                $tela .= $this -> frbr -> ajax2($path, $id);
                 break;
             case 'hasAuthor' :
-                $tela .= $this->frbr->ajax2($path,$id);             
+                $tela .= $this -> frbr -> ajax2($path, $id);
                 break;
             default :
                 $tela .= '
                     <div class="alert alert-danger" role="alert">
-                      <strong>Error!</strong> Método não implementado "' . $path . '".
+                      <strong>Error (545)!</strong> Método não implementado "' . $path . '".
                     </div>
                     ';
                 break;
@@ -88,10 +104,35 @@ class Main extends CI_controller {
     public function ajax3($path = '', $id = '') {
         $this -> load -> model('frbr');
         $val = get("q");
-        $this->frbr->set_propriety($id, $path, $val, 0);
+        $this -> frbr -> set_propriety($id, $path, $val, 0);
         echo '<meta http-equiv="refresh" content="0;">';
-        return("");        
+        return ("");
     }
+
+    public function vocabulary($id = '') {
+        $this -> load -> model('frbr');
+        $this -> load -> model('vocabularies');
+        $this -> cab();
+        
+        $dd1 = get("dd1");
+        if (strlen($dd1) > 0)
+            {
+                $class = $id;
+                $id_s = $this -> frbr -> frbr_name($dd1);
+                $p_id = $this -> frbr -> rdf_concept($id_s, $class);
+                $this -> frbr -> set_propriety($p_id, 'prefLabel', 0, $id_s);
+            }
+
+        $tela = $this -> vocabularies -> list_vc($id);
+        $tela .= $this -> vocabularies -> modal_vc($id);
+        
+        $tela = $data['title'] = '<h3>Classe: '.msg($id).'</h3>'.$tela;
+        
+        $data['content'] = $tela;        
+        $this -> load -> view('content', $data);
+
+    }
+
     public function catalog() {
         $this -> load -> model('frbr');
 
@@ -99,14 +140,19 @@ class Main extends CI_controller {
         $this -> load -> view('find/bibliographic');
 
         $data = array();
+        $data['form'] = $this -> frbr -> data_class('FormWork');
+
         $this -> load -> view('find/cat_work', $data);
 
         /* save work */
         if (strlen(get("action")) > 0) {
             $title = trim(get("dd1"));
             $subtitle = trim(get("dd2"));
-            $idt = $this -> frbr -> work($title, $subtitle);
-            redirect(base_url('index.php/main/a/' . $idt));
+            $form = trim(get("dd3"));
+            if ((strlen($title) > 0) and (strlen($form) > 0)) {
+                $idt = $this -> frbr -> work($title, $subtitle, $form);
+                redirect(base_url('index.php/main/a/' . $idt));
+            }
         }
 
         $tela = '';

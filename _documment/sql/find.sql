@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.4.1
+-- version 4.2.7.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 07, 2017 at 02:12 PM
--- Server version: 5.7.11
--- PHP Version: 5.6.18
+-- Generation Time: Nov 08, 2017 at 10:02 AM
+-- Server version: 5.6.20-log
+-- PHP Version: 5.4.31
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -14,7 +14,7 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
 
 --
 -- Database: `find`
@@ -26,10 +26,10 @@ SET time_zone = "+00:00";
 -- Table structure for table `ci_sessions`
 --
 
-CREATE TABLE `ci_sessions` (
+CREATE TABLE IF NOT EXISTS `ci_sessions` (
   `id` varchar(40) NOT NULL,
   `ip_address` varchar(45) NOT NULL,
-  `timestamp` int(10) UNSIGNED NOT NULL DEFAULT '0',
+  `timestamp` int(10) unsigned NOT NULL DEFAULT '0',
   `data` blob NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -38,17 +38,36 @@ CREATE TABLE `ci_sessions` (
 --
 
 INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES
-('a2fcmgp19iva4hjri99tg6stce28o6og', '::1', 1509902444, 0x5f5f63695f6c6173745f726567656e65726174657c693a313530393930323239363b69647c693a313b),
-('cpfvkukj98g9f9rn1ou0cgqhdk396kcu', '::1', 1509926433, 0x5f5f63695f6c6173745f726567656e65726174657c693a313530393932363336383b69647c693a313b),
-('edc4k3q0q8aeh5bj6n714ie2eqjsi6e5', '::1', 1509898340, 0x5f5f63695f6c6173745f726567656e65726174657c693a313530393839383039373b69647c693a313b),
-('gmoj9nhb8cnqk6c34elqkpro81d1klv1', '::1', 1509926313, 0x5f5f63695f6c6173745f726567656e65726174657c693a313530393932353732333b69647c693a313b),
-('l44an9t6n6oi7j38lqgvtjug4bpqi7fu', '::1', 1510063447, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303036333434373b69647c693a313b),
-('m9fia6s6gk86mcntl4ti8eanuc2fnint', '::1', 1509902210, 0x5f5f63695f6c6173745f726567656e65726174657c693a313530393930313935303b69647c693a313b),
-('noqn5b12h0nv3b84abs12rc0r1vmm90v', '::1', 1509901940, 0x5f5f63695f6c6173745f726567656e65726174657c693a313530393930313631393b69647c693a313b),
-('r3890j35mg2g78nc5ihf2827r94emmg9', '::1', 1510063831, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303036333739343b69647c693a313b),
-('rr78tp9rdlkj1pkcrcber8q4juktjmqk', '::1', 1509901615, 0x5f5f63695f6c6173745f726567656e65726174657c693a313530393930303437393b69647c693a313b),
-('sc783rftrfn439sptn13gfv7k2m2lu1b', '::1', 1509898435, 0x5f5f63695f6c6173745f726567656e65726174657c693a313530393839383433353b69647c693a313b),
-('vjglhuhh69p4715pvq2pt40fhrb5tng1', '::1', 1510063652, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303036333435323b69647c693a313b);
+('07j6scn32m52lngutikbd3vivffpgghp', '::1', 1510104949, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130343731313b69647c693a313b),
+('0i0cvs4u7gdi5fut1l899veiec4j21vf', '::1', 1510104339, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130343034333b69647c693a313b),
+('171llda7ntp6de2q424auevmu1du83uc', '::1', 1510097744, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303039373536303b69647c693a313b),
+('1l1uuh8jn8mbgnaufruafpropj7p7vhk', '::1', 1510102888, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130323633393b69647c693a313b),
+('1mmk4jq70ioic3hackmuj1c0tc0sjbjr', '::1', 1510101684, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130313331303b69647c693a313b),
+('4hte6q14905pfv3qp1gi61j8agrav4q5', '::1', 1510102294, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130323030343b69647c693a313b),
+('4i223o03k50lr290gg5580tknanh8qpo', '::1', 1510097047, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303039363830363b69647c693a313b),
+('5di0lnf2k8a09no38vqobpa03va26fgp', '::1', 1510101310, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130303939383b69647c693a313b),
+('71f88pluac9frvdqi201hnfmnnv6v4bb', '::1', 1510103931, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130333639353b69647c693a313b),
+('73jm2f4mbdb8l7t8rg51j8lllleuks3i', '::1', 1510099483, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303039383837313b69647c693a313b),
+('8g5proh0mhe8qb6griedueqngn0kn8r8', '::1', 1510104671, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130343337333b69647c693a313b),
+('9han1taeumasopdlh0kcvln3sskfsepe', '::1', 1510098847, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303039383236323b69647c693a313b),
+('a9df5karrvu46fqo7200lpr7usqsq5q2', '::1', 1510099835, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303039393739373b69647c693a313b),
+('ca2cvdv0cipjp0cdkom975fctkbgqme1', '::1', 1510099697, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303039393438333b69647c693a313b),
+('fha0eb97ht3vsoe89a7ods8g4er8iotv', '::1', 1510105238, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130353032313b69647c693a313b),
+('gg1ulojd6ok5morapcn59btsibfn9qjs', '::1', 1510107365, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130373231383b69647c693a313b),
+('j5dkstb7qoiegfsdh772sirii13j2vvc', '::1', 1510103228, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130323934373b69647c693a313b),
+('je1erkbc29lmts4tar1lhnmqh6if9a16', '::1', 1510100345, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130303130373b69647c693a313b),
+('klk3r2hpc1rrt0qei43hqpsjrr6oi3vn', '::1', 1510106302, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130363036393b69647c693a313b),
+('lg2ef0ob2uv6p1te4oqecn5kl1jb6817', '::1', 1510106066, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130353736363b69647c693a313b),
+('moes2idt0n03j982p7rhkv179nh6kp9t', '::1', 1510108323, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130383137363b69647c693a313b),
+('n19lljdck5gvl7pg1u271l9u4rfls3o5', '::1', 1510101974, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130313638343b69647c693a313b),
+('oefbvb0aqips2kgtl98jlv1cel3a67s7', '::1', 1510102483, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130323333323b69647c693a313b),
+('or4j6jtdv4b58f63gvd0mm9leh2bcrdf', '::1', 1510105588, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130353332363b69647c693a313b),
+('spa8otb4396v7a7jhr0s8i47frtmii9v', '::1', 1510107637, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130373533353b69647c693a313b),
+('t6lbmcl5a1a51f95phj1v7f5hvigj203', '::1', 1510106703, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130363431333b69647c693a313b),
+('t8sccp1vb6qvieu33vb7if0msqlt879a', '::1', 1510103589, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130333333373b69647c693a313b),
+('tk0mefluf8r52ljqbbm1cp6p4u6jshvg', '::1', 1510100963, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130303636383b69647c693a313b),
+('vjfvds275pii170qqp8bjj8n9kt3u8nk', '::1', 1510097406, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303039373132303b69647c693a313b),
+('vpfofgps00e70fm1bqv1dknhv4e9fe7q', '::1', 1510107088, 0x5f5f63695f6c6173745f726567656e65726174657c693a313531303130363739363b69647c693a313b);
 
 -- --------------------------------------------------------
 
@@ -56,11 +75,11 @@ INSERT INTO `ci_sessions` (`id`, `ip_address`, `timestamp`, `data`) VALUES
 -- Table structure for table `cutter`
 --
 
-CREATE TABLE `cutter` (
-  `id_cutter` bigint(20) UNSIGNED NOT NULL,
+CREATE TABLE IF NOT EXISTS `cutter` (
+`id_cutter` bigint(20) unsigned NOT NULL,
   `cutter_code` varchar(5) NOT NULL,
   `cutter_abrev` varchar(25) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12330 ;
 
 --
 -- Dumping data for table `cutter`
@@ -12408,54 +12427,68 @@ INSERT INTO `cutter` (`id_cutter`, `cutter_code`, `cutter_abrev`) VALUES
 -- Table structure for table `rdf_class`
 --
 
-CREATE TABLE `rdf_class` (
-  `id_c` bigint(20) UNSIGNED NOT NULL,
+CREATE TABLE IF NOT EXISTS `rdf_class` (
+`id_c` bigint(20) unsigned NOT NULL,
   `c_class` varchar(200) NOT NULL,
   `c_prefix` int(11) NOT NULL,
   `c_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `c_class_main` int(11) NOT NULL DEFAULT '0',
   `c_type` char(1) NOT NULL,
   `c_order` int(11) NOT NULL DEFAULT '99',
-  `c_pa` int(11) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `c_pa` int(11) NOT NULL DEFAULT '0',
+  `c_repetitive` int(11) NOT NULL DEFAULT '1',
+  `c_vc` int(11) NOT NULL DEFAULT '0'
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=45 ;
 
 --
 -- Dumping data for table `rdf_class`
 --
 
-INSERT INTO `rdf_class` (`id_c`, `c_class`, `c_prefix`, `c_created`, `c_class_main`, `c_type`, `c_order`, `c_pa`) VALUES
-(1, 'Agent', 0, '2017-11-03 14:33:53', 0, 'C', 10, 0),
-(2, 'Person', 0, '2017-11-03 14:33:53', 1, 'C', 11, 0),
-(3, 'Family', 0, '2017-11-03 14:34:34', 1, 'C', 12, 0),
-(4, 'Corporate Body', 0, '2017-11-03 14:34:34', 1, 'C', 13, 0),
-(5, 'prefLabel', 4, '2017-11-03 14:51:55', 0, 'P', 20, 1),
-(6, 'altLabel', 4, '2017-11-03 14:52:07', 0, 'P', 25, 1),
-(7, 'hasCutter', 0, '2017-11-03 16:44:41', 0, 'P', 28, 0),
-(8, 'hasBorn', 0, '2017-11-03 16:46:48', 0, 'P', 21, 0),
-(9, 'hasDie', 0, '2017-11-03 16:46:48', 0, 'P', 22, 0),
-(10, 'hasISBN', 0, '2017-11-03 17:08:28', 0, 'P', 99, 0),
-(11, 'hasISSN', 0, '2017-11-03 17:08:28', 0, 'P', 99, 0),
-(12, 'Date', 0, '2017-11-03 17:23:53', 0, 'C', 100, 0),
-(13, 'Class', 1, '2017-11-03 17:45:14', 0, 'C', 0, 0),
-(14, 'sourceNote', 0, '2017-11-04 17:08:03', 0, 'P', 99, 0),
-(15, 'hiddenLabel', 4, '2017-11-04 17:22:52', 0, 'P', 26, 0),
-(16, 'Work', 0, '2017-11-04 19:48:58', 0, 'C', 3, 0),
-(17, 'hasTitle', 0, '2017-11-04 19:57:49', 0, 'P', 8, 1),
-(18, 'hasSubtitle', 0, '2017-11-04 19:57:49', 0, 'P', 9, 1),
-(19, 'hasAuthor', 0, '2017-11-04 20:34:16', 0, 'P', 16, 0),
-(20, 'hasOrganizator', 0, '2017-11-04 20:34:16', 0, 'P', 17, 0),
-(21, 'hasCover', 0, '2017-11-04 22:00:58', 0, 'P', 999, 0),
-(22, 'hasTitlePerson', 0, '2017-11-05 16:10:33', 0, 'P', 29, 0),
-(23, 'hasGender', 1, '2017-11-05 16:11:47', 0, 'P', 29, 0),
-(24, 'Gender', 0, '2017-11-05 16:11:47', 0, 'C', 99, 0),
-(25, 'hasPlaceBirth', 0, '2017-11-05 16:13:16', 0, 'P', 99, 0),
-(26, 'hasPlaceDeath', 0, '2017-11-05 16:13:16', 0, 'P', 99, 0),
-(27, 'hasLiveCoutry', 0, '2017-11-05 16:47:28', 0, '', 99, 0),
-(28, 'hasAffiliation', 0, '2017-11-05 16:47:28', 0, '', 99, 0),
-(29, 'hasLanguagePerson', 0, '2017-11-05 16:49:26', 0, '', 99, 0),
-(30, 'hasPersonAtivity', 0, '2017-11-05 16:49:26', 0, '', 99, 0),
-(31, 'hasProfission', 0, '2017-11-05 16:50:12', 0, '', 99, 0),
-(32, 'hasPersonBiography', 0, '2017-11-05 16:50:12', 0, '', 99, 0);
+INSERT INTO `rdf_class` (`id_c`, `c_class`, `c_prefix`, `c_created`, `c_class_main`, `c_type`, `c_order`, `c_pa`, `c_repetitive`, `c_vc`) VALUES
+(1, 'Agent', 0, '2017-11-03 14:33:53', 0, 'C', 10, 0, 1, 0),
+(2, 'Person', 0, '2017-11-03 14:33:53', 1, 'C', 11, 0, 1, 0),
+(3, 'Family', 0, '2017-11-03 14:34:34', 1, 'C', 12, 0, 1, 0),
+(4, 'Corporate Body', 0, '2017-11-03 14:34:34', 1, 'C', 13, 0, 1, 0),
+(5, 'prefLabel', 4, '2017-11-03 14:51:55', 0, 'P', 20, 1, 1, 0),
+(6, 'altLabel', 4, '2017-11-03 14:52:07', 0, 'P', 25, 1, 1, 0),
+(7, 'hasCutter', 0, '2017-11-03 16:44:41', 0, 'P', 28, 0, 1, 0),
+(8, 'hasBorn', 0, '2017-11-03 16:46:48', 0, 'P', 21, 0, 1, 0),
+(9, 'hasDie', 0, '2017-11-03 16:46:48', 0, 'P', 22, 0, 1, 0),
+(10, 'hasISBN', 0, '2017-11-03 17:08:28', 0, 'P', 99, 0, 1, 0),
+(11, 'hasISSN', 0, '2017-11-03 17:08:28', 0, 'P', 99, 0, 1, 0),
+(12, 'Date', 0, '2017-11-03 17:23:53', 0, 'C', 100, 0, 1, 1),
+(13, 'Class', 1, '2017-11-03 17:45:14', 0, 'C', 0, 0, 1, 0),
+(14, 'sourceNote', 0, '2017-11-04 17:08:03', 0, 'P', 99, 0, 1, 0),
+(15, 'hiddenLabel', 4, '2017-11-04 17:22:52', 0, 'P', 26, 0, 1, 0),
+(16, 'Work', 0, '2017-11-04 19:48:58', 0, 'C', 3, 0, 1, 0),
+(17, 'hasTitle', 0, '2017-11-04 19:57:49', 0, 'P', 8, 1, 1, 0),
+(18, 'hasSubtitle', 0, '2017-11-04 19:57:49', 0, 'P', 9, 1, 1, 0),
+(19, 'hasAuthor', 0, '2017-11-04 20:34:16', 0, 'P', 16, 0, 1, 0),
+(20, 'hasOrganizator', 0, '2017-11-04 20:34:16', 0, 'P', 17, 0, 1, 0),
+(21, 'hasCover', 0, '2017-11-04 22:00:58', 0, 'P', 999, 0, 1, 0),
+(22, 'hasTitlePerson', 0, '2017-11-05 16:10:33', 0, 'P', 29, 0, 1, 0),
+(23, 'hasGender', 1, '2017-11-05 16:11:47', 0, 'P', 29, 0, 1, 0),
+(24, 'Gender', 0, '2017-11-05 16:11:47', 0, 'C', 99, 0, 1, 1),
+(25, 'hasPlaceBirth', 0, '2017-11-05 16:13:16', 0, 'P', 99, 0, 1, 0),
+(26, 'hasPlaceDeath', 0, '2017-11-05 16:13:16', 0, 'P', 99, 0, 1, 0),
+(27, 'hasLiveCoutry', 0, '2017-11-05 16:47:28', 0, '', 99, 0, 1, 0),
+(28, 'hasAffiliation', 0, '2017-11-05 16:47:28', 0, '', 99, 0, 1, 0),
+(29, 'hasLanguagePerson', 0, '2017-11-05 16:49:26', 0, '', 99, 0, 1, 0),
+(30, 'hasPersonAtivity', 0, '2017-11-05 16:49:26', 0, '', 99, 0, 1, 0),
+(31, 'hasProfission', 0, '2017-11-05 16:50:12', 0, '', 99, 0, 1, 0),
+(32, 'hasPersonBiography', 0, '2017-11-05 16:50:12', 0, '', 99, 0, 1, 0),
+(33, 'Expression', 0, '2017-11-07 22:19:55', 0, 'C', 99, 0, 1, 0),
+(34, 'Manifestation', 0, '2017-11-07 22:19:55', 0, 'C', 99, 0, 1, 0),
+(35, 'Item', 0, '2017-11-07 22:20:34', 0, 'C', 99, 0, 1, 0),
+(36, 'Concept', 0, '2017-11-07 22:20:34', 0, 'C', 99, 0, 1, 1),
+(37, 'isRealizerThrough', 0, '2017-11-07 22:25:33', 0, 'P', 99, 0, 1, 0),
+(38, 'hasFormWork', 0, '2017-11-07 22:49:32', 0, 'P', 99, 0, 0, 0),
+(39, 'FormWork', 0, '2017-11-07 22:50:50', 0, 'C', 99, 0, 1, 1),
+(40, 'hasDateFirstWork', 0, '2017-11-07 23:43:06', 0, 'P', 99, 0, 1, 0),
+(41, 'hasIllustrator', 0, '2017-11-08 00:43:03', 0, 'P', 18, 0, 1, 0),
+(42, 'Image', 0, '2017-11-08 00:56:26', 0, 'C', 99, 0, 1, 0),
+(43, 'hasLinguageExpression', 0, '2017-11-08 02:18:28', 0, 'P', 99, 0, 1, 0),
+(44, 'Linguage', 0, '2017-11-08 02:18:28', 0, 'C', 99, 0, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -12463,13 +12496,13 @@ INSERT INTO `rdf_class` (`id_c`, `c_class`, `c_prefix`, `c_created`, `c_class_ma
 -- Table structure for table `rdf_concept`
 --
 
-CREATE TABLE `rdf_concept` (
-  `id_cc` bigint(20) UNSIGNED NOT NULL,
+CREATE TABLE IF NOT EXISTS `rdf_concept` (
+`id_cc` bigint(20) unsigned NOT NULL,
   `cc_class` int(11) NOT NULL,
   `cc_use` int(11) NOT NULL DEFAULT '0',
   `cc_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `cc_pref_term` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=59 ;
 
 --
 -- Dumping data for table `rdf_concept`
@@ -12494,11 +12527,44 @@ INSERT INTO `rdf_concept` (`id_cc`, `cc_class`, `cc_use`, `cc_created`, `cc_pref
 (16, 16, 0, '2017-11-05 02:43:16', 39),
 (17, 2, 0, '2017-11-05 17:19:58', 40),
 (18, 12, 0, '2017-11-05 17:19:58', 41),
-(19, 16, 0, '2017-11-07 14:05:30', 45),
-(20, 2, 0, '2017-11-07 14:06:12', 46),
-(21, 12, 0, '2017-11-07 14:06:12', 47),
-(22, 2, 0, '2017-11-07 14:09:54', 53),
-(23, 16, 0, '2017-11-07 14:10:22', 54);
+(19, 2, 0, '2017-11-07 21:49:04', 45),
+(20, 2, 0, '2017-11-07 21:49:40', 53),
+(21, 2, 0, '2017-11-07 21:51:24', 55),
+(22, 12, 0, '2017-11-07 21:51:24', 56),
+(23, 16, 0, '2017-11-07 21:52:06', 58),
+(24, 16, 0, '2017-11-07 21:53:02', 60),
+(25, 39, 0, '2017-11-07 23:06:24', 62),
+(26, 39, 0, '2017-11-07 23:06:24', 63),
+(27, 39, 0, '2017-11-07 23:10:23', 64),
+(28, 16, 0, '2017-11-07 23:33:26', 65),
+(29, 2, 0, '2017-11-07 23:35:22', 67),
+(30, 12, 0, '2017-11-07 23:35:22', 68),
+(31, 2, 0, '2017-11-08 00:24:30', 73),
+(32, 12, 0, '2017-11-08 00:24:30', 74),
+(34, 16, 0, '2017-11-08 00:30:54', 75),
+(35, 2, 0, '2017-11-08 00:33:52', 77),
+(36, 16, 0, '2017-11-08 00:34:51', 82),
+(37, 2, 0, '2017-11-08 00:37:08', 84),
+(38, 12, 0, '2017-11-08 00:37:08', 85),
+(39, 2, 0, '2017-11-08 00:38:09', 90),
+(40, 12, 0, '2017-11-08 00:38:09', 91),
+(41, 16, 0, '2017-11-08 00:38:39', 97),
+(42, 2, 0, '2017-11-08 00:52:12', 98),
+(43, 16, 0, '2017-11-08 00:52:32', 99),
+(44, 2, 0, '2017-11-08 00:53:45', 100),
+(45, 12, 0, '2017-11-08 00:53:45', 101),
+(46, 16, 0, '2017-11-08 00:54:27', 106),
+(49, 24, 0, '2017-11-08 01:51:47', 109),
+(48, 24, 0, '2017-11-08 01:50:47', 108),
+(50, 2, 0, '2017-11-08 02:04:18', 110),
+(51, 16, 0, '2017-11-08 02:04:54', 113),
+(52, 16, 0, '2017-11-08 02:13:38', 114),
+(53, 2, 0, '2017-11-08 02:14:28', 115),
+(54, 44, 0, '2017-11-08 02:19:35', 118),
+(55, 44, 0, '2017-11-08 02:19:45', 119),
+(56, 44, 0, '2017-11-08 02:19:52', 120),
+(57, 44, 0, '2017-11-08 02:19:58', 121),
+(58, 44, 0, '2017-11-08 02:20:07', 122);
 
 -- --------------------------------------------------------
 
@@ -12506,14 +12572,14 @@ INSERT INTO `rdf_concept` (`id_cc`, `cc_class`, `cc_use`, `cc_created`, `cc_pref
 -- Table structure for table `rdf_data`
 --
 
-CREATE TABLE `rdf_data` (
-  `id_d` bigint(20) UNSIGNED NOT NULL,
+CREATE TABLE IF NOT EXISTS `rdf_data` (
+`id_d` bigint(20) unsigned NOT NULL,
   `d_r1` int(11) NOT NULL,
   `d_p` int(11) NOT NULL,
   `d_r2` int(11) NOT NULL,
   `d_literal` int(11) NOT NULL DEFAULT '0',
   `d_creadted` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=169 ;
 
 --
 -- Dumping data for table `rdf_data`
@@ -12572,19 +12638,117 @@ INSERT INTO `rdf_data` (`id_d`, `d_r1`, `d_p`, `d_r2`, `d_literal`, `d_creadted`
 (50, 17, 6, 0, 42, '2017-11-05 17:19:58'),
 (51, 17, 14, 0, 43, '2017-11-05 17:19:58'),
 (52, 17, 14, 0, 44, '2017-11-05 17:19:58'),
-(53, 19, 17, 0, 45, '2017-11-07 14:05:30'),
-(54, 20, 5, 0, 46, '2017-11-07 14:06:12'),
-(55, 20, 8, 21, 0, '2017-11-07 14:06:12'),
-(56, 20, 6, 0, 48, '2017-11-07 14:06:12'),
-(57, 20, 14, 0, 49, '2017-11-07 14:06:12'),
-(58, 20, 14, 0, 50, '2017-11-07 14:06:12'),
-(59, 20, 14, 0, 51, '2017-11-07 14:06:12'),
-(60, 20, 14, 0, 52, '2017-11-07 14:06:12'),
-(61, 19, 19, 20, 0, '2017-11-07 14:07:17'),
-(62, 22, 5, 0, 53, '2017-11-07 14:09:54'),
-(63, 23, 17, 0, 54, '2017-11-07 14:10:22'),
-(64, 23, 18, 0, 55, '2017-11-07 14:10:22'),
-(65, 23, 20, 22, 0, '2017-11-07 14:10:30');
+(53, 19, 5, 0, 45, '2017-11-07 21:49:04'),
+(54, 19, 6, 0, 46, '2017-11-07 21:49:04'),
+(55, 19, 14, 0, 47, '2017-11-07 21:49:04'),
+(56, 19, 14, 0, 48, '2017-11-07 21:49:04'),
+(57, 19, 14, 0, 49, '2017-11-07 21:49:04'),
+(58, 19, 14, 0, 50, '2017-11-07 21:49:04'),
+(59, 19, 14, 0, 51, '2017-11-07 21:49:04'),
+(60, 19, 14, 0, 52, '2017-11-07 21:49:04'),
+(61, 20, 5, 0, 53, '2017-11-07 21:49:40'),
+(62, 20, 14, 0, 54, '2017-11-07 21:49:40'),
+(63, 21, 5, 0, 55, '2017-11-07 21:51:24'),
+(64, 21, 8, 22, 0, '2017-11-07 21:51:24'),
+(65, 21, 14, 0, 57, '2017-11-07 21:51:24'),
+(66, 23, 17, 0, 58, '2017-11-07 21:52:06'),
+(67, 23, 18, 0, 59, '2017-11-07 21:52:06'),
+(68, 23, 19, 21, 0, '2017-11-07 21:52:20'),
+(69, 24, 17, 0, 60, '2017-11-07 21:53:02'),
+(70, 24, 18, 0, 61, '2017-11-07 21:53:02'),
+(71, 24, 19, 19, 0, '2017-11-07 21:53:24'),
+(72, 24, 19, 20, 0, '2017-11-07 21:53:37'),
+(73, 25, 5, 0, 62, '2017-11-07 23:08:16'),
+(74, 26, 5, 0, 63, '2017-11-07 23:08:16'),
+(75, 27, 5, 0, 64, '2017-11-07 23:13:38'),
+(76, 28, 17, 0, 65, '2017-11-07 23:33:26'),
+(77, 28, 38, 25, 0, '2017-11-07 23:33:26'),
+(78, 28, 18, 0, 66, '2017-11-07 23:33:26'),
+(79, 29, 5, 0, 67, '2017-11-07 23:35:22'),
+(80, 29, 8, 30, 0, '2017-11-07 23:35:22'),
+(81, 29, 6, 0, 69, '2017-11-07 23:35:22'),
+(82, 29, 14, 0, 70, '2017-11-07 23:35:22'),
+(83, 29, 14, 0, 71, '2017-11-07 23:35:22'),
+(84, 29, 14, 0, 72, '2017-11-07 23:35:22'),
+(85, 29, 14, 0, 17, '2017-11-07 23:35:22'),
+(86, 28, 19, 29, 0, '2017-11-07 23:35:43'),
+(87, 24, 39, 25, 0, '2017-11-08 00:04:43'),
+(88, 2, 5, 0, 2, '2017-11-08 00:09:52'),
+(89, 3, 5, 0, 3, '2017-11-08 00:09:52'),
+(91, 18, 5, 0, 41, '2017-11-08 00:16:10'),
+(92, 22, 5, 0, 56, '2017-11-08 00:17:34'),
+(93, 30, 5, 0, 68, '2017-11-08 00:18:38'),
+(94, 31, 5, 0, 73, '2017-11-08 00:24:30'),
+(95, 32, 5, 0, 74, '2017-11-08 00:24:30'),
+(96, 31, 8, 32, 0, '2017-11-08 00:24:30'),
+(97, 33, 5, 0, 75, '2017-11-08 00:26:17'),
+(101, 34, 17, 0, 75, '2017-11-08 00:30:54'),
+(102, 34, 38, 25, 0, '2017-11-08 00:30:54'),
+(103, 34, 18, 0, 76, '2017-11-08 00:30:54'),
+(104, 34, 1, 31, 0, '2017-11-08 00:32:37'),
+(105, 35, 5, 0, 77, '2017-11-08 00:33:52'),
+(106, 35, 6, 0, 78, '2017-11-08 00:33:52'),
+(107, 35, 14, 0, 79, '2017-11-08 00:33:52'),
+(108, 35, 14, 0, 80, '2017-11-08 00:33:52'),
+(109, 35, 14, 0, 81, '2017-11-08 00:33:52'),
+(110, 36, 17, 0, 82, '2017-11-08 00:34:51'),
+(111, 36, 38, 25, 0, '2017-11-08 00:34:51'),
+(112, 36, 18, 0, 83, '2017-11-08 00:34:51'),
+(113, 36, 1, 35, 0, '2017-11-08 00:35:10'),
+(114, 37, 5, 0, 84, '2017-11-08 00:37:08'),
+(115, 38, 5, 0, 85, '2017-11-08 00:37:08'),
+(116, 37, 8, 38, 0, '2017-11-08 00:37:08'),
+(117, 37, 14, 0, 86, '2017-11-08 00:37:08'),
+(118, 37, 14, 0, 87, '2017-11-08 00:37:08'),
+(119, 37, 14, 0, 88, '2017-11-08 00:37:08'),
+(120, 37, 14, 0, 89, '2017-11-08 00:37:08'),
+(121, 39, 5, 0, 90, '2017-11-08 00:38:09'),
+(122, 40, 5, 0, 91, '2017-11-08 00:38:09'),
+(123, 39, 8, 40, 0, '2017-11-08 00:38:09'),
+(124, 39, 6, 0, 92, '2017-11-08 00:38:09'),
+(125, 39, 6, 0, 93, '2017-11-08 00:38:09'),
+(126, 39, 14, 0, 94, '2017-11-08 00:38:09'),
+(127, 39, 14, 0, 95, '2017-11-08 00:38:09'),
+(128, 39, 14, 0, 96, '2017-11-08 00:38:09'),
+(129, 41, 17, 0, 97, '2017-11-08 00:38:39'),
+(130, 41, 38, 25, 0, '2017-11-08 00:38:39'),
+(132, 41, 19, 37, 0, '2017-11-08 00:41:24'),
+(133, 41, 41, 39, 0, '2017-11-08 00:50:28'),
+(134, 42, 5, 0, 98, '2017-11-08 00:52:12'),
+(135, 43, 17, 0, 99, '2017-11-08 00:52:32'),
+(136, 43, 38, 25, 0, '2017-11-08 00:52:32'),
+(137, 43, 19, 42, 0, '2017-11-08 00:52:45'),
+(138, 44, 5, 0, 100, '2017-11-08 00:53:45'),
+(139, 45, 5, 0, 101, '2017-11-08 00:53:45'),
+(140, 44, 8, 45, 0, '2017-11-08 00:53:45'),
+(141, 44, 14, 0, 102, '2017-11-08 00:53:45'),
+(142, 44, 14, 0, 103, '2017-11-08 00:53:45'),
+(143, 44, 14, 0, 104, '2017-11-08 00:53:45'),
+(144, 44, 14, 0, 105, '2017-11-08 00:53:45'),
+(145, 46, 17, 0, 106, '2017-11-08 00:54:27'),
+(146, 46, 38, 25, 0, '2017-11-08 00:54:27'),
+(147, 46, 18, 0, 107, '2017-11-08 00:54:27'),
+(148, 46, 19, 44, 0, '2017-11-08 00:54:43'),
+(149, 0, 5, 0, 108, '2017-11-08 01:51:18'),
+(150, 49, 5, 0, 109, '2017-11-08 01:51:47'),
+(151, 50, 5, 0, 110, '2017-11-08 02:04:18'),
+(152, 50, 6, 0, 111, '2017-11-08 02:04:18'),
+(153, 50, 14, 0, 112, '2017-11-08 02:04:19'),
+(154, 51, 17, 0, 113, '2017-11-08 02:04:54'),
+(155, 0, 17, 0, 113, '2017-11-08 02:05:02'),
+(156, 0, 38, 25, 0, '2017-11-08 02:05:02'),
+(157, 51, 19, 50, 0, '2017-11-08 02:10:56'),
+(158, 52, 17, 0, 114, '2017-11-08 02:13:38'),
+(159, 52, 38, 25, 0, '2017-11-08 02:13:38'),
+(160, 53, 5, 0, 115, '2017-11-08 02:14:28'),
+(161, 53, 6, 0, 116, '2017-11-08 02:14:28'),
+(162, 53, 14, 0, 117, '2017-11-08 02:14:28'),
+(163, 52, 19, 53, 0, '2017-11-08 02:14:41'),
+(164, 54, 5, 0, 118, '2017-11-08 02:19:35'),
+(165, 55, 5, 0, 119, '2017-11-08 02:19:45'),
+(166, 56, 5, 0, 120, '2017-11-08 02:19:52'),
+(167, 57, 5, 0, 121, '2017-11-08 02:19:58'),
+(168, 58, 5, 0, 122, '2017-11-08 02:20:07');
 
 -- --------------------------------------------------------
 
@@ -12592,13 +12756,13 @@ INSERT INTO `rdf_data` (`id_d`, `d_r1`, `d_p`, `d_r2`, `d_literal`, `d_creadted`
 -- Table structure for table `rdf_form_class`
 --
 
-CREATE TABLE `rdf_form_class` (
-  `id_sc` bigint(20) UNSIGNED NOT NULL,
+CREATE TABLE IF NOT EXISTS `rdf_form_class` (
+`id_sc` bigint(20) unsigned NOT NULL,
   `sc_class` int(11) NOT NULL,
   `sc_propriety` int(11) NOT NULL,
   `sc_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `sc_range` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=21 ;
 
 --
 -- Dumping data for table `rdf_form_class`
@@ -12607,7 +12771,7 @@ CREATE TABLE `rdf_form_class` (
 INSERT INTO `rdf_form_class` (`id_sc`, `sc_class`, `sc_propriety`, `sc_created`, `sc_range`) VALUES
 (1, 16, 19, '2017-11-04 20:45:08', 1),
 (2, 16, 20, '2017-11-04 20:45:08', 1),
-(3, 16, 21, '2017-11-04 22:01:38', 0),
+(3, 16, 21, '2017-11-04 22:01:38', 42),
 (4, 2, 8, '2017-11-05 16:09:40', 12),
 (5, 2, 9, '2017-11-05 16:09:40', 12),
 (6, 2, 22, '2017-11-05 16:12:16', 12),
@@ -12619,7 +12783,11 @@ INSERT INTO `rdf_form_class` (`id_sc`, `sc_class`, `sc_propriety`, `sc_created`,
 (12, 2, 29, '2017-11-05 16:50:59', 12),
 (13, 2, 30, '2017-11-05 16:50:59', 12),
 (14, 2, 31, '2017-11-05 16:51:20', 12),
-(15, 2, 32, '2017-11-05 16:51:20', 12);
+(15, 2, 32, '2017-11-05 16:51:20', 12),
+(16, 16, 37, '2017-11-07 22:27:53', 33),
+(17, 16, 38, '2017-11-07 22:50:08', 39),
+(18, 16, 40, '2017-11-07 23:44:16', 12),
+(19, 16, 41, '2017-11-08 00:46:08', 1);
 
 -- --------------------------------------------------------
 
@@ -12627,11 +12795,11 @@ INSERT INTO `rdf_form_class` (`id_sc`, `sc_class`, `sc_propriety`, `sc_created`,
 -- Table structure for table `rdf_name`
 --
 
-CREATE TABLE `rdf_name` (
-  `id_n` bigint(20) UNSIGNED NOT NULL,
+CREATE TABLE IF NOT EXISTS `rdf_name` (
+`id_n` bigint(20) unsigned NOT NULL,
   `n_name` varchar(250) NOT NULL,
   `n_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=123 ;
 
 --
 -- Dumping data for table `rdf_name`
@@ -12681,17 +12849,84 @@ INSERT INTO `rdf_name` (`id_n`, `n_name`, `n_created`) VALUES
 (42, 'Santiago Bufrem, Leilah,', '2017-11-05 17:19:58'),
 (43, 'Lima, E.R. Aspectos editoriais no Brasil, 1988:', '2017-11-05 17:19:58'),
 (44, 'LC data base, 11-14-90', '2017-11-05 17:19:58'),
-(45, 'Sociedade sem escolas', '2017-11-07 14:05:30'),
-(46, 'Illich, Ivan', '2017-11-07 14:06:12'),
-(47, '1926', '2017-11-07 14:06:12'),
-(48, 'Illich, Ivan D.', '2017-11-07 14:06:12'),
-(49, 'Autor de: Sociedade sem escolas. 1973', '2017-11-07 14:06:12'),
-(50, 'LC 1968/72', '2017-11-07 14:06:12'),
-(51, 'LC 1976', '2017-11-07 14:06:12'),
-(52, 'LC microf. 77/86', '2017-11-07 14:06:12'),
-(53, 'Nunes, Helena de Souza', '2017-11-07 14:09:54'),
-(54, 'EAD na formação de professores de música', '2017-11-07 14:10:22'),
-(55, 'fundamentos e prospecções', '2017-11-07 14:10:22');
+(45, 'Campello, Bernadete Santos', '2017-11-07 21:49:04'),
+(46, 'Santos Campello, Bernadete', '2017-11-07 21:49:04'),
+(47, 'Autor de: Fontes de informação especializada... 1988', '2017-11-07 21:49:04'),
+(48, 'Seu: Letramento informacional... 2009', '2017-11-07 21:49:04'),
+(49, 'http://catalog.loc.gov 16/2/11', '2017-11-07 21:49:04'),
+(50, 'http://authorities.loc.gov', '2017-11-07 21:49:04'),
+(51, 'http://gebe.eci.ufmg.br/?Pesquisadores:Bernadete_Santos_Campello', '2017-11-07 21:49:04'),
+(52, 'http://buscatextual.cnpq.br/buscatextual/visualizacv.jsp?id=K4787111J7', '2017-11-07 21:49:04'),
+(53, 'Campos, Carlita Maria', '2017-11-07 21:49:40'),
+(54, 'Autor de: Análise da produção bibliográfica dos professores...1980', '2017-11-07 21:49:40'),
+(55, 'Martins, Nelson', '2017-11-07 21:51:24'),
+(56, '1983', '2017-11-07 21:51:24'),
+(57, 'Sec. de: A tipografia na arquitetura do Rio de Janeiro. 1986', '2017-11-07 21:51:24'),
+(58, 'A imagem digital na editoração', '2017-11-07 21:52:06'),
+(59, 'manipulação, conversão e fechamento de arquivos', '2017-11-07 21:52:06'),
+(60, 'Fontes de informação especializada', '2017-11-07 21:53:02'),
+(61, 'características e utilização', '2017-11-07 21:53:02'),
+(62, 'Livro (book)', '2017-11-07 23:04:57'),
+(63, 'Livro eletrônico (ebook)', '2017-11-07 23:05:16'),
+(64, 'Apostila', '2017-11-07 23:11:44'),
+(65, 'Manual de digitalização de acervos', '2017-11-07 23:33:26'),
+(66, 'textos, mapas e imagens fixas', '2017-11-07 23:33:26'),
+(67, 'Silva, Rubens Ribeiro Gonçalves da', '2017-11-07 23:35:22'),
+(68, '1958', '2017-11-07 23:35:22'),
+(69, 'Gonçalves da Silva, Rubens Ribeiro', '2017-11-07 23:35:22'),
+(70, 'Autor de: Manual de digitalização de acervos... 2005', '2017-11-07 23:35:22'),
+(71, 'http://authorities.loc.gov 26/5/2011', '2017-11-07 23:35:22'),
+(72, 'E-mail: rubensri@ufba.br', '2017-11-07 23:35:22'),
+(73, 'Nagaraja, Dharmachari', '2017-11-08 00:24:30'),
+(74, '1980', '2017-11-08 00:24:30'),
+(75, 'Noites encantadas', '2017-11-08 00:26:17'),
+(76, 'histórias busitas para let na hora de dormir que estimulam a calma, a confiança e a criatividade em seu filho', '2017-11-08 00:26:17'),
+(77, 'Gênova, A. Carlos', '2017-11-08 00:33:52'),
+(78, 'Carlos Gênova, Antônio', '2017-11-08 00:33:52'),
+(79, 'Autor de: Origami: introdução à composição modular. 1990', '2017-11-08 00:33:52'),
+(80, 'Seu: Origami escolar. 1995', '2017-11-08 00:33:52'),
+(81, 'Seu: Brincadeiras em Origami. 1996', '2017-11-08 00:33:52'),
+(82, 'Brincando com origami', '2017-11-08 00:34:51'),
+(83, 'aprendendo com dobraduras', '2017-11-08 00:34:51'),
+(84, 'Strausz, Rosa Amanda', '2017-11-08 00:37:08'),
+(85, '1959', '2017-11-08 00:37:08'),
+(86, 'Sec. de: Brawm, Marc. O professor de Arthur é um problema. 1999', '2017-11-08 00:37:08'),
+(87, 'http://authorities.loc.gov 28/9/2016', '2017-11-08 00:37:08'),
+(88, 'http://viaf.org/processed/PTBNP%7C1281312', '2017-11-08 00:37:08'),
+(89, 'http://viaf.org/processed/DNB%7C1068189746', '2017-11-08 00:37:08'),
+(90, 'Maracajá, Myrna', '2017-11-08 00:38:09'),
+(91, '1967', '2017-11-08 00:38:09'),
+(92, 'Pereira, Myrna Maracajá Pessoa', '2017-11-08 00:38:09'),
+(93, 'Pessoa Pereira, Myrna Maracajá', '2017-11-08 00:38:09'),
+(94, 'Il. de: Strausz, Rosa Amanda. Deus me livre! 1999', '2017-11-08 00:38:09'),
+(95, 'Sec. de: Pecego, Angela. Histórias de baratas... 2010', '2017-11-08 00:38:09'),
+(96, 'EDA 18/09/2012', '2017-11-08 00:38:09'),
+(97, 'Deus me livre!', '2017-11-08 00:38:39'),
+(98, 'Laufer, Thelma Kracochansky', '2017-11-08 00:52:12'),
+(99, 'Bebê do coração', '2017-11-08 00:52:32'),
+(100, 'Coben, Harlan', '2017-11-08 00:53:45'),
+(101, '1962', '2017-11-08 00:53:45'),
+(102, 'Autor de: Não conte a ninguém. 2003', '2017-11-08 00:53:45'),
+(103, 'LC auth. 7/11/03', '2017-11-08 00:53:45'),
+(104, 'LC obras on line 7/11/03', '2017-11-08 00:53:45'),
+(105, 'blpc.bl.uk', '2017-11-08 00:53:45'),
+(106, 'Inocente, O', '2017-11-08 00:54:27'),
+(107, 'alguns erros podem mudar sua vida para sempre', '2017-11-08 00:54:27'),
+(108, 'Masculino', '2017-11-08 01:50:47'),
+(109, 'Feminino', '2017-11-08 01:51:47'),
+(110, 'Chemello, Thereza', '2017-11-08 02:04:18'),
+(111, 'Chemello, Thereza Elisa', '2017-11-08 02:04:18'),
+(112, 'Autor de: Brincando com dobraduras. 1987', '2017-11-08 02:04:19'),
+(113, 'Brincando com dobraduras', '2017-11-08 02:04:54'),
+(114, 'Gramática da lingua portuguesa para concursos, vestibulares, ENEM, colégios técnicos e militares...', '2017-11-08 02:13:38'),
+(115, 'Almeida, Nílson Teixeira de', '2017-11-08 02:14:28'),
+(116, 'Teixeira de Almeida, Nílson', '2017-11-08 02:14:28'),
+(117, 'Autor de: Regência verbal e nominal: teoria e prática. 3a. ed....c1989', '2017-11-08 02:14:28'),
+(118, 'Português', '2017-11-08 02:19:35'),
+(119, 'Inglês', '2017-11-08 02:19:45'),
+(120, 'Espanhol', '2017-11-08 02:19:52'),
+(121, 'Francês', '2017-11-08 02:19:58'),
+(122, 'Italiano', '2017-11-08 02:20:07');
 
 -- --------------------------------------------------------
 
@@ -12699,12 +12934,12 @@ INSERT INTO `rdf_name` (`id_n`, `n_name`, `n_created`) VALUES
 -- Table structure for table `rdf_prefix`
 --
 
-CREATE TABLE `rdf_prefix` (
-  `id_prefix` bigint(20) UNSIGNED NOT NULL,
+CREATE TABLE IF NOT EXISTS `rdf_prefix` (
+`id_prefix` bigint(20) unsigned NOT NULL,
   `prefix_ref` char(30) NOT NULL,
   `prefix_url` char(250) NOT NULL,
   `prefix_ativo` int(11) NOT NULL DEFAULT '1'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
 
 --
 -- Dumping data for table `rdf_prefix`
@@ -12729,50 +12964,49 @@ INSERT INTO `rdf_prefix` (`id_prefix`, `prefix_ref`, `prefix_url`, `prefix_ativo
 -- Indexes for table `ci_sessions`
 --
 ALTER TABLE `ci_sessions`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `ci_sessions_timestamp` (`timestamp`);
+ ADD PRIMARY KEY (`id`), ADD KEY `ci_sessions_timestamp` (`timestamp`);
 
 --
 -- Indexes for table `cutter`
 --
 ALTER TABLE `cutter`
-  ADD UNIQUE KEY `id_cutter` (`id_cutter`);
+ ADD UNIQUE KEY `id_cutter` (`id_cutter`);
 
 --
 -- Indexes for table `rdf_class`
 --
 ALTER TABLE `rdf_class`
-  ADD UNIQUE KEY `id_c` (`id_c`);
+ ADD UNIQUE KEY `id_c` (`id_c`);
 
 --
 -- Indexes for table `rdf_concept`
 --
 ALTER TABLE `rdf_concept`
-  ADD UNIQUE KEY `id_c` (`id_cc`);
+ ADD UNIQUE KEY `id_c` (`id_cc`);
 
 --
 -- Indexes for table `rdf_data`
 --
 ALTER TABLE `rdf_data`
-  ADD UNIQUE KEY `id_d` (`id_d`);
+ ADD UNIQUE KEY `id_d` (`id_d`);
 
 --
 -- Indexes for table `rdf_form_class`
 --
 ALTER TABLE `rdf_form_class`
-  ADD UNIQUE KEY `id_sc` (`id_sc`);
+ ADD UNIQUE KEY `id_sc` (`id_sc`);
 
 --
 -- Indexes for table `rdf_name`
 --
 ALTER TABLE `rdf_name`
-  ADD UNIQUE KEY `id_n` (`id_n`);
+ ADD UNIQUE KEY `id_n` (`id_n`);
 
 --
 -- Indexes for table `rdf_prefix`
 --
 ALTER TABLE `rdf_prefix`
-  ADD UNIQUE KEY `id_prefix` (`id_prefix`);
+ ADD UNIQUE KEY `id_prefix` (`id_prefix`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -12782,37 +13016,37 @@ ALTER TABLE `rdf_prefix`
 -- AUTO_INCREMENT for table `cutter`
 --
 ALTER TABLE `cutter`
-  MODIFY `id_cutter` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12330;
+MODIFY `id_cutter` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12330;
 --
 -- AUTO_INCREMENT for table `rdf_class`
 --
 ALTER TABLE `rdf_class`
-  MODIFY `id_c` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+MODIFY `id_c` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=45;
 --
 -- AUTO_INCREMENT for table `rdf_concept`
 --
 ALTER TABLE `rdf_concept`
-  MODIFY `id_cc` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+MODIFY `id_cc` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=59;
 --
 -- AUTO_INCREMENT for table `rdf_data`
 --
 ALTER TABLE `rdf_data`
-  MODIFY `id_d` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+MODIFY `id_d` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=169;
 --
 -- AUTO_INCREMENT for table `rdf_form_class`
 --
 ALTER TABLE `rdf_form_class`
-  MODIFY `id_sc` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+MODIFY `id_sc` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=21;
 --
 -- AUTO_INCREMENT for table `rdf_name`
 --
 ALTER TABLE `rdf_name`
-  MODIFY `id_n` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
+MODIFY `id_n` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=123;
 --
 -- AUTO_INCREMENT for table `rdf_prefix`
 --
 ALTER TABLE `rdf_prefix`
-  MODIFY `id_prefix` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+MODIFY `id_prefix` bigint(20) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=10;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

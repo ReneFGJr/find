@@ -26,7 +26,8 @@ $ac[$pag] = 'active';
 				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/catalog'); ?>">Novo Work (trabalho)</a>
 				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/bibliographic'); ?>">Bibliográfico</a>
-                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/authority'); ?>">Autoridade</a>
+                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/authority'); ?>">Autoridade Autor</a>
+                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/vocabulary'); ?>">Vocabulários controlados</a>
 				</div>
 			</li>
             <?php } ?>           			

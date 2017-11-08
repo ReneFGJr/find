@@ -21,19 +21,25 @@ class frbr extends CI_model {
                 $type = $line['rg']; 
             }
         /**********************************************************************************/
+        $dt['type'] = $type;
+        
         switch($type) {
             case 'Date' :
-                $tela .= 'Date';
-                //$this->case_author($path,$id);
+                $dt['label1'] = 'Data';
+                $tela .= $this->cas_ajax($path,$id,$dt);
+                break;
+            case 'FormWork':
+                $dt['label1'] = 'Formato';
+                $tela .= $this->cas_ajax($path,$id,$dt);
                 break;
             case 'Agent' :
-                $tela .= $this->case_author($path,$id);
+                $tela .= $this->cas_ajax($path,$id,$dt);
                 break;				            
             case 'hasAuthor' :
-                $tela .= $this->case_author($path,$id);
+                $tela .= $this->cas_ajax($path,$id,$dt);
                 break;
             case 'hasOrganizator' :
-                $tela .= $this->case_author($path,$id);
+                $tela .= $this->cas_ajax($path,$id,$dt);
                 break;
             default :
                 $tela .= '
@@ -118,12 +124,31 @@ class frbr extends CI_model {
             return ( array());
         }
     }
+    
+    function data_class($d)
+        {
+            $id = $this->find_class($d);
+            $sql = "select id_cc, n_name from rdf_concept
+                        INNER JOIN rdf_name ON cc_pref_term = id_n
+                        WHERE cc_class = $id order by n_name";
+            $rlt = $this->db->query($sql);
+            $rlt = $rlt->result_array();
+            return($rlt);                        
+        }
 
-    function case_author($path, $id) {
+    function cas_ajax($path, $id,$dt=array()) {
+        if (!isset($dt['label1'])) { $dt['label1'] = 'Nome do autor'; }
+        
+        /* */
+        $type = '';
+        if (isset($dt['type']))
+            {
+                $type = $dt['type'];
+            }
         $tela = '';
-        $tela .= '<span style="font-size: 75%">filtro do autor</span><br>';
+        $tela .= '<span style="font-size: 75%">filtro do ['.$dt['label1'].']</span><br>';
         $tela .= '<input type="text" id="dd50" name="dd50" class="form-control">';
-        $tela .= '<span style="font-size: 75%">selecione o autor</span><br>';
+        $tela .= '<span style="font-size: 75%">selecione o ['.$dt['label1'].']</span><br>';
         $tela .= '<div id="dd51a"><select class="form-control" size=5 name="dd51" id="dd51"></select></div>';
         $tela .= '
                     <script>
@@ -134,7 +159,7 @@ class frbr extends CI_model {
                                 
                                 $.ajax({
                                     type: "POST",
-                                    url: "' . base_url('index.php/main/ajax2/' . $path . '/' . $id) . '",
+                                    url: "' . base_url('index.php/main/ajax2/' . $path . '/' . $id.'/'.$type) . '",
                                     data:"q="+$key,
                                     success: function(data){
                                         $("#dd51a").html(data);
@@ -191,7 +216,7 @@ class frbr extends CI_model {
         return ($sx);
     }
 
-    function work($title = '', $subtitle = '') {
+    function work($title = '', $subtitle = '',$form='') {
         $id_t = $this -> frbr_name($title);
         $id_s = 0;
         if (strlen($subtitle) > 0) {
@@ -202,6 +227,7 @@ class frbr extends CI_model {
         $class = 'Work';
         $p_id = $this -> rdf_concept($id_t, $class);
         $this -> set_propriety($p_id, 'hasTitle', 0, $id_t);
+        $this -> set_propriety($p_id, 'hasFormWork', $form, 0);
         if ($id_s > 0) {
             $this -> set_propriety($p_id, 'hasSubtitle', 0, $id_s);
         }
@@ -212,7 +238,8 @@ class frbr extends CI_model {
         $class = $dt['cc_class'];
         $sql = "select * from rdf_form_class
                     INNER JOIN rdf_class ON id_c = sc_propriety 
-                        where sc_class = $class ";
+                        where sc_class = $class 
+                        order by c_order";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
         $sx = '<ul>';
@@ -222,7 +249,6 @@ class frbr extends CI_model {
             $link = '<a href="#" id="action_' . trim($line['c_class']) . '" data-toggle="modal" data-target=".bs-example-modal-lg">';
             $link = '<a href="#" id="action_' . trim($line['c_class']) . '">';
             $linka = '</a>';
-
             $sx .= '<li>';
             $sx .= $link . msg($line['c_class']) . $linka;
             $sx .= '</li>';
@@ -320,7 +346,7 @@ class frbr extends CI_model {
         $p_id = '';
 
         if (isset($m['100a'])) {
-            echo '<h1>' . $m['100a'] . '</h1>';
+            //echo '<h1>' . $m['100a'] . '</h1>';
 
             /* prefLabel */
             $name = $m['100a'];
@@ -343,12 +369,17 @@ class frbr extends CI_model {
             }
             if (strlen($da1) > 0) {
                 $dai1 = $this -> frbr_name($da1);
+                $dai1a = $dai1;
                 $dai1 = $this -> rdf_concept($dai1, 'Date');
+                $this -> set_propriety($dai1, 'prefLabel', 0, $dai1a);
                 $this -> set_propriety($p_id, 'hasBorn', $dai1);
+                                
             }
             if (strlen($da2) > 0) {
                 $dai2 = $this -> frbr_name($da2);
+                $dai2a = $dai2;
                 $dai2 = $this -> rdf_concept($dai2, 'Date');
+                $this -> set_propriety($dai2, 'prefLabel', 0, $dai2a);
                 $this -> set_propriety($p_id, 'hasDie', $dai2);
             }
 
@@ -376,7 +407,7 @@ class frbr extends CI_model {
                 $this -> set_propriety($p_id, 'sourceNote', 0, $altn);
             }
         }
-        echo '<pre>' . $this -> show($p_id) . '</pre>';
+        //echo '<pre>' . $this -> show($p_id) . '</pre>';
         return ($m);
     }
 
@@ -418,9 +449,10 @@ class frbr extends CI_model {
     function rdf_concept($term, $class) {
         $cl = $this -> find_class($class);
         $sql = "select * from rdf_concept
-                            WHERE cc_class = $cl and cc_pref_term = $term";
+                     WHERE cc_class = $cl and cc_pref_term = $term";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
+        $id = 0;
         if (count($rlt) == 0) {
 
             $sqli = "insert into rdf_concept
@@ -430,8 +462,9 @@ class frbr extends CI_model {
             $rlt = $this -> db -> query($sqli);
             $rlt = $this -> db -> query($sql);
             $rlt = $rlt -> result_array();
+            $id = $rlt[0]['id_cc'];             
         }
-        return ($rlt[0]['id_cc']);
+        return ($id);
     }
 
     function frbr_name($n = '') {

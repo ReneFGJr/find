@@ -1,7 +1,8 @@
 <?php
 $dd1 = get("dd1");
 $dd2 = get("dd2");
-
+$dd3 = get("dd3");
+echo '===>'.$dd3;
 ?>
 <form method="post">
 <div class="container">
@@ -19,6 +20,20 @@ $dd2 = get("dd2");
             <Input type="text" class="form-control" name="dd1" value="<?php echo $dd1;?>">
             <span>Sub-título</span><br>
             <Input type="text" class="form-control" name="dd2" value="<?php echo $dd2;?>">
+            <br>Formato do trabalho
+            <select name="dd3" class="form-control">
+                <option>::: Formato do obra</option>
+            <?php
+            
+                for ($r=0;$r < count($form);$r++)
+                    {
+                        $line = $form[$r];
+                        $chk = '';
+                        if ($line['id_cc'] == $dd3) { $chk = 'selected'; }
+                        echo '<option value="'.$line['id_cc'].'" '.$chk.'>'.$line['n_name'].'</option>'.cr();
+                    }
+            ?>
+            </select>
             <br>
             <div class="text-right">
                 <input type="submit" name="action" value="gravar >>>>" class="btn btn-primary">
