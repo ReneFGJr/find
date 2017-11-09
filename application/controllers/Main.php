@@ -73,24 +73,25 @@ class Main extends CI_controller {
 
         switch($path) {
             case 'Agent' :
-                $tela .= $this -> frbr -> ajax2($path, $id);
+                $tela .= $this -> frbr -> ajax2($path, $id, $type);
                 break;
             case 'FormWork' :
-                $tela .= $this -> frbr -> ajax2($path, $id);
+                $tela .= $this -> frbr -> ajax2($path, $id, $type);
                 break;
             case 'Date' :
-                $tela .= $this -> frbr -> ajax2($path, $id);
+                $tela .= $this -> frbr -> ajax2($path, $id, $type);
                 break;
             case 'hasFormWork' :
-                $tela .= $this -> frbr -> ajax2($path, $id);
+                $tela .= $this -> frbr -> ajax2($path, $id, $type);
                 break;
             case 'hasOrganizator' :
-                $tela .= $this -> frbr -> ajax2($path, $id);
+                $tela .= $this -> frbr -> ajax2($path, $id, $type);
                 break;
             case 'hasAuthor' :
-                $tela .= $this -> frbr -> ajax2($path, $id);
+                $tela .= $this -> frbr -> ajax2($path, $id, $type);
                 break;
             default :
+                $tela .= $this -> frbr -> ajax2($path, $id, $type);				
                 $tela .= '
                     <div class="alert alert-danger" role="alert">
                       <strong>Error (545)!</strong> Método não implementado "' . $path . '".

@@ -19,6 +19,7 @@ class frbr extends CI_model {
             {
                 $line = $rlt[0];
                 $type = $line['rg']; 
+				print_r($line);
             }
         /**********************************************************************************/
         $dt['type'] = $type;
@@ -42,6 +43,9 @@ class frbr extends CI_model {
                 $tela .= $this->cas_ajax($path,$id,$dt);
                 break;
             default :
+				$dt['type'] = $type;
+                $tela .= $this->cas_ajax($path,$id,$dt);
+                break;				
                 $tela .= '
                         <div class="alert alert-danger" role="alert">
                           <strong>Error! (544)</strong> Método não implementado "' . $path . ' - '.$type.'".
@@ -60,7 +64,7 @@ class frbr extends CI_model {
         return ($tela);
     }
 
-    function ajax2($path,$id)
+    function ajax2($path,$id,$type = '')
         {
                 $tela = '<select name="dd51" id="dd51" size=5 class="form-control" onchange="change();">' . cr();
                 $vlr = get("q");
@@ -77,15 +81,25 @@ class frbr extends CI_model {
                         }
                         $wh .= "(n_name like '%" . $v[$r] . "%') ";
                     }
-
+					/* RANGE ***************************************************************/
+					if (strlen($type) > 0)
+						{
+							$wh2 = '';
+							$ww = $this->frbr->find_class($type);
+							$wh2 = ' AND (cc_class = '.$ww.') ';
+						} else {
+							$wh2 = '';
+						}
+					
                     /***********************************************************************/
                     if (strlen($wh) > 0) {
                         $sql = "select * from rdf_name
                                     INNER JOIN rdf_data ON id_n = d_literal
                                     INNER JOIN rdf_concept ON d_r1 = id_cc
                                     INNER JOIN rdf_class ON id_c = d_p 
-                                    WHERE ($wh) and (n_name <> '') 
+                                    WHERE ($wh) and (n_name <> '') $wh2 
                                     LIMIT 50";
+									
                         $rlt = $this -> db -> query($sql);
                         $rlt = $rlt -> result_array();
 
