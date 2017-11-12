@@ -7,48 +7,47 @@ class frbr extends CI_model {
                     <button type="button" class="close text-right" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                   </div>
                   <div class="modal-body">';
-                  
+
         $sql = "select cl2.c_class as rg from rdf_class as cl1
                         LEFT JOIN rdf_form_class ON sc_propriety = cl1.id_c
                         LEFT JOIN rdf_class as cl2 ON cl2.id_c = sc_range
-                        WHERE cl1.c_class = '".$path."' and cl1.c_type = 'P' ";
-        $rlt = $this->db->query($sql);
-        $rlt = $rlt->result_array();
+                        WHERE cl1.c_class = '" . $path . "' and cl1.c_type = 'P' ";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
         $type = $path;
-        if (count($rlt) > 0)
-            {
-                $line = $rlt[0];
-                $type = $line['rg']; 
-				print_r($line);
-            }
+        if (count($rlt) > 0) {
+            $line = $rlt[0];
+            $type = $line['rg'];
+            print_r($line);
+        }
         /**********************************************************************************/
         $dt['type'] = $type;
-        
+
         switch($type) {
             case 'Date' :
                 $dt['label1'] = 'Data';
-                $tela .= $this->cas_ajax($path,$id,$dt);
+                $tela .= $this -> cas_ajax($path, $id, $dt);
                 break;
-            case 'FormWork':
+            case 'FormWork' :
                 $dt['label1'] = 'Formato';
-                $tela .= $this->cas_ajax($path,$id,$dt);
+                $tela .= $this -> cas_ajax($path, $id, $dt);
                 break;
             case 'Agent' :
-                $tela .= $this->cas_ajax($path,$id,$dt);
-                break;				            
+                $tela .= $this -> cas_ajax($path, $id, $dt);
+                break;
             case 'hasAuthor' :
-                $tela .= $this->cas_ajax($path,$id,$dt);
+                $tela .= $this -> cas_ajax($path, $id, $dt);
                 break;
             case 'hasOrganizator' :
-                $tela .= $this->cas_ajax($path,$id,$dt);
+                $tela .= $this -> cas_ajax($path, $id, $dt);
                 break;
             default :
-				$dt['type'] = $type;
-                $tela .= $this->cas_ajax($path,$id,$dt);
-                break;				
+                $dt['type'] = $type;
+                $tela .= $this -> cas_ajax($path, $id, $dt);
+                break;
                 $tela .= '
                         <div class="alert alert-danger" role="alert">
-                          <strong>Error! (544)</strong> Método não implementado "' . $path . ' - '.$type.'".
+                          <strong>Error! (544)</strong> Método não implementado "' . $path . ' - ' . $type . '".
                         </div>
                         ';
                 break;
@@ -64,55 +63,60 @@ class frbr extends CI_model {
         return ($tela);
     }
 
-    function ajax2($path,$id,$type = '')
-        {
-                $tela = '<select name="dd51" id="dd51" size=5 class="form-control" onchange="change();">' . cr();
-                $vlr = get("q");
-                if (strlen($vlr) < 3) {
-                    $tela .= '<option></option>' . cr();
-                } else {
-                    $vlr = troca($vlr, ' ', ';');
-                    $v = splitx(';', $vlr);
-                    $wh = '';
+    function ajax2($path, $id, $type = '') {
+        $tela = '<select name="dd51" id="dd51" size=5 class="form-control" onchange="change();">' . cr();
+        $vlr = get("q");
+        if (strlen($vlr) < 1) {
+            $tela .= '<option></option>' . cr();
+        } else {
+            $vlr = troca($vlr, ' ', ';');
+            $v = splitx(';', $vlr);
+            $wh = '';
+            for ($r = 0; $r < count($v); $r++) {
+                if ($r > 0) {
+                    $wh .= ' and ';
+                }
+                $wh .= "(n_name like '%" . $v[$r] . "%') ";
+            }
+            /* RANGE ***************************************************************/
+            if (strlen($type) > 0) {
+                $wh2 = '';
+                $ww = $this -> frbr -> find_class($type);
+                $wh2 = ' (cc_class = ' . $ww . ') ';
 
-                    for ($r = 0; $r < count($v); $r++) {
-                        if ($r > 0) {
-                            $wh .= ' and ';
-                        }
-                        $wh .= "(n_name like '%" . $v[$r] . "%') ";
-                    }
-					/* RANGE ***************************************************************/
-					if (strlen($type) > 0)
-						{
-							$wh2 = '';
-							$ww = $this->frbr->find_class($type);
-							$wh2 = ' AND (cc_class = '.$ww.') ';
-						} else {
-							$wh2 = '';
-						}
-					
-                    /***********************************************************************/
-                    if (strlen($wh) > 0) {
-                        $sql = "select * from rdf_name
+                $sql = "select * FROM rdf_class
+                                        WHERE c_class_main = $ww";
+                $rlt = $this -> db -> query($sql);
+                $rlt = $rlt -> result_array();
+                for ($r = 0; $r < count($rlt); $r++) {
+                    $line = $rlt[$r];
+                    $wh2 .= ' OR (cc_class = ' . $line['id_c'] . ') ';
+                }
+                $wh2 = ' AND (' . $wh2 . ')';
+            } else {
+                $wh2 = '';
+            }
+            /***********************************************************************/
+            if (strlen($wh) > 0) {
+                $sql = "select * from rdf_name
                                     INNER JOIN rdf_data ON id_n = d_literal
                                     INNER JOIN rdf_concept ON d_r1 = id_cc
                                     INNER JOIN rdf_class ON id_c = d_p 
                                     WHERE ($wh) and (n_name <> '') $wh2 
                                     LIMIT 50";
-									
-                        $rlt = $this -> db -> query($sql);
-                        $rlt = $rlt -> result_array();
+                $rlt = $this -> db -> query($sql);
+                $rlt = $rlt -> result_array();
 
-                        for ($r = 0; $r < count($rlt); $r++) {
-                            $line = $rlt[$r];
-                            //print_r($line);
-                            $tela .= '<option value="' . $line['id_cc'] . '">' . $line['n_name'] . '</option>' . cr();
-                        }
-
-                    }
+                for ($r = 0; $r < count($rlt); $r++) {
+                    $line = $rlt[$r];
+                    //print_r($line);
+                    $tela .= '<option value="' . $line['id_cc'] . '">' . $line['n_name'] . '</option>' . cr();
                 }
-                $tela .= '</select>' . cr();
-                $tela .= '
+
+            }
+        }
+        $tela .= '</select>' . cr();
+        $tela .= '
                     <script>                 
                         function change()
                             {
@@ -121,11 +125,12 @@ class frbr extends CI_model {
                             
                         jQuery("#submt").attr("disabled","disabled");
                     </script>';
-                return($tela);            
-        }
+        return ($tela);
+    }
 
     function le($id) {
         $sql = "select * from rdf_concept 
+                    INNER JOIN rdf_class ON cc_class = id_c
                         WHERE id_cc = $id";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
@@ -138,31 +143,60 @@ class frbr extends CI_model {
             return ( array());
         }
     }
-    
-    function data_class($d)
-        {
-            $id = $this->find_class($d);
-            $sql = "select id_cc, n_name from rdf_concept
-                        INNER JOIN rdf_name ON cc_pref_term = id_n
-                        WHERE cc_class = $id order by n_name";
-            $rlt = $this->db->query($sql);
-            $rlt = $rlt->result_array();
-            return($rlt);                        
+
+    function data_classes($d) {
+        $id = $this -> find_class($d);
+        $sql = "select * from rdf_concept 
+                        INNER JOIN rdf_name ON cc_pref_term = id_N
+                        WHERE cc_class = $id
+                        ORDER BY n_name ";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        return ($rlt);
+    }
+
+    function data_recurso($d) {
+        $id = $this -> find_class($d);
+        $sql = "select d_r2 as id_c, 
+                        from rdf_data 
+                        INNER JOIN rdf_concept ON id_cc = d_r2
+                        INNER JOIN rdf_name ON d_literal = id_n
+                        WHERE d_p = $id
+                        ORDER BY n_name ";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        return ($rlt);
+    }
+
+    function data_class($d) {
+        $id = $this -> find_class($d);
+        $sql = "SELECT c2.id_c as id_cc, c2.c_class as n_name, '1' as tp 
+                        FROM rdf_class as c1
+                        LEFT JOIN rdf_class as c2 ON c1.id_c = c2.c_class_main
+                        where c1.c_class = '$d' or c2.c_class_main = '$d'
+                    UNION
+                    SELECT c1.id_c as C1, c1.c_class as cn1, '0' as tp
+                        FROM rdf_class as c1
+                        where c1.c_class = '$d'";
+        echo $sql;
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        return ($rlt);
+    }
+
+    function cas_ajax($path, $id, $dt = array()) {
+        if (!isset($dt['label1'])) { $dt['label1'] = 'Nome do autor';
         }
 
-    function cas_ajax($path, $id,$dt=array()) {
-        if (!isset($dt['label1'])) { $dt['label1'] = 'Nome do autor'; }
-        
         /* */
         $type = '';
-        if (isset($dt['type']))
-            {
-                $type = $dt['type'];
-            }
+        if (isset($dt['type'])) {
+            $type = $dt['type'];
+        }
         $tela = '';
-        $tela .= '<span style="font-size: 75%">filtro do ['.$dt['label1'].']</span><br>';
+        $tela .= '<span style="font-size: 75%">filtro do [' . $dt['label1'] . ']</span><br>';
         $tela .= '<input type="text" id="dd50" name="dd50" class="form-control">';
-        $tela .= '<span style="font-size: 75%">selecione o ['.$dt['label1'].']</span><br>';
+        $tela .= '<span style="font-size: 75%">selecione o [' . $dt['label1'] . ']</span><br>';
         $tela .= '<div id="dd51a"><select class="form-control" size=5 name="dd51" id="dd51"></select></div>';
         $tela .= '
                     <script>
@@ -173,7 +207,7 @@ class frbr extends CI_model {
                                 
                                 $.ajax({
                                     type: "POST",
-                                    url: "' . base_url('index.php/main/ajax2/' . $path . '/' . $id.'/'.$type) . '",
+                                    url: "' . base_url('index.php/main/ajax2/' . $path . '/' . $id . '/' . $type) . '",
                                     data:"q="+$key,
                                     success: function(data){
                                         $("#dd51a").html(data);
@@ -230,7 +264,7 @@ class frbr extends CI_model {
         return ($sx);
     }
 
-    function work($title = '', $subtitle = '',$form='') {
+    function work($title = '', $subtitle = '', $form = '') {
         $id_t = $this -> frbr_name($title);
         $id_s = 0;
         if (strlen($subtitle) > 0) {
@@ -248,31 +282,164 @@ class frbr extends CI_model {
         return ($p_id);
     }
 
+    function le_data($id) {
+        $cp = '*';
+        $sql = "select $cp from rdf_data as rdata
+                        INNER JOIN rdf_class as prop ON d_p = prop.id_c 
+                        INNER JOIN rdf_concept ON d_r2 = id_cc 
+                        INNER JOIN rdf_name on cc_pref_term = id_n
+                        WHERE d_r1 = $id and d_r2 > 0";
+        $sql .= ' union ';
+        $sql .= "select $cp from rdf_data as rdata
+                        LEFT JOIN rdf_class as prop ON d_p = prop.id_c 
+                        LEFT JOIN rdf_concept ON d_r2 = id_cc 
+                        LEFT JOIN rdf_name on d_literal = id_n
+                        WHERE d_r1 = $id and d_r2 = 0";
+        $sql .= " order by c_order, c_class, id_d";
+
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        return ($rlt);
+    }
+
+    function manifestation_show($id) {
+        $data = array();
+        $sx = '';
+
+        $data['manifestation'] = $this -> le_data($id);
+        $data['id'] = $id;
+        $sx = $this -> load -> view('find/view/manifestation', $data, true);
+        return ($sx);
+    }
+
+    function work_show($id) {
+        $data = array();
+        $sx = '';
+
+        $data['work'] = $this -> le_data($id);
+        $sx = $this -> load -> view('find/view/work', $data, true);
+        return ($sx);
+    }
+
+    function person_show($id) {
+        $data = array();
+        $sx = '';
+
+        $data['work'] = $this -> le_data($id);
+        $sx = $this -> load -> view('find/view/person', $data, true);
+        return ($sx);
+    }
+
+    function form_work($id) {
+        $cl = $this -> frbr -> find_class('isAppellationOf');
+
+        $sx = '<h3>Work</h3>';
+        $sql = "select * from rdf_data 
+                        WHERE d_r1 = $id and d_p = $cl";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        if (count($rlt) > 0) {
+            $line = $rlt[0];
+            $work = $line['d_r2'];
+            $sx .= $this -> frbr -> work_show($work);
+        } else {
+            $work = 0;
+            $data['id'] = $id;
+            $data['content'] = '<a href="#" class="btn btn-secondary" id="action_Work">Associar Work</a>';
+            $sx .= $this -> load -> view('find/form/work', $data, true);
+        }
+        return ($sx);
+    }
+
+    function form_expression($id) {
+        $cl = $this -> frbr -> find_class('isAppellationOfExpression');
+
+        $sx = '<h3>Expression</h3>';
+        $sql = "select * from rdf_data 
+                        WHERE d_r1 = $id and d_p = $cl";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        if (count($rlt) > 0) {
+            $line = $rlt[0];
+            $work = $line['d_r2'];
+            $sx .= $this -> frbr -> work_show($work);
+        } else {
+            $work = 0;
+            $data['id'] = $id;
+            $data['content'] = 'SHAME';
+            /* isAppellationOfExpression */
+            $sx .= $this -> load -> view('find/form/expression', $data, true);
+        }
+        return ($sx);
+    }
+
+    function form_manifestation($id) {
+        $cl = $this -> frbr -> find_class('isAppellationOfManifestation');
+
+        $sx = '<h3>Manifestation</h3>';
+        $sql = "select * from rdf_data 
+                        WHERE d_r1 = $id and d_p = $cl";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        if (count($rlt) > 0) {
+            $line = $rlt[0];
+            $work = $line['d_r2'];
+            $sx .= $this -> frbr -> manifestation_show($work);
+        } else {
+            $work = 0;
+            $data['id'] = $id;
+            $data['content'] = '<a href="' . base_url('index.php/main/i/' . $id . '/Manifestation/isAppellationOfManifestation') . '" class="btn btn-primary">Criar manifestação</a>';
+            $sx .= $this -> load -> view('find/form/manifestation', $data, true);
+        }
+        return ($sx);
+    }
+
     function form($id, $dt) {
         $class = $dt['cc_class'];
-        $sql = "select * from rdf_form_class
+        $sx = '';
+        /* complementos */
+        switch($class) {
+            case 35 :
+                $sx .= $this -> frbr -> form_work($id);
+                $sx .= $this -> frbr -> form_expression($id);
+                $sx .= $this -> frbr -> form_manifestation($id);
+
+                /* WORK */
+                $js = 'jQuery("#action_Work").click(function() 
+                      {
+                          carrega("isAppellationOf");
+                          jQuery("#dialog").modal("show"); 
+                      });' . cr();
+                break;
+            default :
+
+                /*****************/
+                $sql = "select * from rdf_form_class
                     INNER JOIN rdf_class ON id_c = sc_propriety 
                         where sc_class = $class 
                         order by c_order";
-        $rlt = $this -> db -> query($sql);
-        $rlt = $rlt -> result_array();
-        $sx = '<ul>';
-        $js = '';
-        for ($r = 0; $r < count($rlt); $r++) {
-            $line = $rlt[$r];
-            $link = '<a href="#" id="action_' . trim($line['c_class']) . '" data-toggle="modal" data-target=".bs-example-modal-lg">';
-            $link = '<a href="#" id="action_' . trim($line['c_class']) . '">';
-            $linka = '</a>';
-            $sx .= '<li>';
-            $sx .= $link . msg($line['c_class']) . $linka;
-            $sx .= '</li>';
-            $js .= 'jQuery("#action_' . trim($line['c_class']) . '").click(function() 
+                $rlt = $this -> db -> query($sql);
+                $rlt = $rlt -> result_array();
+                $sx .= '<ul>';
+                $js = '';
+                for ($r = 0; $r < count($rlt); $r++) {
+                    $line = $rlt[$r];
+                    $link = '<a href="#" id="action_' . trim($line['c_class']) . '" data-toggle="modal" data-target=".bs-example-modal-lg">';
+                    $link = '<a href="#" id="action_' . trim($line['c_class']) . '">';
+                    $linka = '</a>';
+                    $sx .= '<li>';
+                    $sx .= $link . msg($line['c_class']) . $linka;
+                    $sx .= '</li>';
+                    $js .= 'jQuery("#action_' . trim($line['c_class']) . '").click(function() 
                       {
                           carrega("' . trim($line['c_class']) . '");
                           jQuery("#dialog").modal("show"); 
                       });' . cr();
+                }
+                $sx .= '</ul>';
+
+                break;
         }
-        $sx .= '</ul>';
         $sx .= '<script>
                     ' . $js . '
                     function carrega($id)
@@ -286,12 +453,11 @@ class frbr extends CI_model {
                     }                    
                 </script>';
         $sx .= '   <div id="dialog" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
-              <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content" id="model_texto">
-                </div>
-              </div>
-            </div>       
-        ';
+                              <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content" id="model_texto">
+                                </div>
+                              </div>
+                            </div>';
         return ($sx);
     }
 
@@ -335,19 +501,18 @@ class frbr extends CI_model {
         $sx .= '<tr><th width=20%" class="text-right">propriety</th><th>value</th></tr>';
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
-            $link = '<a href="'.base_url('index.php/main/a/'.$line['id_cc']).'">';
+            $link = '<a href="' . base_url('index.php/main/a/' . $line['id_cc']) . '">';
             $linka = '</a>';
-            if (strlen($line['id_cc']) == 0)
-                {
-                    $link = '';
-                    $linka = '';
-                }
+            if (strlen($line['id_cc']) == 0) {
+                $link = '';
+                $linka = '';
+            }
             $sx .= '<tr>';
             $sx .= '<td class="text-right" style="font-size: 60%;">';
-            $sx .= $line['c_class'];
+            $sx .= msg($line['c_class']);
             $sx .= '</td>';
             $sx .= '<td>';
-            $sx .= $link.$line['n_name'].$linka;
+            $sx .= $link . $line['n_name'] . $linka;
             $sx .= '</td>';
             $sx .= '</tr>' . cr();
         }
@@ -387,7 +552,7 @@ class frbr extends CI_model {
                 $dai1 = $this -> rdf_concept($dai1, 'Date');
                 $this -> set_propriety($dai1, 'prefLabel', 0, $dai1a);
                 $this -> set_propriety($p_id, 'hasBorn', $dai1);
-                                
+
             }
             if (strlen($da2) > 0) {
                 $dai2 = $this -> frbr_name($da2);
@@ -423,6 +588,48 @@ class frbr extends CI_model {
         }
         //echo '<pre>' . $this -> show($p_id) . '</pre>';
         return ($m);
+    }
+
+    function search($d) {
+        if (!isset($d['dd1'])) {
+            return ('');
+        }
+        $dd1 = $d['dd1'];
+        $dd1 = troca($dd1, ' ', ';') . ';';
+        $dd1 = troca($dd1, "'", "´");
+        $lns = splitx(';', $dd1);
+        $sx = '';
+        $wh = '';
+        for ($r = 0; $r < count($lns); $r++) {
+            if (strlen($wh) > 0) { $wh .= ' AND ';
+            }
+            $wh .= " (n_name like '%" . $lns[$r] . "%')";
+        }
+        if (strlen($wh) == 0) {
+            return ('');
+        }
+        $sql = "SELECT * FROM rdf_data 
+                        INNER JOIN rdf_name ON d_literal = id_n
+                        INNER JOIN rdf_class ON d_p = id_c
+                    WHERE $wh AND c_find = 1 ";
+        
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        for ($r = 0; $r < count($rlt); $r++) {
+            $line = $rlt[$r];
+            $link = '<a href="' . base_url('index.php/main/v/' . $line['d_r1']) . '" target="_new">';
+            $sx .= '<div class="row">';
+            $sx .= '<div class="col-md-10">';
+            $sx .= $link;
+            $sx .= $line['n_name'];
+            $sx .= '</a>';
+            $sx .= ' (';
+            $sx .= msg($line['c_class']);
+            $sx .= ')';
+            $sx .= '</div>';
+            $sx .= '</div>';
+        }
+        return ($sx);
     }
 
     function set_propriety($r1, $prop, $r2, $lit = 0) {
@@ -462,21 +669,30 @@ class frbr extends CI_model {
 
     function rdf_concept($term, $class) {
         $cl = $this -> find_class($class);
-        $sql = "select * from rdf_concept
+        $dt = date("Y/m/d H:i:s");
+        if ($term == 0) {
+            $sql = "select * from rdf_concept
+                     WHERE cc_class = $cl and cc_created = '$dt'";
+        } else {
+            $sql = "select * from rdf_concept
                      WHERE cc_class = $cl and cc_pref_term = $term";
+        }
+
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
         $id = 0;
         if (count($rlt) == 0) {
 
             $sqli = "insert into rdf_concept
-                            (cc_class, cc_pref_term)
+                            (cc_class, cc_pref_term, cc_created)
                             VALUES
-                            ($cl,$term)";
+                            ($cl,$term,'$dt')";
             $rlt = $this -> db -> query($sqli);
             $rlt = $this -> db -> query($sql);
             $rlt = $rlt -> result_array();
-            $id = $rlt[0]['id_cc'];             
+            $id = $rlt[0]['id_cc'];
+        } else {
+            $id = $rlt[0]['id_cc'];
         }
         return ($id);
     }
