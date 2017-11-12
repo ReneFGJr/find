@@ -39,6 +39,22 @@ class vocabularies extends CI_model
                 }
         return($sx);            
         }
+    function list_vc_attr($id='')
+        {
+            $sql = "
+            SELECT d_r1 as id_n, n_name as n_name FROM `rdf_data`
+                left JOIN rdf_concept ON d_r1 = id_cc 
+                INNER JOIN rdf_name ON cc_pref_term = id_n
+                where d_r2 = $id";
+            $rlt = $this->db->query($sql);
+            $rlt = $rlt->result_array();
+            return($rlt);
+        }
+    function list_vc_type($id='')
+        {
+            $ln = $this->frbr->data_classes($id);
+            return($ln);
+        }        
     function list_vc($id='')
         {
             $sx = '';
@@ -61,7 +77,7 @@ class vocabularies extends CI_model
                     }
                 $sx .= '</ul>';
             } else {
-                $ln = $this->frbr->data_class($id);
+                $ln = $this->frbr->data_classes($id);
                 $sx = '<ul>';
                 for ($r=0;$r < count($ln);$r++)
                     {

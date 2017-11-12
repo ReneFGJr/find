@@ -15,29 +15,55 @@
 /* @author: Rene Faustino Gabriel Junior <renefgj@gmail.com>
  * @date: 2015-12-01
  */
+$lg = 'pt_BR';
 if (!function_exists(('msg')))
 	{
 		function msg($t)
 			{
+			    //$t='MAKE_MESSAGES';
 				$CI = &get_instance();
+                /****** GERAR DICIONARIO ****/
+                if ($t=='MAKE_MESSAGES')
+                    {
+                        $lg = 'pt_BR';
+                        $sql = "select * from msg where msg_language = '$lg' ";
+                        $rlt = $CI->db->query($sql);
+                        $rlt = $rlt->result_array();
+                        $sx = '';
+                        $f = fopen('application/language/portuguese/find_lang.php','w');
+                        fwrite($f,'<?php'.cr());
+                        for ($r=0;$r < count($rlt);$r++)
+                            {
+                                $line = $rlt[$r];
+                                $t1 = trim($line['msg_term']);
+                                $t2 = trim($line['msg_label']);
+                                $ln = 
+                                    '$lang[\''.$t1."'] = '".
+                                    $t2."'; ".cr();
+                                $sx .= $ln.'<br>';
+                                fwrite($f,$ln);        
+                            }
+                        fwrite($f,'?>'.cr());
+                        fclose($f);
+                        return($sx);
+                    }
 				if (strlen($CI->lang->line($t)) > 0)
 					{
 						return($CI->lang->line($t));
 					} else {
+					    $sql = "select * from msg where msg_term = '$t' ";
+                        $rlt = $CI->db->query($sql);
+                        $rlt = $rlt->result_array();
+                        if (count($rlt) == 0)
+                            {
+                                $sql = "insert into msg
+                                            (msg_term, msg_label)
+                                            value
+                                            ('$t','$t')";
+                                $rlt = $CI->db->query($sql);
+                            }
 						return($t);
 					}
 			}
 	}
-/* Login */
-$lang['login_enter'] = 'Entar';
-$lang['login_name'] = 'Informe seu login';
-$lang['login_password'] = 'Informe sua senha';
-$lang['login_enter'] = 'Entar';
-$lang['login_social'] = 'Logue com uma conta existente (recomendado)';
-$lang['your_passoword'] = 'sua senha';
-$lang['edit_person_data'] = 'Editar dados pessoais';
-
-
-
-
 ?>
