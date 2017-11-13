@@ -18,7 +18,6 @@ class frbr extends CI_model {
         if (count($rlt) > 0) {
             $line = $rlt[0];
             $type = $line['rg'];
-            print_r($line);
         }
         /**********************************************************************************/
         $dt['type'] = $type;
@@ -41,6 +40,9 @@ class frbr extends CI_model {
             case 'hasOrganizator' :
                 $tela .= $this -> cas_ajax($path, $id, $dt);
                 break;
+            case 'Image' :
+                $tela .= $this -> upload_image($path,$id,$dt);
+                break;                
             default :
                 $dt['type'] = $type;
                 $tela .= $this -> cas_ajax($path, $id, $dt);
@@ -62,6 +64,18 @@ class frbr extends CI_model {
             ';
         return ($tela);
     }
+
+    function upload_image($path,$id,$dt)
+        {
+            $sx = '   <form action="'.base_url('index.php/main/upload/'.$path.'/'.$id).'" method="POST" enctype="multipart/form-data">
+                          Nome da imagem<br>
+                          <input type="text" name="dd1" value="'.get("dd1").'" class="form-control">
+                          <br>
+                          <input type="file" name="fileUpload">
+                          <input type="submit" value="Enviar Imagems" class="btn btn-primary">
+                       </form>';
+           return($sx);        
+        }
 
     function ajax2($path, $id, $type = '') {
         $tela = '<select name="dd51" id="dd51" size=5 class="form-control" onchange="change();">' . cr();
