@@ -428,6 +428,15 @@ class Main extends CI_controller {
             $class = 'Item';
             $p_id = $this -> frbr -> rdf_concept($item, $class);
             $this -> frbr -> set_propriety($p_id, 'hasIdRegister', 0, $item);
+            
+            /****************************************************** Biblioteca ****/
+            $item = $dd3;
+            $this -> frbr -> set_propriety($p_id, 'hasPlaceItem', $item, 0);
+
+            /****************************************************** Aquisição *****/
+            $item = $dd4;
+            $this -> frbr -> set_propriety($p_id, 'hasWayOfAcquisition', 0, $item);
+                        
             redirect(base_url('index.php/main/a/' . $p_id));
             exit ;
         }
@@ -657,6 +666,9 @@ class Main extends CI_controller {
             case 'Work' :
                 $tela = $this -> frbr -> work_show($id);
                 break;
+            case 'Item' :
+                $tela = $this -> frbr -> work_show($id);
+                break;                
         }
         $data['content'] = $tela;
         $this -> load -> view('content', $data);

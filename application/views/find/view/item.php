@@ -5,7 +5,7 @@ $local = '';
 $isbn = '';
 $edicao = '';
 
-$rlt = $manifestation;
+$rlt = $itens;
 $w = $id;
 $link = '<a href="'.base_url('index.php/main/a/'.$id).'">';
 echo $link.'[ed]</a>';
@@ -73,7 +73,7 @@ for ($r = 0; $r < count($rlt);$r++)
 <div class="container">
     <div class="row">
         <div class="col-md-1 text-right" style="border-right: 4px solid #8080FF;">
-            <tt style="font-size: 100%;"><?php echo msg('ManifestationLabel');?></tt>
+            <tt style="font-size: 100%;"><?php echo msg('Item');?></tt>
         </div>        
         <div class="col-md-11">
             <?php
