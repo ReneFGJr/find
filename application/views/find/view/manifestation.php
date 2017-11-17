@@ -6,7 +6,6 @@ $isbn = '';
 $edicao = '';
 $localizacao = '';
 
-$rlt = $manifestation;
 $w = $id;
 $link = '<a href="'.base_url('index.php/main/a/'.$id).'">';
 echo $link.'[ed]</a>';
@@ -19,7 +18,7 @@ for ($r = 0; $r < count($rlt);$r++)
     {
         $line = $rlt[$r];
         $class = $line['c_class'];
-        //echo '<br>'.$class.'='.$line['n_name'];
+        echo '<br>'.$class.'='.$line['n_name'];
         switch($class)
             {
             case 'hasClassificationCDU':
