@@ -4,6 +4,7 @@ $editora = '';
 $local = '';
 $isbn = '';
 $edicao = '';
+$localizacao = '';
 
 $rlt = $manifestation;
 $w = $id;
@@ -21,6 +22,16 @@ for ($r = 0; $r < count($rlt);$r++)
         //echo '<br>'.$class.'='.$line['n_name'];
         switch($class)
             {
+            case 'hasClassificationCDU':
+                $link = '<a href="'.base_url('index.php/main/a/'.$line['d_r2']).'">';
+                $linka = '</a>';
+                $localizacao = $link.'CDU'.$line['n_name'].$linka;                
+                break;
+            case 'hasClassificationCDD':
+                $link = '<a href="'.base_url('index.php/main/a/'.$line['d_r2']).'">';
+                $linka = '</a>';
+                $localizacao = $link.'CDD'.$line['n_name'].$linka;                
+                break;
             case 'dateOfPublication':
                 if (strlen($date) > 0)
                     {
@@ -68,6 +79,10 @@ for ($r = 0; $r < count($rlt);$r++)
     }
     /* regras */
     if (strlen($local) == 0) { $local = ': Sem local';}
+    
+    if (strlen($localizacao) == 0) { $localizacao = ': Sem local';} else {
+        $localizacao = msg('classification').'<br>'.$localizacao;
+    }
 ?>
 <!---------------- MANIFESTATION ------------------------------------------------------->
 <div class="container">
@@ -75,7 +90,7 @@ for ($r = 0; $r < count($rlt);$r++)
         <div class="col-md-1 text-right" style="border-right: 4px solid #8080FF;">
             <tt style="font-size: 100%;"><?php echo msg('ManifestationLabel');?></tt>
         </div>        
-        <div class="col-md-11">
+        <div class="col-md-10">
             <?php
             if (strlen($edicao) > 0)
                 {
@@ -99,6 +114,9 @@ for ($r = 0; $r < count($rlt);$r++)
                 }                
             ?>
         </div>
+        <div class="col-md-1 text-left" style="border-left: 1px solid #8080FF;">
+            <tt style="font-size: 100%;"><?php echo $localizacao;?></tt>
+        </div>                
     </div>
 </div>
 <br>    

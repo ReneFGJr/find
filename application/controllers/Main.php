@@ -26,12 +26,19 @@ class Main extends CI_controller {
     }
 
     private function cab($navbar = 1) {
+        $this -> load -> model("socials");
         $data['title'] = 'Find - Library ::::';
         $this -> load -> view('header/header', $data);
         if ($navbar == 1) {
             $this -> load -> view('header/navbar', null);
         }
         $_SESSION['id'] = 1;
+    }
+
+    /******************************************************************** LOGIN DO SISTEMA */
+    function social($path = '', $d1 = '', $d2 = '') {
+        $this -> load -> model('socials');
+        $this -> socials -> action($path, $d1, $d2);
     }
 
     private function foot() {
@@ -43,7 +50,7 @@ class Main extends CI_controller {
 
         $this -> cab();
         $this -> load -> view('welcome');
-        $this -> load -> view('find/search_simple', null);
+        $this -> load -> view('find/search/search_simple', null);
 
         /*************************** find */
         $gets = array_merge($_POST, $_GET);
@@ -104,135 +111,126 @@ class Main extends CI_controller {
         $this -> load -> model('frbr');
         if (isset($_FILES['fileUpload'])) {
             $ext = strtolower(substr($_FILES['fileUpload']['name'], -4));
-            $ext = troca($ext,'.','');
+            $ext = troca($ext, '.', '');
             $type = '';
             //Pegando extensão do arquivo
-            $new_name = date("Ymd-His") . '.'.$ext;
+            $new_name = date("Ymd-His") . '.' . $ext;
             //Definindo um novo nome para o arquivo
             $dir = 'uploads/';
             //Diretório para uploads
-            switch ($ext)
-                {
-                case 'jpg':
-                    $type="Image";
-                    $short = 'img_'.$ext.'_';
+            switch ($ext) {
+                case 'jpg' :
+                    $type = "Image";
+                    $short = 'img_' . $ext . '_';
                     break;
-                case 'png':
-                    $type="Image";
-                    $short = 'img_'.$ext.'_';
+                case 'png' :
+                    $type = "Image";
+                    $short = 'img_' . $ext . '_';
                     break;
-                case 'gif':
-                    $type="Image";
-                    $short = 'img_'.$ext.'_';
+                case 'gif' :
+                    $type = "Image";
+                    $short = 'img_' . $ext . '_';
                     break;
-                }
+            }
             $dd1 = get("dd1");
-            if (strlen($dd1) == 0)
-                {
-                    $dd1 = $_FILES['fileUpload']['name'];
-                    //print_r($_FILES);
-                    //exit;
-                }      
-                
+            if (strlen($dd1) == 0) {
+                $dd1 = $_FILES['fileUpload']['name'];
+                //print_r($_FILES);
+                //exit;
+            }
+
             /**********************************************/
             $width = '';
             $height = '';
-            if ($type=='Image')
-                {
-                    $dm = getimagesize($_FILES['fileUpload']['tmp_name']);
-                    $dms = $dm[3];
-                    $dms = troca($dms,' ',';');
-                    $dms = troca($dms,'"','');
-                    $dms = troca($dms,'width',';');
-                    $dms = troca($dms,'height',';');
-                    $dms = troca($dms,'=',';');
-                    $dms = splitx(';',$dms);
-                    $width = $dms[0];
-                    $height = $dms[1];
-                    $bits = $dm['bits'];
-                    $chan = $dm['channels'];     
-                }     
-            if (($type != '') and ($dd1 != ''))
-                {
-                    if (!is_dir('_repositorio'))
-                        { mkdir('_repositorio'); }
-                    if (!is_dir('_repositorio/'.$type))
-                        { mkdir('_repositorio/'.$type); }
-                    $dir = '_repositorio/'.$type.'/';  
-                    $filename = $short.$new_name;                       
-                    move_uploaded_file($_FILES['fileUpload']['tmp_name'], $dir . $short.$new_name); 
-                    
-                    
-                    /****/
-                    $term = $this->frbr->frbr_name($filename);
-                    $cl = $type;                   
-                    $idm = $this -> frbr -> rdf_concept($term, $cl);
-                    
-                    if (strlen($dd1) > 0)
-                        {
-                            $term = $this->frbr->frbr_name($dd1);
-                            $ac = 'hasImageDescription';        
-                            $idp = $this -> frbr -> set_propriety($idm, $ac, 0, $term);
-                        }
-                    /* propriedades da imagem */
-                    $ftype = $_FILES['fileUpload']['type'];
-                    $term = $this->frbr->frbr_name($ftype);
-                    $cl = 'FileType';
-                    $idn = $this -> frbr -> rdf_concept($term, $cl);
-                    $class = 'hasFileType';                    
-                    $idp = $this -> frbr -> set_propriety($idm, $class, $idn, 0);                    
-                    
-                    $checksum = md5_file($dir .$filename);
-                    $term = $this->frbr->frbr_name($checksum);
-                    $cl = 'Checksum';
-                    $idn = $this -> frbr -> rdf_concept($term, $cl);
-                    $class = 'hasImageChecksum';                    
-                    $idp = $this -> frbr -> set_propriety($idm, $class, $idn, 0);
-                    
-                    $checksum = filesize($dir .$filename);
-                    $term = $this->frbr->frbr_name($checksum);
+            if ($type == 'Image') {
+                $dm = getimagesize($_FILES['fileUpload']['tmp_name']);
+                $dms = $dm[3];
+                $dms = troca($dms, ' ', ';');
+                $dms = troca($dms, '"', '');
+                $dms = troca($dms, 'width', ';');
+                $dms = troca($dms, 'height', ';');
+                $dms = troca($dms, '=', ';');
+                $dms = splitx(';', $dms);
+                $width = $dms[0];
+                $height = $dms[1];
+                $bits = $dm['bits'];
+                $chan = $dm['channels'];
+            }
+            if (($type != '') and ($dd1 != '')) {
+                if (!is_dir('_repositorio')) { mkdir('_repositorio');
+                }
+                if (!is_dir('_repositorio/' . $type)) { mkdir('_repositorio/' . $type);
+                }
+                $dir = '_repositorio/' . $type . '/';
+                $filename = $short . $new_name;
+                move_uploaded_file($_FILES['fileUpload']['tmp_name'], $dir . $short . $new_name);
+
+                /****/
+                $term = $this -> frbr -> frbr_name($filename);
+                $cl = $type;
+                $idm = $this -> frbr -> rdf_concept($term, $cl);
+
+                if (strlen($dd1) > 0) {
+                    $term = $this -> frbr -> frbr_name($dd1);
+                    $ac = 'hasImageDescription';
+                    $idp = $this -> frbr -> set_propriety($idm, $ac, 0, $term);
+                }
+                /* propriedades da imagem */
+                $ftype = $_FILES['fileUpload']['type'];
+                $term = $this -> frbr -> frbr_name($ftype);
+                $cl = 'FileType';
+                $idn = $this -> frbr -> rdf_concept($term, $cl);
+                $class = 'hasFileType';
+                $idp = $this -> frbr -> set_propriety($idm, $class, $idn, 0);
+
+                $checksum = md5_file($dir . $filename);
+                $term = $this -> frbr -> frbr_name($checksum);
+                $cl = 'Checksum';
+                $idn = $this -> frbr -> rdf_concept($term, $cl);
+                $class = 'hasImageChecksum';
+                $idp = $this -> frbr -> set_propriety($idm, $class, $idn, 0);
+
+                $checksum = filesize($dir . $filename);
+                $term = $this -> frbr -> frbr_name($checksum);
+                $cl = 'Number';
+                $idn = $this -> frbr -> rdf_concept($term, $cl);
+                $class = 'hasImageSize';
+                $idp = $this -> frbr -> set_propriety($idm, $class, $idn, 0);
+
+                $storage = $dir . $filename;
+                $term = $this -> frbr -> frbr_name($storage);
+                $cl = 'FileStorage';
+                $idn = $this -> frbr -> rdf_concept($term, $cl);
+                $class = 'hasFileStorage';
+                $idp = $this -> frbr -> set_propriety($idm, $class, $idn, 0);
+
+                if (strlen($width) > 0) {
+                    $size = $width;
+                    $term = $this -> frbr -> frbr_name($size);
                     $cl = 'Number';
                     $idn = $this -> frbr -> rdf_concept($term, $cl);
-                    $class = 'hasImageSize';                    
+                    $class = 'hasImageWidth';
                     $idp = $this -> frbr -> set_propriety($idm, $class, $idn, 0);
-                    
-                    $storage = $dir.$filename;
-                    $term = $this->frbr->frbr_name($storage);
-                    $cl = 'FileStorage';
-                    $idn = $this -> frbr -> rdf_concept($term, $cl);
-                    $class = 'hasFileStorage';                    
-                    $idp = $this -> frbr -> set_propriety($idm, $class, $idn, 0);
-                    
-                    if (strlen($width) > 0)
-                        {
-                            $size = $width;
-                            $term = $this->frbr->frbr_name($size);
-                            $cl = 'Number';
-                            $idn = $this -> frbr -> rdf_concept($term, $cl);
-                            $class = 'hasImageWidth';                    
-                            $idp = $this -> frbr -> set_propriety($idm, $class, $idn, 0);                            
-                        }
-                    if (strlen($height) > 0)
-                        {
-                            $size = $height;
-                            $term = $this->frbr->frbr_name($size);
-                            $cl = 'Number';
-                            $idn = $this -> frbr -> rdf_concept($term, $cl);
-                            $class = 'hasImageHeight';                    
-                            $idp = $this -> frbr -> set_propriety($idm, $class, $idn, 0);                            
-                        }
-                    
-                    
-                    /************************************************ relaciona objetos ****/
-                    $class = $path;
-                    $idp = $this -> frbr -> set_propriety($id, $class, $idm, 0);
-                    
-                    echo "OK";
-                    redirect(base_url('index.php/main/a/'.$id));                    
-                } else {
-                    echo "Descrição não realizada";
                 }
-            
+                if (strlen($height) > 0) {
+                    $size = $height;
+                    $term = $this -> frbr -> frbr_name($size);
+                    $cl = 'Number';
+                    $idn = $this -> frbr -> rdf_concept($term, $cl);
+                    $class = 'hasImageHeight';
+                    $idp = $this -> frbr -> set_propriety($idm, $class, $idn, 0);
+                }
+
+                /************************************************ relaciona objetos ****/
+                $class = $path;
+                $idp = $this -> frbr -> set_propriety($id, $class, $idm, 0);
+
+                echo "OK";
+                redirect(base_url('index.php/main/a/' . $id));
+            } else {
+                echo "Descrição não realizada";
+            }
+
             //Fazer upload do arquivo
         }
     }
@@ -241,6 +239,24 @@ class Main extends CI_controller {
         $this -> load -> model('frbr');
         $tela = $this -> frbr -> ajax($path, $id);
         echo $tela;
+    }
+
+    function ajax_action($ac = '', $id = '') {
+        $this -> load -> model('frbr');
+        switch($ac) {
+            case 'exclude' :
+                $idc = get("q");
+                $this -> frbr -> data_exclude($idc);
+                $sx = '<div class="alert alert-success" role="alert">
+                                  <strong>Sucesso!</strong> Item excluído da base.
+                                </div>';
+                $sx .= '<meta http-equiv="refresh" content="1">';
+                break;
+            default :
+                $sx = 'Metodo não localizado - ' . $ac;
+                break;
+        }
+        echo $sx;
     }
 
     public function ajax2($path = '', $id = '', $type = '') {
@@ -321,7 +337,7 @@ class Main extends CI_controller {
         $data = array();
         $data['form'] = $this -> frbr -> data_class('FormWork');
 
-        $this -> load -> view('find/cat_work', $data);
+        $this -> load -> view('find/form/cat_work', $data);
 
         /* save work */
         if (strlen(get("action")) > 0) {
@@ -347,7 +363,7 @@ class Main extends CI_controller {
 
         $this -> cab();
         $this -> load -> view('find/bibliographic');
-        $this -> load -> view('find/search_bibliographic', null);
+        $this -> load -> view('find/search/search_bibliographic', null);
         $tela = '<a href="' . base_url('index.php/main/bibliographic_inport') . '" class="btn btn-secundary">';
         $tela .= 'Importar MARC21';
         $tela .= '</a>';
@@ -390,13 +406,14 @@ class Main extends CI_controller {
 
         $this -> cab();
         $this -> load -> view('find/authority');
-        $this -> load -> view('find/search_authority', null);
+        $this -> load -> view('find/search/search_authority', null);
         /***************/
-        $tela = '<a href="' . base_url('index.php/main/authority_inport') . '" class="btn btn-secundary">';
+        $tela = '<br>';
+        $tela .= '<a href="' . base_url('index.php/main/authority_inport') . '" class="btn btn-secondary">';
         $tela .= 'Importar MARC21';
         $tela .= '</a> ';
         /***************/
-        $tela .= '<a href="' . base_url('index.php/main/authority_create') . '" class="btn btn-secundary">';
+        $tela .= '<a href="' . base_url('index.php/main/authority_create') . '" class="btn btn-secondary">';
         $tela .= 'Criar autoridade';
         $tela .= '</a> ';
         /* recupera */
@@ -416,34 +433,9 @@ class Main extends CI_controller {
         $this -> load -> model('vocabularies');
 
         $this -> cab();
-
-        /***************************/
-        $dd1 = get("dd1");
-        $dd2 = get("dd2");
-        $dd3 = get("dd3");
-        $dd4 = get("dd4");
-        /****************************************************************************/
-        if ((strlen($dd1) > 0) and (strlen($dd3) > 0) and (strlen($dd4) > 0)) {
-            $item = $this -> frbr -> frbr_name($dd1);
-            $class = 'Item';
-            $p_id = $this -> frbr -> rdf_concept($item, $class);
-            $this -> frbr -> set_propriety($p_id, 'hasIdRegister', 0, $item);
-            
-            /****************************************************** Biblioteca ****/
-            $item = $dd3;
-            $this -> frbr -> set_propriety($p_id, 'hasPlaceItem', $item, 0);
-
-            /****************************************************** Aquisição *****/
-            $item = $dd4;
-            $this -> frbr -> set_propriety($p_id, 'hasWayOfAcquisition', 0, $item);
-                        
-            redirect(base_url('index.php/main/a/' . $p_id));
-            exit ;
-        }
-
-        $data['form'] = $this -> vocabularies -> list_vc_attr(83);
-        $data['acqu'] = $this -> vocabularies -> list_vc_type('TypeOfAcquisition');
-        $this -> load -> view('find/cat_item', $data);
+        $data['content'] = $this -> frbr -> item_catalog();
+        $this -> load -> view('content', $data);
+        $this -> foot();
 
     }
 
@@ -583,7 +575,7 @@ class Main extends CI_controller {
         $data = array();
         $data['form'] = $this -> frbr -> data_class('Agent');
 
-        $this -> load -> view('find/cat_agent', $data);
+        $this -> load -> view('find/form/cat_agent', $data);
 
         /* save work */
         if (strlen(get("action")) > 0) {
@@ -635,11 +627,12 @@ class Main extends CI_controller {
     }
 
     public function contact() {
-        $this -> load -> model('comgrads');
         $this -> cab();
         $data = array();
+        $tela = '<h1>Contato</h1>';
+        $tela .= 'Rene F. Gabriel junior &lt;renefgj@gmail.com&gt;';
         $data['title'] = '';
-        $data['content'] = $this -> comgrads -> contact();
+        $data['content'] = $tela;
         $this -> load -> view('content', $data);
     }
 
@@ -657,23 +650,27 @@ class Main extends CI_controller {
         $this -> cab();
 
         $data = $this -> frbr -> le($id);
-        $class = trim($data['c_class']);
-        $tela = '';
-        switch ($class) {
-            case 'Person' :
-                $tela = $this -> frbr -> person_show($id);
-                break;
-            case 'Work' :
-                $tela = $this -> frbr -> work_show($id);
-                break;
-            case 'Item' :
-                $tela = $this -> frbr -> work_show($id);
-                break;                
+        if (count($data) == 0) {
+            $this->load->view('error',$data);
+        } else {
+            $class = trim($data['c_class']);
+            $tela = '';
+            switch ($class) {
+                case 'Person' :
+                    $tela = $this -> frbr -> person_show($id);
+                    break;
+                case 'Work' :
+                    $tela = $this -> frbr -> work_show($id);
+                    $tela .= $this -> frbr -> itens_show($id);
+                    break;
+                case 'Item' :
+                    $tela = $this -> frbr -> item_show($id);
+                    break;
+            }
+            $data['content'] = '<h1>' . $class . '</h1>' . $tela;
+            $this -> load -> view('content', $data);
         }
-        $data['content'] = $tela;
-        $this -> load -> view('content', $data);
         $this -> foot();
     }
-
 }
 ?>

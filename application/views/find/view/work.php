@@ -6,7 +6,7 @@ $tradutor = '';
 $ilustrador = '';
 $organizador = '';
 $tipo = '';
-$w = $work[0]['d_r1'];
+$w = $id;
 $link = '<a href="'.base_url('index.php/main/a/'.$w).'">';
 echo $link.'[ed]</a>';
 for ($r=0;$r < count($work);$r++)

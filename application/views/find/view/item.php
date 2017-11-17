@@ -1,11 +1,9 @@
 <?php
-$date = '';
-$editora = '';
+$nr = '';
 $local = '';
-$isbn = '';
-$edicao = '';
+$status = 'Disponível';
 
-$rlt = $itens;
+$rlt = $item;
 $w = $id;
 $link = '<a href="'.base_url('index.php/main/a/'.$id).'">';
 echo $link.'[ed]</a>';
@@ -17,59 +15,32 @@ if (count($rlt) == 0)
 for ($r = 0; $r < count($rlt);$r++)
     {
         $line = $rlt[$r];
+        //print_r($line);
         $class = $line['c_class'];
         //echo '<br>'.$class.'='.$line['n_name'];
         switch($class)
             {
-            case 'dateOfPublication':
-                if (strlen($date) > 0)
-                    {
-                        $date .= '; ';
-                    }                
-                $date .= '<a href="'.base_url('index.php/main/a/'.$line['d_r2']).'">';
-                $date .= trim($line['n_name']);
-                $date .= '</a>';
+            case 'hasIdRegister':              
+                $nr .= trim($line['n_name']);
                 break;
-            case 'isPlaceOfPublication':
+            case 'hasPlaceItem':
                 $link = '<a href="'.base_url('index.php/main/a/'.$line['d_r2']).'">';
                 if (strlen($local) > 0)
                     {
                         $local .= '; '.$link.trim($line['n_name']).'</a>';
                     } else {
-                        $local .= ': '.$link.trim($line['n_name']).'</a>';
+                        $local .= $link.trim($line['n_name']).'</a>';
                     }                 
                 break;
-            case 'isPublisher':
-                if (strlen($editora) > 0)
-                    {
-                        $editora .= '; ';
-                    }
-                $editora .= '<a href="'.base_url('index.php/main/a/'.$line['d_r2']).'">';
-                $editora .= trim($line['n_name']);
-                $editora .= '</a>';
-                break;                
-            case 'hasISBN':
-                $link = '<a href="'.base_url('index.php/main/a/'.$line['d_r2']).'">';
-                if (strlen($isbn) > 0)
-                    {
-                        $isbn .= '; ';
-                    }
-                $isbn = $link.trim($line['n_name']).'</a>';
-                break;
-            case 'isEdition':
-                $link = '<a href="'.base_url('index.php/main/a/'.$line['d_r2']).'">';
-                if (strlen($edicao) > 0)
-                    {
-                        $edicao .= ', ';
-                    }
-                $edicao .= $link.trim($line['n_name']).'</a>';
+            case 'isItemSituation':
+                $status .= trim($line['n_name']);
                 break;                
             }
     }
     /* regras */
-    if (strlen($local) == 0) { $local = ': Sem local';}
+    if (strlen($local) == 0) { $local = 'Sem exemplar disponível';}
 ?>
-<!---------------- MANIFESTATION ------------------------------------------------------->
+<!---------------- ITEM ------------------------------------------------------->
 <div class="container">
     <div class="row">
         <div class="col-md-1 text-right" style="border-right: 4px solid #8080FF;">
@@ -77,26 +48,18 @@ for ($r = 0; $r < count($rlt);$r++)
         </div>        
         <div class="col-md-11">
             <?php
-            if (strlen($edicao) > 0)
+            if (strlen($nr) > 0)
                 {
-                    echo $edicao. ' - ';
+                    echo $nr. ' - ';
                 }
-            if (strlen($editora.$local) > 0)
+            if (strlen($status) > 0)
                 {
-                    echo $editora.$local.', ';
+                    echo $status.'. ';
                 }
-            if (strlen($date) > 0)
+            if (strlen($local) > 0)
                 {
-                    echo $date;
+                    echo '<br>'.$local;
                 }
-            if (strlen($edicao.$editora.$date) > 0)
-                {
-                    echo '. ';
-                }
-            if (strlen($isbn) > 0)
-                {
-                    echo $isbn.'.';
-                }                
             ?>
         </div>
     </div>
