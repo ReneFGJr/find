@@ -20,8 +20,11 @@ for ($r = 0; $r < count($rlt);$r++)
         //echo '<br>'.$class.'='.$line['n_name'];
         switch($class)
             {
-            case 'hasIdRegister':              
-                $nr .= trim($line['n_name']);
+            case 'hasIdRegister':
+                $link = '<a href="'.base_url('index.php/main/a/'.$line['d_r1']).'">';
+                $linka = '</a>';              
+                $nr .= $link.trim($line['n_name']).$linka;
+                
                 break;
             case 'hasPlaceItem':
                 $link = '<a href="'.base_url('index.php/main/a/'.$line['d_r2']).'">';

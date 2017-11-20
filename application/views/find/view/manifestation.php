@@ -5,7 +5,7 @@ $local = '';
 $isbn = '';
 $edicao = '';
 $localizacao = '';
-
+$img = '<img src="'.base_url('img/no_cover.png').'" height="40">';
 $w = $id;
 $link = '<a href="'.base_url('index.php/main/a/'.$id).'">';
 echo $link.'[ed]</a>';
@@ -18,7 +18,7 @@ for ($r = 0; $r < count($rlt);$r++)
     {
         $line = $rlt[$r];
         $class = $line['c_class'];
-        echo '<br>'.$class.'='.$line['n_name'];
+        //echo '<br>'.$class.'='.$line['n_name'];
         switch($class)
             {
             case 'hasClassificationCDU':
@@ -73,23 +73,26 @@ for ($r = 0; $r < count($rlt);$r++)
                         $edicao .= ', ';
                     }
                 $edicao .= $link.trim($line['n_name']).'</a>';
-                break;                
+                break;  
+            case 'hasCover':
+                $img = $this->frbr->mostra_imagem($line['d_r2']);
+                break;              
             }
     }
     /* regras */
     if (strlen($local) == 0) { $local = ': Sem local';}
     
-    if (strlen($localizacao) == 0) { $localizacao = ': Sem local';} else {
-        $localizacao = msg('classification').'<br>'.$localizacao;
-    }
+    if (strlen($localizacao) == 0) { $localizacao = ': Sem local';} 
 ?>
 <!---------------- MANIFESTATION ------------------------------------------------------->
 <div class="container">
     <div class="row">
-        <div class="col-md-1 text-right" style="border-right: 4px solid #8080FF;">
+        <div class="col-md-2 text-right" style="border-right: 4px solid #8080FF;">
             <tt style="font-size: 100%;"><?php echo msg('ManifestationLabel');?></tt>
-        </div>        
-        <div class="col-md-10">
+        </div>
+        <div class="col-md-2" style="font-size: 85%;">
+            <?php echo $img;?>
+            <br>
             <?php
             if (strlen($edicao) > 0)
                 {
@@ -109,12 +112,11 @@ for ($r = 0; $r < count($rlt);$r++)
                 }
             if (strlen($isbn) > 0)
                 {
-                    echo $isbn.'.';
+                    echo '<br>'.$isbn.'.';
                 }                
             ?>
-        </div>
-        <div class="col-md-1 text-left" style="border-left: 1px solid #8080FF;">
-            <tt style="font-size: 100%;"><?php echo $localizacao;?></tt>
+        <br>
+        Localização:<br><?php echo $localizacao;?>
         </div>                
     </div>
 </div>
