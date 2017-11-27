@@ -4,18 +4,18 @@ $alt = '';
 $born = '';
 $dead = '';
 $notas = '';
-$w = $work[0]['d_r1'];
+$w = $id;
 $link = '<a href="'.base_url('index.php/main/a/'.$w).'">';
-echo $link.'[ed]</a>';
-for ($r=0;$r < count($work);$r++)
+//echo $link.'[ed]</a>';
+for ($r=0;$r < count($person);$r++)
     {
-        $line = $work[$r];
+        $line = $person[$r];
         $class = $line['c_class'];
         //echo '<br>'.$class.'='.$line['n_name'];
         switch($class)
             {
             case 'prefLabel':
-                $link = '<a href="'.base_url('index.php/main/v/'.$line['id_d']).'">';
+                $link = '<a href="'.base_url('index.php/main/v/'.$id).'">';
                 $nome = $link.trim($line['n_name']).'</a>';
                 break;
             case 'altLabel':

@@ -397,16 +397,20 @@ class frbr extends CI_model {
         return ($sx);
     }
 
-    function manifestation_show($id) {
+    function manifestation_show($id,$hd=0) {
         $sx = '';
         $item = $this -> frbr -> recupera_resource($id, 'isAppellationOfManifestation');
+        
         for ($r = 0; $r < count($item); $r++) {
             
             $idw = $item[$r];
             $data['id'] = $idw;
-            $data['rlt'] = $this -> le_data($idw);
+            
+            $data['rlt'] = $this -> le_data($id);
+            $data['hd'] = $hd;
             $sx .= $this -> load -> view('find/view/manifestation', $data, true);
         }
+        
         return ($sx);
     }
     
@@ -434,7 +438,12 @@ class frbr extends CI_model {
                     }
                 return($dt);
         }
-
+    function person_work($id)
+        {
+            $r = array();
+            
+            return($r);
+        }
     function itens_show($id) {
         $sx = '';
         $item = $this -> frbr -> recupera_resource($id, 'isAppellationOfWork');
@@ -527,7 +536,7 @@ class frbr extends CI_model {
         if (count($rlt) > 0) {
             $line = $rlt[0];
             $work = $line['d_r1'];
-            $sx .= $this -> frbr -> manifestation_show($work);
+            $sx .= $this -> frbr -> manifestation_show($work,0);
         } else {
             $work = 0;
 

@@ -720,17 +720,30 @@ class Main extends CI_controller {
             switch ($class) {
                 case 'Person' :
                     $tela = $this -> frbr -> person_show($id);
+                    
+                    /********* WORK **/
+                    $wks = $this->frbr->person_work($id);
+                    
                     break;
                 case 'Work' :
+                    /****************************************************** WORK *******/
                     $tela .= $this -> frbr -> work_show($id);
+                    
+                    /************************************************** MANIFESTACAO ***/
                     $ma = $this -> frbr -> recupera_manifestacao($id);
+                    $hd = 0;
+                    $tela .= '<div class="container"><div class="row">';
                     for ($r=0;$r < count($ma);$r++)
                         {
                             $id = $ma[$r];
-                            $tela .= $this -> frbr -> manifestation_show($ma[$r]);        
+                            $tela .= $this -> frbr -> manifestation_show($ma[$r],$hd);
+                            $hd = 1;        
                         }
+                    $tela .= '</div></div>';
                     
+                    /****************************************************** ITENS *****/
                     $tela .= $this -> frbr -> itens_show($id);
+                    
                     break;
                 case 'Item' :
                     $tela .= $this -> frbr -> item_show($id);

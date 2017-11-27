@@ -8,7 +8,7 @@ $organizador = '';
 $tipo = '';
 $w = $id;
 $link = '<a href="'.base_url('index.php/main/a/'.$w).'">';
-echo $link.'[ed]</a>';
+//echo $link.'[ed]</a>';
 for ($r=0;$r < count($work);$r++)
     {
         $line = $work[$r];
@@ -48,10 +48,10 @@ for ($r=0;$r < count($work);$r++)
 <!---------------- WORK --------------------------------------------------------------->
 <div class="container">
     <div class="row">
-        <div class="col-md-1 text-right" style="border-right: 4px solid #8080FF;">
+        <div class="col-md-2 text-right" style="border-right: 4px solid #8080FF;">
             <tt style="font-size: 100%;"><?php echo msg('Work');?></tt>
         </div>
-        <div class="col-md-11">
+        <div class="col-md-10">
             <a href="<?php echo base_url('index.php/main/v/'.$w);?>">
             <span style="font-size: 140%; color: #000000;"><b><?php echo $title.$subtitle; ?></b></span>
             </a>
