@@ -252,6 +252,19 @@ class Main extends CI_controller {
                                 </div>';
                 $sx .= '<meta http-equiv="refresh" content="1">';
                 break;
+            case 'inport' :
+                $cl = $this -> frbr -> le_class($id);
+                if (count($cl) == 0) {
+                    echo "Erro de classe";
+                    exit ;
+                }
+                $url = $cl['c_url'];
+                $t = file_get_contents($url);
+                $this -> frbr -> inport_rdf($t, $id);
+                $sql = "update rdf_class set c_url_update = '" . date("Y-m-d") . "' where id_c = " . $cl['id_c'];
+                $rlt = $this -> db -> query($sql);
+                $sx = '';
+                break;
             default :
                 $sx = 'Metodo não localizado - ' . $ac;
                 break;
@@ -305,6 +318,28 @@ class Main extends CI_controller {
         return ("");
     }
 
+    function vocabulary_ed($id = '') {
+        $this -> cab();
+        $cp = array();
+        array_push($cp, array('$H8', 'id_c', '', false, true));
+        array_push($cp, array('$S100', 'c_class', 'Classe', true, true));
+        array_push($cp, array('$O : &C:Classe&P:Propriety', 'c_type', 'Tipo', true, true));
+        array_push($cp, array('$O 1:SIM&0:NÃO', 'c_find', 'Busca', true, true));
+        array_push($cp, array('$O 1:SIM&0:NÃO', 'c_vc', 'Vocabulário Controlado', true, true));
+        array_push($cp, array('$S100', 'c_url', 'URL', false, true));
+        array_push($cp, array('$B8', '', 'Gravar', false, true));
+        $form = new form;
+        $form -> id = $id;
+        $tela = $form -> editar($cp, 'rdf_class');
+        if ($form -> saved > 0) {
+            redirect(base_url('index.php/main/vocabulary'));
+        }
+
+        $data['content'] = '<h1>Classes e Propriedades</h1>' . $tela;
+        $this -> load -> view('content', $data);
+        $this -> foot();
+    }
+
     public function vocabulary($id = '') {
         $this -> load -> model('frbr');
         $this -> load -> model('vocabularies');
@@ -318,10 +353,34 @@ class Main extends CI_controller {
             $this -> frbr -> set_propriety($p_id, 'prefLabel', 0, $id_s);
         }
 
-        $tela = $this -> vocabularies -> list_vc($id);
-        $tela .= $this -> vocabularies -> modal_vc($id);
+        $t1 = $this -> vocabularies -> list_vc($id);
+        $t1 .= $this -> vocabularies -> modal_vc($id);
+        $t1 = '<h3>Classe: ' . msg($id) . '</h3>' . $t1;
 
-        $tela = $data['title'] = '<h3>Classe: ' . msg($id) . '</h3>' . $tela;
+        $t2 = $this -> vocabularies -> list_thesa($id);
+        $t2 = '<h3>Classe Thesa: ' . msg($id) . '</h3>' . $t2;
+
+        $tela = '
+                <div class="row">
+                    <div class="col-md-6">' . $t1 . '</div>
+                    <div class="col-md-6">' . $t2 . '</div>
+                </div>';
+
+        $data['content'] = $tela;
+        $this -> load -> view('content', $data);
+
+    }
+
+    public function thesa($id = '') {
+        $this -> load -> model('frbr');
+        $this -> load -> model('vocabularies');
+        $this -> cab();
+
+        $datac = $this -> frbr -> le_class($id);
+
+        $tela = $this -> load -> view('find/view/class', $datac, true);
+        $tela .= $this -> vocabularies -> list_vc($id);
+        $tela .= $this -> vocabularies -> modal_th($id);
 
         $data['content'] = $tela;
         $this -> load -> view('content', $data);
@@ -717,36 +776,57 @@ class Main extends CI_controller {
         } else {
             $class = trim($data['c_class']);
             $tela = '';
+            //echo "===>" . $class;
             switch ($class) {
                 case 'Person' :
                     $tela = $this -> frbr -> person_show($id);
-                    
+
                     /********* WORK **/
-                    $wks = $this->frbr->person_work($id);
-                    
+                    $wks = $this -> frbr -> person_work($id);
+
                     break;
                 case 'Work' :
                     /****************************************************** WORK *******/
                     $tela .= $this -> frbr -> work_show($id);
-                    
+
                     /************************************************** MANIFESTACAO ***/
                     $ma = $this -> frbr -> recupera_manifestacao($id);
                     $hd = 0;
                     $tela .= '<div class="container"><div class="row">';
-                    for ($r=0;$r < count($ma);$r++)
-                        {
-                            $id = $ma[$r];
-                            $tela .= $this -> frbr -> manifestation_show($ma[$r],$hd);
-                            $hd = 1;        
-                        }
+                    for ($r = 0; $r < count($ma); $r++) {
+                        $id = $ma[$r];
+                        $tela .= $this -> frbr -> manifestation_show($ma[$r], $hd);
+                        $hd = 1;
+                    }
                     $tela .= '</div></div>';
-                    
+
                     /****************************************************** ITENS *****/
                     $tela .= $this -> frbr -> itens_show($id);
-                    
+
                     break;
                 case 'Item' :
-                    $tela .= $this -> frbr -> item_show($id);
+                    $data = array();
+                    $tela = '';
+                    
+                    /**************************************/
+                    $data['id'] = $id;
+                    $data['item'] = $this -> frbr -> le_data($id);
+                    $work = $this -> frbr -> recupera($data['item'], 'isAppellationOfWork');
+                    for ($r = 0; $r < count($work); $r++) {
+                        $idw = $work[$r];
+                        $data['work'] = $this -> frbr -> le_data($idw);
+                        $tela .= $this -> load -> view('find/view/work', $data, true);
+                    }
+                    
+                    
+                    /************************** MANIFESTATION ***/
+                    $data['id'] = $id;
+                    echo "==>".$id;
+                    $tela .= $this -> frbr -> manifestation_show($id);
+                    
+                    /*********************************** ITEM ***/
+                    $tela .= $this -> load -> view('find/view/item', $data, true);
+
                     break;
             }
             $data['content'] = '<h1>' . $class . '</h1>' . $tela;

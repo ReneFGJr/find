@@ -40,9 +40,9 @@ for ($r = 0; $r < count($rlt); $r++) {
         case 'isPlaceOfPublication' :
             $link = '<a href="' . base_url('index.php/main/a/' . $line['d_r2']) . '">';
             if (strlen($local) > 0) {
-                $local .= '; ' . $link . trim($line['n_name']) . '</a>';
+                $local .= $link . trim($line['n_name']) . '</a>';
             } else {
-                $local .= ': ' . $link . trim($line['n_name']) . '</a>';
+                $local .= $link . trim($line['n_name']) . '</a>';
             }
             break;
         case 'isPublisher' :
@@ -76,7 +76,7 @@ for ($r = 0; $r < count($rlt); $r++) {
 if (strlen($local) == 0) { $local = ': Sem local';
 }
 
-if (strlen($localizacao) == 0) { $localizacao = ': Sem local';
+if (strlen($localizacao) == 0) { $localizacao = 'NNN';
 }
 
 if ($hd == 0) {
@@ -95,7 +95,7 @@ if ($hd == 0) {
         echo $edicao . ' - ';
     }
     if (strlen($editora . $local) > 0) {
-        echo $editora . $local . ', ';
+        echo $local .': '.$editora  . ', ';
     }
     if (strlen($date) > 0) {
         echo $date;
@@ -108,7 +108,7 @@ if ($hd == 0) {
     }
 	?>
 	<br>
-	Localização:
-	<br>
 	<?php echo $localizacao; ?>
+	<br>
+	<a href="<?php echo base_url('index.php/main/a/'.$id);?>">editar</a>
 </div>

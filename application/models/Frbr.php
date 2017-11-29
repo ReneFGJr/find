@@ -329,6 +329,20 @@ class frbr extends CI_model {
         return ($rlt);
     }
 
+    function le_class($id) {
+        $sql = "select * from rdf_class
+                        WHERE c_class = '" . $id . "'";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        if (count($rlt) > 0) {
+            $line = $rlt[0];
+            return ($line);
+        } else {
+            $line = array();
+            return ($line);
+        }
+    }
+
     function le_data($id) {
         $cp = '*';
         $sql = "select $cp from rdf_data as rdata
@@ -364,7 +378,8 @@ class frbr extends CI_model {
         $rs = array();
         $icl = $this -> frbr -> find_class($class);
         $sql = "select * from rdf_data 
-                            WHERE (d_p = $icl AND d_r2 = $id) OR (d_p = $icl AND d_r1 = $id)";
+                     WHERE (d_p = $icl AND d_r2 = $id) 
+                     OR (d_p = $icl AND d_r1 = $id)";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
         for ($r = 0; $r < count($rlt); $r++) {
@@ -378,72 +393,49 @@ class frbr extends CI_model {
         return ($rs);
     }
 
-    function item_show($id) {
-        $data = array();
-        $sx = '';
-
-        $data['id'] = $id;
-        $data['item'] = $this -> le_data($id);
-        $work = $this -> frbr -> recupera($data['item'], 'isAppellationOfWork');
-        for ($r = 0; $r < count($work); $r++) {
-            $idw = $work[$r];
-            $data['work'] = $this -> le_data($idw);
-            $sx .= $this -> load -> view('find/view/work', $data, true);
-        }
-        $data['id'] = $id;
-        $sx .= $this -> frbr -> manifestation_show($id);
-        
-        $sx .= $this -> load -> view('find/view/item', $data, true);
-        return ($sx);
-    }
-
-    function manifestation_show($id,$hd=0) {
+    function manifestation_show($id, $hd = 0) {
         $sx = '';
         $item = $this -> frbr -> recupera_resource($id, 'isAppellationOfManifestation');
-        
         for ($r = 0; $r < count($item); $r++) {
-            
+
             $idw = $item[$r];
             $data['id'] = $idw;
-            
+
             $data['rlt'] = $this -> le_data($id);
             $data['hd'] = $hd;
             $sx .= $this -> load -> view('find/view/manifestation', $data, true);
         }
-        
+
         return ($sx);
     }
-    
-    function recupera_manifestacao($id)
-        {
-            $item = $this -> frbr -> recupera_resource($id, 'isAppellationOfWork');
-            $wh = '';
-            for ($r=0;$r < count($item);$r++)
-                {
-                    if (strlen($wh) > 0)
-                        {
-                            $wh .= ' OR ';
-                        }
-                    $wh .= '(d_r1 = '.$item[$r].') ';
-                }
-                $class = $this->find_class('isAppellationOfManifestation');
-                $sql = "select * from rdf_data where (".$wh.") and d_p = ".$class;
-                $rlt = $this->db->query($sql);
-                $rlt = $rlt->result_array();
-                $dt = array();
-                for ($r=0;$r < count($rlt);$r++)
-                    {
-                        $line = $rlt[$r];
-                        array_push($dt,$line['d_r2']);
-                    }
-                return($dt);
+
+    function recupera_manifestacao($id) {
+        $item = $this -> frbr -> recupera_resource($id, 'isAppellationOfWork');
+        $wh = '';
+        for ($r = 0; $r < count($item); $r++) {
+            if (strlen($wh) > 0) {
+                $wh .= ' OR ';
+            }
+            $wh .= '(d_r1 = ' . $item[$r] . ') ';
         }
-    function person_work($id)
-        {
-            $r = array();
-            
-            return($r);
+        $class = $this -> find_class('isAppellationOfManifestation');
+        $sql = "select * from rdf_data where (" . $wh . ") and d_p = " . $class;
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        $dt = array();
+        for ($r = 0; $r < count($rlt); $r++) {
+            $line = $rlt[$r];
+            array_push($dt, $line['d_r2']);
         }
+        return ($dt);
+    }
+
+    function person_work($id) {
+        $r = array();
+
+        return ($r);
+    }
+
     function itens_show($id) {
         $sx = '';
         $item = $this -> frbr -> recupera_resource($id, 'isAppellationOfWork');
@@ -536,7 +528,7 @@ class frbr extends CI_model {
         if (count($rlt) > 0) {
             $line = $rlt[0];
             $work = $line['d_r1'];
-            $sx .= $this -> frbr -> manifestation_show($work,0);
+            $sx .= $this -> frbr -> manifestation_show($work, 0);
         } else {
             $work = 0;
 
@@ -696,6 +688,65 @@ class frbr extends CI_model {
         exit ;
     }
 
+    function inport_rdf($t, $class = '') {
+        if (strlen($class) == 0) {
+            echo 'Classe não definida na importação';
+            retur('');
+        }
+        $ln = $t;
+        $ln = troca($ln, ';', ':.');
+        $ln = troca($ln, chr(13), ';');
+        $ln = troca($ln, chr(10), ';');
+        $lns = splitx(';', $ln);
+        for ($r = 0; $r < count($lns); $r++) {
+            $ln = $lns[$r];
+            $ln = troca($ln, chr(9), ';');
+
+            $l = splitx(';', $ln);
+            if (count($l) == 3) {
+                $prop = $l[1];
+                $term = $l[2];
+                $resource = $l[0];
+                if ($prop == 'skosxl:is_synonymous') {
+                    $prop = 'skos:altLabel';
+                }
+                if ($prop == 'skosxl:literalForm') {
+                        $prop = 'skos:altLabel';
+                }
+                if ($prop == 'skosxl:isSingular') {
+                        $prop = 'skos:altLabel';
+                }                
+                switch($prop) {
+                    case 'skos:prefLabel' :
+                        $item = $this -> frbr -> frbr_name($term);
+                        $p_id = $this -> frbr -> rdf_concept($item, $class, $resource);
+                        $this -> frbr -> set_propriety($p_id, $prop, 0, $item);
+                        break;
+                    default :
+                        $item = $this -> frbr -> frbr_name($term);
+                        $p_id = $this -> frbr -> rdf_concept_find_id($resource);
+                        if ($p_id > 0) {
+                            $this -> frbr -> set_propriety($p_id, $prop, 0, $item);
+                        }
+                        break;
+                }
+            }
+        }
+        echo '<span style="color: #0000ff">Fim da importação</span>';
+    }
+
+    function rdf_concept_find_id($r) {
+        $id = 0;
+        $sql = "select * from rdf_concept where cc_origin = '$r'";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        if (count($rlt) > 0) {
+            $line = $rlt[0];
+            return ($line['id_cc']);
+        }
+        return ($id);
+    }
+
     function item_catalog() {
         /***************************/
         $dd1 = get("dd1");
@@ -746,8 +797,9 @@ class frbr extends CI_model {
             redirect(base_url('index.php/main/a/' . $p_id));
             exit ;
         }
-
-        $data['form'] = $this -> vocabularies -> list_vc_attr(83);
+        //$cla2 = $this->frbr->le_class("ItemStatusCataloging");
+        $cla2 = 49;
+        $data['form'] = $this -> vocabularies -> list_vc_attr($cla2);
         $data['acqu'] = $this -> vocabularies -> list_vc_type('TypeOfAcquisition');
         $tela = $this -> load -> view('find/form/cat_item', $data, true);
         return ($tela);
@@ -867,6 +919,11 @@ class frbr extends CI_model {
     }
 
     function set_propriety($r1, $prop, $r2, $lit = 0) {
+        /********* propriedade com o prefixo ***************/
+        if (strpos($prop, ':')) {
+            $prop = substr($prop, strpos($prop, ':') + 1, strlen($prop));
+        }
+        /*********************** recupera propriedade ID ***/
         $pr = $this -> find_class($prop);
         $sql = "select * from rdf_data 
 						WHERE 
@@ -901,7 +958,7 @@ class frbr extends CI_model {
         return ($line['id_c']);
     }
 
-    function rdf_concept($term, $class) {
+    function rdf_concept($term, $class, $orign = '') {
         $cl = $this -> find_class($class);
         $dt = date("Y/m/d H:i:s");
         if ($term == 0) {
@@ -918,9 +975,9 @@ class frbr extends CI_model {
         if (count($rlt) == 0) {
 
             $sqli = "insert into rdf_concept
-                            (cc_class, cc_pref_term, cc_created)
+                            (cc_class, cc_pref_term, cc_created, cc_origin)
                             VALUES
-                            ($cl,$term,'$dt')";
+                            ($cl,$term,'$dt','$orign')";
             $rlt = $this -> db -> query($sqli);
             $rlt = $this -> db -> query($sql);
             $rlt = $rlt -> result_array();
@@ -955,36 +1012,33 @@ class frbr extends CI_model {
         $alt_sizeh = '';
         $desc = '';
         $alt = '';
-            $img = '<img src="' . base_url('img/no_cover.png') . '" height="40" title="$alt">';
+        $img = '<img src="' . base_url('img/no_cover.png') . '" height="40" title="$alt">';
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
             $class = $line['c_class'];
-            switch ($class)
-                {
-                case 'hasImageWidth':
+            switch ($class) {
+                case 'hasImageWidth' :
                     $alt_sizew .= $line['n_name'];
                     break;
-                case 'hasImageHeight':
+                case 'hasImageHeight' :
                     $alt_sizeh .= $line['n_name'];
                     break;
-                case 'hasFileStorage':
+                case 'hasFileStorage' :
                     $img = $img = '<img src="' . base_url(trim($line['n_name'])) . '" class="img-fluid" title="$alt">';
                     break;
-                case 'hasImageDescription':
+                case 'hasImageDescription' :
                     $desc = trim($line['n_name']);
                     break;
-                }
+            }
             //echo '<br>' . $class . '=' . $line['n_name'];
         }
-        if (strlen($alt_sizew.$alt_sizew) > 0)
-            {
-                if (strlen($desc) > 0)
-                    {
-                        $alt = $desc.' - ';
-                    }
-                $alt .= $alt_sizew.'x'.$alt_sizeh.'px';
+        if (strlen($alt_sizew . $alt_sizew) > 0) {
+            if (strlen($desc) > 0) {
+                $alt = $desc . ' - ';
             }
-        $img = troca($img,'$alt',$alt);
+            $alt .= $alt_sizew . 'x' . $alt_sizeh . 'px';
+        }
+        $img = troca($img, '$alt', $alt);
         return ($img);
     }
 

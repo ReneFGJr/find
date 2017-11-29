@@ -51,7 +51,7 @@ $dd4 = get("dd4");
             <!---------------------------- forma de aquisicao -------------->
             <br>Forma de aquisição
             <select name="dd4" class="form-control">
-                <option>::: Local do Item :::</option>
+                <option>::: Forma de aquisição :::</option>
             <?php
                 for ($r=0;$r < count($acqu);$r++)
                     {
