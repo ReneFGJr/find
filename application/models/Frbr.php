@@ -396,14 +396,39 @@ class frbr extends CI_model {
     function manifestation_show($id, $hd = 0) {
         $sx = '';
         $item = $this -> frbr -> recupera_resource($id, 'isAppellationOfManifestation');
-        for ($r = 0; $r < count($item); $r++) {
+        if (count($item) > 0) {
+            for ($r = 0; $r < count($item); $r++) {
 
-            $idw = $item[$r];
-            $data['id'] = $idw;
+                $idw = $item[$r];
+                $data['id'] = $idw;
 
-            $data['rlt'] = $this -> le_data($id);
-            $data['hd'] = $hd;
-            $sx .= $this -> load -> view('find/view/manifestation', $data, true);
+                $data['rlt'] = $this -> le_data($id);
+                $data['hd'] = $hd;
+
+                $sx .= $this -> load -> view('find/view/manifestation', $data, true);
+            }
+        } else {
+                $data['id'] = $id;
+                $sx .= $this -> load -> view('find/view/manifestation_void', $data, true);
+        }
+
+        return ($sx);
+    }
+
+    function expression_show($id, $hd = 0) {
+        $sx = '';
+        $item = $this -> frbr -> recupera_resource($id, 'isRealizedThrough');
+        if (count($item) > 0) {
+            for ($r = 0; $r < count($item); $r++) {
+                $idw = $item[$r];
+                
+                $data = array();
+                $data['id'] = $idw;
+                $data['expr'] = $this -> le_data($idw);
+                $sx .= $this -> load -> view('find/view/expression', $data, true);
+            }
+        } else {
+                $sx .= $this -> load -> view('find/view/expression_void', null, true);
         }
 
         return ($sx);
@@ -417,6 +442,9 @@ class frbr extends CI_model {
                 $wh .= ' OR ';
             }
             $wh .= '(d_r1 = ' . $item[$r] . ') ';
+        }
+        if (strlen($wh) == 0) {
+            return ( array());
         }
         $class = $this -> find_class('isAppellationOfManifestation');
         $sql = "select * from rdf_data where (" . $wh . ") and d_p = " . $class;
@@ -711,11 +739,11 @@ class frbr extends CI_model {
                     $prop = 'skos:altLabel';
                 }
                 if ($prop == 'skosxl:literalForm') {
-                        $prop = 'skos:altLabel';
+                    $prop = 'skos:altLabel';
                 }
                 if ($prop == 'skosxl:isSingular') {
-                        $prop = 'skos:altLabel';
-                }                
+                    $prop = 'skos:altLabel';
+                }
                 switch($prop) {
                     case 'skos:prefLabel' :
                         $item = $this -> frbr -> frbr_name($term);
@@ -803,7 +831,105 @@ class frbr extends CI_model {
         $data['acqu'] = $this -> vocabularies -> list_vc_type('TypeOfAcquisition');
         $tela = $this -> load -> view('find/form/cat_item', $data, true);
         return ($tela);
+    }
 
+    function data_expression($id)
+        {
+            $class = "isRealizedThrough";
+            $idc = $this->frbr->find_class($class);
+            
+            $sql = "select * from rdf_data where d_r1 = $id and d_p = $idc
+                        order by d_r2, d_p";
+            $rlt = $this->db->query($sql);
+            $rlt = $rlt->result_array();
+            
+            $nz = array();
+            $sx = '';
+            for ($r=0;$r < count($rlt);$r++)
+                {
+                    $id = $rlt[$r]['d_r2'];                    
+                    $d = $this->frbr->le_data($id);
+                    $nn = array();
+                    $n = '';
+                    $sx .= '<div class="col-md-2">';
+                    
+                    for ($y=0;$y < count($d);$y++)
+                        {
+                            $line = $d[$y];
+                            $v = $line['c_class'];
+                            $n = $line['n_name'];
+                            $na = array();
+                            $na['class'] = $v;
+                            $na['name'] = $n;
+                            $na['id'] = $id;
+                            array_push($nn,$na);
+                         }
+                    $sx .= '</div>'.cr();
+                    array_push($nz,$nn);
+                }
+                return($nz);
+        }
+
+    function manifestation_catalog($id)
+        {
+        /***************************/
+        $dd1 = get("dd1");
+        $dd2 = get("dd2");
+        $dd3 = get("dd3");
+        $dd4 = get("dd4");
+        /****************************************************************************/
+        if ((strlen($dd1) > 0) and (strlen($dd2) >= 0)) {
+
+            $title = trim($dd1) . ': ' . trim($dd2);
+            $id_n = $this -> frbr -> frbr_name($title);
+
+            if ($id_n > 0) {
+                $class = 'Work';
+                $p_id = $this -> frbr -> rdf_concept($id_n, $class);
+                $this -> frbr -> set_propriety($p_id, 'hasTitle', 0, $id_n);
+
+                /* Administrativo */
+            }
+            redirect(base_url('index.php/main/v/' . $p_id));
+            exit ;
+        }
+        $data = array();
+        //$data['form'] = $this -> vocabularies -> list_vc_attr($cla2);
+        //$data['acqu'] = $this -> vocabularies -> list_vc_type('TypeOfAcquisition');
+        $tela = $this -> load -> view('find/form/cat_manifestation', $data, true);
+        return ($tela);
+   
+        }
+
+    function work_catalog() {
+        /***************************/
+        $dd1 = get("dd1");
+        $dd2 = get("dd2");
+        $dd3 = get("dd3");
+        $dd4 = get("dd4");
+        /****************************************************************************/
+        if ((strlen($dd1) > 0) and (strlen($dd2) >= 0)) {
+
+            $title = trim($dd1) . ': ' . trim($dd2);
+            $id_n = $this -> frbr -> frbr_name($title);
+
+            if ($id_n > 0) {
+                $class = 'Work';
+                $p_id = $this -> frbr -> rdf_concept($id_n, $class);
+                $this -> frbr -> set_propriety($p_id, 'hasTitle', 0, $id_n);
+
+                /* Administrativo */
+            }
+            redirect(base_url('index.php/main/v/' . $p_id));
+            exit ;
+        }
+        //$cla2 = $this->frbr->le_class("ItemStatusCataloging");
+        $cla2 = 49;
+        $data = array();
+        //$data['form'] = $this -> vocabularies -> list_vc_attr($cla2);
+        //$data['acqu'] = $this -> vocabularies -> list_vc_type('TypeOfAcquisition');
+        $tela = $this -> load -> view('find/form/cat_work', $data, true);
+        return ($tela);
     }
 
     function marc_to_frbr($m) {

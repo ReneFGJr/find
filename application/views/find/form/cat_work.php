@@ -20,6 +20,7 @@ echo '===>'.$dd3;
             <Input type="text" class="form-control" name="dd1" value="<?php echo $dd1;?>">
             <span>Sub-título</span><br>
             <Input type="text" class="form-control" name="dd2" value="<?php echo $dd2;?>">
+            <!----------
             <br>Formato do trabalho
             <select name="dd3" class="form-control">
                 <option>::: Formato do obra</option>
@@ -34,6 +35,7 @@ echo '===>'.$dd3;
                     }
             ?>
             </select>
+            -------->
             <br>
             <div class="text-right">
                 <input type="submit" name="action" value="gravar >>>>" class="btn btn-primary">

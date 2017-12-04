@@ -2,10 +2,16 @@
 class vocabularies extends CI_model {
     function modal_th($id = '') {
         $sx = '';
+        if (perfil("#ADM")) {
+            $dta = $this -> frbr -> le_class($id);
+            $sx .= '
+                    <a href="' . base_url('index.php/main/vocabulary_ed/' . $dta['id_c']) . '" class="btn btn-secondary">Editar</a>
+                    ';
+        }
         if (strlen($id) > 0) {
             $sx .= '
                     <!-- Button trigger modal -->
-                    <a href="' . base_url('index.php/main/vocabulary') . '" class="btn btn-secundary">Voltar</a>
+                    <a href="' . base_url('index.php/main/vocabulary') . '" class="btn btn-secondary">Voltar</a>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
                       Atualizar Vocabulário
                     </button>
@@ -36,7 +42,7 @@ class vocabularies extends CI_model {
                             jQuery("#cnt").html("Buscando...");
                             $.ajax({
                                 method: "POST",
-                                url: "'.base_url('index.php/main/ajax_action/inport/'.$id).'",
+                                url: "' . base_url('index.php/main/ajax_action/inport/' . $id) . '",
                                 data: { name: "John", location: "Boston" }
                                 })
                                 .done(function( msg ) {
@@ -55,14 +61,13 @@ class vocabularies extends CI_model {
             $sx .= '
                     <!-- Button trigger modal -->
                     <form method="post" action="' . base_url('index.php/main/vocabulary/' . $id) . '">
-                    <a href="' . base_url('index.php/main/vocabulary') . '" class="btn btn-secondary">Voltar</a>'.cr();
-            if (perfil("#ADM"))
-                {
-                    $dta = $this->frbr->le_class($id);
-                    $sx .= '
-                    <a href="' . base_url('index.php/main/vocabulary_ed/'.$dta['id_c']) . '" class="btn btn-secondary">Editar</a>
+                    <a href="' . base_url('index.php/main/vocabulary') . '" class="btn btn-secondary">Voltar</a>' . cr();
+            if (perfil("#ADM")) {
+                $dta = $this -> frbr -> le_class($id);
+                $sx .= '
+                    <a href="' . base_url('index.php/main/vocabulary_ed/' . $dta['id_c']) . '" class="btn btn-secondary">Editar</a>
                     ';
-                }
+            }
             $sx .= '
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
                       Inserir novo termo
@@ -134,7 +139,7 @@ class vocabularies extends CI_model {
             $sx = '<ul>';
             for ($r = 0; $r < count($ln); $r++) {
                 $l = $ln[$r];
-                $link = '<a href="' . base_url('index.php/main/a/' . $l['id_cc']) . '">';
+                $link = '<a href="' . base_url('index.php/main/v/' . $l['id_cc']) . '">';
                 $linka = '</a>';
                 $sx .= '<li>' . $link . $l['n_name'] . $linka . '</li>';
             }
@@ -145,7 +150,7 @@ class vocabularies extends CI_model {
     }
 
     function list_thesa($id = '') {
-        $sx = '';        
+        $sx = '';
         /********************************************/
         if (strlen($id) == 0) {
             $sql = "select * from rdf_class 
@@ -168,7 +173,7 @@ class vocabularies extends CI_model {
             $sx = '<ul>';
             for ($r = 0; $r < count($ln); $r++) {
                 $l = $ln[$r];
-                $link = '<a href="' . base_url('index.php/main/a/' . $l['id_cc']) . '">';
+                $link = '<a href="' . base_url('index.php/main/v/' . $l['id_cc']) . '">';
                 $linka = '</a>';
                 $sx .= '<li>' . $link . $l['n_name'] . $linka . '</li>';
             }

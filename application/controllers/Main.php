@@ -415,6 +415,99 @@ class Main extends CI_controller {
         $this -> foot();
     }
 
+    public function expression_create($id = '') {
+        $this -> load -> model('frbr');
+
+        $this -> cab();
+
+        /****************************************************** WORK *******/
+        $tela = '';
+        $tela .= $this -> frbr -> work_show($id);
+
+        $data = array();
+        $data['form'] = $this -> frbr -> data_classes('FormWork');
+        $data['linguage'] = $this -> frbr -> data_classes('Linguage');
+
+        $tela .= $this -> load -> view('find/form/cat_expression', $data, true);
+
+        /* save work */
+        if (strlen(get("action")) > 0) {
+            $linguage = trim(get("dd3"));
+            $form = trim(get("dd2"));
+            if ((strlen($form) > 0) and (strlen($id) > 0)) {
+                /* cria conceito */
+                $class = "Expression";
+                $idc = $this->frbr->rdf_concept(0,$class);
+                $prop = 'isRealizedThrough';
+                
+                /* associa expressao ao trabalho */
+                $this->frbr->set_propriety($id, $prop, $idc, 0);
+                
+                /* nome da expressão */
+                $prop = 'hasLanguageExpression';
+                $this->frbr->set_propriety($idc, $prop, $linguage, 0);
+                
+                /* nome da expressão */
+                $prop = 'hasFormExpression';
+                $this->frbr->set_propriety($idc, $prop, $form, 0);
+                
+                redirect(base_url('index.php/main/v/' . $id));
+            }
+        }
+
+        $data['content'] = $tela;
+        $data['title'] = '';
+        $this -> load -> view('content', $data);
+
+        $this -> foot();
+    }
+    
+    public function manifestation_create($id = '') {
+        $this -> load -> model('frbr');
+
+        $this -> cab();
+
+        /****************************************************** WORK *******/
+        $tela = '';
+        $tela .= $this -> frbr -> work_show($id);
+
+        $data = array();
+        $data['form'] = $this -> frbr -> data_expression($id);
+        $tela .= $this -> load -> view('find/form/cat_manifestation', $data, true);
+
+        /* save work */
+        if (strlen(get("action")) > 0) {
+            $expression = trim(get("dd3"));
+            $expression = trim(get("dd2"));
+            if ((strlen($form) > 0) and (strlen($id) > 0)) {
+                /* cria conceito */
+                $class = "Manifestation";
+                $idc = $this->frbr->rdf_concept(0,$class);
+                $prop = 'isRealizedThrough';
+                
+                /* associa expressao ao trabalho */
+                $this->frbr->set_propriety($id, $prop, $idc, 0);
+                
+                /* nome da expressão */
+                $prop = 'hasLanguageExpression';
+                $this->frbr->set_propriety($idc, $prop, $linguage, 0);
+                
+                /* nome da expressão */
+                $prop = 'hasFormExpression';
+                $this->frbr->set_propriety($idc, $prop, $form, 0);
+                
+                redirect(base_url('index.php/main/v/' . $id));
+            }
+        }
+
+        $data['content'] = $tela;
+        $data['title'] = '';
+        $this -> load -> view('content', $data);
+
+        $this -> foot();
+    }
+    
+
     public function bibliographic() {
         $this -> load -> model('frbr');
 
@@ -491,6 +584,17 @@ class Main extends CI_controller {
 
         $this -> cab();
         $data['content'] = $this -> frbr -> item_catalog();
+        $this -> load -> view('content', $data);
+        $this -> foot();
+
+    }
+    
+    public function catalog_work() {
+        $this -> load -> model('frbr');
+        $this -> load -> model('vocabularies');
+
+        $this -> cab();
+        $data['content'] = $this -> frbr -> work_catalog();
         $this -> load -> view('content', $data);
         $this -> foot();
 
@@ -674,7 +778,13 @@ class Main extends CI_controller {
         $data['title'] = 'Preparo técnico';
         $this -> load -> view('find/title', $data);
 
-        $tela = '<a href="' . base_url('index.php/main/catalog_item') . '" class="btn btn-secondary">';
+        $tela = '';
+
+        $tela .= '<a href="' . base_url('index.php/main/catalog_work') . '" class="btn btn-secondary">';
+        $tela .= 'Incorporar novo trabalho';
+        $tela .= '</a> ';
+
+        $tela .= '<a href="' . base_url('index.php/main/catalog_item') . '" class="btn btn-secondary">';
         $tela .= 'Incorporar novo item';
         $tela .= '</a> ';
 
@@ -789,16 +899,11 @@ class Main extends CI_controller {
                     /****************************************************** WORK *******/
                     $tela .= $this -> frbr -> work_show($id);
 
+                    /************************************************** EXPRESSION ***/
+                    $tela .= $this -> frbr -> expression_show($id);
+
                     /************************************************** MANIFESTACAO ***/
-                    $ma = $this -> frbr -> recupera_manifestacao($id);
-                    $hd = 0;
-                    $tela .= '<div class="container"><div class="row">';
-                    for ($r = 0; $r < count($ma); $r++) {
-                        $id = $ma[$r];
-                        $tela .= $this -> frbr -> manifestation_show($ma[$r], $hd);
-                        $hd = 1;
-                    }
-                    $tela .= '</div></div>';
+                    $tela .= $this -> frbr -> manifestation_show($id);
 
                     /****************************************************** ITENS *****/
                     $tela .= $this -> frbr -> itens_show($id);
@@ -807,7 +912,7 @@ class Main extends CI_controller {
                 case 'Item' :
                     $data = array();
                     $tela = '';
-                    
+
                     /**************************************/
                     $data['id'] = $id;
                     $data['item'] = $this -> frbr -> le_data($id);
@@ -817,16 +922,23 @@ class Main extends CI_controller {
                         $data['work'] = $this -> frbr -> le_data($idw);
                         $tela .= $this -> load -> view('find/view/work', $data, true);
                     }
-                    
-                    
+
+                    /************************** EXPRESSION ***/
+                    $data['id'] = $id;
+                    echo "==>" . $id;
+                    $tela .= $this -> frbr -> manifestation_show($id);
+
                     /************************** MANIFESTATION ***/
                     $data['id'] = $id;
-                    echo "==>".$id;
+                    echo "==>" . $id;
                     $tela .= $this -> frbr -> manifestation_show($id);
-                    
+
                     /*********************************** ITEM ***/
                     $tela .= $this -> load -> view('find/view/item', $data, true);
-
+                    break;
+                default :
+                    $data['skos'] = $this -> frbr -> le_data($id);
+                    $tela .= $this -> load -> view('find/view/skos', $data, true);
                     break;
             }
             $data['content'] = '<h1>' . $class . '</h1>' . $tela;
