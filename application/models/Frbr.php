@@ -395,23 +395,25 @@ class frbr extends CI_model {
 
     function manifestation_show($id, $hd = 0) {
         $sx = '';
-        $item = $this -> frbr -> recupera_resource($id, 'isAppellationOfManifestation');
+        $item = $this -> frbr -> recupera_resource($id, 'isEmbodiedIn');
+		print_r($item);
+		$sx .= '<div class="container">'.cr();
+		$sx .= '<div class="row">'.cr();
         if (count($item) > 0) {
             for ($r = 0; $r < count($item); $r++) {
-
                 $idw = $item[$r];
                 $data['id'] = $idw;
 
-                $data['rlt'] = $this -> le_data($id);
+                $data['rlt'] = $this -> le_data($idw);
                 $data['hd'] = $hd;
-
                 $sx .= $this -> load -> view('find/view/manifestation', $data, true);
             }
         } else {
             $data['id'] = $id;
             $sx .= $this -> load -> view('find/view/manifestation_void', $data, true);
         }
-
+		$sx .= '</div>';
+		$sx .= '</div>';
         return ($sx);
     }
 
@@ -1106,6 +1108,12 @@ class frbr extends CI_model {
             $id = $rlt[0]['id_cc'];
         } else {
             $id = $rlt[0]['id_cc'];
+			$line = $rlt[0];
+			if ((strlen($orign) > 0) and ((strlen(trim($line['cc_origin'])) == 0) or ($line['cc_origin'] == 'ERRO:')))
+				{
+					$sql = "update rdf_concept set cc_origin = '$orign' where id_cc = ".$line['id_cc'];
+					$rlt = $this -> db -> query($sql);
+				}
         }
         return ($id);
     }
@@ -1279,7 +1287,7 @@ class frbr extends CI_model {
         }
         # RULE 1 - ponto no final, virgula ou dois pontos no final
         $final = substr($n, strlen($n) - 1, 1);
-        echo '===>' . $final;
+        
         if (($final == '.') or ($final == ';') or ($final == ',')) {
             $n = trim(substr($n, 0, strlen($n) - 1));
         }
@@ -1294,6 +1302,7 @@ class frbr extends CI_model {
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
             $pre = trim($line['prefix_url']);
+			
             if ($pre == substr($url, 0, strlen($pre))) {
                 $prefix = $line['prefix_ref'] . ':';
                 $prefix .= substr($url, strlen($pre), strlen($url));

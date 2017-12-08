@@ -476,25 +476,18 @@ class Main extends CI_controller {
         $tela .= $this -> load -> view('find/form/cat_manifestation', $data, true);
 
         /* save work */
+        
         if (strlen(get("action")) > 0) {
-            $expression = trim(get("dd3"));
             $expression = trim(get("dd2"));
-            if ((strlen($form) > 0) and (strlen($id) > 0)) {
-                /* cria conceito */
+			
+            if ((strlen($expression) > 0) and (strlen($id) > 0)) {
+                /* cria manifestacao */
                 $class = "Manifestation";
                 $idc = $this->frbr->rdf_concept(0,$class);
-                $prop = 'isRealizedThrough';
+                $prop = 'isEmbodiedIn';
                 
                 /* associa expressao ao trabalho */
-                $this->frbr->set_propriety($id, $prop, $idc, 0);
-                
-                /* nome da expressão */
-                $prop = 'hasLanguageExpression';
-                $this->frbr->set_propriety($idc, $prop, $linguage, 0);
-                
-                /* nome da expressão */
-                $prop = 'hasFormExpression';
-                $this->frbr->set_propriety($idc, $prop, $form, 0);
+                $this->frbr->set_propriety($id, $prop, $idc, 0);                
                 
                 redirect(base_url('index.php/main/v/' . $id));
             }

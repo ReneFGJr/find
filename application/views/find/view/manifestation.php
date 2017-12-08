@@ -76,7 +76,7 @@ if (count($rlt) == 0) {
     if (strlen($local) == 0) { $local = ': Sem local';
     }
 
-    if (strlen($localizacao) == 0) { $localizacao = 'NNN';
+    if (strlen($localizacao) == 0) { $localizacao = '';
     }
 
     if ($hd == 0) {
@@ -111,5 +111,5 @@ if (count($rlt) == 0) {
 	<br>
 	<?php echo $localizacao; ?>
 	<br>
-	<a href="<?php echo base_url('index.php/main/v/' . $id); ?>">editar</a>
+	<a href="<?php echo base_url('index.php/main/a/' . $id); ?>" target="_new">editar</a>
 </div>
