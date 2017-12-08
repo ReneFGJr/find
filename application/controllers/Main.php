@@ -559,13 +559,44 @@ class Main extends CI_controller {
         $this -> load -> view('find/search/search_authority', null);
         /***************/
         $tela = '<br>';
-        $tela .= '<a href="' . base_url('index.php/main/authority_inport') . '" class="btn btn-secondary">';
-        $tela .= 'Importar MARC21';
-        $tela .= '</a> ';
+        $tela .= '<div class="row">'.cr();
+        $tela .= '  <div class="col-md-2">';msg('find_viaf').'</div>'.cr();
+        $tela .= '      <a href="' . base_url('index.php/main/authority_inport') . '" class="btn btn-secondary">';
+        $tela .= '      Importar MARC21';
+        $tela .= '      </a> ';
+        $tela .= '  </div>'.cr();
         /***************/
-        $tela .= '<a href="' . base_url('index.php/main/authority_create') . '" class="btn btn-secondary">';
-        $tela .= 'Criar autoridade';
-        $tela .= '</a> ';
+        $tela .= '  <div class="col-md-2">';msg('find_viaf').'</div>'.cr();
+        $tela .= '      <a href="' . base_url('index.php/main/authority_create') . '" class="btn btn-secondary">'.cr();
+        $tela .= '      Criar autoridade'.cr();
+        $tela .= '      </a> '.cr();
+        $tela .= '  </div>'.cr();
+        $tela .= '</div>'.cr();
+
+
+        $tela .= '<div class="row" style="margin-top: 30px;">'.cr();
+        $tela .= '      <div class="col-md-2">';
+        $tela .= '          <a href="https://viaf.org/" target="_new_viaf_'.date("dhs").'" class="btn btn-secondary">
+                            <img src="'.base_url('img/logo/logo_viaf.jpg').'" class="img-fluid"></a>'.cr();
+        $tela .= '      </div>'.cr();
+        
+        $tela .= '      <div class="col-md-10">'.cr();
+        $tela .=            msg('find_viaf');
+        $tela .= '          <form method="post" action="'.base_url("index.php/main/authority_inport/").'">'.cr();
+        $tela .= '          '.cr();
+        $tela .= '          <div class="input-group">
+                              <input type="text" name="ulr_viaf" value="" class="form-control">
+                              <input type="hidden" name="action" value="viaf_inport">
+                              <span class="input-group-btn">
+                                <input type="submit" name="acao"  class="btn btn-danger" value="'.msg('inport').'">
+                              </span>
+                              
+                            </div>';
+        $tela .= '          </form>'.cr();
+        $tela .= '      </div>'.cr();
+        $tela .= '  </div>'.cr();
+        $tela .= '</div>'.cr();
+        https://viaf.org/viaf/170358043/#Silva,_Rubens_Ribeiro_Gonçalves_da
         /* recupera */
         $dd1 = get("search");
         if (strlen($dd1) > 0) {
@@ -834,6 +865,18 @@ class Main extends CI_controller {
     public function authority_inport() {
         $this -> load -> model('agents');
         $this -> load -> model('frbr');
+        
+        /***************** inport VIAF ***********/
+        $acao = get("action");
+        switch ($acao)
+            {
+            case 'viaf_inport':
+                $url = get("ulr_viaf");
+                $this->frbr->viaf_inport($url);
+                break;
+            default:
+                echo $acao;
+            }
 
         $this -> cab();
         $this -> load -> view('find/authority');

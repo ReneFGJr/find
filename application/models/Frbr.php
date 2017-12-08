@@ -408,8 +408,8 @@ class frbr extends CI_model {
                 $sx .= $this -> load -> view('find/view/manifestation', $data, true);
             }
         } else {
-                $data['id'] = $id;
-                $sx .= $this -> load -> view('find/view/manifestation_void', $data, true);
+            $data['id'] = $id;
+            $sx .= $this -> load -> view('find/view/manifestation_void', $data, true);
         }
 
         return ($sx);
@@ -421,14 +421,14 @@ class frbr extends CI_model {
         if (count($item) > 0) {
             for ($r = 0; $r < count($item); $r++) {
                 $idw = $item[$r];
-                
+
                 $data = array();
                 $data['id'] = $idw;
                 $data['expr'] = $this -> le_data($idw);
                 $sx .= $this -> load -> view('find/view/expression', $data, true);
             }
         } else {
-                $sx .= $this -> load -> view('find/view/expression_void', null, true);
+            $sx .= $this -> load -> view('find/view/expression_void', null, true);
         }
 
         return ($sx);
@@ -833,45 +833,41 @@ class frbr extends CI_model {
         return ($tela);
     }
 
-    function data_expression($id)
-        {
-            $class = "isRealizedThrough";
-            $idc = $this->frbr->find_class($class);
-            
-            $sql = "select * from rdf_data where d_r1 = $id and d_p = $idc
-                        order by d_r2, d_p";
-            $rlt = $this->db->query($sql);
-            $rlt = $rlt->result_array();
-            
-            $nz = array();
-            $sx = '';
-            for ($r=0;$r < count($rlt);$r++)
-                {
-                    $id = $rlt[$r]['d_r2'];                    
-                    $d = $this->frbr->le_data($id);
-                    $nn = array();
-                    $n = '';
-                    $sx .= '<div class="col-md-2">';
-                    
-                    for ($y=0;$y < count($d);$y++)
-                        {
-                            $line = $d[$y];
-                            $v = $line['c_class'];
-                            $n = $line['n_name'];
-                            $na = array();
-                            $na['class'] = $v;
-                            $na['name'] = $n;
-                            $na['id'] = $id;
-                            array_push($nn,$na);
-                         }
-                    $sx .= '</div>'.cr();
-                    array_push($nz,$nn);
-                }
-                return($nz);
-        }
+    function data_expression($id) {
+        $class = "isRealizedThrough";
+        $idc = $this -> frbr -> find_class($class);
 
-    function manifestation_catalog($id)
-        {
+        $sql = "select * from rdf_data where d_r1 = $id and d_p = $idc
+                        order by d_r2, d_p";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+
+        $nz = array();
+        $sx = '';
+        for ($r = 0; $r < count($rlt); $r++) {
+            $id = $rlt[$r]['d_r2'];
+            $d = $this -> frbr -> le_data($id);
+            $nn = array();
+            $n = '';
+            $sx .= '<div class="col-md-2">';
+
+            for ($y = 0; $y < count($d); $y++) {
+                $line = $d[$y];
+                $v = $line['c_class'];
+                $n = $line['n_name'];
+                $na = array();
+                $na['class'] = $v;
+                $na['name'] = $n;
+                $na['id'] = $id;
+                array_push($nn, $na);
+            }
+            $sx .= '</div>' . cr();
+            array_push($nz, $nn);
+        }
+        return ($nz);
+    }
+
+    function manifestation_catalog($id) {
         /***************************/
         $dd1 = get("dd1");
         $dd2 = get("dd2");
@@ -898,8 +894,8 @@ class frbr extends CI_model {
         //$data['acqu'] = $this -> vocabularies -> list_vc_type('TypeOfAcquisition');
         $tela = $this -> load -> view('find/form/cat_manifestation', $data, true);
         return ($tela);
-   
-        }
+
+    }
 
     function work_catalog() {
         /***************************/
@@ -1166,6 +1162,144 @@ class frbr extends CI_model {
         }
         $img = troca($img, '$alt', $alt);
         return ($img);
+    }
+
+    function viaf_inport($url) {
+        $url2 = substr($url, 0, strpos($url, '#'));
+        if (strlen($url2) > 0) {
+            $url = $url2 . 'marc21.xml';
+            $context = '';
+            $t = file_get_contents($url, false);
+            $t = troca($t, 'mx:', '');
+            $xml = simplexml_load_string($t);
+
+            $id = '';
+            $names = array();
+            $dt_born = '';
+            $dt_die = '';
+            $genre = '';
+            $tt = 0;
+            
+            for ($r = 0; $r < count($xml -> datafield); $r++) {
+                $tag = '';
+                foreach ($xml->datafield[$r]->attributes() as $a => $b) {
+                    if ($a == 'tag') {
+                        $tag = $b;
+                        $totz = count($xml -> datafield[$r] -> subfield);
+                        for ($z = 0; $z < $totz; $z++) {
+                            $vlr = (string)$xml -> datafield[$r] -> subfield[$z];
+                            foreach ($xml->datafield[$r]->subfield[$z]->attributes() as $code => $vld) {
+                                //echo '<br>==>' . $tag . ' ' . $vlr . '--' . $code . '--' . $vld;
+                                switch ($tag) {
+                                    case '024' :
+                                        if ($vld == 'a') {
+                                            $id = $this -> frbr -> find_prefix($vlr);
+                                            echo '<h1>' . $id . '</h1>';
+                                        }
+                                        break;
+                                    case '700' :
+                                        if ($vld == 'a') {
+                                            $vlr = $this -> frbr -> trata_autor($vlr);
+                                            $names[$vlr] = $tt;
+                                            $form = 'Person';
+                                            $tt++;
+                                        }
+
+                                        if ($vld == 'd') {
+                                            if (strpos($vlr, '-')) {
+                                                $dt_born = substr($vlr, 0, strpos($vlr, '-'));
+                                                $dt_die = substr($vlr, strpos($vlr, '-') + 1, strlen($vlr));
+                                            } else {
+                                                $dt_born = $vlr;
+                                            }
+                                        }
+                                        break;
+                                    case '375':
+                                        $genre = $vlr;
+                                        break;                                        
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        echo '<h3>' . $dt_born . '</h3>';
+        echo '<h4>' . $dt_die . '</h4>';
+        echo '<br>';
+        
+        /* create */
+        if ((count($names) > 0) and (strlen($id) > 0))
+            {
+                $tt = 0;
+                foreach ($names as $autor => $value) {
+                    echo '<br>'.$autor.'=>'.$value;
+                    if ($tt == 0)
+                        {
+                            $name_pref = $autor;
+                            $id_t = $this -> frbr -> frbr_name($name_pref);
+                            $p_id = $this -> frbr -> rdf_concept($id_t, $form, $id);
+                            $this -> frbr -> set_propriety($p_id, 'prefLabel', 0, $id_t);
+                            
+                            if (strlen($dt_born) > 0)
+                                {
+                                    $id_t = $this -> frbr -> frbr_name($dt_born);
+                                    $this -> frbr -> set_propriety($p_id, 'hasBorn', 0, $id_t);
+                                }
+                            if (strlen($dt_die) > 0)
+                                {
+                                    $id_t = $this -> frbr -> frbr_name($dt_die);
+                                    $this -> frbr -> set_propriety($p_id, 'hasDie', 0, $id_t);
+                                }                                   
+                        } else {
+                            $name_pref = troca($autor,"'","´");
+                            echo mb_detect_encoding($name_pref).' '.$name_pref;
+                            
+                            $id_t = $this -> frbr -> frbr_name($name_pref);
+                            $p_id = $this -> frbr -> rdf_concept($id_t, $form, $id);
+                            $this -> frbr -> set_propriety($p_id, 'altLabel', 0, $id_t);                            
+                        }
+                     $tt++;
+                }
+            }
+    }
+
+    function trata_autor($n) {
+        $n = (string)$n;
+        $n = trim($n);
+        # RULE 3 - special chars
+        for ($r = 1; $r < 32; $r++) {
+            $n = troca($n, chr($r), '');
+        }
+
+        # RULE 2 - dois espacos
+        while (strpos($n, '  ')) {
+            $n = troca($n, '  ', ' ');
+        }
+        # RULE 1 - ponto no final, virgula ou dois pontos no final
+        $final = substr($n, strlen($n) - 1, 1);
+        echo '===>' . $final;
+        if (($final == '.') or ($final == ';') or ($final == ',')) {
+            $n = trim(substr($n, 0, strlen($n) - 1));
+        }
+        return ($n);
+    }
+
+    function find_prefix($url) {
+        $sql = "select * from rdf_prefix";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        $prefix = 'ERRO:';
+        for ($r = 0; $r < count($rlt); $r++) {
+            $line = $rlt[$r];
+            $pre = trim($line['prefix_url']);
+            if ($pre == substr($url, 0, strlen($pre))) {
+                $prefix = $line['prefix_ref'] . ':';
+                $prefix .= substr($url, strlen($pre), strlen($url));
+            }
+        }
+        return ($prefix);
     }
 
 }
