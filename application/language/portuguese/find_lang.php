@@ -88,4 +88,6 @@ $lang['Expression'] = 'Expression';
 $lang['hasLanguageExpression'] = 'hasLanguageExpression'; 
 $lang['hasFormExpression'] = 'hasFormExpression'; 
 $lang['authority'] = 'Autoridade'; 
+$lang['find_viaf'] = 'find_viaf'; 
+$lang['inport'] = 'inport'; 
 ?>

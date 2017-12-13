@@ -61,6 +61,8 @@ class Main extends CI_controller {
     }
 
     public function config($tools = '') {
+        $this->load->model("frbr");
+        
         $this -> cab();
         $this -> load -> view('welcome');
         $tela = '';
@@ -68,11 +70,20 @@ class Main extends CI_controller {
         $tela .= '<li>';
         $tela .= '<a href="' . base_url('index.php/main/config/msg') . '">Compilar Mensagens</a>';
         $tela .= '</li>';
+
+        $tela .= '<li>';
+        $tela .= '<a href="' . base_url('index.php/main/config/forms') . '">Formulários</a>';
+        $tela .= '</li>';
+
         $tela .= '</ul>';
 
         switch($tools) {
             case 'msg' :
                 $tela .= msg('MAKE_MESSAGES');
+                break;
+            case 'forms':
+                $tela .= msg('FORMS');
+                $tela .= $this->frbr->form_class();
                 break;
         }
         $data['content'] = $tela;
@@ -575,7 +586,7 @@ class Main extends CI_controller {
         
         $tela .= '      <div class="col-md-10">'.cr();
         $tela .=            msg('find_viaf');
-        $tela .= '          <form method="post" action="'.base_url("index.php/main/authority_inport/").'">'.cr();
+        $tela .= '          <form method="post" action="'.base_url("index.php/main/authority/").'">'.cr();
         $tela .= '          '.cr();
         $tela .= '          <div class="input-group">
                               <input type="text" name="ulr_viaf" value="" class="form-control">
@@ -599,6 +610,21 @@ class Main extends CI_controller {
         $data['content'] = $tela;
         $data['title'] = '';
         $this -> load -> view('content', $data);
+        
+        
+        /***************** inport VIAF ***********/
+        $acao = get("action");
+        switch ($acao)
+            {
+            case 'viaf_inport':
+                $url = get("ulr_viaf");
+                $data['content'] .= $this->frbr->viaf_inport($url);
+                $this -> load -> view('content', $data);
+                break;
+            default:
+                echo $acao;
+            }
+                    
         $this -> foot();
     }
 
@@ -858,18 +884,6 @@ class Main extends CI_controller {
     public function authority_inport() {
         $this -> load -> model('agents');
         $this -> load -> model('frbr');
-        
-        /***************** inport VIAF ***********/
-        $acao = get("action");
-        switch ($acao)
-            {
-            case 'viaf_inport':
-                $url = get("ulr_viaf");
-                $this->frbr->viaf_inport($url);
-                break;
-            default:
-                echo $acao;
-            }
 
         $this -> cab();
         $this -> load -> view('find/authority');

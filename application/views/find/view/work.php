@@ -13,6 +13,7 @@ for ($r=0;$r < count($work);$r++)
     {
         $line = $work[$r];
         $class = $line['c_class'];
+        //echo '<br>'.$class.'='.$line['n_name'];
         switch($class)
             {
             case 'hasTitle':
@@ -29,7 +30,16 @@ for ($r=0;$r < count($work);$r++)
                 $autor .= '<a href="'.base_url('index.php/main/v/'.$line['d_r2']).'" style="color: #00008;">';
                 $autor .= trim($line['n_name']);
                 $autor .= '</a>';
-                break; 
+                break;
+            case 'hasOrganizator':
+                if (strlen($autor) > 0)
+                    {
+                        $autor .= '; ';
+                    }
+                $autor .= '<a href="'.base_url('index.php/main/v/'.$line['d_r2']).'" style="color: #00008;">';
+                $autor .= trim($line['n_name']).' (org.)';
+                $autor .= '</a>';
+                break;                 
             case 'hasTranslator':
                 if (strlen($tradutor) > 0)
                     {
@@ -57,12 +67,12 @@ for ($r=0;$r < count($work);$r++)
             </a>
             <br>
             <i><?php echo '<b>'.$autor.'</b>';?></i>
-            <?php
-            if (strlen($tradutor) > 0)
-                {
-                    echo '. <i>'.msg('Translator').': <b>'.$tradutor.'</b></i>';
-                }
-            ?>
+            <?php if (perfil("#ADM")) {
+                   echo '<br><a href="'.base_url('index.php/main/a/' . $id).'" target="_new">editar</a>';
+            }
+            ?>            
+            
+            
         </div>
     </div>
 </div>

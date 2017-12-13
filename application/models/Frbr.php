@@ -357,7 +357,7 @@ class frbr extends CI_model {
                         LEFT JOIN rdf_name on d_literal = id_n
                         WHERE d_r1 = $id and d_r2 = 0";
         $sql .= " order by c_order, c_class, id_d";
-
+        
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
         return ($rlt);
@@ -395,16 +395,18 @@ class frbr extends CI_model {
 
     function manifestation_show($id, $hd = 0) {
         $sx = '';
+        $item = array();
         $item = $this -> frbr -> recupera_resource($id, 'isEmbodiedIn');
-		print_r($item);
+        
 		$sx .= '<div class="container">'.cr();
 		$sx .= '<div class="row">'.cr();
         if (count($item) > 0) {
             for ($r = 0; $r < count($item); $r++) {
                 $idw = $item[$r];
                 $data['id'] = $idw;
-
+                echo '-->'.$idw;
                 $data['rlt'] = $this -> le_data($idw);
+                
                 $data['hd'] = $hd;
                 $sx .= $this -> load -> view('find/view/manifestation', $data, true);
             }
@@ -1187,7 +1189,12 @@ class frbr extends CI_model {
             $dt_die = '';
             $genre = '';
             $tt = 0;
-            
+            $sx = '';
+            /*
+            echo '<pre>';
+            print_r($xml);
+            echo '</pre>';
+            */
             for ($r = 0; $r < count($xml -> datafield); $r++) {
                 $tag = '';
                 foreach ($xml->datafield[$r]->attributes() as $a => $b) {
@@ -1202,7 +1209,6 @@ class frbr extends CI_model {
                                     case '024' :
                                         if ($vld == 'a') {
                                             $id = $this -> frbr -> find_prefix($vlr);
-                                            echo '<h1>' . $id . '</h1>';
                                         }
                                         break;
                                     case '700' :
@@ -1222,9 +1228,24 @@ class frbr extends CI_model {
                                             }
                                         }
                                         break;
+                                    case '710' :
+                                        if ($vld == 'a') {
+                                            $vlr = $this -> frbr -> trata_autor($vlr);
+                                            $names[$vlr] = $tt;
+                                            $form = 'Corporate Body';
+                                            $tt++;
+                                        }
+
+                                        if ($vld == 'b') {
+
+                                        }
+                                        break;                                        
                                     case '375':
                                         $genre = $vlr;
-                                        break;                                        
+                                        break; 
+                                    default:
+                                        $sx .= '<tt>'.$tag.'</tt><br>';
+                                        break;                                       
                                 }
                             }
                         }
@@ -1233,16 +1254,12 @@ class frbr extends CI_model {
             }
         }
 
-        echo '<h3>' . $dt_born . '</h3>';
-        echo '<h4>' . $dt_die . '</h4>';
-        echo '<br>';
-        
         /* create */
         if ((count($names) > 0) and (strlen($id) > 0))
             {
                 $tt = 0;
                 foreach ($names as $autor => $value) {
-                    echo '<br>'.$autor.'=>'.$value;
+                   //echo '<br>'.$autor.'=>'.$value;
                     if ($tt == 0)
                         {
                             $name_pref = $autor;
@@ -1262,14 +1279,22 @@ class frbr extends CI_model {
                                 }                                   
                         } else {
                             $name_pref = troca($autor,"'","´");
-                            echo mb_detect_encoding($name_pref).' '.$name_pref;
+                            //echo mb_detect_encoding($name_pref).' '.$name_pref;
                             
                             $id_t = $this -> frbr -> frbr_name($name_pref);
-                            $p_id = $this -> frbr -> rdf_concept($id_t, $form, $id);
                             $this -> frbr -> set_propriety($p_id, 'altLabel', 0, $id_t);                            
                         }
                      $tt++;
                 }
+                $sx .= '
+                        <div class="alert alert-success" role="alert">
+                          <strong>Sucesso!</strong> Importação finalizada com sucesso.
+                        </div>
+                ';
+                $sx .= '<h1>' . $name_pref . '</h1>';
+                $sx .= '<h3>' . $dt_born . '</h3>';
+                $sx .= '<h4>' . $dt_die . '</h4>';
+                $sx .= '<br>';
             }
     }
 
@@ -1310,6 +1335,47 @@ class frbr extends CI_model {
         }
         return ($prefix);
     }
-
+    function form_class()
+        {
+            $cp = 'id_sc, tb1.c_class as c1, tb2.c_class as c2, tb3.c_class as c3';
+            $sql = "select $cp from rdf_form_class 
+                        INNER JOIN rdf_class as tb1 ON sc_class = tb1.id_c
+                        INNER JOIN rdf_class as tb2 ON sc_propriety = tb2.id_c
+                        LEFT JOIN rdf_class as tb3 ON sc_range = tb3.id_c
+                        order by c1, c2, c3
+                        ";
+            $rlt = $this->db->query($sql);
+            $rlt = $rlt->result_array();
+            $sx = '<table width="100%">'.cr();
+            $sx .= '<tr style="border-bottom: 2px solid #505050;">
+                        <th width="30%">'.msg('resource').'</th>
+                        <th width="35%">'.msg('propriety').'</th>
+                        <th width="30%">'.msg('range').'</th>
+                        <th width="5%">'.msg('ed').'</th>
+                    </tr>'.cr();
+            $x = '';
+            for ($r=0;$r < count($rlt);$r++)
+                {
+                    $line = $rlt[$r];
+                    
+                    
+                    if ($x == $line['c1'])
+                        {
+                            $sx .= '<tr style="border-top: 1px solid #a0a0a0;">';
+                            $sx .= '<td></td>';
+                        } else {
+                            $sx .= '<tr style="border-top: 3px solid #a0a0a0;">';
+                            $x = $line['c1'];
+                            $sx .= '<td><b>'.$line['c1'].'</b></td>';        
+                        }
+                    
+                    $sx .= '<td>'.msg($line['c2']).'</td>';
+                    $sx .= '<td>'.msg($line['c3']).'</td>';
+                    $sx .= '<td align="center">'.msg($line['id_sc']).'</td>';
+                    $sx .= '</tr>'.cr();
+                }
+            $sx .= '</table>';
+            return($sx);
+        }
 }
 ?>

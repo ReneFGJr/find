@@ -11,9 +11,7 @@ if ($hd == 0) {
     $w = $id;
     $link = '<a href="' . base_url('index.php/main/a/' . $id) . '">';
 }
-if (count($rlt) == 0) {
-    return('');
-} else {
+{
     for ($r = 0; $r < count($rlt); $r++) {
         $line = $rlt[$r];
         $class = $line['c_class'];
@@ -111,5 +109,8 @@ if (count($rlt) == 0) {
 	<br>
 	<?php echo $localizacao; ?>
 	<br>
-	<a href="<?php echo base_url('index.php/main/a/' . $id); ?>" target="_new">editar</a>
+	<?php if (perfil("#ADM")) {
+	       echo '<a href="'.base_url('index.php/main/a/' . $id).'" target="_new">editar</a>';
+	}
+	?>
 </div>
