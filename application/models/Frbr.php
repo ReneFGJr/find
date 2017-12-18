@@ -357,7 +357,7 @@ class frbr extends CI_model {
                         LEFT JOIN rdf_name on d_literal = id_n
                         WHERE d_r1 = $id and d_r2 = 0";
         $sql .= " order by c_order, c_class, id_d";
-        
+
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
         return ($rlt);
@@ -393,29 +393,28 @@ class frbr extends CI_model {
         return ($rs);
     }
 
-    function manifestation_show($id, $hd = 0) {
+    function manifestation_show($id, $hd = 0, $ide) {
         $sx = '';
         $item = array();
         $item = $this -> frbr -> recupera_resource($id, 'isEmbodiedIn');
-        
-		$sx .= '<div class="container">'.cr();
-		$sx .= '<div class="row">'.cr();
+
+        $sx .= '<div class="container">' . cr();
+        $sx .= '<div class="row">' . cr();
         if (count($item) > 0) {
             for ($r = 0; $r < count($item); $r++) {
                 $idw = $item[$r];
                 $data['id'] = $idw;
-                echo '-->'.$idw;
                 $data['rlt'] = $this -> le_data($idw);
-                
+
                 $data['hd'] = $hd;
                 $sx .= $this -> load -> view('find/view/manifestation', $data, true);
             }
         } else {
-            $data['id'] = $id;
+            $data['id'] = $ide;
             $sx .= $this -> load -> view('find/view/manifestation_void', $data, true);
         }
-		$sx .= '</div>';
-		$sx .= '</div>';
+        $sx .= '</div>';
+        $sx .= '</div>';
         return ($sx);
     }
 
@@ -675,6 +674,7 @@ class frbr extends CI_model {
         $sx .= '<tr><th width=20%" class="text-right">propriety</th><th>value</th></tr>';
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
+            $id = $line['id_cc'];
             $link = '<a href="' . base_url('index.php/main/a/' . $line['id_cc']) . '">';
             $linka = '</a>';
             if (strlen($line['id_cc']) == 0) {
@@ -692,6 +692,14 @@ class frbr extends CI_model {
 
             $link = '<span id="ex' . $line['id_d'] . '" onclick="exclude(' . $line['id_d'] . ');" style="cursor: pointer;">';
             $sx .= $link . '<font style="color: red;" title="Excluir lancamento">[X]</font>' . $linka;
+            $sx .= '</span>';
+
+            /********************* prefer */
+            if ($line['c_class'] == 'altLabel') {
+                $link = '<span id="ep' . $line['id_d'] . '" onclick="setPrefTerm(' . $line['id_d'] . ',' . $line['id_n'] . ');" style="cursor: pointer;">';
+                $sx .= $link . '<font style="color: red;" title="Definir como preferencial">[pref]</font>' . $linka;
+                $sx .= '</span>';
+            }
 
             $sx .= '</td>';
 
@@ -699,6 +707,7 @@ class frbr extends CI_model {
         }
         $sx .= '</table>';
         $sx .= $this -> load -> view('find/modal/modal_exclude', null, true);
+        $sx .= $this -> load -> view('find/modal/modal_set_prefterm', null, true);
         return ($sx);
     }
 
@@ -1110,12 +1119,11 @@ class frbr extends CI_model {
             $id = $rlt[0]['id_cc'];
         } else {
             $id = $rlt[0]['id_cc'];
-			$line = $rlt[0];
-			if ((strlen($orign) > 0) and ((strlen(trim($line['cc_origin'])) == 0) or ($line['cc_origin'] == 'ERRO:')))
-				{
-					$sql = "update rdf_concept set cc_origin = '$orign' where id_cc = ".$line['id_cc'];
-					$rlt = $this -> db -> query($sql);
-				}
+            $line = $rlt[0];
+            if ((strlen($orign) > 0) and ((strlen(trim($line['cc_origin'])) == 0) or ($line['cc_origin'] == 'ERRO:'))) {
+                $sql = "update rdf_concept set cc_origin = '$orign' where id_cc = " . $line['id_cc'];
+                $rlt = $this -> db -> query($sql);
+            }
         }
         return ($id);
     }
@@ -1191,10 +1199,10 @@ class frbr extends CI_model {
             $tt = 0;
             $sx = '';
             /*
-            echo '<pre>';
-            print_r($xml);
-            echo '</pre>';
-            */
+             echo '<pre>';
+             print_r($xml);
+             echo '</pre>';
+             */
             for ($r = 0; $r < count($xml -> datafield); $r++) {
                 $tag = '';
                 foreach ($xml->datafield[$r]->attributes() as $a => $b) {
@@ -1239,13 +1247,13 @@ class frbr extends CI_model {
                                         if ($vld == 'b') {
 
                                         }
-                                        break;                                        
-                                    case '375':
+                                        break;
+                                    case '375' :
                                         $genre = $vlr;
-                                        break; 
-                                    default:
-                                        $sx .= '<tt>'.$tag.'</tt><br>';
-                                        break;                                       
+                                        break;
+                                    default :
+                                        //  $sx .= '<tt>' . $tag . '</tt><br>';
+                                        break;
                                 }
                             }
                         }
@@ -1255,47 +1263,44 @@ class frbr extends CI_model {
         }
 
         /* create */
-        if ((count($names) > 0) and (strlen($id) > 0))
-            {
-                $tt = 0;
-                foreach ($names as $autor => $value) {
-                   //echo '<br>'.$autor.'=>'.$value;
-                    if ($tt == 0)
-                        {
-                            $name_pref = $autor;
-                            $id_t = $this -> frbr -> frbr_name($name_pref);
-                            $p_id = $this -> frbr -> rdf_concept($id_t, $form, $id);
-                            $this -> frbr -> set_propriety($p_id, 'prefLabel', 0, $id_t);
-                            
-                            if (strlen($dt_born) > 0)
-                                {
-                                    $id_t = $this -> frbr -> frbr_name($dt_born);
-                                    $this -> frbr -> set_propriety($p_id, 'hasBorn', 0, $id_t);
-                                }
-                            if (strlen($dt_die) > 0)
-                                {
-                                    $id_t = $this -> frbr -> frbr_name($dt_die);
-                                    $this -> frbr -> set_propriety($p_id, 'hasDie', 0, $id_t);
-                                }                                   
-                        } else {
-                            $name_pref = troca($autor,"'","´");
-                            //echo mb_detect_encoding($name_pref).' '.$name_pref;
-                            
-                            $id_t = $this -> frbr -> frbr_name($name_pref);
-                            $this -> frbr -> set_propriety($p_id, 'altLabel', 0, $id_t);                            
-                        }
-                     $tt++;
+        if ((count($names) > 0) and (strlen($id) > 0)) {
+            $tt = 0;
+            foreach ($names as $autor => $value) {
+                //echo '<br>'.$autor.'=>'.$value;
+                if ($tt == 0) {
+                    $name_pref = $autor;
+                    $id_t = $this -> frbr -> frbr_name($name_pref);
+                    $p_id = $this -> frbr -> rdf_concept($id_t, $form, $id);
+                    $this -> frbr -> set_propriety($p_id, 'prefLabel', 0, $id_t);
+
+                    if (strlen($dt_born) > 0) {
+                        $id_t = $this -> frbr -> frbr_name($dt_born);
+                        $this -> frbr -> set_propriety($p_id, 'hasBorn', 0, $id_t);
+                    }
+                    if (strlen($dt_die) > 0) {
+                        $id_t = $this -> frbr -> frbr_name($dt_die);
+                        $this -> frbr -> set_propriety($p_id, 'hasDie', 0, $id_t);
+                    }
+                } else {
+                    $name_pref = troca($autor, "'", "´");
+                    //echo mb_detect_encoding($name_pref).' '.$name_pref;
+
+                    $id_t = $this -> frbr -> frbr_name($name_pref);
+                    $this -> frbr -> set_propriety($p_id, 'altLabel', 0, $id_t);
                 }
-                $sx .= '
+                $tt++;
+            }
+            $sx .= '
                         <div class="alert alert-success" role="alert">
                           <strong>Sucesso!</strong> Importação finalizada com sucesso.
                         </div>
                 ';
-                $sx .= '<h1>' . $name_pref . '</h1>';
-                $sx .= '<h3>' . $dt_born . '</h3>';
-                $sx .= '<h4>' . $dt_die . '</h4>';
-                $sx .= '<br>';
-            }
+            $sx .= '<h1>' . $name_pref . '</h1>';
+            $sx .= '<h3>' . $dt_born . '</h3>';
+            $sx .= '<h4>' . $dt_die . '</h4>';
+            $sx .= '<br>';
+            return ($sx);
+        }
     }
 
     function trata_autor($n) {
@@ -1312,7 +1317,7 @@ class frbr extends CI_model {
         }
         # RULE 1 - ponto no final, virgula ou dois pontos no final
         $final = substr($n, strlen($n) - 1, 1);
-        
+
         if (($final == '.') or ($final == ';') or ($final == ',')) {
             $n = trim(substr($n, 0, strlen($n) - 1));
         }
@@ -1327,7 +1332,7 @@ class frbr extends CI_model {
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
             $pre = trim($line['prefix_url']);
-			
+
             if ($pre == substr($url, 0, strlen($pre))) {
                 $prefix = $line['prefix_ref'] . ':';
                 $prefix .= substr($url, strlen($pre), strlen($url));
@@ -1335,47 +1340,202 @@ class frbr extends CI_model {
         }
         return ($prefix);
     }
-    function form_class()
-        {
-            $cp = 'id_sc, tb1.c_class as c1, tb2.c_class as c2, tb3.c_class as c3';
-            $sql = "select $cp from rdf_form_class 
+
+    function form_class() {
+        $cp = 'id_sc, tb1.c_class as c1, tb2.c_class as c2, tb3.c_class as c3';
+        $sql = "select $cp from rdf_form_class 
                         INNER JOIN rdf_class as tb1 ON sc_class = tb1.id_c
                         INNER JOIN rdf_class as tb2 ON sc_propriety = tb2.id_c
                         LEFT JOIN rdf_class as tb3 ON sc_range = tb3.id_c
                         order by c1, c2, c3
                         ";
-            $rlt = $this->db->query($sql);
-            $rlt = $rlt->result_array();
-            $sx = '<table width="100%">'.cr();
-            $sx .= '<tr style="border-bottom: 2px solid #505050;">
-                        <th width="30%">'.msg('resource').'</th>
-                        <th width="35%">'.msg('propriety').'</th>
-                        <th width="30%">'.msg('range').'</th>
-                        <th width="5%">'.msg('ed').'</th>
-                    </tr>'.cr();
-            $x = '';
-            for ($r=0;$r < count($rlt);$r++)
-                {
-                    $line = $rlt[$r];
-                    
-                    
-                    if ($x == $line['c1'])
-                        {
-                            $sx .= '<tr style="border-top: 1px solid #a0a0a0;">';
-                            $sx .= '<td></td>';
-                        } else {
-                            $sx .= '<tr style="border-top: 3px solid #a0a0a0;">';
-                            $x = $line['c1'];
-                            $sx .= '<td><b>'.$line['c1'].'</b></td>';        
-                        }
-                    
-                    $sx .= '<td>'.msg($line['c2']).'</td>';
-                    $sx .= '<td>'.msg($line['c3']).'</td>';
-                    $sx .= '<td align="center">'.msg($line['id_sc']).'</td>';
-                    $sx .= '</tr>'.cr();
-                }
-            $sx .= '</table>';
-            return($sx);
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        $sx = '<table width="100%">' . cr();
+        $sx .= '<tr style="border-bottom: 2px solid #505050;">
+                        <th width="30%">' . msg('resource') . '</th>
+                        <th width="35%">' . msg('propriety') . '</th>
+                        <th width="30%">' . msg('range') . '</th>
+                        <th width="5%">' . msg('ed') . '</th>
+                    </tr>' . cr();
+        $x = '';
+        for ($r = 0; $r < count($rlt); $r++) {
+            $line = $rlt[$r];
+
+            if ($x == $line['c1']) {
+                $sx .= '<tr style="border-top: 1px solid #a0a0a0;">';
+                $sx .= '<td></td>';
+            } else {
+                $sx .= '<tr style="border-top: 3px solid #a0a0a0;">';
+                $x = $line['c1'];
+                $sx .= '<td><b>' . $line['c1'] . '</b></td>';
+            }
+
+            $sx .= '<td>' . msg($line['c2']) . '</td>';
+            $sx .= '<td>' . msg($line['c3']) . '</td>';
+            $sx .= '<td align="center">' . msg($line['id_sc']) . '</td>';
+            $sx .= '</tr>' . cr();
         }
+        $sx .= '</table>';
+        return ($sx);
+    }
+
+    function show_works($id = '') {
+        $class = $this -> find_class('work');
+        $sql = "select id_cc as w 
+                            from rdf_concept 
+                            where cc_class = " . $class . "
+                            ORDER BY id_cc desc
+                            limit 12
+                            ";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        $sx = '<br><br><h4>Last</h4>';
+        $sx .= '<div class="row">' . cr();
+        for ($r = 0; $r < count($rlt); $r++) {
+            $line = $rlt[$r];
+            $sx .= '<div class="col-md-2 text-center" style="line-height: 80%; margin-top: 40px;">';
+            $sx .= $this -> show_manifestation($line['w']);
+            $sx .= '</div>';
+        }
+        $sx .= '</div>' . cr();
+        return ($sx);
+    }
+
+    function show_manifestation($id = '') {
+        $img = base_url('img/no_cover.png');
+        $data = $this -> le_data($id);
+        //print_r($data);
+
+        $title = '';
+        $autor = '';
+        for ($r = 0; $r < count($data); $r++) {
+            $line = $data[$r];
+            $class = $line['c_class'];
+            //echo '<br>'.$class;
+            switch($class) {
+                case 'hasTitle' :
+                    $title = $line['n_name'];
+                    break;
+                case 'hasOrganizator':
+                    if (strlen($autor) > 0) {
+                        $autor .= '; ';
+                    }
+                    $autor .= $line['n_name'].' (org.)';
+                    break;
+                    
+                case 'hasAuthor' :
+                    if (strlen($autor) > 0) {
+                        $autor .= '; ';
+                    }
+                    $autor .= $line['n_name'];
+                    break;
+            }
+        }
+        /* expression */
+        $class = "isRealizedThrough";
+        $id_cl = $this -> find_class($class);
+        $sql = "select * from rdf_data 
+                            WHERE d_r1 = $id and
+                                    d_p = $id_cl ";
+        $xrlt = $this -> db -> query($sql);
+        $xrlt = $xrlt -> result_array();
+
+        if (count($xrlt) > 0) {
+            $ide = $xrlt[0]['d_r2'];
+            /************************************ manifestation ********/
+            $class = "isEmbodiedIn";
+            $id_cl = $this -> find_class($class);
+            $sql = "select * from rdf_data 
+                            WHERE d_r1 = $ide and
+                                    d_p = $id_cl ";
+            $xrlt = $this -> db -> query($sql);
+            $xrlt = $xrlt -> result_array();
+            $idm = $xrlt[0]['d_r2'];
+
+            /* Image */
+            $dt2 = $this -> le_data($idm);
+            for ($r = 0; $r < count($dt2); $r++) {
+                $line = $dt2[$r];
+                $class = $line['c_class'];
+                if ($class = 'hasCover') {
+                    $img = base_url('_repositorio/Image/' . $line['n_name']);
+                }
+            }
+        }
+
+        $sx = '';
+        $link = '<a href="' . base_url('index.php/main/v/' . $id) . '" target="_new' . $id . '" style="line-height: 120%;">';
+        $sx .= $link;
+        $title_nr = $title;
+        $sz = 40;
+        if (strlen($title_nr) > $sz) { $title_nr = substr($title_nr,0,$sz).'...'; }
+        $sx .= '<img src="' . $img . '" class="img-fluid">' . cr();
+        $sx .= '<span>' . $title_nr . '</span>';
+        $sx .= '</a>';
+        $sx .= '<br>';
+        $sx .= '<span class="small"><i>' . $autor . '</i></span>';
+        //echo $line['c_class'].'<br>';
+        return ($sx);
+    }
+
+    function expressions($id) {
+        $class = "isRealizedThrough";
+        $class = $this -> find_class($class);
+        $sql = "select d_r2 as id from rdf_data where d_r1 = $id and d_p = $class ";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        $rs = array();
+        for ($r = 0; $r < count($rlt); $r++) {
+            $line = $rlt[$r];
+            array_push($rs, $line['id']);
+        }
+        return ($rs);
+
+    }
+
+    function changePrefTerm($id, $it) {
+        $id = round($id);
+        $it = round($it);
+        if (($id > 0) and ($it > 0)) {
+            $sx = '<h1>Updating...</h1>';
+            $sql = "select * from rdf_data where id_d = " . $id;
+            $rlt = $this -> db -> query($sql);
+            $rlt = $rlt -> result_array();
+
+            if (count($rlt) > 0) {
+                $line = $rlt[0];
+                $idz = $line['d_literal'];
+                $c = $line['d_r1'];
+
+                $class = $this -> find_class('prefLabel');
+                $sql = "select * from rdf_data where d_p = $class and d_r1 = " . $c;
+                $xrlt = $this -> db -> query($sql);
+                $xrlt = $xrlt -> result_array();
+                $line2 = $xrlt[0];
+
+                $idt1 = $line['id_d'];
+                $it1 = $line['d_literal'];
+                $idc = $line['d_r1'];
+                /* conecpt */
+
+                $idt2 = $line2['id_d'];
+                $it2 = $line2['d_literal'];
+
+                $sql = "update rdf_data set d_literal = $it1 where id_d = $idt2";
+                $zrlt = $this -> db -> query($sql);
+                $sql = "update rdf_data set d_literal = $it2 where id_d = $idt1";
+                $zrlt = $this -> db -> query($sql);
+                $sql = "update rdf_concept set cc_pref_term = $it1 where id_cc = $idc";
+                $zrlt = $this -> db -> query($sql);
+                $sx .= '<meta http-equiv="Refresh" content="0">';
+            }
+
+        } else {
+            $sx = 'ERRO!';
+        }
+        return ($sx);
+    }
+
 }
 ?>

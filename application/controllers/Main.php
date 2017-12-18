@@ -55,6 +55,9 @@ class Main extends CI_controller {
         /*************************** find */
         $gets = array_merge($_POST, $_GET);
         $tela = $this -> frbr -> search($gets);
+        
+        $tela .= $this->frbr->show_works();
+        
         $data['content'] = $tela;
         $this -> load -> view('content', $data);
         $this -> foot();
@@ -255,6 +258,11 @@ class Main extends CI_controller {
     function ajax_action($ac = '', $id = '') {
         $this -> load -> model('frbr');
         switch($ac) {
+            case 'setPrefTerm':
+                $idc = get("q");
+                $idt = get("t");
+                $sx = $this->frbr->changePrefTerm($idc,$idt);
+                break;
             case 'exclude' :
                 $idc = get("q");
                 $this -> frbr -> data_exclude($idc);
@@ -498,7 +506,7 @@ class Main extends CI_controller {
                 $prop = 'isEmbodiedIn';
                 
                 /* associa expressao ao trabalho */
-                $this->frbr->set_propriety($id, $prop, $idc, 0);                
+                $this->frbr->set_propriety($expression, $prop, $idc, 0);                
                 
                 redirect(base_url('index.php/main/v/' . $id));
             }
@@ -618,7 +626,7 @@ class Main extends CI_controller {
             {
             case 'viaf_inport':
                 $url = get("ulr_viaf");
-                $data['content'] .= $this->frbr->viaf_inport($url);
+                $data['content'] = $this->frbr->viaf_inport($url);
                 $this -> load -> view('content', $data);
                 break;
             default:
@@ -936,7 +944,6 @@ class Main extends CI_controller {
         } else {
             $class = trim($data['c_class']);
             $tela = '';
-            //echo "===>" . $class;
             switch ($class) {
                 case 'Person' :
                     $tela = $this -> frbr -> person_show($id);
@@ -951,9 +958,13 @@ class Main extends CI_controller {
 
                     /************************************************** EXPRESSION ***/
                     $tela .= $this -> frbr -> expression_show($id);
-
-                    /************************************************** MANIFESTACAO ***/
-                    $tela .= $this -> frbr -> manifestation_show($id);
+                    $exp = $this->frbr->expressions($id);
+                    for ($r=0;$r < count($exp);$r++)
+                        {
+                            $ide = $exp[$r];
+                            /************************************************** MANIFESTACAO ***/
+                            $tela .= $this -> frbr -> manifestation_show($ide,0,$id);                            
+                        }
 
                     /****************************************************** ITENS *****/
                     $tela .= $this -> frbr -> itens_show($id);

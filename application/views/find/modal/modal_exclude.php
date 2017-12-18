@@ -16,7 +16,7 @@
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">
 					NÃO
 				</button>
-				<button type="button" id="confirm" class="btn btn-danger">
+				<button type="button" id="confirm_exclude" class="btn btn-danger">
 					SIM
 				</button>
 			</div>
@@ -31,7 +31,7 @@
 	}
 
 
-	jQuery("#confirm").click(function() {
+	jQuery("#confirm_exclude").click(function() {
 	    $id = jQuery("#ide").val(); 
 		$.ajax({
 			type : "POST",
