@@ -7,7 +7,7 @@ class Main extends CI_controller {
 
         $this -> lang -> load("app", "portuguese");
         $this -> lang -> load("find", "portuguese");
-        $this -> load -> library('tcpdf');
+        //$this -> load -> library('tcpdf');
         $this -> load -> database();
         $this -> load -> helper('form');
         $this -> load -> helper('form_sisdoc');
@@ -55,43 +55,69 @@ class Main extends CI_controller {
         /*************************** find */
         $gets = array_merge($_POST, $_GET);
         $tela = $this -> frbr -> search($gets);
-        
-        $tela .= $this->frbr->show_works();
-        
+
+        $tela .= $this -> frbr -> show_works();
+
         $data['content'] = $tela;
         $this -> load -> view('content', $data);
         $this -> foot();
     }
 
-    public function config($tools = '') {
-        $this->load->model("frbr");
-        
+    public function config($tools = '', $ac = '') {
+        $this -> load -> model("frbr");
+
         $this -> cab();
         $this -> load -> view('welcome');
         $tela = '';
-        $tela .= '<ul>';
-        $tela .= '<li>';
-        $tela .= '<a href="' . base_url('index.php/main/config/msg') . '">Compilar Mensagens</a>';
-        $tela .= '</li>';
-
-        $tela .= '<li>';
-        $tela .= '<a href="' . base_url('index.php/main/config/forms') . '">Formulários</a>';
-        $tela .= '</li>';
-
-        $tela .= '</ul>';
 
         switch($tools) {
             case 'msg' :
-                $tela .= msg('MAKE_MESSAGES');
+                /* acao */
+                if (strlen($ac) > 0) {
+                    $tela .= msg('MAKE_MESSAGES');
+                } else {
+                    $tela .= msg_lista();
+                }
+
                 break;
-            case 'forms':
+            case 'forms' :
                 $tela .= msg('FORMS');
-                $tela .= $this->frbr->form_class();
+                $tela .= $this -> frbr -> form_class();
+                break;
+            case 'authority' :
+                if (perfil("#ADM") == 1) {
+                    if ($ac == 'update') {
+                        $tela .= $this -> frbr -> viaf_update();
+                    } else {
+                        $tela .= '<br><a href="' . base_url('index.php/main/config/authority/update') . '" class="btn btn-secondary">' . msg('authority_update') . '</a>';
+                    }
+                    $tela .= '<br><br><h3>' . msg('Authority') . ' ' . msg('viaf') . '</h3>';
+                    $tela .= $this -> frbr -> authority_class();
+                }
                 break;
         }
         $data['content'] = $tela;
         $this -> load -> view('content', $data);
         $this -> foot();
+    }
+
+    public function pop_config($tools = '', $id = '') {
+        $this -> load -> model("frbr");
+
+        $this -> cab(0);
+        $tela = '';
+        $tela .= $tools;
+        switch($tools) {
+            case 'msg' :
+                $tela .= $this -> frbr -> form_msg_ed($id);
+                break;
+            case 'forms' :
+                $tela .= msg('FORMS');
+                $tela .= $this -> frbr -> form_class_ed($id);
+                break;
+        }
+        $data['content'] = $tela;
+        $this -> load -> view('content', $data);
     }
 
     function i($id = '', $cl = '', $ac = '', $term = 0) {
@@ -258,10 +284,10 @@ class Main extends CI_controller {
     function ajax_action($ac = '', $id = '') {
         $this -> load -> model('frbr');
         switch($ac) {
-            case 'setPrefTerm':
+            case 'setPrefTerm' :
                 $idc = get("q");
                 $idt = get("t");
-                $sx = $this->frbr->changePrefTerm($idc,$idt);
+                $sx = $this -> frbr -> changePrefTerm($idc, $idt);
                 break;
             case 'exclude' :
                 $idc = get("q");
@@ -278,7 +304,7 @@ class Main extends CI_controller {
                     exit ;
                 }
                 $url = $cl['c_url'];
-                $t = file_get_contents($url);
+                $t = read_link($url);
                 $this -> frbr -> inport_rdf($t, $id);
                 $sql = "update rdf_class set c_url_update = '" . date("Y-m-d") . "' where id_c = " . $cl['id_c'];
                 $rlt = $this -> db -> query($sql);
@@ -456,20 +482,20 @@ class Main extends CI_controller {
             if ((strlen($form) > 0) and (strlen($id) > 0)) {
                 /* cria conceito */
                 $class = "Expression";
-                $idc = $this->frbr->rdf_concept(0,$class);
+                $idc = $this -> frbr -> rdf_concept(0, $class);
                 $prop = 'isRealizedThrough';
-                
+
                 /* associa expressao ao trabalho */
-                $this->frbr->set_propriety($id, $prop, $idc, 0);
-                
+                $this -> frbr -> set_propriety($id, $prop, $idc, 0);
+
                 /* nome da expressão */
                 $prop = 'hasLanguageExpression';
-                $this->frbr->set_propriety($idc, $prop, $linguage, 0);
-                
+                $this -> frbr -> set_propriety($idc, $prop, $linguage, 0);
+
                 /* nome da expressão */
                 $prop = 'hasFormExpression';
-                $this->frbr->set_propriety($idc, $prop, $form, 0);
-                
+                $this -> frbr -> set_propriety($idc, $prop, $form, 0);
+
                 redirect(base_url('index.php/main/v/' . $id));
             }
         }
@@ -480,7 +506,7 @@ class Main extends CI_controller {
 
         $this -> foot();
     }
-    
+
     public function manifestation_create($id = '') {
         $this -> load -> model('frbr');
 
@@ -495,19 +521,19 @@ class Main extends CI_controller {
         $tela .= $this -> load -> view('find/form/cat_manifestation', $data, true);
 
         /* save work */
-        
+
         if (strlen(get("action")) > 0) {
             $expression = trim(get("dd2"));
-			
+
             if ((strlen($expression) > 0) and (strlen($id) > 0)) {
                 /* cria manifestacao */
                 $class = "Manifestation";
-                $idc = $this->frbr->rdf_concept(0,$class);
+                $idc = $this -> frbr -> rdf_concept(0, $class);
                 $prop = 'isEmbodiedIn';
-                
+
                 /* associa expressao ao trabalho */
-                $this->frbr->set_propriety($expression, $prop, $idc, 0);                
-                
+                $this -> frbr -> set_propriety($expression, $prop, $idc, 0);
+
                 redirect(base_url('index.php/main/v/' . $id));
             }
         }
@@ -518,7 +544,6 @@ class Main extends CI_controller {
 
         $this -> foot();
     }
-    
 
     public function bibliographic() {
         $this -> load -> model('frbr');
@@ -571,44 +596,47 @@ class Main extends CI_controller {
         $this -> load -> view('find/search/search_authority', null);
         /***************/
         $tela = '<br>';
-        $tela .= '<div class="row">'.cr();
-        $tela .= '  <div class="col-md-2">';msg('find_viaf').'</div>'.cr();
+        $tela .= '<div class="row">' . cr();
+        $tela .= '  <div class="col-md-2">';
+        msg('find_viaf') . '</div>' . cr();
         $tela .= '      <a href="' . base_url('index.php/main/authority_inport') . '" class="btn btn-secondary">';
         $tela .= '      Importar MARC21';
         $tela .= '      </a> ';
-        $tela .= '  </div>'.cr();
+        $tela .= '  </div>' . cr();
         /***************/
-        $tela .= '  <div class="col-md-2">';msg('find_viaf').'</div>'.cr();
-        $tela .= '      <a href="' . base_url('index.php/main/authority_create') . '" class="btn btn-secondary">'.cr();
-        $tela .= '      Criar autoridade'.cr();
-        $tela .= '      </a> '.cr();
-        $tela .= '  </div>'.cr();
-        $tela .= '</div>'.cr();
+        $tela .= '  <div class="col-md-2">';
+        msg('find_viaf') . '</div>' . cr();
+        $tela .= '      <a href="' . base_url('index.php/main/authority_create') . '" class="btn btn-secondary">' . cr();
+        $tela .= '      Criar autoridade' . cr();
+        $tela .= '      </a> ' . cr();
+        $tela .= '  </div>' . cr();
+        $tela .= '</div>' . cr();
 
-
-        $tela .= '<div class="row" style="margin-top: 30px;">'.cr();
+        $tela .= '<div class="row" style="margin-top: 30px;">' . cr();
         $tela .= '      <div class="col-md-2">';
-        $tela .= '          <a href="https://viaf.org/" target="_new_viaf_'.date("dhs").'" class="btn btn-secondary">
-                            <img src="'.base_url('img/logo/logo_viaf.jpg').'" class="img-fluid"></a>'.cr();
-        $tela .= '      </div>'.cr();
-        
-        $tela .= '      <div class="col-md-10">'.cr();
-        $tela .=            msg('find_viaf');
-        $tela .= '          <form method="post" action="'.base_url("index.php/main/authority/").'">'.cr();
-        $tela .= '          '.cr();
+        $tela .= '          <a href="https://viaf.org/" target="_new_viaf_' . date("dhs") . '" class="btn btn-secondary">
+                            <img src="' . base_url('img/logo/logo_viaf.jpg') . '" class="img-fluid"></a>' . cr();
+        $tela .= '      </div>' . cr();
+
+        $tela .= '      <div class="col-md-10">' . cr();
+        $tela .= msg('find_viaf');
+        $tela .= '          <form method="post" action="' . base_url("index.php/main/authority/") . '">' . cr();
+        $tela .= '          ' . cr();
         $tela .= '          <div class="input-group">
                               <input type="text" name="ulr_viaf" value="" class="form-control">
                               <input type="hidden" name="action" value="viaf_inport">
                               <span class="input-group-btn">
-                                <input type="submit" name="acao"  class="btn btn-danger" value="'.msg('inport').'">
+                                <input type="submit" name="acao"  class="btn btn-danger" value="' . msg('inport') . '">
                               </span>
                               
                             </div>';
-        $tela .= '          </form>'.cr();
-        $tela .= '      </div>'.cr();
-        $tela .= '  </div>'.cr();
-        $tela .= '</div>'.cr();
-        https://viaf.org/viaf/170358043/#Silva,_Rubens_Ribeiro_Gonçalves_da
+        $tela .= '          </form>' . cr();
+        $tela .= '          <span class="small">Ex: https://viaf.org/viaf/122976/#Souza,_Herbert_de</span>';
+        $tela .= '      </div>' . cr();
+        $tela .= '  </div>' . cr();
+        $tela .= '</div>' . cr();
+        https:
+        //viaf.org/viaf/170358043/#Silva,_Rubens_Ribeiro_Gonçalves_da
         /* recupera */
         $dd1 = get("search");
         if (strlen($dd1) > 0) {
@@ -618,21 +646,19 @@ class Main extends CI_controller {
         $data['content'] = $tela;
         $data['title'] = '';
         $this -> load -> view('content', $data);
-        
-        
+
         /***************** inport VIAF ***********/
         $acao = get("action");
-        switch ($acao)
-            {
-            case 'viaf_inport':
+        switch ($acao) {
+            case 'viaf_inport' :
                 $url = get("ulr_viaf");
-                $data['content'] = $this->frbr->viaf_inport($url);
+                $data['content'] = $this -> frbr -> viaf_inport($url);
                 $this -> load -> view('content', $data);
                 break;
-            default:
+            default :
                 echo $acao;
-            }
-                    
+        }
+
         $this -> foot();
     }
 
@@ -646,7 +672,7 @@ class Main extends CI_controller {
         $this -> foot();
 
     }
-    
+
     public function catalog_work() {
         $this -> load -> model('frbr');
         $this -> load -> model('vocabularies');
@@ -889,6 +915,27 @@ class Main extends CI_controller {
 
     }
 
+    public function authority_inport_rdf($id = '') {
+        $this -> load -> model('frbr');
+
+        $data = $this -> frbr -> le($id);
+        $this -> cab();
+        $tela = '';
+
+        if (strlen($data['cc_origin']) > 0) {
+            $tela .= '<h4>' . $data['cc_origin'] . '</h4>' . cr();
+            $url = $this -> frbr -> rdf_prefix($data['cc_origin']);
+            $url .= $this -> frbr -> rdf_sufix($data['cc_origin']) . '/#';
+            $tela = $this -> frbr -> viaf_inport($url);
+            $tela .= '<meta http-equiv="refresh" content="0;url=' . base_url('index.php/main/v/' . $id) . '" />';
+        }
+
+        $data['content'] = $tela;
+        $data['title'] = '';
+        $this -> load -> view('content', $data);
+        $this -> foot();
+    }
+
     public function authority_inport() {
         $this -> load -> model('agents');
         $this -> load -> model('frbr');
@@ -906,7 +953,6 @@ class Main extends CI_controller {
         /********************/
         $txt = get("dd1");
         $marc21 = $this -> agents -> inport_marc21($txt);
-
         $marc21 = $this -> frbr -> marc_to_frbr($marc21);
 
         $data['content'] = $tela;
@@ -948,8 +994,20 @@ class Main extends CI_controller {
                 case 'Person' :
                     $tela = $this -> frbr -> person_show($id);
 
+                    if (perfil("#ADM")) {
+                        $tela .= $this -> frbr -> btn_editar($id);
+                        if (strlen($data['cc_origin']) > 0) {
+                            $tela .= ' ';
+                            $tela .= $this -> frbr -> btn_update($id);
+                        }
+                    }
                     /********* WORK **/
                     $wks = $this -> frbr -> person_work($id);
+                    if (count($wks) > 0) {
+                        $tela .= '<br><br>';
+                        $tela .= '<h4>' . msg('Works') . '</h4>' . cr();
+                        $tela .= $this -> frbr -> show_class($wks);
+                    }
 
                     break;
                 case 'Work' :
@@ -958,13 +1016,12 @@ class Main extends CI_controller {
 
                     /************************************************** EXPRESSION ***/
                     $tela .= $this -> frbr -> expression_show($id);
-                    $exp = $this->frbr->expressions($id);
-                    for ($r=0;$r < count($exp);$r++)
-                        {
-                            $ide = $exp[$r];
-                            /************************************************** MANIFESTACAO ***/
-                            $tela .= $this -> frbr -> manifestation_show($ide,0,$id);                            
-                        }
+                    $exp = $this -> frbr -> expressions($id);
+                    for ($r = 0; $r < count($exp); $r++) {
+                        $ide = $exp[$r];
+                        /************************************************** MANIFESTACAO ***/
+                        $tela .= $this -> frbr -> manifestation_show($ide, 0, $id);
+                    }
 
                     /****************************************************** ITENS *****/
                     $tela .= $this -> frbr -> itens_show($id);

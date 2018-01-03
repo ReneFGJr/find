@@ -68,6 +68,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 	}
 
 	require_once(APPPATH.'config/constants.php');
+    
+  
 
 /*
  * ------------------------------------------------------
@@ -462,6 +464,7 @@ if ( ! is_php('5.4'))
 				// Were we in a directory? If so, check for a global override
 				elseif ( ! empty($RTR->directory) && file_exists(APPPATH.'controllers/'.$error_class.'.php'))
 				{
+				    echo "ERRO #1";exit;
 					require_once(APPPATH.'controllers/'.$error_class.'.php');
 					if (($e404 = ! class_exists($error_class, FALSE)) === FALSE)
 					{
@@ -488,6 +491,8 @@ if ( ! is_php('5.4'))
 		}
 		else
 		{
+		    echo "ERRO";
+            exit;
 			show_404($RTR->directory.$class.'/'.$method);
 		}
 	}

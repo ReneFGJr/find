@@ -1,12 +1,14 @@
 <?php
 $nome = '';
 $alt = '';
+$hid = '';
 $born = '';
 $dead = '';
 $notas = '';
 $w = $id;
 $link = '<a href="'.base_url('index.php/main/a/'.$w).'">';
 //echo $link.'[ed]</a>';
+$img = '<img src="' . base_url('img/no_image.png') . '" class="img-fluid">'; 
 for ($r=0;$r < count($person);$r++)
     {
         $line = $person[$r];
@@ -19,12 +21,15 @@ for ($r=0;$r < count($person);$r++)
                 $nome = $link.trim($line['n_name']).'</a>';
                 break;
             case 'altLabel':
-                if (strlen($alt) > 0)
-                    {
-                        $alt .= '; ';
-                    }
-                $alt = trim($line['n_name']);
+                $alt .= '<li>'.trim($line['n_name']).'</li>';
                 break;
+            case 'hiddenLabel':
+                if (strlen($hid) > 0)
+                    {
+                        $hid .= '; ';
+                    }
+                $hid .= trim($line['n_name']);
+                break;                
             case 'sourceNote':
                 if (strlen($notas) > 0)
                     {
@@ -41,7 +46,10 @@ for ($r=0;$r < count($person);$r++)
                 $link = '<a href="'.base_url('index.php/main/v/'.$line['id_d']).'">';
                 $dead = $link.trim($line['n_name']);
                 $dead .= '</a>';
-                break;                
+                break;  
+            case 'hasCover' :
+                $img = $this -> frbr -> mostra_imagem($line['d_r2']);
+                break;
             }
     }
     $dates = '';
@@ -55,22 +63,39 @@ for ($r=0;$r < count($person);$r++)
                 }
             $dates .= $dead;                
         }
+$img = troca($img,'class="img-fluid"','class="img-fluid img-person"');        
 ?>
 <!---------------- WORK --------------------------------------------------------------->
 <div class="container">
     <div class="row">
         <div class="col-md-1 text-right" style="border-right: 4px solid #8080FF;">
-            <tt style="font-size: 100%;"><?php echo msg('Person');?></tt>
+            <tt style="font-size: 100%;"><?php echo msg('Person');?></tt>            
         </div>
-        <div class="col-md-11">
+        <div class="col-md-9">
             <font style="font-size: 200%"><?php echo $nome;?><?php echo $dates;?></font>
             <?php
-            if (strlen($alt) > 0)
+            if (strlen($cc_origin) > 0)
                 {
-                    echo '<br>'.msg('alternativeNames').': <i>'.$alt.'</i>';
+                    echo '<br><tt>'.$this->frbr->show_rdf($cc_origin).'</tt>';
                 }
+            
+            if (strlen($alt.$hid) > 0)
+                {
+                    echo '<table width="100%">';
+                    echo '<tr valign="top"><td width="50%">';
+                    echo msg('alternativeNames').': <ul>'.$alt.'</ul>';
+                    echo '</td>';
+                    echo '<td width="50%">';
+                    echo msg('hiddenNames').': <ul>'.$hid.'</ul>';
+                    echo '</td>';
+                    echo '</tr>';
+                    echo '</table>';
+                }                
             ?>
         </div>
+        <div class="col-md-2 text-center">
+              <?php echo $img;?>
+        </div>        
         <?php
             if (strlen($notas) > 0)
                 {
@@ -83,5 +108,6 @@ for ($r=0;$r < count($person);$r++)
                 }
         ?>        
     </div>
+
 </div>
 <br>

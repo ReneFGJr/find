@@ -23,7 +23,7 @@ $ac[$pag] = 'active';
 			if (perfil('#ADM')==1) 
 			{ ?>
 			<li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Catalogação </a>
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Catalogação </a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/authority'); ?>"><?php echo msg("authority");?></a>
 				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/catalog'); ?>">Preparo técnico</a>
@@ -37,9 +37,14 @@ $ac[$pag] = 'active';
             <?php 
             if (perfil('#ADM')==1) 
             { ?>
-            <li class="nav-item">
-                <a class="nav-link" href="<?php echo base_url('index.php/main/config'); ?>">Configurações</a>
-            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="<?php echo base_url('index.php/main/config'); ?>" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo msg('menu_config');?></a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/config/msg'); ?>"><?php echo msg("menu_msg");?></a>
+                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/config/forms'); ?>"><?php echo msg("menu_forms");?></a>
+                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/config/authority'); ?>"><?php echo msg("menu_authority");?></a>
+                </div>
+            </li>                
             <?php } ?>
             <li class="nav-item navbar-toggler-right">
                 <?php echo $this->socials->menu_user();?>

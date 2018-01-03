@@ -16,6 +16,42 @@
  * @date: 2015-12-01
  */
 $lg = 'pt_BR';
+if (!function_exists(('msg_lista')))
+    {
+        function msg_lista()
+            {
+                $CI = &get_instance();
+                        $lg = 'pt_BR';
+                        $sql = "select * from msg where msg_language = '$lg' order by msg_term";
+                        $rlt = $CI->db->query($sql);
+                        $rlt = $rlt->result_array();
+                        $sx = '';
+                        $sx .= '<table width="100%">';
+                        $sx .= '<tr>
+                                    <th>'.msg('label').'</th>
+                                    <th>'.msg('description').'</th>
+                                </tr>'; 
+                                
+                        for ($r=0;$r < count($rlt);$r++)
+                            {
+                                $line = $rlt[$r];
+                                $link = '<span style="cursor: pointer;" onclick="newwin(\''.base_url('index.php/main/pop_config/msg/'.$line['id_msg']).'\',800,600);">';
+                                $linka = '</span>';
+                                $sx .= '<tr style="border-top: 1px solid #a0a0a0;">';
+                                $sx .= '<td>';
+                                $sx .= $link.$line['msg_term'].$linka;
+                                $sx .= '</td>';
+
+                                $sx .= '<td>';
+                                $sx .= $link.$line['msg_label'].$linka;
+                                $sx .= '</td>';
+                                                                
+                                $sx .= '</tr>'.cr();
+                            }
+                        $sx .= '</table>';
+                        return($sx); 
+            }
+    }
 if (!function_exists(('msg')))
 	{
 		function msg($t)

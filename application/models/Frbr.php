@@ -463,8 +463,73 @@ class frbr extends CI_model {
 
     function person_work($id) {
         $r = array();
+        $sql = "select d_r1, d_p, d_r2 from rdf_data 
+                    where (d_r1 = $id or d_r2 = $id)
+                       AND NOT (d_r1 = 0 OR d_r2 = 0)
+                ORDER BY d_r1, d_p, d_r2";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
 
-        return ($r);
+        $wk = array();
+        $ww = array();
+        for ($r = 0; $r < count($rlt); $r++) {
+            $line = $rlt[$r];
+            $p = $line['d_p'];
+            $r1 = $line['d_r1'];
+            if ($r1 != $id) {
+                if (!isset($ww[$r1])) {
+                    array_push($wk, $r1);
+                }
+            }
+            $r1 = $line['d_r2'];
+            if ($r1 != $id) {
+                if (!isset($ww[$r1])) {
+                    array_push($wk, $r1);
+                }
+            }
+        }
+        return ($wk);
+    }
+
+    function show_class($wk) {
+        $sx = '';
+        $ss = '<h5>'.msg('hasColaboration').'</h5><ul>';
+        $wks = array();
+        for ($r = 0; $r < count($wk); $r++) {
+            $id = $wk[$r];
+
+            $data = $this -> le_data($id);
+            for ($z = 0; $z < count($data); $z++) {
+                $line = $data[$z];
+                $cl = $line['c_class'];
+                $vl = $line['n_name'];
+                $id1 = $line['d_r1'];
+                $id2 = $line['d_r2'];
+                switch ($cl) {
+                    case 'hasTitle' :
+                        $link = '<a href="' . base_url('index.php/main/v/' . $id1) . '" target="_new' . $id1 . '">';
+                        array_push($wks,$id1);
+                        break;
+                    case 'hasAuthor' :
+                        $link = '<a href="' . base_url('index.php/main/v/' . $id2) . '" target="_new' . $id2 . '">';
+                        $ss .= '<li>' . $link . $vl . ' (' . ($cl) . ')</a></li>' . cr();
+                        break;                    
+                    default:
+                        
+                }
+            }
+        }
+        $ss .= '</ul>';
+        //$sx .= '<div class="row img-person" >' . cr();
+        for ($r = 0; $r < count($wks); $r++) {
+            $wk = $wks[$r];
+            $sx .= '<div class="col-md-2 text-center" style="line-height: 80%; margin-top: 40px;">';
+            $sx .= $this -> show_manifestation($wk);
+            $sx .= '</div>';
+        }
+        //$sx .= '</div>' . cr();        
+        
+        return ($sx);
     }
 
     function itens_show($id) {
@@ -489,13 +554,44 @@ class frbr extends CI_model {
 
         return ($sx);
     }
+    
+    function show_rdf($url)
+        {
+            $pre = substr($url,0,strpos($url,':'));
+            $pos = substr($url,strpos($url,':')+1,strlen($url));            
+            $uri = $this->frbr->rdf_prefix($url);
+            $sx = '<a href="'.$uri.$pos.'" target="_new'.$url.'">'.$url.'</a>';
+            return($sx);
+        }
+        
+    function rdf_prefix($url='')
+        {
+            $pre = substr($url,0,strpos($url,':'));
+            $pos = substr($url,strpos($url,':')+1,strlen($url));
+            $sx = $pre;
+            $sql = "select * from rdf_prefix where prefix_ref = '$pre' ";
+            $rlt = $this->db->query($sql);
+            $rlt = $rlt->result_array();
+            $line = $rlt[0];
+            $uri = trim($line['prefix_url']);
+            return($uri);            
+        }
+
+    function rdf_sufix($url='')
+        {
+            $pre = substr($url,0,strpos($url,':'));
+            $pos = substr($url,strpos($url,':')+1,strlen($url));
+            return($pos);            
+        }        
 
     function person_show($id) {
         $data = array();
         $sx = '';
 
+        $data = $this->le($id);
         $data['person'] = $this -> le_data($id);
         $data['id'] = $id;
+
         $sx = $this -> load -> view('find/view/person', $data, true);
         return ($sx);
     }
@@ -1098,21 +1194,29 @@ class frbr extends CI_model {
         $dt = date("Y/m/d H:i:s");
         if ($term == 0) {
             $sql = "select * from rdf_concept
-                     WHERE cc_class = $cl and cc_created = '$dt'";
+                     WHERE cc_class = $cl and cc_created = '$dt'
+                     ORDER BY id_cc";
         } else {
-            $sql = "select * from rdf_concept
-                     WHERE cc_class = $cl and cc_pref_term = $term";
+            if (strlen($orign) > 0)
+                {
+                    $sql = "select * from rdf_concept
+                        WHERE cc_class = $cl and (cc_pref_term = $term or cc_origin = '$orign')";                    
+                } else {
+                    $sql = "select * from rdf_concept
+                        WHERE cc_class = $cl and (cc_pref_term = $term)";                                        
+                }
         }
-
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
         $id = 0;
+        $date = date("Y-m-d");
+
         if (count($rlt) == 0) {
 
             $sqli = "insert into rdf_concept
-                            (cc_class, cc_pref_term, cc_created, cc_origin)
+                            (cc_class, cc_pref_term, cc_created, cc_origin, cc_update)
                             VALUES
-                            ($cl,$term,'$dt','$orign')";
+                            ($cl,$term,'$dt','$orign', '$date')";
             $rlt = $this -> db -> query($sqli);
             $rlt = $this -> db -> query($sql);
             $rlt = $rlt -> result_array();
@@ -1120,10 +1224,12 @@ class frbr extends CI_model {
         } else {
             $id = $rlt[0]['id_cc'];
             $line = $rlt[0];
+            $compl = '';
             if ((strlen($orign) > 0) and ((strlen(trim($line['cc_origin'])) == 0) or ($line['cc_origin'] == 'ERRO:'))) {
-                $sql = "update rdf_concept set cc_origin = '$orign' where id_cc = " . $line['id_cc'];
-                $rlt = $this -> db -> query($sql);
+                $compl = "', cc_origin = '$orign' ";
             }
+            $sql = "update rdf_concept set cc_status = 1, cc_update = '$date' $compl where id_cc = " . $line['id_cc'];
+            $rlt = $this -> db -> query($sql);
         }
         return ($id);
     }
@@ -1187,7 +1293,7 @@ class frbr extends CI_model {
         if (strlen($url2) > 0) {
             $url = $url2 . 'marc21.xml';
             $context = '';
-            $t = file_get_contents($url, false);
+            $t = read_link($url);
             $t = troca($t, 'mx:', '');
             $xml = simplexml_load_string($t);
 
@@ -1195,14 +1301,19 @@ class frbr extends CI_model {
             $names = array();
             $dt_born = '';
             $dt_die = '';
-            $genre = '';
+            $genere = '';
             $tt = 0;
-            $sx = '';
-            /*
-             echo '<pre>';
-             print_r($xml);
-             echo '</pre>';
-             */
+            $sx = '<br>';
+
+            //echo '<pre>';
+            //print_r($xml);
+            //echo '</pre>';
+            /************ ERRO DE ARQUIVO ***/
+            if (count($xml) < 2) {
+                $sx = "ERRO DE ARQUIVO - LEITURA";
+                return ($sx);
+            }
+
             for ($r = 0; $r < count($xml -> datafield); $r++) {
                 $tag = '';
                 foreach ($xml->datafield[$r]->attributes() as $a => $b) {
@@ -1236,6 +1347,35 @@ class frbr extends CI_model {
                                             }
                                         }
                                         break;
+                                    case '400' :
+                                        if (($vld == 'a') or ($vld == 'e')) {
+                                            $vlr = $this -> frbr -> trata_autor($vlr);
+                                            $names['*' . $vlr] = $tt;
+                                            $form = 'Person';
+                                            $tt++;
+                                        }
+
+                                        if ($vld == 'd') {
+                                            if (strpos($vlr, '-')) {
+                                                $dt_born = substr($vlr, 0, strpos($vlr, '-'));
+                                                $dt_die = substr($vlr, strpos($vlr, '-') + 1, strlen($vlr));
+                                            } else {
+                                                $dt_born = $vlr;
+                                            }
+                                        }
+                                        break;
+                                    case '410' :
+                                        if ($vld == 'a') {
+                                            $vlr = $this -> frbr -> trata_autor($vlr);
+                                            $names[$vlr] = $tt;
+                                            $form = 'Corporate Body';
+                                            $tt++;
+                                        }
+
+                                        if ($vld == 'b') {
+
+                                        }
+                                        break;
                                     case '710' :
                                         if ($vld == 'a') {
                                             $vlr = $this -> frbr -> trata_autor($vlr);
@@ -1249,7 +1389,9 @@ class frbr extends CI_model {
                                         }
                                         break;
                                     case '375' :
-                                        $genre = $vlr;
+                                        if (strlen($genere) == 0) {
+                                            $genere = $vlr;
+                                        }
                                         break;
                                     default :
                                         //  $sx .= '<tt>' . $tag . '</tt><br>';
@@ -1261,12 +1403,15 @@ class frbr extends CI_model {
                 }
             }
         }
-
         /* create */
         if ((count($names) > 0) and (strlen($id) > 0)) {
             $tt = 0;
             foreach ($names as $autor => $value) {
-                //echo '<br>'.$autor.'=>'.$value;
+                //echo '<br>'.$tt.'-'.$autor.'=>'.$value;
+                $hd = 0;
+                if (substr($autor, 0, 1) == '*') { $hd = 1;
+                }
+                $autor = troca($autor, '*', '');
                 if ($tt == 0) {
                     $name_pref = $autor;
                     $id_t = $this -> frbr -> frbr_name($name_pref);
@@ -1286,26 +1431,70 @@ class frbr extends CI_model {
                     //echo mb_detect_encoding($name_pref).' '.$name_pref;
 
                     $id_t = $this -> frbr -> frbr_name($name_pref);
-                    $this -> frbr -> set_propriety($p_id, 'altLabel', 0, $id_t);
+                    if ($hd == 1) {
+                        $this -> frbr -> set_propriety($p_id, 'hiddenLabel', 0, $id_t);
+                    } else {
+                        $this -> frbr -> set_propriety($p_id, 'altLabel', 0, $id_t);
+                    }
                 }
                 $tt++;
             }
+            /* 375 genero */
+            if (strlen($genere) > 0) {
+                $p_id2 = $this -> frbr -> find_conecpt($genere);
+                if ($p_id2 > 0) {
+                    $this -> frbr -> set_propriety($p_id, 'hasGender', $p_id2, 0);
+                } else {
+                    $sx .= '
+                                        <div class="alert alert-danger" role="alert">
+                                          <strong>Warning!</strong> Genero não localizado <b>' . $genere . '</b>
+                                        </div>
+                                ';
+                }
+
+            }
+
             $sx .= '
                         <div class="alert alert-success" role="alert">
                           <strong>Sucesso!</strong> Importação finalizada com sucesso.
                         </div>
                 ';
             $sx .= '<h1>' . $name_pref . '</h1>';
-            $sx .= '<h3>' . $dt_born . '</h3>';
-            $sx .= '<h4>' . $dt_die . '</h4>';
+            $sx .= '<h4>' . $dt_born . '-' . $dt_die . '</h4>';
+            if (strlen($genere) > 0) {
+                $sx .= 'Genero: ' . $genere;
+            }
+            $sx .= '<ul>';
+            foreach ($names as $autor => $value) {
+                $sx .= '<li>' . $autor . '</li>' . cr();
+            }
+            $sx .= '</ul>';
             $sx .= '<br>';
             return ($sx);
         }
     }
 
+    function find_conecpt($term) {
+        $rs = 0;
+        $sql = "select * from rdf_data
+                        INNER JOIN rdf_name ON d_literal = id_n
+                        WHERE n_name like '%" . $term . "%' order by id_d limit 1";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        if (count($rlt) > 0) {
+            $line = $rlt[0];
+            $rs = $line['d_r1'];
+        }
+        return ($rs);
+    }
+
     function trata_autor($n) {
         $n = (string)$n;
         $n = trim($n);
+
+        //echo '<h3>'.$n.'</h3>';
+        //echo hex_dump($n);
+
         # RULE 3 - special chars
         for ($r = 1; $r < 32; $r++) {
             $n = troca($n, chr($r), '');
@@ -1342,38 +1531,63 @@ class frbr extends CI_model {
     }
 
     function form_class() {
-        $cp = 'id_sc, tb1.c_class as c1, tb2.c_class as c2, tb3.c_class as c3';
+        $admin = perfil("#ADM");
+        
+        $cp = 'id_sc, sc_ativo, sc_ord, tb1.c_class as c1, tb2.c_class as c2, tb3.c_class as c3';
         $sql = "select $cp from rdf_form_class 
                         INNER JOIN rdf_class as tb1 ON sc_class = tb1.id_c
                         INNER JOIN rdf_class as tb2 ON sc_propriety = tb2.id_c
                         LEFT JOIN rdf_class as tb3 ON sc_range = tb3.id_c
-                        order by c1, c2, c3
+                        order by c1, sc_ord, c2, c3
                         ";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
-        $sx = '<table width="100%">' . cr();
+        $sx = '';
+        $link = '<a href="#" class="btn btn-secondary" onclick="newwin(\''.base_url('index.php/main/pop_config/forms/').'\',800,600);">Novo registro</a>';
+        $sx .= '<br>'.$link;
+        $sx .= '<table width="100%">' . cr();
         $sx .= '<tr style="border-bottom: 2px solid #505050;">
                         <th width="30%">' . msg('resource') . '</th>
                         <th width="35%">' . msg('propriety') . '</th>
                         <th width="30%">' . msg('range') . '</th>
-                        <th width="5%">' . msg('ed') . '</th>
-                    </tr>' . cr();
+                        <th width="5%">' . msg('ed') . '</th>';
+        if ($admin == 1)
+            {
+                    $sx .= '            <th>ac</th>' . cr();        
+            }
+        $sx .= '            </tr>' . cr();
         $x = '';
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
+            $st = $line['sc_ativo'];
+            if ($st == '1')
+                {
+                    $st = '';
+                    $sta = '';
+                } else {
+                    $st = '<s>';
+                    $sta = '</s>';
+                }
 
+                
+            
             if ($x == $line['c1']) {
                 $sx .= '<tr style="border-top: 1px solid #a0a0a0;">';
                 $sx .= '<td></td>';
             } else {
-                $sx .= '<tr style="border-top: 3px solid #a0a0a0;">';
+                $sx .= '<tr style="border-top: 3px solid #a0a0a0; '.$st.'">';
                 $x = $line['c1'];
-                $sx .= '<td><b>' . $line['c1'] . '</b></td>';
+                $sx .= '<td><b>' . $st.$line['c1'].$sta . '</b></td>';
             }
 
-            $sx .= '<td>' . msg($line['c2']) . '</td>';
-            $sx .= '<td>' . msg($line['c3']) . '</td>';
-            $sx .= '<td align="center">' . msg($line['id_sc']) . '</td>';
+            $sx .= '<td>' . $st.msg($line['c2']) . ' (' . $line['c2'] . ')'.$sta.'</td>';
+            $sx .= '<td>' . $st.msg($line['c3']).$sta . '</td>';
+            $sx .= '<td align="center">'.$st . ($line['sc_ord']).$sta . '</td>';
+            if ($admin == 1)
+                {
+                    $link = '<a href="#" onclick="newwin(\''.base_url('index.php/main/pop_config/forms/'.$line['id_sc']).'\',800,600);">[ed]</a>';
+                    $sx .= '<td align="center">' . $link . '</td>';
+                }
             $sx .= '</tr>' . cr();
         }
         $sx .= '</table>';
@@ -1386,7 +1600,7 @@ class frbr extends CI_model {
                             from rdf_concept 
                             where cc_class = " . $class . "
                             ORDER BY id_cc desc
-                            limit 12
+                            limit 18
                             ";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
@@ -1417,13 +1631,13 @@ class frbr extends CI_model {
                 case 'hasTitle' :
                     $title = $line['n_name'];
                     break;
-                case 'hasOrganizator':
+                case 'hasOrganizator' :
                     if (strlen($autor) > 0) {
                         $autor .= '; ';
                     }
-                    $autor .= $line['n_name'].' (org.)';
+                    $autor .= $line['n_name'] . ' (org.)';
                     break;
-                    
+
                 case 'hasAuthor' :
                     if (strlen($autor) > 0) {
                         $autor .= '; ';
@@ -1469,7 +1683,8 @@ class frbr extends CI_model {
         $sx .= $link;
         $title_nr = $title;
         $sz = 40;
-        if (strlen($title_nr) > $sz) { $title_nr = substr($title_nr,0,$sz).'...'; }
+        if (strlen($title_nr) > $sz) { $title_nr = substr($title_nr, 0, $sz) . '...';
+        }
         $sx .= '<img src="' . $img . '" class="img-fluid">' . cr();
         $sx .= '<span>' . $title_nr . '</span>';
         $sx .= '</a>';
@@ -1536,6 +1751,149 @@ class frbr extends CI_model {
         }
         return ($sx);
     }
+    function form_msg_ed($id='')
+        {
+            $form = new form;
+            $form->id = $id;
+            $cp = array();
+            array_push($cp,array('$H8','id_msg','',false,true));            
+            array_push($cp,array('$S100','msg_term',msg('label'),false,false));
+            array_push($cp,array('$S100','msg_label',msg('description'),true,true));
+            
+            $tela = $form->editar($cp,'msg');
+            
+            if ($form->saved)
+                {
+                    msg('MAKE_MESSAGES');
+                    $tela .= '
+                        <script>
+                            window.opener.location.reload();
+                            close();
+                        </script>
+                        ';
+                }
+            return($tela);
+            
+            
+        }
+    function form_class_ed($id)
+        {
+            $form = new form;
+            $form->id = $id;
+            $cp = array();
+            array_push($cp,array('$H8','id_sc','',false,true));
+            
+            $sqlc = "select * from rdf_class where c_type = 'C'";
+            $sqlp = "select * from rdf_class where c_type = 'P'";
+            array_push($cp,array('$Q id_c:c_class:'.$sqlc,'sc_class',msg('resource'),true,true));
+            array_push($cp,array('$Q id_c:c_class:'.$sqlp,'sc_propriety',msg('propriety'),true,true));
+            array_push($cp,array('$Q id_c:c_class:'.$sqlc,'sc_range',msg('range'),true,true));
+            array_push($cp,array('$[1:99]','sc_ord',msg('ordem'),true,true));
+            array_push($cp,array('$O 1:Ativo&0:Inativo','sc_ativo',msg('ativo'),true,true));
+            
+            $tela = $form->editar($cp,'rdf_form_class');
+            
+            if ($form->saved)
+                {
+                    $tela .= '
+                        <script>
+                            window.opener.location.reload();
+                            close();
+                        </script>
+                        ';
+                }
+            return($tela);
+        }
+    function rdf_update_set($id)
+        {
+            $date = date("Y-m-d");
+            $sql = "update rdf_concept set cc_status = 9, cc_update = '$date' where id_cc = ".$id;
+            $rlt = $this->db->query($sql);
+        }
+    function viaf_update()
+        {
+            $sx = '';
+            $date = date("Y-m-d");
+            $tela = '';
+            $class = $this->find_class('Person');
+            $wh = ' AND (cc_class = '.$class.') ';
+            
+            $sql = "select * from rdf_concept
+                        INNER JOIN rdf_name ON cc_pref_term = id_n
+                        WHERE cc_origin <> '' $wh AND (cc_update <> '$date' or cc_update is null)
+                        ORDER BY id_cc limit 1";
+            $rlt = $this->db->query($sql);
+            $rlt = $rlt->result_array();
+            if (count($rlt) > 0)
+                {
+                    $data = $rlt[0];
+                    $this->frbr->rdf_update_set($data['id_cc']);
+                    $url = $this->frbr->rdf_prefix($data['cc_origin']);
+                    $url .= $this->frbr->rdf_sufix($data['cc_origin']).'/#';
+                    $tela = $this->frbr->viaf_inport($url);
+                    $tela .= '<meta http-equiv="refresh" content="1;url='.base_url('index.php/main/config/authority/update').'" />';                               
+                }
+            return($tela);        
+        }
 
+    function authority_class()
+        {
+            $sx = '';
+            $class = $this->find_class('Person');
+            $wh = ' AND (cc_class = '.$class.') ';
+            
+            $sql = "select * from rdf_concept
+                        INNER JOIN rdf_name ON cc_pref_term = id_n
+                        WHERE cc_origin <> '' $wh
+                        ORDER BY cc_update DESC, n_name    
+                   ";
+            $rlt = $this->db->query($sql);
+            $rlt = $rlt->result_array();
+            $sx .= '<table width="100%">';
+            $sx .= '<tr>
+                        <th>'.msg('authority').'</th>
+                        <th>'.msg('conecpt').'</th>
+                        <th>'.msg('last_update').'</th>
+                        <th>'.msg('status').'</th>
+                    </tr>';
+            for ($r=0;$r < count($rlt);$r++)
+                {
+                    $line = $rlt[$r];
+                    
+                    $link = '<a href="'.base_url('index.php/main/v/'.$line['id_cc']).'" class="_new'.$line['id_cc'].'">';
+                    $linka = '</a>';
+                    
+                    $sx .= '<tr style="border-top: 1px solid #a0a0a0;">';
+                    $sx .= '<td>';
+                    $sx .= $link.$line['n_name'].$linka;
+                    $sx .= '</td>';
+                    
+                    $sx .= '<td>';
+                    $sx .= $link.$line['cc_origin'].$linka;
+                    $sx .= '</td>';
+                    
+                    $sx .= '<td>';
+                    $sx .= $link.stodbr($line['cc_update']).$linka;
+                    $sx .= '</td>'; 
+                    
+                    $sx .= '<td>';
+                    $sx .= msg('status_'.$line['cc_status']);
+                    $sx .= '</td>';                                       
+                                        
+                    $sx .= '</tr>';
+                }
+            $sx .= '</table>';
+            return($sx);
+        }
+    function btn_editar($id)
+    {
+        $sx = '<a href="'.base_url('index.php/main/a/'.$id).'" class="btn btn-secondary">editar</a>';
+        return($sx);    
+    }
+    function btn_update($id)
+    {
+        $sx = '<a href="'.base_url('index.php/main/authority_inport_rdf/'.$id).'" class="btn btn-secondary">atualizar</a>';
+        return($sx);    
+    }    
 }
 ?>

@@ -25,6 +25,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 $config['base_url'] = '';
 
+/********* METHODO READ FILE 
+ * file - read file with file_get_contents 
+ * curl - read file with CURL
+ */
+$config['readfile'] = 'file';
+
 /*
 |--------------------------------------------------------------------------
 | Index File

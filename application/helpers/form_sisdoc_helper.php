@@ -9,8 +9,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @category    Helpers
  * @author      Rene F. Gabriel Junior <renefgj@gmail.com>
  * @link        http://www.sisdoc.com.br/CodIgniter
- * @version     v0.17.10.21
+ * @version     v0.17.12.21
  */
+ 
+ /* 2017-12-21 function read_link($url) */
 $dd = array();
 
 /**
@@ -2671,4 +2673,69 @@ function hex_dump($data, $newline="\n")
   return($sx);
 }
 }
+
+        function trata_nome($name)
+            {
+                for ($r=0;$r <= 31;$r++)
+                    {
+                        $name = troca($name,chr($r),' ');
+                    }
+                while (strpos($name,'  '))
+                    {
+                        $name = troca($name,'  ',' ');
+                    }
+                $name = trim($name);
+                return($name);
+            }
+        function read_link($url)
+            {
+                global $CI;
+                $dt = $CI->config->config;
+                if (isset($dt['readfile']))
+                    {
+                        $read = $dt['readfile'];
+                    } else {
+                        $read = 'CURL';
+                    }
+                switch ($read)
+                    {
+                    case 'file':
+                        $contents = file_get_contents($url);
+                        break; 
+                    default:
+                        $curl = curl_init();
+                        curl_setopt($curl, CURLOPT_URL, $url);
+                        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt($curl, CURLOPT_HEADER, false);
+                        $data = curl_exec($curl);
+                        curl_close($curl);
+                        return($data);
+                        $ch = curl_init();
+                        curl_setopt ($ch, CURLOPT_URL, $url);
+                        curl_setopt ($ch, CURLOPT_CONNECTTIMEOUT, 5);
+                        curl_setopt ($ch, CURLOPT_RETURNTRANSFER, true);
+                        curl_setopt ($ch, CURLOPT_POST, 1);
+                        //curl_setopt ($ch, CURLOPT_POSTFIELDS, $data);   
+                        
+                        $contents = curl_exec($ch);
+                        if (curl_errno($ch)) {
+                            echo curl_error($ch);
+                            echo "\n<br />";
+                            $contents = '';
+                        } else {
+                            curl_close($ch);
+                        }
+                        if (!is_string($contents) || !strlen($contents)) {
+                            echo "Failed to get contents.";
+                            $contents = '';
+                        }
+                        if (strpos($contents,'encoding="UTF-8"') > 0)
+                            {
+                                $contents = troca($contents,'encoding="UTF-8"','encoding="ISO-8859-1"');
+                                $contents = utf8_decode($contents);
+                            }
+                        break;
+                        }
+                return($contents);              
+            }
 ?>
