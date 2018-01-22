@@ -421,8 +421,7 @@ if ( ! function_exists('show_error'))
 		{
 			$exit_status = 1; // EXIT_ERROR
 		}
-        echo "ERRO:".$status_code. '-'.$message;
-        exit;
+
 		$_error =& load_class('Exceptions', 'core');
 		echo $_error->show_error($heading, $message, 'error_general', $status_code);
 		exit($exit_status);
@@ -571,14 +570,10 @@ if ( ! function_exists('set_status_header'))
 
 		if (strpos(PHP_SAPI, 'cgi') === 0)
 		{
-			echo "####### ERRO: ".$code.' - '.$text;
-            exit;
 			header('Status: '.$code.' '.$text, TRUE);
 		}
 		else
 		{
-	        echo "####### ERRO: ".$code.' - '.$text;
-            exit;
 			$server_protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.1';
 			header($server_protocol.' '.$code.' '.$text, TRUE, $code);
 		}

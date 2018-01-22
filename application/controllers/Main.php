@@ -612,12 +612,12 @@ class Main extends CI_controller {
         $tela .= '  </div>' . cr();
         $tela .= '</div>' . cr();
 
+		/***************/
         $tela .= '<div class="row" style="margin-top: 30px;">' . cr();
         $tela .= '      <div class="col-md-2">';
         $tela .= '          <a href="https://viaf.org/" target="_new_viaf_' . date("dhs") . '" class="btn btn-secondary">
                             <img src="' . base_url('img/logo/logo_viaf.jpg') . '" class="img-fluid"></a>' . cr();
         $tela .= '      </div>' . cr();
-
         $tela .= '      <div class="col-md-10">' . cr();
         $tela .= msg('find_viaf');
         $tela .= '          <form method="post" action="' . base_url("index.php/main/authority/") . '">' . cr();
@@ -634,8 +634,8 @@ class Main extends CI_controller {
         $tela .= '          <span class="small">Ex: https://viaf.org/viaf/122976/#Souza,_Herbert_de</span>';
         $tela .= '      </div>' . cr();
         $tela .= '  </div>' . cr();
-        $tela .= '</div>' . cr();
-        https:
+        
+        //https:
         //viaf.org/viaf/170358043/#Silva,_Rubens_Ribeiro_Gonçalves_da
         /* recupera */
         $dd1 = get("search");
@@ -643,6 +643,38 @@ class Main extends CI_controller {
             $tela .= $this -> frbr -> recupera_nomes($dd1);
         }
 
+        /***********************************/
+        $tela .= '<div class="row" style="margin-top: 30px;">' . cr();
+        $tela .= '      <div class="col-md-2">';
+        $tela .= '          <a href="http://www.geonames.org/" target="_new_geonames_' . date("dhs") . '" class="btn btn-secondary">
+                            <img src="' . base_url('img/logo/logo_geonames.jpg') . '" class="img-fluid"></a>' . cr();
+        $tela .= '      </div>' . cr();
+
+        $tela .= '      <div class="col-md-10">' . cr();
+        $tela .= msg('find_geonames');
+        $tela .= '          <form method="post" action="' . base_url("index.php/main/authority/") . '">' . cr();
+        $tela .= '          ' . cr();
+        $tela .= '          <div class="input-group">
+                              <input type="text" name="ulr_geonames" value="" class="form-control">
+                              <input type="hidden" name="action" value="geonames_inport">
+                              <span class="input-group-btn">
+                                <input type="submit" name="acao"  class="btn btn-danger" value="' . msg('inport') . '">
+                              </span>
+                              
+                            </div>';
+        $tela .= '          </form>' . cr();
+        $tela .= '          <span class="small">Ex: https://viaf.org/viaf/122976/#Souza,_Herbert_de</span>';
+        $tela .= '      </div>' . cr();
+        $tela .= '  </div>' . cr();
+        $tela .= '</div>' . cr();
+        /// http://www.geonames.org/3448439/sao-paulo.html
+        /// http://sws.geonames.org/3448439/about.rdf       
+        /* recupera */
+        $dd1 = get("search");
+        if (strlen($dd1) > 0) {
+            $tela .= $this -> frbr -> recupera_geonames($dd1);
+        }
+		
         $data['content'] = $tela;
         $data['title'] = '';
         $this -> load -> view('content', $data);
@@ -650,11 +682,18 @@ class Main extends CI_controller {
         /***************** inport VIAF ***********/
         $acao = get("action");
         switch ($acao) {
+        	/***************** inport VIAF ***********/
             case 'viaf_inport' :
                 $url = get("ulr_viaf");
                 $data['content'] = $this -> frbr -> viaf_inport($url);
                 $this -> load -> view('content', $data);
                 break;
+        	/***************** inport GEONames ***********/
+            case 'geonames_inport' :
+                $url = get("ulr_geonames");
+                $data['content'] = $this -> frbr -> geonames_inport($url);
+                $this -> load -> view('content', $data);
+                break;				
             default :
                 echo $acao;
         }
@@ -899,7 +938,6 @@ class Main extends CI_controller {
             $form = trim(get("dd3"));
             if ((strlen($title) > 0) and (strlen($form) > 0)) {
                 $id_t = $this -> frbr -> frbr_name($title);
-                echo '<br>==>' . $id_t . '--' . $title;
                 $p_id = $this -> frbr -> rdf_concept($id_t, $form);
                 $this -> frbr -> set_propriety($p_id, 'prefLabel', 0, $id_t);
                 redirect(base_url('index.php/main/a/' . $p_id));
@@ -1043,12 +1081,10 @@ class Main extends CI_controller {
 
                     /************************** EXPRESSION ***/
                     $data['id'] = $id;
-                    echo "==>" . $id;
                     $tela .= $this -> frbr -> manifestation_show($id);
 
                     /************************** MANIFESTATION ***/
                     $data['id'] = $id;
-                    echo "==>" . $id;
                     $tela .= $this -> frbr -> manifestation_show($id);
 
                     /*********************************** ITEM ***/
