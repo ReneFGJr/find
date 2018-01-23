@@ -1979,6 +1979,75 @@ class frbr extends CI_model {
 		$sx = '<a href="' . base_url('index.php/main/authority_inport_rdf/' . $id) . '" class="btn btn-secondary">atualizar</a>';
 		return ($sx);
 	}
+	
+	function related($id)
+		{
+			$cp = "id_cc as cc, n_name as name, d_literal as lit";
+			$cp2 = '*';
+			$sql = "select $cp2 from (";						
+			$sql .= "select $cp, d_r1 as idr from rdf_data
+						INNER JOIN rdf_concept ON d_r1 = id_cc 
+						LEFT JOIN rdf_name ON cc_pref_term = id_n
+						WHERE d_r2 = ".round($id);
+			$sql .= " UNION ";						
+			$sql .= "select $cp, d_r2 as idr from rdf_data
+						INNER JOIN rdf_concept ON d_r2 = id_cc 
+						LEFT JOIN rdf_name ON cc_pref_term = id_n
+						WHERE d_r1 = ".round($id);
+			$sql .= ') as tabela ';
+			$sql .= 'LEFT JOIN rdf_concept as t2 ON t2.id_cc = idr 
+					 LEFT JOIN rdf_class ON cc_class = id_c';						
+						
+		$cp = '*';
+		$sql = "select $cp from rdf_data as rdata
+						INNER JOIN rdf_class as prop ON d_p = prop.id_c 
+						INNER JOIN rdf_concept ON d_r2 = id_cc 
+						INNER JOIN rdf_name on cc_pref_term = id_n
+						WHERE d_r1 = $id and d_r2 > 0";
+		$sql .= ' union ';
+		$sql .= "select $cp from rdf_data as rdata
+                        LEFT JOIN rdf_class as prop ON d_p = prop.id_c 
+                        LEFT JOIN rdf_concept ON d_r2 = id_cc 
+                        LEFT JOIN rdf_name on d_literal = id_n
+                        WHERE d_r1 = $id and d_r2 = 0";
+		$sql .= " order by c_order, c_class";
+								
+			$rlt = $this->db->query($sql);
+			$rlt = $rlt->result_array();
+			$sx = '<table width="100%" class="table">';
+			for ($r=0;$r < count($rlt);$r++)
+				{
+					$line = $rlt[$r];
+					
+					print_r($line);
+					echo '<hr>';
+					$link = '<a href="'.base_url('index.php/main/v/'.$line['d_r1']).'">';
+					$sx .= '<tr>';					
+					switch ($line['c_class'])
+						{
+						case 'Manifestation':
+							$id = $this->recover_work_with_manifestation($line['id_cc']);
+							$sx .= '<td width="150">';
+							$sx .= $this -> show_manifestation($id);
+							$sx .= '</td>';
+							break;
+						default:
+							$sx .= $link.$line['name'].'</a>';
+							$sx .= '</td>';												
+						}
+					$sx .= '</tr>';
+				}
+			$sx .= '</table>';
+			return($sx);
+		}
+		function recover_work_with_manifestation($id)
+			{
+				$prop = $this->find_class('Expression');
+				$sql = "select * from rdf_data as dt1 
+								where dt1.d_r2 = $id
+										and dt1.d_p = $prop";
+										echo $sql;
+			}
 
 }
 ?>

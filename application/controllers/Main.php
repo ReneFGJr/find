@@ -139,6 +139,10 @@ class Main extends CI_controller {
         $tela = $this -> frbr -> show($id);
         $tela .= '<hr>';
         $tela .= $this -> frbr -> form($id, $data);
+		
+		
+		$tela .= '<hr>';
+        $tela .= $this -> frbr -> related($id);
 
         $data['title'] = '';
         $data['content'] = $tela;
@@ -672,7 +676,7 @@ class Main extends CI_controller {
         /* recupera */
         $dd1 = get("search");
         if (strlen($dd1) > 0) {
-            $tela .= $this -> frbr -> recupera_geonames($dd1);
+            //$tela .= $this -> frbr -> recupera_geonames($dd1);
         }
 		
         $data['content'] = $tela;
@@ -1093,6 +1097,9 @@ class Main extends CI_controller {
                 default :
                     $data['skos'] = $this -> frbr -> le_data($id);
                     $tela .= $this -> load -> view('find/view/skos', $data, true);
+					
+					$tela .= '<hr>';
+			        $tela .= $this -> frbr -> related($id);					
                     break;
             }
             $data['content'] = '<h1>' . $class . '</h1>' . $tela;
