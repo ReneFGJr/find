@@ -142,4 +142,11 @@ $lang['hiddenLabel'] = 'hiddenLabel';
 $lang['ordem'] = 'ordem'; 
 $lang['ativo'] = 'ativo'; 
 $lang['find_geonames'] = 'Busca no GeoNames'; 
+$lang['hiddenNames'] = 'hiddenNames'; 
+$lang['Works'] = 'Works'; 
+$lang['hasColaboration'] = 'hasColaboration'; 
+$lang['item_add'] = 'item_add'; 
+$lang['Library'] = 'Library'; 
+$lang['Bookcase'] = 'Bookcase'; 
+$lang['hasRegisterId'] = 'Número tombo'; 
 ?>

@@ -408,6 +408,8 @@ class frbr extends CI_model {
 
 				$data['hd'] = $hd;
 				$sx .= $this -> load -> view('find/view/manifestation', $data, true);
+				echo '==>' . $idw;
+				$sx .= $this -> itens_show($idw);
 			}
 		} else {
 			$data['id'] = $ide;
@@ -532,14 +534,32 @@ class frbr extends CI_model {
 	}
 
 	function itens_show($id) {
-		$sx = '';
-		$item = $this -> frbr -> recupera_resource($id, 'isAppellationOfWork');
-		for ($r = 0; $r < count($item); $r++) {
-			$idw = $item[$r];
-			$data['id'] = $idw;
-			$data['item'] = $this -> le_data($idw);
+
+		$sql = "select d_r2 as item, d_r1 as manitestation, d_p as prop from rdf_data
+					INNER JOIN rdf_class ON d_p = id_c 
+					where c_class = 'isExemplifiedBy' and d_r1 = " . $id;
+		$rlt = $this -> db -> query($sql);
+		$man = $rlt -> result_array();
+
+		$sx = '<br>';
+		$sx .= '<div class="container"><div class="row">';
+		$sx .= '<div class="col-md-2 text-right" style="border-right: 4px solid #8080FF;">';
+		$sx .= '<tt style="font-size: 100%;">' . msg('Item') . '</tt>';
+		$sx .= '</div> ';
+		for ($y = 0; $y < count($man); $y++) {
+			$idm = $man[$y]['item'];
+			$data['id'] = $idm;
+			$data['item'] = $this -> le_data($idm);
 			$sx .= $this -> load -> view('find/view/item', $data, true);
+			if (perfil("#ADM")) {
+				$sx .= '<div class="col-md-2">';
+				$link = base_url('index.php/main/item_create/' . $idm);
+				$sx .= '<a href="' . $link . '" class="btn btn-secondary">' . msg('item_add') . '</a>';
+				$sx .= '</div> ';
+			}
 		}
+		$sx .= '</div> ';
+		$sx .= '</div> ';
 		return ($sx);
 	}
 
@@ -878,6 +898,24 @@ class frbr extends CI_model {
 			return ($line['id_cc']);
 		}
 		return ($id);
+	}
+
+	function item($idt, $tombo, $biblioteca, $bookcase) {
+		$lib = $this -> lib;
+		$nrz = strzero(round($tombo) + $lib, 11);
+		$nrz = $nrz . $this -> barcodes -> ean13($nrz);
+		$tombo = $nrz;
+		$item_nome = $this -> frbr -> frbr_name($tombo);
+
+		$p_id = $this -> frbr -> rdf_concept($item_nome, 'Item');
+		$this -> frbr -> set_propriety($p_id, 'hasRegisterId', 0, $item_nome);
+		echo "==>[" . $p_id . '] ' . $idt . ' ';
+		//$this -> frbr -> set_propriety($p_id, 'hasIdRegister', 0, $item);
+		$this -> frbr -> set_propriety($idt, 'isExemplifiedBy', $p_id, 0);
+
+		$this -> frbr -> set_propriety($p_id, 'isOwnedBy', $biblioteca, 0);
+		$this -> frbr -> set_propriety($p_id, 'hasLocatedIn', $bookcase, 0);
+		return (true);
 	}
 
 	function item_catalog() {
@@ -1515,13 +1553,13 @@ class frbr extends CI_model {
 							$name = trim($b);
 							echo '<h4>' . $name . '</h4>';
 							break;
-						case 'countryCode':
+						case 'countryCode' :
 							break;
-						case '':
+						case '' :
 							break;
-						case '':
+						case '' :
 							break;
-						case '':
+						case '' :
 							break;
 						case 'alternateName' :
 							foreach ($xml->Feature[$r]->alternateName[0]->attributes() as $c => $d) {
@@ -1531,23 +1569,22 @@ class frbr extends CI_model {
 					}
 				}
 			}
-			
+
 			/* create */
 			$id_t = $this -> frbr -> frbr_name($name);
 			$form = 'Place';
 			$id = 0;
 			$p_id = $this -> frbr -> rdf_concept($id_t, $form, $urlo);
 			$this -> frbr -> set_propriety($p_id, 'prefLabel', 0, $id_t);
-			
-			 if (strlen($lat) > 0) {
-			 $id_t = $this -> frbr -> frbr_name($lat);
-			 $this -> frbr -> set_propriety($p_id, 'lat', 0, $id_t);
-			 }
-			 if (strlen($long) > 0) {
-			 $id_t = $this -> frbr -> frbr_name($long);
-			 $this -> frbr -> set_propriety($p_id, 'long', 0, $id_t);
-			 }
 
+			if (strlen($lat) > 0) {
+				$id_t = $this -> frbr -> frbr_name($lat);
+				$this -> frbr -> set_propriety($p_id, 'lat', 0, $id_t);
+			}
+			if (strlen($long) > 0) {
+				$id_t = $this -> frbr -> frbr_name($long);
+				$this -> frbr -> set_propriety($p_id, 'long', 0, $id_t);
+			}
 
 			$sx .= '
                         <div class="alert alert-success" role="alert">
@@ -1979,25 +2016,24 @@ class frbr extends CI_model {
 		$sx = '<a href="' . base_url('index.php/main/authority_inport_rdf/' . $id) . '" class="btn btn-secondary">atualizar</a>';
 		return ($sx);
 	}
-	
-	function related($id)
-		{
-			$cp = "id_cc as cc, n_name as name, d_literal as lit";
-			$cp2 = '*';
-			$sql = "select $cp2 from (";						
-			$sql .= "select $cp, d_r1 as idr from rdf_data
+
+	function related($id) {
+		$cp = "id_cc as cc, n_name as name, d_literal as lit";
+		$cp2 = '*';
+		$sql = "select $cp2 from (";
+		$sql .= "select $cp, d_r1 as idr from rdf_data
 						INNER JOIN rdf_concept ON d_r1 = id_cc 
 						LEFT JOIN rdf_name ON cc_pref_term = id_n
-						WHERE d_r2 = ".round($id);
-			$sql .= " UNION ";						
-			$sql .= "select $cp, d_r2 as idr from rdf_data
+						WHERE d_r2 = " . round($id);
+		$sql .= " UNION ";
+		$sql .= "select $cp, d_r2 as idr from rdf_data
 						INNER JOIN rdf_concept ON d_r2 = id_cc 
 						LEFT JOIN rdf_name ON cc_pref_term = id_n
-						WHERE d_r1 = ".round($id);
-			$sql .= ') as tabela ';
-			$sql .= 'LEFT JOIN rdf_concept as t2 ON t2.id_cc = idr 
-					 LEFT JOIN rdf_class ON cc_class = id_c';						
-						
+						WHERE d_r1 = " . round($id);
+		$sql .= ') as tabela ';
+		$sql .= 'LEFT JOIN rdf_concept as t2 ON t2.id_cc = idr 
+					 LEFT JOIN rdf_class ON cc_class = id_c';
+
 		$cp = '*';
 		$sql = "select $cp from rdf_data as rdata
 						INNER JOIN rdf_class as prop ON d_p = prop.id_c 
@@ -2011,43 +2047,41 @@ class frbr extends CI_model {
                         LEFT JOIN rdf_name on d_literal = id_n
                         WHERE d_r1 = $id and d_r2 = 0";
 		$sql .= " order by c_order, c_class";
-								
-			$rlt = $this->db->query($sql);
-			$rlt = $rlt->result_array();
-			$sx = '<table width="100%" class="table">';
-			for ($r=0;$r < count($rlt);$r++)
-				{
-					$line = $rlt[$r];
-					
-					print_r($line);
-					echo '<hr>';
-					$link = '<a href="'.base_url('index.php/main/v/'.$line['d_r1']).'">';
-					$sx .= '<tr>';					
-					switch ($line['c_class'])
-						{
-						case 'Manifestation':
-							$id = $this->recover_work_with_manifestation($line['id_cc']);
-							$sx .= '<td width="150">';
-							$sx .= $this -> show_manifestation($id);
-							$sx .= '</td>';
-							break;
-						default:
-							$sx .= $link.$line['name'].'</a>';
-							$sx .= '</td>';												
-						}
-					$sx .= '</tr>';
-				}
-			$sx .= '</table>';
-			return($sx);
+
+		$rlt = $this -> db -> query($sql);
+		$rlt = $rlt -> result_array();
+		$sx = '<table width="100%" class="table">';
+		for ($r = 0; $r < count($rlt); $r++) {
+			$line = $rlt[$r];
+
+			print_r($line);
+			echo '<hr>';
+			$link = '<a href="' . base_url('index.php/main/v/' . $line['d_r1']) . '">';
+			$sx .= '<tr>';
+			switch ($line['c_class']) {
+				case 'Manifestation' :
+					$id = $this -> recover_work_with_manifestation($line['id_cc']);
+					$sx .= '<td width="150">';
+					$sx .= $this -> show_manifestation($id);
+					$sx .= '</td>';
+					break;
+				default :
+					$sx .= $link . $line['name'] . '</a>';
+					$sx .= '</td>';
+			}
+			$sx .= '</tr>';
 		}
-		function recover_work_with_manifestation($id)
-			{
-				$prop = $this->find_class('Expression');
-				$sql = "select * from rdf_data as dt1 
+		$sx .= '</table>';
+		return ($sx);
+	}
+
+	function recover_work_with_manifestation($id) {
+		$prop = $this -> find_class('Expression');
+		$sql = "select * from rdf_data as dt1 
 								where dt1.d_r2 = $id
 										and dt1.d_p = $prop";
-										echo $sql;
-			}
+		echo $sql;
+	}
 
 }
 ?>

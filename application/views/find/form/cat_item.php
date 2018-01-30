@@ -49,6 +49,22 @@ $dd4 = get("dd4");
             </select>
             
             <!---------------------------- forma de aquisicao -------------->
+            <br>Localização do livro na estante
+            <select name="dd3" class="form-control">
+                <option>::: Localização :::</option>
+            <?php
+                for ($r=0;$r < count(bookcase);$r++)
+                    {
+                        $line = $bookcase[$r];
+                        $chk = '';
+                        if ($line['id_n'] == $dd3) { $chk = 'selected'; }
+                        echo '<option value="'.$line['id_n'].'" '.$chk.'>'.$line['n_name'].'</option>'.cr();
+                    }
+            ?>
+            </select>            
+            <br>            
+            
+            <!---------------------------- forma de aquisicao -------------->
             <br>Forma de aquisição
             <select name="dd4" class="form-control">
                 <option>::: Forma de aquisição :::</option>

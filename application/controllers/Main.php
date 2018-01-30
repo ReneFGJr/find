@@ -463,7 +463,7 @@ class Main extends CI_controller {
 
         $this -> foot();
     }
-
+	
     public function expression_create($id = '') {
         $this -> load -> model('frbr');
 
@@ -542,6 +542,37 @@ class Main extends CI_controller {
             }
         }
 
+        $data['content'] = $tela;
+        $data['title'] = '';
+        $this -> load -> view('content', $data);
+
+        $this -> foot();
+    }
+
+    public function item_create($idt='') {
+    	$this -> load -> model('barcodes');
+        $this -> load -> model('frbr');
+
+        $this -> cab();
+        $data = array();
+        $data['form'] = $this -> frbr -> data_classes('Library');
+		$data['bookcase'] = $this -> frbr -> data_classes('Bookcase');
+		$data['acqu'] = $this -> frbr -> data_classes('TypeOfAcquisition');
+
+        $this -> load -> view('find/form/cat_item', $data);
+
+        /* save work */
+        if (strlen(get("action")) > 0) {
+            $tombo = trim(get("dd1"));
+            $biblioteca = trim(get("dd3"));
+            $bookcase = trim(get("dd4"));
+            if ((strlen($tombo) > 0) and (strlen($tombo) > 0) and (strlen($bookcase) > 0)) {
+                $idt = $this -> frbr -> item($idt, $tombo, $biblioteca, $bookcase);
+                //redirect(base_url('index.php/main/v/' . $idt));
+            }
+        }
+
+        $tela = '';
         $data['content'] = $tela;
         $data['title'] = '';
         $this -> load -> view('content', $data);
@@ -728,6 +759,7 @@ class Main extends CI_controller {
     }
 
     public function label_pdf($tp = '') {
+    	$this->load->library('tcpdf');
         $this -> load -> model('barcodes');
         // create new PDF document
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -752,17 +784,33 @@ class Main extends CI_controller {
         $style = array('position' => '', 'align' => 'C', 'stretch' => false, 'fitwidth' => true, 'cellfitalign' => '', 'border' => true, 'hpadding' => 'auto', 'vpadding' => 'auto', 'fgcolor' => array(0, 0, 0), 'bgcolor' => false, //array(255,255,255),
         'text' => true, 'font' => 'helvetica', 'fontsize' => 8, 'stretchtext' => 4);
         $nr = 1;
+		if (strlen($tp) > 0)
+			{
+				$nr = round($tp);
+			}
+		if (get("dd21"))
+			{
+				$nr = round(get("dd21"));
+			}
         $lib = $this -> lib;
-        for ($r = 0; $r < 13; $r++) {
+        for ($r = 0; $r < 5; $r++) {
             for ($q = 0; $q < 4; $q++) {
-                $y = $r * 20 + 15;
+                $y = $r * 55 + 15;
                 $x = $q * 50 + 10;
                 $pdf -> SetXY($x, $y);
 
-                $nrz = strzero($nr, 11);
-                $nrz = $nrz . $this -> barcodes -> ean13($nrz + $lib);
-                $nr = $nr + 1;
+                $nrz = strzero(round($nr) + $lib, 11);
+                $nrz = $nrz . $this -> barcodes -> ean13($nrz);
+                
+				$pdf->Image('img/logo_library.jpg', '', '', '45', '', 'JPG', '', '');
+				
+				$pdf -> SetXY($x, $y+18);
                 $pdf -> write1DBarcode($nrz, 'EAN13', '', '', '', 18, 0.4, $style, 'N');
+				
+				$pdf -> SetXY($x-10, $y+36);
+				$pdf->Cell(48, 0, 'Nr. tombo:'.round($nr), 0, 0, 'C', 0, '', 0);
+				
+				$nr = $nr + 1;
             }
         }
         // EAN 13
@@ -776,16 +824,17 @@ class Main extends CI_controller {
 
     public function label($tp = '') {
         $lib = $this -> lib;
+		$this->load->model('barcodes');
         $acao = get("dd0");
         switch($acao) {
             case '1' :
-                $data['dd1'] = round(get("dd1")) + $lib;
-                $data['dd2'] = get("dd2");
-                $data['dd3'] = get("dd3");
-                $data['col'] = get("dd4");
+                $data['nrtombo'] = round(get("dd1")) + $lib;
+                $data['pages'] = get("dd2");
+                $data['repetir'] = get("dd3");
+                $data['cols'] = get("dd4");
                 //$data['label'] = 'Sala de Leitura Propel';
                 $data['label'] = 'Propel - IFRGS';
-                $tela = $this -> load -> view('find/label/tombro_1', $data, true);
+                $tela = $this -> load -> view('find/label/tombo_1', $data, true);
 
                 $obj_pdf = new TCPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
                 $obj_pdf -> SetCreator(PDF_CREATOR);
@@ -868,6 +917,37 @@ class Main extends CI_controller {
         $tela .= '</div>';
         $tela .= '</div>';
         $tela .= '</form> ';
+		
+        /****************************************************************/
+        $tela .= '<br><br>';
+        $tela .= '<h4>Etiqueta de tombo</h4>';
+        $tela .= '<form method="get" action="'.base_url('index.php/main/label_pdf/').'">';
+        $tela .= '<div class="row">';
+        $tela .= '<div class="col-md-2"><span style="font-size: 75%"></span><br>';
+        $tela .= '<b>Sem etiquetas</b>';
+        $tela .= '</div>';
+
+        $tela .= '<div class="col-md-2"><span style="font-size: 75%">N. tombo incial</span><br>';
+        $tela .= '<input type="text" class="form-control" name="dd21">' . cr();
+        $tela .= '</div>';
+		
+        $tela .= '<div class="col-md-2"><span style="font-size: 75%">total de páginas</span><br>';
+        $tela .= '<select class="form-control" name="dd22">' . cr();
+        $dd12 = get("dd22");
+        for ($r = 1; $r < 100; $r++) {
+            $sel = '';
+            if ($r == $dd12) { $sel = 'selected';
+            }
+            $tela .= '  <option value="' . $r . '" ' . $sel . '>' . $r . '</option>' . cr();
+        }
+        $tela .= '</select>' . cr();
+        $tela .= '</div>';		
+
+        $tela .= '<div class="col-md-2"><span style="font-size: 75%">total de páginas</span><br>';
+        $tela .= '  <input type="submit" name="acao" value="Imprimir" class="btn btn-primary">';
+        $tela .= '</div>';
+        $tela .= '</div>';
+        $tela .= '</form> ';		
 
         /****************************************************************/
         $tela .= '<br><br>';
@@ -1063,10 +1143,10 @@ class Main extends CI_controller {
                         $ide = $exp[$r];
                         /************************************************** MANIFESTACAO ***/
                         $tela .= $this -> frbr -> manifestation_show($ide, 0, $id);
+						//$tela .= $this -> frbr -> itens_show($ide);
                     }
-
                     /****************************************************** ITENS *****/
-                    $tela .= $this -> frbr -> itens_show($id);
+                    
 
                     break;
                 case 'Item' :
