@@ -137,11 +137,11 @@ class Main extends CI_controller {
         $this -> cab();
 
         $tela = $this -> frbr -> show($id);
-        $tela .= '<hr>';
+        $tela .= '<h6>Form</h6>';
         $tela .= $this -> frbr -> form($id, $data);
 		
 		
-		$tela .= '<hr>';
+		$tela .= '<h6>Relacionado</h6>';
         $tela .= $this -> frbr -> related($id);
 
         $data['title'] = '';
@@ -558,17 +558,18 @@ class Main extends CI_controller {
         $data['form'] = $this -> frbr -> data_classes('Library');
 		$data['bookcase'] = $this -> frbr -> data_classes('Bookcase');
 		$data['acqu'] = $this -> frbr -> data_classes('TypeOfAcquisition');
-
+		$data['idt'] = $idt;
         $this -> load -> view('find/form/cat_item', $data);
 
         /* save work */
         if (strlen(get("action")) > 0) {
             $tombo = trim(get("dd1"));
-            $biblioteca = trim(get("dd3"));
-            $bookcase = trim(get("dd4"));
+            $biblioteca = trim(get("dd2"));
+            $bookcase = trim(get("dd3"));
+			$aquisicao = trim(get("dd4"));
             if ((strlen($tombo) > 0) and (strlen($tombo) > 0) and (strlen($bookcase) > 0)) {
-                $idt = $this -> frbr -> item($idt, $tombo, $biblioteca, $bookcase);
-                //redirect(base_url('index.php/main/v/' . $idt));
+                $idt = $this -> frbr -> item_add($idt, $tombo, $biblioteca, $bookcase, $aquisicao);
+                redirect(base_url('index.php/main/v/' . $idt));
             }
         }
 
@@ -698,7 +699,7 @@ class Main extends CI_controller {
                               
                             </div>';
         $tela .= '          </form>' . cr();
-        $tela .= '          <span class="small">Ex: https://viaf.org/viaf/122976/#Souza,_Herbert_de</span>';
+        $tela .= '          <span class="small">Ex: http://www.geonames.org/3448439/sao-paulo.html</span>';
         $tela .= '      </div>' . cr();
         $tela .= '  </div>' . cr();
         $tela .= '</div>' . cr();

@@ -23,9 +23,10 @@ $dd4 = get("dd4");
             
             <!---------------------------- local do item ------------------->
             <br>Local do Item
-            <select name="dd3" class="form-control">
+            <select name="dd2" class="form-control">
                 
             <?php
+            	
                 if (strlen($form) > 0)
                     {
                         echo '<option>::: Local do Item :::</option>';
@@ -33,36 +34,35 @@ $dd4 = get("dd4");
                             {
                                 $line = $form[$r];
                                 $chk = '';
-                                if ($line['id_n'] == $dd3) { $chk = 'selected'; }
-                                echo '<option value="'.$line['id_n'].'" '.$chk.'>'.$line['n_name'].'</option>'.cr();
+                                if ($line['id_n'] == $dd2) { $chk = 'selected'; }
+                                echo '<option value="'.$line['id_cc'].'" '.$chk.'>'.$line['n_name'].'</option>'.cr();
                             }
                     } else {
                         for ($r=0;$r < count($form);$r++)
                             {
                                 $line = $form[$r];
                                 $chk = '';
-                                if ($line['id_n'] == $dd3) { $chk = 'selected'; }
-                                echo '<option value="'.$line['id_n'].'" '.$chk.'>'.$line['n_name'].'</option>'.cr();
+                                if ($line['id_n'] == $dd2) { $chk = 'selected'; }
+                                echo '<option value="'.$line['id_cc'].'" '.$chk.'>'.$line['n_name'].'</option>'.cr();
                             }                        
                     }
             ?>
             </select>
             
-            <!---------------------------- forma de aquisicao -------------->
+            <!---------------------------- estante -------------->
             <br>Localização do livro na estante
             <select name="dd3" class="form-control">
-                <option>::: Localização :::</option>
-            <?php
-                for ($r=0;$r < count(bookcase);$r++)
+            <?php 
+            	if (count($bookcase) > 1) { echo '<option>::: Localização :::</option>'.cr(); }
+                for ($r=0;$r < count($bookcase);$r++)
                     {
                         $line = $bookcase[$r];
                         $chk = '';
                         if ($line['id_n'] == $dd3) { $chk = 'selected'; }
-                        echo '<option value="'.$line['id_n'].'" '.$chk.'>'.$line['n_name'].'</option>'.cr();
+                        echo '<option value="'.$line['id_cc'].'" '.$chk.'>'.$line['n_name'].'</option>'.cr();
                     }
             ?>
             </select>            
-            <br>            
             
             <!---------------------------- forma de aquisicao -------------->
             <br>Forma de aquisição
@@ -74,7 +74,7 @@ $dd4 = get("dd4");
                         $line = $acqu[$r];
                         $chk = '';
                         if ($line['id_n'] == $dd4) { $chk = 'selected'; }
-                        echo '<option value="'.$line['id_n'].'" '.$chk.'>'.$line['n_name'].'</option>'.cr();
+                        echo '<option value="'.$line['id_cc'].'" '.$chk.'>'.$line['n_name'].'</option>'.cr();
                     }
             ?>
             </select>            

@@ -20,7 +20,10 @@ for ($r=0;$r < count($work);$r++)
                 $title = trim($line['n_name']);
                 break;
             case 'hasSubtitle':
-                $subtitle = ': '.trim($line['n_name']);
+				if (strlen($line['n_name']) > 0)
+					{
+                		$subtitle = ': '.trim($line['n_name']);
+					}
                 break;
             case 'hasAuthor':
                 if (strlen($autor) > 0)

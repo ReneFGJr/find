@@ -2,7 +2,6 @@
 $dd1 = get("dd1");
 $dd2 = get("dd2");
 $dd3 = get("dd3");
-echo '===>'.$dd3;
 ?>
 <form method="post">
 <div class="container">
