@@ -34,7 +34,7 @@ for ($r=0;$r < count($expr);$r++)
             <span style="font-size: 100%; color: #000000;"><i><?php echo $language; ?></i></span>
             </a>            
             <?php if (perfil("#ADM")) {
-                   echo '<br><a href="'.base_url('index.php/main/a/' . $id).'" target="_new">editar</a>';
+                   echo '<br><a href="'.base_url('index.php/main/a/' . $id).'"  class="btn btn-secondary">editar</a>';
             }
             ?>            
             <br>

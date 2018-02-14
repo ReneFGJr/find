@@ -110,7 +110,7 @@ if ($hd == 0) {
 	<?php echo $localizacao; ?>
 	<br>
 	<?php if (perfil("#ADM")) {
-	       echo '<a href="'.base_url('index.php/main/a/' . $id).'" target="_new">editar</a>';
+	       echo '<a href="'.base_url('index.php/main/a/' . $id).'" class="btn btn-secondary">editar</a>';
 	}
 	?>
 </div>

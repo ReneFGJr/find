@@ -16,7 +16,7 @@ class Main extends CI_controller {
         $this -> load -> library('session');
         date_default_timezone_set('America/Sao_Paulo');
         /* Security */
-        //		$this -> security();
+        //      $this -> security();
 
     }
 
@@ -136,13 +136,29 @@ class Main extends CI_controller {
 
         $this -> cab();
 
-        $tela = $this -> frbr -> show($id);
-        $tela .= '<h6>Form</h6>';
+        //$tela = $this -> frbr -> show($id);
+        $tela = '';
+        $linkc = '<a href="'.base_url('index.php/main/v/'.$id).'" class="middle">';
+        $linkca = '</a>';
+        
+        if (strlen($data['n_name']) > 0)
+            {
+                $tela .= '<h2>'.$linkc.$data['n_name'].$linkca.'</h2>';
+            } 
+        $linkc = '<a href="'.base_url('index.php/main/v/'.$id).'" class="btn btn-secondary">';
+        $linkca = '</a>';
+
+                $tela .= '
+                    <div class="row">
+                    <div class="col-md-11">
+                    <h5>'.msg('class').': '.$data['c_class'].'</h5>
+                    </div>
+                    <div class="col-md-1 text-right">
+                    '.$linkc.msg('return').$linkca.'
+                    </div>
+                    </div>';            
+        //$tela .= $this -> frbr -> form($id, $data);
         $tela .= $this -> frbr -> form($id, $data);
-		
-		
-		$tela .= '<h6>Relacionado</h6>';
-        $tela .= $this -> frbr -> related($id);
 
         $data['title'] = '';
         $data['content'] = $tela;
@@ -281,7 +297,8 @@ class Main extends CI_controller {
 
     public function ajax($path = '', $id = '') {
         $this -> load -> model('frbr');
-        $tela = $this -> frbr -> ajax($path, $id);
+        $tela = '';
+        $tela .= $this -> frbr -> ajax($path, $id);
         echo $tela;
     }
 
@@ -364,6 +381,75 @@ class Main extends CI_controller {
         $val = get("q");
         $this -> frbr -> set_propriety($id, $path, $val, 0);
         echo '<meta http-equiv="refresh" content="0;">';
+        return ("");
+    }
+
+    public function ajax4($path = '', $id = '') {
+        $this -> load -> model('barcodes');
+        $this -> load -> model('frbr');
+        $val = get("q");
+        switch ($path) {
+            case 'hasPage' :
+                $val = sonumero($val);
+                if (strlen($val) > 0) {
+                    $name_pref = $val . ' p.';
+                    $id_t = $this -> frbr -> frbr_name($name_pref);
+                    $p_id = $this -> frbr -> rdf_concept($id_t, 'Pages', '');
+                    $this -> frbr -> set_propriety($p_id, 'prefLabel', 0, $id_t);
+                    $this -> frbr -> set_propriety($id, $path, $p_id, 0);
+                    echo '<meta http-equiv="refresh" content="0;">';
+                } else {
+                    $tela = '
+                                <div class="alert alert-danger" role="alert">
+                                  <strong>Error! (131)</strong> Numeração inválida "' . get("q") . '"
+                                </div>
+                                ';
+                    echo $tela;  
+                }
+                break;
+            case 'hasISBN' :
+                $val = sonumero($val);
+                $dv = $this -> barcodes -> isbn13($val);
+                if (substr($val, strlen($val), 1) != $dv) {
+                    $tela = '
+                                <div class="alert alert-danger" role="alert">
+                                  <strong>Error! (130)</strong> Número do ISBN inválido "' . $val . '"
+                                </div>
+                                ';
+                    echo $tela;
+                } else {
+                    $name_pref = $val;
+                    $id_t = $this -> frbr -> frbr_name($name_pref);
+                    $p_id = $this -> frbr -> rdf_concept($id_t, 'ISBN', '');
+                    $this -> frbr -> set_propriety($p_id, 'prefLabel', 0, $id_t);
+                    $this -> frbr -> set_propriety($id, 'hasISBN', $p_id, 0);
+                    echo '<meta http-equiv="refresh" content="0;">';
+                }
+                break;
+            case 'hasTitleAlternative' :
+                $val = trim($val);
+                $dv = $this -> barcodes -> isbn13($val);
+                if (strlen($val) == 0) {
+                    $tela = '
+                                <div class="alert alert-danger" role="alert">
+                                  <strong>Error! (132)</strong> Título inválido "' . $val . '"
+                                </div>
+                                ';
+                    echo $tela;
+                } else {
+                    $name_pref = $val;
+                    $id_t = $this -> frbr -> frbr_name($name_pref);
+                    //$p_id = $this -> frbr -> rdf_concept($id_t, 'ISBN', '');
+                    //$this -> frbr -> set_propriety($p_id, 'prefLabel', 0, $id_t);
+                    $this -> frbr -> set_propriety($id, 'hasTitleAlternative', 0, $id_t);
+                    echo '<meta http-equiv="refresh" content="0;">';
+                }
+                break;                
+        }
+
+        //$this -> frbr -> set_propriety($id, $path, $val, 0);
+        //echo '<meta http-equiv="refresh" content="0;">';
+        //echo '==>' . $path . '=' . $id . '=' . $val;
         return ("");
     }
 
@@ -463,7 +549,7 @@ class Main extends CI_controller {
 
         $this -> foot();
     }
-	
+
     public function expression_create($id = '') {
         $this -> load -> model('frbr');
 
@@ -549,16 +635,16 @@ class Main extends CI_controller {
         $this -> foot();
     }
 
-    public function item_create($idt='') {
-    	$this -> load -> model('barcodes');
+    public function item_create($idt = '') {
+        $this -> load -> model('barcodes');
         $this -> load -> model('frbr');
 
         $this -> cab();
         $data = array();
         $data['form'] = $this -> frbr -> data_classes('Library');
-		$data['bookcase'] = $this -> frbr -> data_classes('Bookcase');
-		$data['acqu'] = $this -> frbr -> data_classes('TypeOfAcquisition');
-		$data['idt'] = $idt;
+        $data['bookcase'] = $this -> frbr -> data_classes('Bookcase');
+        $data['acqu'] = $this -> frbr -> data_classes('TypeOfAcquisition');
+        $data['idt'] = $idt;
         $this -> load -> view('find/form/cat_item', $data);
 
         /* save work */
@@ -566,7 +652,7 @@ class Main extends CI_controller {
             $tombo = trim(get("dd1"));
             $biblioteca = trim(get("dd2"));
             $bookcase = trim(get("dd3"));
-			$aquisicao = trim(get("dd4"));
+            $aquisicao = trim(get("dd4"));
             if ((strlen($tombo) > 0) and (strlen($tombo) > 0) and (strlen($bookcase) > 0)) {
                 $idt = $this -> frbr -> item_add($idt, $tombo, $biblioteca, $bookcase, $aquisicao);
                 redirect(base_url('index.php/main/v/' . $idt));
@@ -648,7 +734,7 @@ class Main extends CI_controller {
         $tela .= '  </div>' . cr();
         $tela .= '</div>' . cr();
 
-		/***************/
+        /***************/
         $tela .= '<div class="row" style="margin-top: 30px;">' . cr();
         $tela .= '      <div class="col-md-2">';
         $tela .= '          <a href="https://viaf.org/" target="_new_viaf_' . date("dhs") . '" class="btn btn-secondary">
@@ -670,7 +756,7 @@ class Main extends CI_controller {
         $tela .= '          <span class="small">Ex: https://viaf.org/viaf/122976/#Souza,_Herbert_de</span>';
         $tela .= '      </div>' . cr();
         $tela .= '  </div>' . cr();
-        
+
         //https:
         //viaf.org/viaf/170358043/#Silva,_Rubens_Ribeiro_Gonçalves_da
         /* recupera */
@@ -704,13 +790,13 @@ class Main extends CI_controller {
         $tela .= '  </div>' . cr();
         $tela .= '</div>' . cr();
         /// http://www.geonames.org/3448439/sao-paulo.html
-        /// http://sws.geonames.org/3448439/about.rdf       
+        /// http://sws.geonames.org/3448439/about.rdf
         /* recupera */
         $dd1 = get("search");
         if (strlen($dd1) > 0) {
             //$tela .= $this -> frbr -> recupera_geonames($dd1);
         }
-		
+
         $data['content'] = $tela;
         $data['title'] = '';
         $this -> load -> view('content', $data);
@@ -718,18 +804,18 @@ class Main extends CI_controller {
         /***************** inport VIAF ***********/
         $acao = get("action");
         switch ($acao) {
-        	/***************** inport VIAF ***********/
+            /***************** inport VIAF ***********/
             case 'viaf_inport' :
                 $url = get("ulr_viaf");
                 $data['content'] = $this -> frbr -> viaf_inport($url);
                 $this -> load -> view('content', $data);
                 break;
-        	/***************** inport GEONames ***********/
+            /***************** inport GEONames ***********/
             case 'geonames_inport' :
                 $url = get("ulr_geonames");
                 $data['content'] = $this -> frbr -> geonames_inport($url);
                 $this -> load -> view('content', $data);
-                break;				
+                break;
             default :
                 echo $acao;
         }
@@ -760,7 +846,7 @@ class Main extends CI_controller {
     }
 
     public function label_pdf($tp = '') {
-    	$this->load->library('tcpdf');
+        $this -> load -> library('tcpdf');
         $this -> load -> model('barcodes');
         // create new PDF document
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -785,14 +871,12 @@ class Main extends CI_controller {
         $style = array('position' => '', 'align' => 'C', 'stretch' => false, 'fitwidth' => true, 'cellfitalign' => '', 'border' => true, 'hpadding' => 'auto', 'vpadding' => 'auto', 'fgcolor' => array(0, 0, 0), 'bgcolor' => false, //array(255,255,255),
         'text' => true, 'font' => 'helvetica', 'fontsize' => 8, 'stretchtext' => 4);
         $nr = 1;
-		if (strlen($tp) > 0)
-			{
-				$nr = round($tp);
-			}
-		if (get("dd21"))
-			{
-				$nr = round(get("dd21"));
-			}
+        if (strlen($tp) > 0) {
+            $nr = round($tp);
+        }
+        if (get("dd21")) {
+            $nr = round(get("dd21"));
+        }
         $lib = $this -> lib;
         for ($r = 0; $r < 5; $r++) {
             for ($q = 0; $q < 4; $q++) {
@@ -802,16 +886,16 @@ class Main extends CI_controller {
 
                 $nrz = strzero(round($nr) + $lib, 11);
                 $nrz = $nrz . $this -> barcodes -> ean13($nrz);
-                
-				$pdf->Image('img/logo_library.jpg', '', '', '45', '', 'JPG', '', '');
-				
-				$pdf -> SetXY($x, $y+18);
+
+                $pdf -> Image('img/logo_library.jpg', '', '', '45', '', 'JPG', '', '');
+
+                $pdf -> SetXY($x, $y + 18);
                 $pdf -> write1DBarcode($nrz, 'EAN13', '', '', '', 18, 0.4, $style, 'N');
-				
-				$pdf -> SetXY($x-10, $y+36);
-				$pdf->Cell(48, 0, 'Nr. tombo:'.round($nr), 0, 0, 'C', 0, '', 0);
-				
-				$nr = $nr + 1;
+
+                $pdf -> SetXY($x - 10, $y + 36);
+                $pdf -> Cell(48, 0, 'Nr. tombo:' . round($nr), 0, 0, 'C', 0, '', 0);
+
+                $nr = $nr + 1;
             }
         }
         // EAN 13
@@ -825,7 +909,7 @@ class Main extends CI_controller {
 
     public function label($tp = '') {
         $lib = $this -> lib;
-		$this->load->model('barcodes');
+        $this -> load -> model('barcodes');
         $acao = get("dd0");
         switch($acao) {
             case '1' :
@@ -841,13 +925,13 @@ class Main extends CI_controller {
                 $obj_pdf -> SetCreator(PDF_CREATOR);
                 $title = "Etiqueta Bibliográfica";
                 $obj_pdf -> SetTitle('Bibliográfica');
-                //	$obj_pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, $title, "Monthly Report");
-                //	$obj_pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-                //	$obj_pdf -> setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-                //	$obj_pdf -> SetDefaultMonospacedFont('helvetica');
-                //	$obj_pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-                //	$obj_pdf -> SetFooterMargin(PDF_MARGIN_FOOTER);
-                //	$obj_pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+                //  $obj_pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, $title, "Monthly Report");
+                //  $obj_pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+                //  $obj_pdf -> setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+                //  $obj_pdf -> SetDefaultMonospacedFont('helvetica');
+                //  $obj_pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+                //  $obj_pdf -> SetFooterMargin(PDF_MARGIN_FOOTER);
+                //  $obj_pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
                 //$obj_pdf -> SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
                 $obj_pdf -> SetFont('helvetica', '', 9);
                 $obj_pdf -> setFontSubsetting(false);
@@ -918,11 +1002,11 @@ class Main extends CI_controller {
         $tela .= '</div>';
         $tela .= '</div>';
         $tela .= '</form> ';
-		
+
         /****************************************************************/
         $tela .= '<br><br>';
         $tela .= '<h4>Etiqueta de tombo</h4>';
-        $tela .= '<form method="get" action="'.base_url('index.php/main/label_pdf/').'">';
+        $tela .= '<form method="get" action="' . base_url('index.php/main/label_pdf/') . '">';
         $tela .= '<div class="row">';
         $tela .= '<div class="col-md-2"><span style="font-size: 75%"></span><br>';
         $tela .= '<b>Sem etiquetas</b>';
@@ -931,7 +1015,7 @@ class Main extends CI_controller {
         $tela .= '<div class="col-md-2"><span style="font-size: 75%">N. tombo incial</span><br>';
         $tela .= '<input type="text" class="form-control" name="dd21">' . cr();
         $tela .= '</div>';
-		
+
         $tela .= '<div class="col-md-2"><span style="font-size: 75%">total de páginas</span><br>';
         $tela .= '<select class="form-control" name="dd22">' . cr();
         $dd12 = get("dd22");
@@ -942,13 +1026,13 @@ class Main extends CI_controller {
             $tela .= '  <option value="' . $r . '" ' . $sel . '>' . $r . '</option>' . cr();
         }
         $tela .= '</select>' . cr();
-        $tela .= '</div>';		
+        $tela .= '</div>';
 
         $tela .= '<div class="col-md-2"><span style="font-size: 75%">total de páginas</span><br>';
         $tela .= '  <input type="submit" name="acao" value="Imprimir" class="btn btn-primary">';
         $tela .= '</div>';
         $tela .= '</div>';
-        $tela .= '</form> ';		
+        $tela .= '</form> ';
 
         /****************************************************************/
         $tela .= '<br><br>';
@@ -1106,13 +1190,38 @@ class Main extends CI_controller {
     public function v($id) {
         $this -> load -> model('frbr');
         $this -> cab();
-
         $data = $this -> frbr -> le($id);
         if (count($data) == 0) {
             $this -> load -> view('error', $data);
         } else {
+        $tela = '';
+        if (strlen($data['n_name']) > 0)
+            {
+                $tela .= '<div class="row">';
+                $tela .= '<div class="col-md-12">';
+                $linkc = '<a href="'.base_url('index.php/main/v/'.$id).'" class="middle">';
+                $linkca = '</a>';
+                $tela .= '<h2>'.$linkc.$data['n_name'].$linkca.'</h2>';
+                $tela .= '</div>';
+                $tela .= '</div>';
+                
+            }
+            /******** line #2 ***********/
+            $tela .= '<div class="row">';
+            $tela .= '<div class="col-md-11">';            
+            $tela .= '<h5>'.msg('Class').': '.$data['c_class'].'</h5>';
+            $tela .= '</div>';             
+            $tela .= '<div class="col-md-1 text-right">';
+            if (perfil("#ADMIN"))
+                {
+                    $tela .= '<a href="'.base_url('index.php/main/a/'.$id).'" class="btn btn-secondary">'.msg('edit').'</a>';
+                }                
+            $tela .= '</div>';
+            $tela .= '</div>';
+            
+            $tela .= '<hr>';
             $class = trim($data['c_class']);
-            $tela = '';
+            
             switch ($class) {
                 case 'Person' :
                     $tela = $this -> frbr -> person_show($id);
@@ -1134,21 +1243,23 @@ class Main extends CI_controller {
 
                     break;
                 case 'Work' :
+                    /* Modo 2 */                    
+                    $tela .= $this -> frbr -> work_show_2($id);
+                    
                     /****************************************************** WORK *******/
-                    $tela .= $this -> frbr -> work_show($id);
+                    //$tela .= $this -> frbr -> work_show($id);
 
                     /************************************************** EXPRESSION ***/
-                    $tela .= $this -> frbr -> expression_show($id);
-                    $exp = $this -> frbr -> expressions($id);
-                    for ($r = 0; $r < count($exp); $r++) {
-                        $ide = $exp[$r];
+                    //$tela .= $this -> frbr -> expression_show($id);
+                    //$exp = $this -> frbr -> expressions($id);
+                    //for ($r = 0; $r < count($exp); $r++) {
+                    //    $ide = $exp[$r];
                         /************************************************** MANIFESTACAO ***/
-                        $tela .= $this -> frbr -> manifestation_show($ide, 0, $id);
-						//$tela .= $this -> frbr -> itens_show($ide);
-                    }
-                    /****************************************************** ITENS *****/
+                    //    $tela .= $this -> frbr -> manifestation_show($ide, 0, $id);
+                        //$tela .= $this -> frbr -> itens_show($ide);
+                    //}
+                    /****************************************************** ITENS *****/                    
                     
-
                     break;
                 case 'Item' :
                     $data = array();
@@ -1176,14 +1287,10 @@ class Main extends CI_controller {
                     $tela .= $this -> load -> view('find/view/item', $data, true);
                     break;
                 default :
-                    $data['skos'] = $this -> frbr -> le_data($id);
-                    $tela .= $this -> load -> view('find/view/skos', $data, true);
-					
-					$tela .= '<hr>';
-			        $tela .= $this -> frbr -> related($id);					
+                    $tela .= $this -> frbr -> related($id);
                     break;
             }
-            $data['content'] = '<h1>' . $class . '</h1>' . $tela;
+            $data['content'] = $tela;
             $this -> load -> view('content', $data);
         }
         $this -> foot();

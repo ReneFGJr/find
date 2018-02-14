@@ -168,4 +168,10 @@ $lang['hasSerieName'] = 'Nome da série';
 $lang['SerieName'] = 'SerieName'; 
 $lang['hasAdaptedBy'] = 'Adaptação de'; 
 $lang['hasIncludedIn'] = 'Incluído na publicação (itens)'; 
+$lang['edit_data'] = 'edit_data'; 
+$lang['edit'] = 'edit'; 
+$lang['class'] = 'Classe'; 
+$lang['return'] = 'return'; 
+$lang['s.l.'] = 's.l.'; 
+$lang['[s.l.]'] = 'Sem local'; 
 ?>

@@ -18,13 +18,15 @@ $dd3 = get("dd3");
             <div class="col-md-2 text-right" style="border-right: 4px solid #8080FF;">                
             </div>          
                 <?php
+                
                 for ($r = 0; $r < count($form); $r++) {
                     $l = $form[$r];
+                    echo '<hr>';
                     echo '<div class="col-md-1">';
                     echo '</div>';
                     
                     echo '<div class="col-md-2 btn btn-secondary">';
-                    echo '<input type="radio" name="dd2" value="' . $l[$r]['id'] . '"> ';
+                    echo '<input type="radio" name="dd2" value="' . $l[0]['id'] . '"> ';
                     echo '<b>' . $l[0]['name'] . '</b>';
                     echo '<br><i>' . $l[1]['name'] . '</i>';
                     echo '</div>';

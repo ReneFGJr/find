@@ -1,5 +1,28 @@
 <?php
 class barcodes extends CI_model {
+    function isbn13($n)
+        {
+            // 9 7 8 0 3 0 6 4 0 6 1 5
+            $a = 1;
+            $vt = 0;
+            $n = sonumero($n);
+            for ($r=0;$r < strlen($n);$r++)
+                {
+                   $vt = $vt + round(substr($n,$r,1)) * $a;
+                   //echo '<br>'.substr($n,$r,1).'x'.$a.'='.$vt;
+                   if ($a == 1)
+                    { $a = 3; } else { $a = 1; } 
+                    
+                }
+           /*******************/
+           while ($vt >= 10)
+                { $vt = $vt - 10; }
+           if ($vt > 0)
+            {
+                $vt = 10 - $vt;
+            }
+           return($vt);
+        }
 	function mod11($numero = "") {
 		$resto2 = modulo_11($numero, 9, 1);
 		$digito = 11 - $resto2;
