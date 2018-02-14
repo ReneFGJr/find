@@ -1944,7 +1944,6 @@ class frbr extends CI_model {
     function show_manifestation($id = '') {
         $img = base_url('img/no_cover.png');
         $data = $this -> le_data($id);
-        //print_r($data);
 
         $title = '';
         $autor = '';
@@ -2299,6 +2298,25 @@ class frbr extends CI_model {
 										and dt1.d_p = $prop";
         echo $sql;
     }
-
+    function bookcase($id='',$prop='hasClassificationCDU')
+    {
+        $propid = $this->find_class($prop);
+        $sql = "select * from rdf_data
+                    INNER JOIN rdf_concept ON d_r2 = id_cc
+                    INNER JOIN rdf_name ON cc_pref_term = id_n 
+                    where d_p = ".$propid."
+                    ORDER BY n_name";
+        $rlt = $this->db->query($sql);
+        $rlt = $rlt->result_array();
+        $sx = '';
+        for ($r=0;$r < count($rlt);$r++)
+            {
+                $line = $rlt[$r];
+                $idm = $line['d_r1'];
+                $note = $line['n_name'];
+                $sx .= $this->frbr->show_manifestation($idm);                
+            }
+        return($sx);
+    }
 }
 ?>

@@ -55,8 +55,9 @@ class Main extends CI_controller {
         /*************************** find */
         $gets = array_merge($_POST, $_GET);
         $tela = $this -> frbr -> search($gets);
+        $tela .= $this->frbr->bookcase();
 
-        $tela .= $this -> frbr -> show_works();
+        //$tela .= $this -> frbr -> show_works();
 
         $data['content'] = $tela;
         $this -> load -> view('content', $data);
