@@ -7,8 +7,16 @@ $dd4 = get("dd4");
 <form method="post">
 <div class="container">
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-11">
             <h3>ITEM</h3>
+        </div>
+        <div class="col-md-1">
+        	<?php
+        		if (strlen($idw) > 0)
+					{
+						echo '<a href="'.base_url('index.php/main/v/'.$idw).'" class="btn btn-secondary">voltar</a>';
+					}
+        	?>
         </div>
     </div>
     <div class="row">

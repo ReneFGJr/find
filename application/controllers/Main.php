@@ -55,9 +55,9 @@ class Main extends CI_controller {
         /*************************** find */
         $gets = array_merge($_POST, $_GET);
         $tela = $this -> frbr -> search($gets);
-        $tela .= $this->frbr->bookcase();
+        //$tela .= $this->frbr->bookcase();
 
-        //$tela .= $this -> frbr -> show_works();
+        $tela .= $this -> frbr -> show_works();
 
         $data['content'] = $tela;
         $this -> load -> view('content', $data);
@@ -636,7 +636,7 @@ class Main extends CI_controller {
         $this -> foot();
     }
 
-    public function item_create($idt = '') {
+    public function item_create($idt = '',$idw='') {
         $this -> load -> model('barcodes');
         $this -> load -> model('frbr');
 
@@ -646,6 +646,8 @@ class Main extends CI_controller {
         $data['bookcase'] = $this -> frbr -> data_classes('Bookcase');
         $data['acqu'] = $this -> frbr -> data_classes('TypeOfAcquisition');
         $data['idt'] = $idt;
+		$data['idw'] = $idw;
+		
         $this -> load -> view('find/form/cat_item', $data);
 
         /* save work */
@@ -656,7 +658,7 @@ class Main extends CI_controller {
             $aquisicao = trim(get("dd4"));
             if ((strlen($tombo) > 0) and (strlen($tombo) > 0) and (strlen($bookcase) > 0)) {
                 $idt = $this -> frbr -> item_add($idt, $tombo, $biblioteca, $bookcase, $aquisicao);
-                redirect(base_url('index.php/main/v/' . $idt));
+                redirect(base_url('index.php/main/v/' . $idw));
             }
         }
 

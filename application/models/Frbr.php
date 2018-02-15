@@ -22,7 +22,7 @@ class frbr extends CI_model {
         }
         /**********************************************************************************/
         $dt['type'] = $type;
-        echo '==>'.$type;
+        //echo '==>'.$type;
         switch($type) {
             case 'ISBN' :
                 $tela .= $this -> cas_flex($path, $id, $dt);
@@ -100,8 +100,7 @@ class frbr extends CI_model {
                             */
                          });
                          /************ insert ***************/
-                         jQuery("#save").click(function() {
-                            alert("Inserir");
+                         jQuery("#save").click(function() {                            
                             var $key = jQuery("#dd50").val();
                             $.ajax({
                                     type: "POST",
@@ -623,6 +622,72 @@ class frbr extends CI_model {
         $sx .= '</div> ';
         return ($sx);
     }
+	
+    function itens_show_resume($id) {
+
+        $sql = "select d_r1 as item, d_r2 as manitestation, d_p as prop from rdf_data
+					INNER JOIN rdf_class ON d_p = id_c 
+					where c_class = 'isExemplifiedBy' and d_r2 = " . $id."
+					order by c_order
+					";
+        $rlt = $this -> db -> query($sql);
+        $man = $rlt -> result_array();
+		$sx = '<img src="'.base_url('img/icon/icone_bookcase.jpg').'" height="32" title="'.msg('see_copies').'" id="bookcase'.$id.'">'.cr();
+		$sx .= '<script> $("#bookcase'.$id.'").click(function() { $("#samples'.$id.'").toggle(500); }); </script>'.cr();
+		$sx .= '<table border=0 width="100%" id="samples'.$id.'" style="display: none;">';
+		$sx .= '<tr class="small" style="background: #c0c0c0;">
+					<th width="33%">Biblioteca</th>
+					<th width="33%">local</th>
+					<th width="33%">exemplar</th>
+				</tr>'.cr();
+        for ($y = 0; $y < count($man); $y++) {
+            $idm = $man[$y]['item'];
+            $data['id'] = $idm;
+            $items = $this -> le_data($idm);
+			$xlocal = '';
+			$xowner = '';
+			$ex = 0;
+			for ($r = 0;$r < count($items);$r++)
+				{
+					$line = $items[$r];
+					$type = $line['c_class'];
+					switch ($type)
+						{
+						case 'isOwnedBy':
+							$owner = $line['n_name'];
+							if ($xowner != $owner)
+								{
+									$sx .= '<tr><td>'.$owner.'</td>';
+									$xowner = $owner;
+									$ex = 0;		
+								}
+							break;			
+						case 'hasLocatedIn':				
+							$local = $line['n_name'];
+							if ($xlocal != $local)
+								{
+									$sx .= '<td>'.$local.'</td>';
+									$xlocal = $local;
+									$ex = 0;		
+								}
+							break;			
+						case 'hasRegisterId':
+							if ($ex > 0) { $sx .= '; '; } else {
+								$sx .= '<td>';
+							}
+							$link = '<a href="'.base_url('index.php/main/v/'.$line['d_r1']).'">';				
+							$sx .= $link.substr($line['n_name'],5,6).'</a>';
+							$ex++;
+							break;
+						}
+
+				}
+        }
+		$sx .= '</table>';
+		if (count($man) == 0)
+			{$sx = ''; }
+        return ($sx);
+    }	
 
     function work_show($id) {
         $data = array();
@@ -640,6 +705,7 @@ class frbr extends CI_model {
 
         $prop_expression = $this -> find_class('isRealizedThrough');
         $prop_manifestation = $this -> find_class('isEmbodiedIn');
+		$prop_item = $this -> find_class('isExemplifiedBy');
         $sx = '';
 
         $data['id'] = $id;
@@ -682,6 +748,15 @@ class frbr extends CI_model {
                 $idm = $line['d_r2'];
                 $data['idm'] = $idm;
                 $data['manifestation'] = $this -> le_data($idm);
+				
+				/************************************************************ RECUPERA ITEM **********/
+	            $sql = "select * from rdf_data where d_r2 = " . $idm . " and d_p = " . $prop_item;
+            	$rlti = $this -> db -> query($sql);
+            	$rlti = $rlti -> result_array();
+				$itens = array();
+				
+				$its = $this->itens_show_resume($idm);
+				$data['itens'] = $its;
                 $sx .= $this -> load -> view('find/view/work_2', $data, true);
             }
         }
@@ -1933,7 +2008,7 @@ class frbr extends CI_model {
         $sx .= '<div class="row">' . cr();
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
-            $sx .= '<div class="col-md-2 text-center" style="line-height: 80%; margin-top: 40px;">';
+            $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">';
             $sx .= $this -> show_manifestation($line['w']);
             $sx .= '</div>';
         }
