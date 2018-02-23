@@ -8,7 +8,8 @@ $notas = '';
 $w = $id;
 $link = '<a href="'.base_url('index.php/main/a/'.$w).'">';
 //echo $link.'[ed]</a>';
-$img = '<img src="' . base_url('img/no_image.png') . '" class="img-fluid">'; 
+$img = '<img src="' . base_url('img/no_image.png') . '" class="img-fluid">';
+$cutter = ''; 
 for ($r=0;$r < count($person);$r++)
     {
         $line = $person[$r];
@@ -16,6 +17,9 @@ for ($r=0;$r < count($person);$r++)
         //echo '<br>'.$class.'='.$line['n_name'];
         switch($class)
             {
+			case 'hasCutter':
+				$cutter = $link.trim($line['n_name']).'</a>';
+				break;
             case 'prefLabel':
                 $link = '<a href="'.base_url('index.php/main/v/'.$id).'">';
                 $nome = $link.trim($line['n_name']).'</a>';
@@ -89,6 +93,9 @@ $img = troca($img,'class="img-fluid"','class="img-fluid img-person"');
                     echo msg('hiddenNames').': <ul>'.$hid.'</ul>';
                     echo '</td>';
                     echo '</tr>';
+					echo '<tr>';
+					echo '<td>'.$cutter.'</td>'.cr();
+					echo '</tr>'.cr();
                     echo '</table>';
                 }                
             ?>

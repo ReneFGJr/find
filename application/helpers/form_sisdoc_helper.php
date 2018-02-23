@@ -9,7 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @category    Helpers
  * @author      Rene F. Gabriel Junior <renefgj@gmail.com>
  * @link        http://www.sisdoc.com.br/CodIgniter
- * @version     v0.17.12.21
+ * @version     v0.18.02.22
  */
  
  /* 2017-12-21 function read_link($url) */
@@ -2738,4 +2738,114 @@ function hex_dump($data, $newline="\n")
                         }
                 return($contents);              
             }
+function nbr_author($xa,$tp)
+	{
+	if (strpos($xa,',') > 0)
+		{ 
+		$xb = trim(substr($xa,strpos($xa,',')+1,100)); 
+		$xa = trim(substr($xa,0,strpos($xa,','))); 
+		$xa = trim(trim($xb).' '.$xa);
+		}
+	$xa = $xa . ' ';
+	$xp = array();
+	$xx = "";
+	for ($qk=0;$qk < strlen($xa);$qk ++)
+		{
+		if (substr($xa,$qk,1) ==' ')
+			{
+			if (strlen(trim($xx)) > 0)
+				{
+				array_push($xp,trim($xx));
+				$xx='';
+				}
+			}
+		else
+			{
+			$xx = $xx . substr($xa,$qk,1);
+			}
+		}
+		
+	$xa = "";
+		
+	/////////////////////////////
+	$xp1 = "";
+	$xp2 = "";
+	$er1 = array("JUNIOR","JÚNIOR","JúNIOR","NETTO","NETO","SOBRINHO","FILHO","JR.");
+	///////////////////////////// SEPARA NOMES
+		{
+		$xop = 0;
+		for ($qk=count($xp)-1;$qk >= 0; $qk--)
+			{
+			
+			$xa = trim($xa . ' - ' . $xp[$qk]);
+			if ($xop==0)
+				{ $xp1 = trim($xp[$qk] . ' ' . $xp1 ); $xop = -1; }
+				else { $xp2 = trim($xp[$qk] . ' ' . $xp2); }
+				
+				if ($xop == -1)
+					{
+					$xop = 1;
+					for ($kr=0;$kr < count($er1);$kr++)
+						{
+						if (trim(UpperCaseSQL($xp[$qk]))==trim($er1[$kr]))
+							{
+							$xop = 0;
+							}
+						}
+					}
+			}		
+		}
+		
+	////////// 1 e 2
+	$xp2a = strtolower($xp2);
+	$xa = trim(trim($xp2).' '.trim($xp1));
+	if (($tp == 1) or ($tp == 2))
+			{
+			if ($tp==1)
+				{ $xp1 = UpperCase($xp1); }
+				$xa = trim(trim($xp1).', '.trim($xp2));
+			if ($tp==2)
+				{ $xa = UpperCaseSQL(trim(trim($xp1).', '.trim($xp2))); }
+			}
+	if (($tp == 3) or ($tp == 4))
+		{
+			if ($tp==4)
+				{ $xa = UpperCaseSQL($xa); }
+		}
+
+	if (($tp >= 5) or ($tp <= 6))
+		{
+			$xp2a = str_word_count(lowerCaseSQL($xp2),1);
+			$xp2 = '';
+			for ($k = 0;$k < count($xp2a);$k ++)
+				{
+				if ($xp2a[$k] == 'do') { $xp2a[$k] = ''; }
+				if ($xp2a[$k] == 'da') { $xp2a[$k] = ''; }
+				if ($xp2a[$k] == 'de') { $xp2a[$k] = ''; }
+				if (strlen($xp2a[$k]) > 0)
+					{ $xp2 = $xp2.substr($xp2a[$k],0,1).'. '; }
+				}
+			$xp2 = trim($xp2);
+			if ($tp == 6) { $xa =  UpperCaseSQL(trim(trim($xp2).' '.trim($xp1))); }
+			if ($tp == 5) { $xa =  UpperCaseSQL(trim(trim($xp1).', '.trim($xp2))); }
+		}
+		
+////////////////////////////////////////////////////////////////////////////////////
+	if (($tp == 7) or ($tp == 8))
+		{
+		$mai = 1;
+		$xa = strtolower($xa);
+		for ($r=0;$r < strlen($xa);$r++)
+			{
+			if ($mai == 1)
+				{ $xa = substr($xa,0,$r).UpperCase(substr($xa,$r,1)).substr($xa,$r+1,strlen($xa)); $mai = 0; }
+				else 
+				{ if (substr($xa,$r,1) == ' ') { $mai = 1; } }
+			}
+			$xa = troca($xa,'De ','de ');
+			$xa = troca($xa,'Da ','da ');
+			$xa = troca($xa,'Do ','do ');
+		}		
+	return $xa;
+	}
 ?>

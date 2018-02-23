@@ -183,4 +183,10 @@ $lang['[s.l.]'] = '[s.l.]';
 $lang['return'] = 'return'; 
 $lang['manifestation_does_not_exist'] = 'Não existe manifestação para essa expressão, crie uma'; 
 $lang['itens_does_not_exist'] = 'itens_does_not_exist'; 
+$lang['cutter'] = 'Classificação Cutter'; 
+$lang['cutter_search'] = 'Busca Cutter'; 
+$lang['hasCutter'] = 'hasCutter'; 
+$lang['index'] = 'Índices'; 
+$lang['index_authority'] = 'Autores'; 
+$lang['index_editor'] = 'Editoras'; 
 ?>

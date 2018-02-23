@@ -2291,7 +2291,9 @@ class frbr extends CI_model {
     }
 
     function btn_update($id) {
-        $sx = '<a href="' . base_url('index.php/main/authority_inport_rdf/' . $id) . '" class="btn btn-secondary">atualizar</a>';
+        $sx = '<a href="' . base_url('index.php/main/authority_inport_rdf/' . $id) . '" class="btn btn-secondary">atualizar dados</a> ';
+		$sx .= '<a href="' . base_url('index.php/main/authority_cutter/' . $id) . '" class="btn btn-secondary">atualizar Cutter</a>';
+		
         return ($sx);
     }
 
@@ -2393,5 +2395,64 @@ class frbr extends CI_model {
             }
         return($sx);
     }
+	function index_other($lt='',$class='isPublisher')
+		{
+			$f = $this->find_class($class);
+			
+			$sql = "select d_r2, n_name, id_cc from rdf_data
+						LEFT JOIN rdf_concept on d_r2 = id_cc  
+						LEFT JOIN rdf_name ON cc_pref_term = id_n
+						where d_P = ".$f." 
+						GROUP BY d_r2, n_name, id_cc
+						ORDER BY n_name";
+			$rlt = $this->db->query($sql);
+			$rlt = $rlt->result_array();
+			$sx = '<ul>';
+			$l = '';
+			for ($r=0;$r < count($rlt);$r++)
+				{
+					$line = $rlt[$r];
+					$xl = substr($line['n_name'],0,1);
+					if ($xl != $l)
+						{
+							$sx .= '<h4>'.$xl.'</h4>';
+							$l = $xl;
+						}
+					$link = '<a href="'.base_url('index.php/main/v/'.$line['id_cc']).'">';
+					$name = $link.$line['n_name'].'</a>';
+					$sx .= '<li>'.$name.'</li>'.cr();
+				}
+			$sx .= '<ul>';
+			return($sx);			
+		}
+	function index_author($lt='')
+		{
+			$class = "Person";
+			$f = $this->find_class($class);
+			
+			$sql = "select * from rdf_concept 
+						INNER JOIN rdf_name ON cc_pref_term = id_n
+						where cc_class = ".$f." 
+						ORDER BY n_name";
+			$rlt = $this->db->query($sql);
+			$rlt = $rlt->result_array();
+			$sx = '<ul>';
+			$l = '';
+			for ($r=0;$r < count($rlt);$r++)
+				{
+					$line = $rlt[$r];
+					$xl = substr($line['n_name'],0,1);
+					if ($xl != $l)
+						{
+							$sx .= '<h4>'.$xl.'</h4>';
+							$l = $xl;
+						}
+					$link = '<a href="'.base_url('index.php/main/v/'.$line['id_cc']).'">';
+					$name = $link.$line['n_name'].'</a>';
+					$sx .= '<li>'.$name.'</li>'.cr();
+				}
+			$sx .= '<ul>';
+			return($sx);
+		}
 }
 ?>

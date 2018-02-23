@@ -15,6 +15,13 @@ $ac[$pag] = 'active';
 			<li class="nav-item active">
 				<a class="nav-link" href="<?php echo base_url('index.php/main'); ?>">Catálogo <span class="sr-only">(current)</span></a>
 			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <?php echo msg('index');?> </a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/indice/author'); ?>"><?php echo msg("index_authority");?></a>
+				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/indice/editor'); ?>"><?php echo msg('index_editor');?></a>
+				</div>
+			</li>			
 			<li class="nav-item">
 				<a class="nav-link" href="<?php echo base_url('index.php/main/contact'); ?>">Contato</a>
 			</li>
@@ -27,7 +34,7 @@ $ac[$pag] = 'active';
 				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/authority'); ?>"><?php echo msg("authority");?></a>
 				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/catalog'); ?>">Preparo técnico</a>
-                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/authority'); ?>">Autoridade</a>
+                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/cutter'); ?>"><?php echo msg("cutter");?></a>
                     <a class="dropdown-item" href="<?php echo base_url('index.php/main/vocabulary'); ?>">Vocabulários controlados</a>
 				</div>
 			</li>

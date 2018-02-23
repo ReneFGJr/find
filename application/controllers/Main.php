@@ -1224,8 +1224,27 @@ class Main extends CI_controller {
             
             $tela .= '<hr>';
             $class = trim($data['c_class']);
-            
+           //echo '==>'.$class;
             switch ($class) {
+                case 'Corporate Body' :
+                    $tela = $this -> frbr -> person_show($id);
+
+                    if (perfil("#ADM")) {
+                        $tela .= $this -> frbr -> btn_editar($id);
+                        if (strlen($data['cc_origin']) > 0) {
+                            $tela .= ' ';
+                            $tela .= $this -> frbr -> btn_update($id);
+                        }
+                    }
+                    /********* WORK **/
+                    $wks = $this -> frbr -> person_work($id);
+                    if (count($wks) > 0) {
+                        $tela .= '<br><br>';
+                        $tela .= '<h4>' . msg('Works') . '</h4>' . cr();
+                        $tela .= $this -> frbr -> show_class($wks);
+                    }
+
+                    break;            	
                 case 'Person' :
                     $tela = $this -> frbr -> person_show($id);
 
@@ -1299,5 +1318,61 @@ class Main extends CI_controller {
         $this -> foot();
     }
 
+	function cutter()
+		{
+			$this->load->model('cutters');
+			$this->cab();
+			
+			$tela = $this->cutters->form();
+			
+			$name = get("dd2");
+			if (strlen($name) > 0)
+				{
+					$tela .= $this->cutters->find_cutter($name);
+				}
+			
+			$data['content'] = $tela;
+			$data['title'] = '';
+			$this->load->view('content',$data);
+
+			$this->foot();
+		}
+	function authority_cutter($id)
+		{
+			$this->load->model('cutters');
+			$this->load->model('frbr');
+			
+			$data = $this->frbr->le($id);
+			$name = $data['n_name'];
+			$n = $this->cutters->find_cutter($name);
+			
+			$item_nome = $this -> frbr -> frbr_name($n);
+			$p_id = $this -> frbr -> rdf_concept($item_nome, 'Cutter');
+        	$this -> frbr -> set_propriety($id, 'hasCutter', $p_id, 0);	
+			redirect(base_url('index.php/main/v/'.$id));		
+		}	
+	function indice($type='',$lt='')
+		{
+			$this->load->model('frbr');
+			$this->cab();
+			switch ($type)
+				{
+				case 'author':
+					$title = msg('index').': '.msg('index_authority');
+					$sx = $this->frbr->index_author($lt);
+					
+					break;
+				case 'editor':
+					$title = msg('index').': '.msg('index_editor');
+					$sx = $this->frbr->index_other($lt,'isPublisher');
+					
+					break;
+					
+				}
+			$data['content'] = '<h1>'.$title.'</h1>'.$sx;
+			$this->load->view('content',$data);
+			
+			$this->foot();
+		}
 }
 ?>
