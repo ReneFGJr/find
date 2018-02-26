@@ -1,6 +1,6 @@
 <?php
 class frbr extends CI_model {
-
+    var $limit = 12;
     function ajax($path = '', $id = '') {
         $tela = '
                  <div class="modal-header" >                    
@@ -576,11 +576,11 @@ class frbr extends CI_model {
                 $id2 = $line['d_r2'];
                 switch ($cl) {
                     case 'hasTitle' :
-                        $link = '<a href="' . base_url('index.php/main/v/' . $id1) . '" target="_new' . $id1 . '">';
+                        $link = '<a href="' . base_url('index.php/main/v/' . $id1) . '">';
                         array_push($wks, $id1);
                         break;
                     case 'hasAuthor' :
-                        $link = '<a href="' . base_url('index.php/main/v/' . $id2) . '" target="_new' . $id2 . '">';
+                        $link = '<a href="' . base_url('index.php/main/v/' . $id2) . '">';
                         $ss .= '<li>' . $link . $vl . ' (' . ($cl) . ')</a></li>' . cr();
                         break;
                     default :
@@ -592,7 +592,7 @@ class frbr extends CI_model {
         for ($r = 0; $r < count($wks); $r++) {
             $wk = $wks[$r];
             $sx .= '<div class="col-md-2 text-center" style="line-height: 80%; margin-top: 40px;">';
-            $sx .= $this -> show_manifestation($wk);
+            $sx .= $this -> show_manifestation_by_works($wk);
             $sx .= '</div>';
         }
         //$sx .= '</div>' . cr();
@@ -622,72 +622,69 @@ class frbr extends CI_model {
         $sx .= '</div> ';
         return ($sx);
     }
-	
+
     function itens_show_resume($id) {
 
         $sql = "select d_r1 as item, d_r2 as manitestation, d_p as prop from rdf_data
 					INNER JOIN rdf_class ON d_p = id_c 
-					where c_class = 'isExemplifiedBy' and d_r2 = " . $id."
+					where c_class = 'isExemplifiedBy' and d_r2 = " . $id . "
 					order by c_order
 					";
         $rlt = $this -> db -> query($sql);
         $man = $rlt -> result_array();
-		$sx = '<img src="'.base_url('img/icon/icone_bookcase.jpg').'" height="32" title="'.msg('see_copies').'" id="bookcase'.$id.'">'.cr();
-		$sx .= '<script> $("#bookcase'.$id.'").click(function() { $("#samples'.$id.'").toggle(500); }); </script>'.cr();
-		$sx .= '<table border=0 width="100%" id="samples'.$id.'" style="display: none;">';
-		$sx .= '<tr class="small" style="background: #c0c0c0;">
+        $sx = '<img src="' . base_url('img/icon/icone_bookcase.jpg') . '" height="32" title="' . msg('see_copies') . '" id="bookcase' . $id . '">' . cr();
+        $sx .= '<script> $("#bookcase' . $id . '").click(function() { $("#samples' . $id . '").toggle(500); }); </script>' . cr();
+        $sx .= '<table border=0 width="100%" id="samples' . $id . '" style="display: none;">';
+        $sx .= '<tr class="small" style="background: #c0c0c0;">
 					<th width="33%">Biblioteca</th>
 					<th width="33%">local</th>
 					<th width="33%">exemplar</th>
-				</tr>'.cr();
+				</tr>' . cr();
         for ($y = 0; $y < count($man); $y++) {
             $idm = $man[$y]['item'];
             $data['id'] = $idm;
             $items = $this -> le_data($idm);
-			$xlocal = '';
-			$xowner = '';
-			$ex = 0;
-			for ($r = 0;$r < count($items);$r++)
-				{
-					$line = $items[$r];
-					$type = $line['c_class'];
-					switch ($type)
-						{
-						case 'isOwnedBy':
-							$owner = $line['n_name'];
-							if ($xowner != $owner)
-								{
-									$sx .= '<tr><td>'.$owner.'</td>';
-									$xowner = $owner;
-									$ex = 0;		
-								}
-							break;			
-						case 'hasLocatedIn':				
-							$local = $line['n_name'];
-							if ($xlocal != $local)
-								{
-									$sx .= '<td>'.$local.'</td>';
-									$xlocal = $local;
-									$ex = 0;		
-								}
-							break;			
-						case 'hasRegisterId':
-							if ($ex > 0) { $sx .= '; '; } else {
-								$sx .= '<td>';
-							}
-							$link = '<a href="'.base_url('index.php/main/v/'.$line['d_r1']).'">';				
-							$sx .= $link.substr($line['n_name'],5,6).'</a>';
-							$ex++;
-							break;
-						}
+            $xlocal = '';
+            $xowner = '';
+            $ex = 0;
+            for ($r = 0; $r < count($items); $r++) {
+                $line = $items[$r];
+                $type = $line['c_class'];
+                switch ($type) {
+                    case 'isOwnedBy' :
+                        $owner = $line['n_name'];
+                        if ($xowner != $owner) {
+                            $sx .= '<tr><td>' . $owner . '</td>';
+                            $xowner = $owner;
+                            $ex = 0;
+                        }
+                        break;
+                    case 'hasLocatedIn' :
+                        $local = $line['n_name'];
+                        if ($xlocal != $local) {
+                            $sx .= '<td>' . $local . '</td>';
+                            $xlocal = $local;
+                            $ex = 0;
+                        }
+                        break;
+                    case 'hasRegisterId' :
+                        if ($ex > 0) { $sx .= '; ';
+                        } else {
+                            $sx .= '<td>';
+                        }
+                        $link = '<a href="' . base_url('index.php/main/v/' . $line['d_r1']) . '">';
+                        $sx .= $link . substr($line['n_name'], 5, 6) . '</a>';
+                        $ex++;
+                        break;
+                }
 
-				}
+            }
         }
-		$sx .= '</table>';
-		if (count($man) == 0)
-			{$sx = ''; }
+        $sx .= '</table>';
+        if (count($man) == 0) {$sx = '';
+        }
         return ($sx);
-    }	
+    }
 
     function work_show($id) {
         $data = array();
@@ -705,7 +702,7 @@ class frbr extends CI_model {
 
         $prop_expression = $this -> find_class('isRealizedThrough');
         $prop_manifestation = $this -> find_class('isEmbodiedIn');
-		$prop_item = $this -> find_class('isExemplifiedBy');
+        $prop_item = $this -> find_class('isExemplifiedBy');
         $sx = '';
 
         $data['id'] = $id;
@@ -717,12 +714,11 @@ class frbr extends CI_model {
         $sql = "select * from rdf_data where d_r1 = " . $id . " and d_p = " . $prop_expression;
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
-        
-        if ((count($rlt) == 0) and (perfil("#ADMIN")))
-            {
-                $data['id'] = $id;
-                $sx .= '==>'.$this->load->view('find/view/expression_void',$data,true);
-            }
+
+        if ((count($rlt) == 0) and (perfil("#ADMIN"))) {
+            $data['id'] = $id;
+            $sx .= '==>' . $this -> load -> view('find/view/expression_void', $data, true);
+        }
 
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
@@ -733,30 +729,29 @@ class frbr extends CI_model {
             $sql = "select * from rdf_data where d_r1 = " . $ide . " and d_p = " . $prop_manifestation;
             $rltm = $this -> db -> query($sql);
             $rltm = $rltm -> result_array();
-            
+
             /*************************************************************/
-            if ((count($rltm) == 0) and (perfil("#ADMIN")))
-                {
-                    $sx .= '| '.$this->load->view('find/view/expression_void',$data,true);
-                    $sx .= '| '.$this->load->view('find/view/work_2',$data,true);
-                    $mani['id'] = $ide;
-                    $sx .= ' | '.$this->load->view('find/view/manifestation_void',$data,true);
-                }
-            
+            if ((count($rltm) == 0) and (perfil("#ADMIN"))) {
+                $sx .= '| ' . $this -> load -> view('find/view/expression_void', $data, true);
+                $sx .= '| ' . $this -> load -> view('find/view/work_2', $data, true);
+                $mani['id'] = $ide;
+                $sx .= ' | ' . $this -> load -> view('find/view/manifestation_void', $data, true);
+            }
+
             for ($y = 0; $y < count($rltm); $y++) {
                 $line = $rltm[$y];
                 $idm = $line['d_r2'];
                 $data['idm'] = $idm;
                 $data['manifestation'] = $this -> le_data($idm);
-				
-				/************************************************************ RECUPERA ITEM **********/
-	            $sql = "select * from rdf_data where d_r2 = " . $idm . " and d_p = " . $prop_item;
-            	$rlti = $this -> db -> query($sql);
-            	$rlti = $rlti -> result_array();
-				$itens = array();
-				
-				$its = $this->itens_show_resume($idm);
-				$data['itens'] = $its;
+
+                /************************************************************ RECUPERA ITEM **********/
+                $sql = "select * from rdf_data where d_r2 = " . $idm . " and d_p = " . $prop_item;
+                $rlti = $this -> db -> query($sql);
+                $rlti = $rlti -> result_array();
+                $itens = array();
+
+                $its = $this -> itens_show_resume($idm);
+                $data['itens'] = $its;
                 $sx .= $this -> load -> view('find/view/work_2', $data, true);
             }
         }
@@ -1427,27 +1422,45 @@ class frbr extends CI_model {
         if (strlen($wh) == 0) {
             return ('');
         }
-        $sql = "SELECT * FROM rdf_data 
-                        INNER JOIN rdf_name ON d_literal = id_n
-                        INNER JOIN rdf_class ON d_p = id_c
-                    WHERE $wh AND c_find = 1 ";
+
+        $sql = "select * from rdf_concept
+                    INNER JOIN rdf_name ON id_n = cc_pref_term 
+                    INNER JOIN rdf_class ON id_c = cc_class
+                    WHERE $wh AND c_find = 1 ";                    
 
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
+        $sx .= '<div class="container">'.cr();
+        $sx .= '<div class="row">'.cr();       
         for ($r = 0; $r < count($rlt); $r++) {
-            $line = $rlt[$r];
-            $link = '<a href="' . base_url('index.php/main/v/' . $line['d_r1']) . '" target="_new">';
-            $sx .= '<div class="row">';
-            $sx .= '<div class="col-md-10">';
-            $sx .= $link;
-            $sx .= $line['n_name'];
-            $sx .= '</a>';
-            $sx .= ' (';
-            $sx .= msg($line['c_class']);
-            $sx .= ')';
-            $sx .= '</div>';
-            $sx .= '</div>';
+            $line = $rlt[$r];            
+            $class = $line['c_class'];
+            
+            
+            switch ($class)
+                {
+                    case 'Work':
+                        $idw = $line['id_cc'];
+                        $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">'.cr();
+                        $sx .= $this->show_manifestation_by_works($idw).cr();
+                        $sx .= '</div>'.cr();
+                        break;
+                    default:
+                        $link = '<a href="' . base_url('index.php/main/v/' . $line['id_c']) . '" target="_new">';
+                        $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">'.cr();
+                        echo '['.$class.']';
+                        $sx .= $link;
+                        $sx .= $line['n_name'];
+                        $sx .= '</a>';
+                        $sx .= ' (';
+                        $sx .= msg($line['c_class']);
+                        $sx .= ')'.cr();
+                        $sx .= '</div>'.cr();
+                        break;                        
+                }
         }
+        $sx .= '</div>';
+        $sx .= '</div>';
         return ($sx);
     }
 
@@ -2004,19 +2017,19 @@ class frbr extends CI_model {
                             ";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
-        $sx = '<br><br><h4>Last</h4>';
+        $sx = '<br><br><h4>' . msg('last_buy') . '</h4>';
         $sx .= '<div class="row">' . cr();
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
             $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">';
-            $sx .= $this -> show_manifestation($line['w']);
+            $sx .= $this -> show_manifestation_by_works($line['w']);
             $sx .= '</div>';
         }
         $sx .= '</div>' . cr();
         return ($sx);
     }
 
-    function show_manifestation($id = '') {
+    function show_manifestation_by_works($id = '') {
         $img = base_url('img/no_cover.png');
         $data = $this -> le_data($id);
 
@@ -2034,14 +2047,17 @@ class frbr extends CI_model {
                     if (strlen($autor) > 0) {
                         $autor .= '; ';
                     }
-                    $autor .= $line['n_name'] . ' (org.)';
+                    $link = '<a href="'.base_url('index.php/main/v/'.$line['id_cc']).'" class="small">';
+                    $autor .= $link.$line['n_name']. ' (org.)'.'</a>';
                     break;
-
                 case 'hasAuthor' :
                     if (strlen($autor) > 0) {
                         $autor .= '; ';
                     }
-                    $autor .= $line['n_name'];
+                    
+                    //echo '<hr>';
+                    $link = '<a href="'.base_url('index.php/main/v/'.$line['id_cc']).'" class="small">';
+                    $autor .= $link.$line['n_name'].'</a>';
                     break;
             }
         }
@@ -2080,7 +2096,7 @@ class frbr extends CI_model {
         }
 
         $sx = '';
-        $link = '<a href="' . base_url('index.php/main/v/' . $id) . '" target="_new' . $id . '" style="line-height: 120%;">';
+        $link = '<a href="' . base_url('index.php/main/v/' . $id) . '" style="line-height: 120%;">';
         $sx .= $link;
         $title_nr = $title;
         $sz = 45;
@@ -2094,7 +2110,7 @@ class frbr extends CI_model {
         $sx .= '<span>' . $title_nr . '</span>';
         $sx .= '</a>';
         $sx .= '<br>';
-        $sx .= '<span class="small"><i>' . $autor . '</i></span>';
+        $sx .= '<i>' . $autor . '</i>';
         //echo $line['c_class'].'<br>';
         return ($sx);
     }
@@ -2292,79 +2308,118 @@ class frbr extends CI_model {
 
     function btn_update($id) {
         $sx = '<a href="' . base_url('index.php/main/authority_inport_rdf/' . $id) . '" class="btn btn-secondary">atualizar dados</a> ';
-		$sx .= '<a href="' . base_url('index.php/main/authority_cutter/' . $id) . '" class="btn btn-secondary">atualizar Cutter</a>';
-		
+        $sx .= '<a href="' . base_url('index.php/main/authority_cutter/' . $id) . '" class="btn btn-secondary">atualizar Cutter</a>';
+
         return ($sx);
     }
 
     function related($id) {
-        $cp = "id_cc as cc, n_name as name, d_literal as lit";
-        $cp2 = '*';
-        $sql = "select $cp2 from (";
-        $sql .= "select $cp, d_r1 as idr from rdf_data
-						INNER JOIN rdf_concept ON d_r1 = id_cc 
-						LEFT JOIN rdf_name ON cc_pref_term = id_n
-						WHERE d_r2 = " . round($id);
-        $sql .= " UNION ";
-        $sql .= "select $cp, d_r2 as idr from rdf_data
-						INNER JOIN rdf_concept ON d_r2 = id_cc 
-						LEFT JOIN rdf_name ON cc_pref_term = id_n
-						WHERE d_r1 = " . round($id);
-        $sql .= ') as tabela ';
-        $sql .= 'LEFT JOIN rdf_concept as t2 ON t2.id_cc = idr 
-					 LEFT JOIN rdf_class ON cc_class = id_c';
+        $pg = round('0'.get("pg"));
+        $limit = $this -> limit;
+        $offset = $limit * $pg;
+        /******************************************** by manifestation ********/
+        $cl1 = $this -> find_class('isEmbodiedIn');
+        $cl2 = $this -> find_class('isRealizedThrough');
 
-        $cp = '*';
-        $sql = "select $cp from rdf_data as rdata
-						LEFT JOIN rdf_class as prop ON d_p = prop.id_c 
-						LEFT JOIN rdf_concept ON d_r2 = id_cc 
-						LEFT JOIN rdf_name on cc_pref_term = id_n
-						WHERE d_r1 = $id and d_r2 > 0";
-        $sql .= ' union ';
-        $sql .= "select $cp from rdf_data as rdata
-                        LEFT JOIN rdf_class as prop ON d_p = prop.id_c 
-                        LEFT JOIN rdf_concept ON d_r2 = id_cc 
-                        LEFT JOIN rdf_name on d_literal = id_n
-                        WHERE d_r1 = $id and d_r2 = 0";
-        $sql .= " order by c_order, c_class";
+        /** div **/
+        $sx = '<div class="container">' . cr();
+        $sx .= '<div class="row">' . cr();
 
+        echo $cl1 . '=' . $cl2;
+        $sql = "SELECT dd3.d_r1 as w, count(*) as mn FROM `rdf_data` as dd1 
+                    left JOIN rdf_data as dd2 ON dd1.d_r1 = dd2.d_r2 
+                    left JOIN rdf_data as dd3 ON dd2.d_r1 = dd3.d_r2 
+                    LEFT JOIN rdf_class ON dd2.d_p = id_c
+                where dd1.d_r2 = $id and dd2.d_p = 88 and dd3.d_p = 37
+                group by w";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
-        $sx = '<table width="100%" class="table" border=1>';
+        $pags = $this -> pagination($rlt);
         for ($r = 0; $r < count($rlt); $r++) {
-            $line = $rlt[$r];
-            $link = '<a href="' . base_url('index.php/main/v/' . $line['d_r1']) . '">';
-            $sx .= '<tr>';
-            $sx .= '<td width="150">' . msg($line['c_class']) . '</td>';
-            switch ($line['c_class']) {
-                case 'Manifestation' :
-                    $id = $this -> recover_work_with_manifestation($line['id_cc']);
-                    $sx .= '<td width="150">';
-                    $sx .= $this -> show_manifestation($id);
-                    $sx .= '</td>';
-                    break;
-                default :
-                    $NM = trim($line['n_name']);
-                    if ($line['d_r2'] > 0) {
-                        $link = '<a href="' . base_url('index.php/main/v/' . $line['d_r2']) . '" class="middle">';
-                        $linka = '</a>';
-                    } else {
-                        $link = '';
-                        $linka = '';
-                        if (strlen($NM) > 0) {
-                            $NM = '<span class="middle">' . $NM . '</span>';
-                        }
-                    }
-                    if (strlen($NM) == 0) {
-                        $NM = '<span style="color: #808080;">null</span>';
-                    }
-                    $sx .= '<td>';
-                    $sx .= $link . $NM . $linka;
-                    $sx .= '</td>';
+            if (($r >= $offset) and ($r < ($offset + $limit))) {
+                $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
+                $line = $rlt[$r];
+                $idm = $line['w'];
+                $sx .= $this -> show_manifestation_by_works($idm, 0, 0);
+                if ($line['mn'] > 1) {
+                    $sx .= '<br>';
+                    $sx .= '<a href="' . base_url('index.php/main/v/' . $idm) . '" class="small">';
+                    $sx .= '<span style="color:red"><i>' . msg('see_others_editions') . '</i></span>';
+                    $sx .= '</a>' . cr();
+                }
+                $sx .= '</div>';
             }
-            $sx .= '</tr>';
         }
-        $sx .= '</table>';
+
+        /******************************************** by expression ***********/
+        if (count($rlt) == 0) {
+            $sql = "SELECT dd2.d_r1 as w, count(*) as mn FROM `rdf_data` as dd1 
+                    left JOIN rdf_data as dd2 ON dd1.d_r1 = dd2.d_r2 
+                    /* left JOIN rdf_data as dd3 ON dd2.d_r1 = dd3.d_r2 */ 
+                    LEFT JOIN rdf_class ON dd2.d_p = id_c
+                where dd1.d_r2 = $id and dd2.d_p = 37
+                group by w ";
+            $rlt = $this -> db -> query($sql);
+            $rlt = $rlt -> result_array();
+            $pags = $this -> pagination($rlt);
+            for ($r = 0; $r < count($rlt); $r++) {
+                if (($r >= $offset) and ($r < ($offset + $limit))) {
+                    $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
+                    $line = $rlt[$r];
+                    $idm = $line['w'];
+                    $sx .= $this -> show_manifestation_by_works($idm, 0, 0);
+                    if ($line['mn'] > 1) {
+                        $sx .= '<br>';
+                        $sx .= '<a href="' . base_url('index.php/main/v/' . $idm) . '" class="small">';
+                        $sx .= '<span style="color:red"><i>' . msg('see_others_editions') . '</i></span>';
+                        $sx .= '</a>' . cr();
+                    }
+                    $sx .= '</div>';
+                }
+            }
+        }
+
+        /** div **/
+        $sx .= '</div>';
+        $sx .= '</div>';
+
+        return ($pags . $sx);
+    }
+
+    function pagination($t) {
+        $pg = round('0'.get("pg"));
+        $t = count($t);
+        $l = $this -> limit;
+        /***************************** math *************/
+        if ($l == 0)
+            {
+                return('');
+            }
+        $p = ($t/$l);
+        $p = (int)$p;
+        if (($t/$l) > $p) { $p++; }
+
+        $sx = '<div class="container">' . cr();
+        $sx .= '<div class="row">' . cr();
+        $sx .= '  
+            <nav aria-label="Page navigation example">
+              <ul class="pagination">'.cr();
+        $ds = 'disabled';
+        if ($pg > 0) { $ds = ''; }
+        $sx .= '<li class="page-item '.$ds.'"><a class="page-link" href="?pg='.($pg-1).'">Previous</a></li>'.cr();
+        for ($r=0;$r < $p;$r++)
+            {
+                $ac = '';
+                if ($pg == $r) { $ac = 'active'; }
+                $sx .= '<li class="page-item '.$ac.'"><a class="page-link " href="?pg='.$r.'">'.($r+1).'</a></li>'.cr();        
+            }
+        $ps = 'disabled';
+        if ($pg < ($p-1)) { $ps = ''; }
+        $sx .= '<li class="page-item '.$ps.'"><a class="page-link " href="?pg='.($pg+1).'">Next</a></li>'.cr();
+        $sx .= '</ul></nav>'.cr();       
+        $sx .= $t.'='.$p;
+        $sx .= '</div>';
+        $sx .= '</div>';
         return ($sx);
     }
 
@@ -2375,84 +2430,80 @@ class frbr extends CI_model {
 										and dt1.d_p = $prop";
         echo $sql;
     }
-    function bookcase($id='',$prop='hasClassificationCDU')
-    {
-        $propid = $this->find_class($prop);
+
+    function bookcase($id = '', $prop = 'hasClassificationCDU') {
+        $propid = $this -> find_class($prop);
         $sql = "select * from rdf_data
                     INNER JOIN rdf_concept ON d_r2 = id_cc
                     INNER JOIN rdf_name ON cc_pref_term = id_n 
-                    where d_p = ".$propid."
+                    where d_p = " . $propid . "
                     ORDER BY n_name";
-        $rlt = $this->db->query($sql);
-        $rlt = $rlt->result_array();
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
         $sx = '';
-        for ($r=0;$r < count($rlt);$r++)
-            {
-                $line = $rlt[$r];
-                $idm = $line['d_r1'];
-                $note = $line['n_name'];
-                $sx .= $this->frbr->show_manifestation($idm);                
-            }
-        return($sx);
+        for ($r = 0; $r < count($rlt); $r++) {
+            $line = $rlt[$r];
+            $idm = $line['d_r1'];
+            $note = $line['n_name'];
+            $sx .= $this -> frbr -> show_manifestation_by_works($idm);
+        }
+        return ($sx);
     }
-	function index_other($lt='',$class='isPublisher')
-		{
-			$f = $this->find_class($class);
-			
-			$sql = "select d_r2, n_name, id_cc from rdf_data
+
+    function index_other($lt = '', $class = 'isPublisher') {
+        $f = $this -> find_class($class);
+
+        $sql = "select d_r2, n_name, id_cc from rdf_data
 						LEFT JOIN rdf_concept on d_r2 = id_cc  
 						LEFT JOIN rdf_name ON cc_pref_term = id_n
-						where d_P = ".$f." 
+						where d_P = " . $f . " 
 						GROUP BY d_r2, n_name, id_cc
 						ORDER BY n_name";
-			$rlt = $this->db->query($sql);
-			$rlt = $rlt->result_array();
-			$sx = '<ul>';
-			$l = '';
-			for ($r=0;$r < count($rlt);$r++)
-				{
-					$line = $rlt[$r];
-					$xl = substr($line['n_name'],0,1);
-					if ($xl != $l)
-						{
-							$sx .= '<h4>'.$xl.'</h4>';
-							$l = $xl;
-						}
-					$link = '<a href="'.base_url('index.php/main/v/'.$line['id_cc']).'">';
-					$name = $link.$line['n_name'].'</a>';
-					$sx .= '<li>'.$name.'</li>'.cr();
-				}
-			$sx .= '<ul>';
-			return($sx);			
-		}
-	function index_author($lt='')
-		{
-			$class = "Person";
-			$f = $this->find_class($class);
-			
-			$sql = "select * from rdf_concept 
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        $sx = '<ul>';
+        $l = '';
+        for ($r = 0; $r < count($rlt); $r++) {
+            $line = $rlt[$r];
+            $xl = substr($line['n_name'], 0, 1);
+            if ($xl != $l) {
+                $sx .= '<h4>' . $xl . '</h4>';
+                $l = $xl;
+            }
+            $link = '<a href="' . base_url('index.php/main/v/' . $line['id_cc']) . '">';
+            $name = $link . $line['n_name'] . '</a>';
+            $sx .= '<li>' . $name . '</li>' . cr();
+        }
+        $sx .= '<ul>';
+        return ($sx);
+    }
+
+    function index_author($lt = '') {
+        $class = "Person";
+        $f = $this -> find_class($class);
+
+        $sql = "select * from rdf_concept 
 						INNER JOIN rdf_name ON cc_pref_term = id_n
-						where cc_class = ".$f." 
+						where cc_class = " . $f . " 
 						ORDER BY n_name";
-			$rlt = $this->db->query($sql);
-			$rlt = $rlt->result_array();
-			$sx = '<ul>';
-			$l = '';
-			for ($r=0;$r < count($rlt);$r++)
-				{
-					$line = $rlt[$r];
-					$xl = substr($line['n_name'],0,1);
-					if ($xl != $l)
-						{
-							$sx .= '<h4>'.$xl.'</h4>';
-							$l = $xl;
-						}
-					$link = '<a href="'.base_url('index.php/main/v/'.$line['id_cc']).'">';
-					$name = $link.$line['n_name'].'</a>';
-					$sx .= '<li>'.$name.'</li>'.cr();
-				}
-			$sx .= '<ul>';
-			return($sx);
-		}
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        $sx = '<ul>';
+        $l = '';
+        for ($r = 0; $r < count($rlt); $r++) {
+            $line = $rlt[$r];
+            $xl = substr($line['n_name'], 0, 1);
+            if ($xl != $l) {
+                $sx .= '<h4>' . $xl . '</h4>';
+                $l = $xl;
+            }
+            $link = '<a href="' . base_url('index.php/main/v/' . $line['id_cc']) . '">';
+            $name = $link . $line['n_name'] . '</a>';
+            $sx .= '<li>' . $name . '</li>' . cr();
+        }
+        $sx .= '<ul>';
+        return ($sx);
+    }
+
 }
 ?>

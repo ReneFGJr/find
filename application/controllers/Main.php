@@ -56,8 +56,11 @@ class Main extends CI_controller {
         $gets = array_merge($_POST, $_GET);
         $tela = $this -> frbr -> search($gets);
         //$tela .= $this->frbr->bookcase();
-
-        $tela .= $this -> frbr -> show_works();
+        
+        if (get("action") == '')
+            {
+            $tela .= $this -> frbr -> show_works();
+            }
 
         $data['content'] = $tela;
         $this -> load -> view('content', $data);
@@ -1237,12 +1240,7 @@ class Main extends CI_controller {
                         }
                     }
                     /********* WORK **/
-                    $wks = $this -> frbr -> person_work($id);
-                    if (count($wks) > 0) {
-                        $tela .= '<br><br>';
-                        $tela .= '<h4>' . msg('Works') . '</h4>' . cr();
-                        $tela .= $this -> frbr -> show_class($wks);
-                    }
+                    $tela .= $this -> frbr -> related($id);
 
                     break;            	
                 case 'Person' :
@@ -1260,7 +1258,9 @@ class Main extends CI_controller {
                     if (count($wks) > 0) {
                         $tela .= '<br><br>';
                         $tela .= '<h4>' . msg('Works') . '</h4>' . cr();
+                        $tela .= '<div class="container"><div class="row">'.cr();
                         $tela .= $this -> frbr -> show_class($wks);
+                        $tela .= '</div></div>'.cr();
                     }
 
                     break;
@@ -1302,8 +1302,8 @@ class Main extends CI_controller {
                     $tela .= $this -> frbr -> manifestation_show($id);
 
                     /************************** MANIFESTATION ***/
-                    $data['id'] = $id;
-                    $tela .= $this -> frbr -> manifestation_show($id);
+                    //$data['id'] = $id;
+                    //$tela .= $this -> frbr -> manifestation_show($id);
 
                     /*********************************** ITEM ***/
                     $tela .= $this -> load -> view('find/view/item', $data, true);

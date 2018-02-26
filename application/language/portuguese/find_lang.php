@@ -189,4 +189,9 @@ $lang['hasCutter'] = 'hasCutter';
 $lang['index'] = 'Índices'; 
 $lang['index_authority'] = 'Autores'; 
 $lang['index_editor'] = 'Editoras'; 
+$lang['index_autor'] = 'index_autor'; 
+$lang['index_author'] = 'index_author'; 
+$lang['last_buy'] = 'Últimas aquisições'; 
+$lang['see_others'] = 'see_others'; 
+$lang['see_others_editions'] = 'see_others_editions'; 
 ?>
