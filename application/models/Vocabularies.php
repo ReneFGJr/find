@@ -121,8 +121,7 @@ class vocabularies extends CI_model {
         /********************************************/
         if (strlen($id) == 0) {
             $sql = "select * from rdf_class 
-                            WHERE c_type = 'C' 
-                                    and c_vc = 1 
+                            WHERE c_type = 'C' and (c_vc = 1 or c_vc <> 1) 
                             ORDER BY c_class ";
             $rlt = $this -> db -> query($sql);
             $rlt = $rlt -> result_array();

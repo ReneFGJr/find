@@ -1557,6 +1557,7 @@ class frbr extends CI_model {
 
     function frbr_name($n = '') {
         $n = trim($n);
+		$n = troca($n,"'","´");
         if (strlen($n) == 0) {
             return (0);
         }
@@ -1734,7 +1735,7 @@ class frbr extends CI_model {
                 }
                 $autor = troca($autor, '*', '');
                 if ($tt == 0) {
-                    $name_pref = $autor;
+                    $name_pref = troca($autor,"'","´");
                     $id_t = $this -> frbr -> frbr_name($name_pref);
                     $p_id = $this -> frbr -> rdf_concept($id_t, $form, $id);
                     $this -> frbr -> set_propriety($p_id, 'prefLabel', 0, $id_t);
