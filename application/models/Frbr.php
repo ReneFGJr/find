@@ -2008,7 +2008,7 @@ class frbr extends CI_model {
         return ($sx);
     }
 
-    function show_works($id = '') {
+    function show_works_2($id = '') {
         $class = $this -> find_class('work');
         $sql = "select id_cc as w 
                             from rdf_concept 
@@ -2027,6 +2027,26 @@ class frbr extends CI_model {
             $sx .= '</div>';
         }
         $sx .= '</div>' . cr();
+        return ($sx);
+    }
+
+    function show_works($id = '') {
+        $class = $this -> find_class('work');
+        $sql = "select id_cc as w 
+                            from rdf_concept 
+                            where cc_class = " . $class . "
+                            ORDER BY id_cc desc
+                            limit 18
+                            ";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        $sx = '';
+        for ($r = 0; $r < count($rlt); $r++) {
+            $line = $rlt[$r];
+            $sx .= '<li>';
+            $sx .= $this -> show_manifestation_by_works($line['w']);
+            $sx .= '</il>'.cr();
+        }
         return ($sx);
     }
 
@@ -2090,7 +2110,7 @@ class frbr extends CI_model {
                     $line = $dt2[$r];
                     $class = $line['c_class'];
                     if ($class == 'hasCover') {
-                        $img = base_url('_repositorio/Image/' . $line['n_name']);
+                        $img = base_url('_repositorio/image/' . $line['n_name']);
                     }
                 }
             }
@@ -2326,7 +2346,6 @@ class frbr extends CI_model {
         $sx = '<div class="container">' . cr();
         $sx .= '<div class="row">' . cr();
 
-        echo $cl1 . '=' . $cl2;
         $sql = "SELECT dd3.d_r1 as w, count(*) as mn FROM `rdf_data` as dd1 
                     left JOIN rdf_data as dd2 ON dd1.d_r1 = dd2.d_r2 
                     left JOIN rdf_data as dd3 ON dd2.d_r1 = dd3.d_r2 
@@ -2418,7 +2437,6 @@ class frbr extends CI_model {
         if ($pg < ($p-1)) { $ps = ''; }
         $sx .= '<li class="page-item '.$ps.'"><a class="page-link " href="?pg='.($pg+1).'">Next</a></li>'.cr();
         $sx .= '</ul></nav>'.cr();       
-        $sx .= $t.'='.$p;
         $sx .= '</div>';
         $sx .= '</div>';
         return ($sx);

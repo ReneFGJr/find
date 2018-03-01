@@ -20,6 +20,7 @@ $ac[$pag] = 'active';
 				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/indice/author'); ?>"><?php echo msg("index_authority");?></a>
 				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/indice/editor'); ?>"><?php echo msg('index_editor');?></a>
+				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/indice/serie'); ?>"><?php echo msg('index_serie');?></a>
 				</div>
 			</li>			
 			<li class="nav-item">

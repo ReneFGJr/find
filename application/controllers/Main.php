@@ -57,7 +57,10 @@ class Main extends CI_controller {
         //$tela .= $this->frbr->bookcase();
 
         if (get("action") == '') {
-            $tela .= $this -> frbr -> show_works();
+            $data['li'] = $this -> frbr -> show_works();
+			$data['title_rs'] = '';
+			$data['title_cp'] = msg('last_update');
+			$tela .= $this->load->view('find/bookself/bookself_h',$data,true);
         }
 
         $data['content'] = $tela;
@@ -1378,6 +1381,11 @@ class Main extends CI_controller {
                 $sx = $this -> frbr -> index_author($lt);
 
                 break;
+            case 'serie' :
+                $title = msg('index') . ': ' . msg('index_serie');
+                $sx = $this -> frbr -> index_other($lt, 'hasSerieName');
+
+                break;				
             case 'editor' :
                 $title = msg('index') . ': ' . msg('index_editor');
                 $sx = $this -> frbr -> index_other($lt, 'isPublisher');
