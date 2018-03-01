@@ -4,6 +4,7 @@
 $title = '';
 $author = '';
 $linkw = '<a href="#">';
+$linked_i_new = '';
 
 if (perfil("#ADM")) {
 	$linked_e = '<a href="' . base_url('index.php/main/a/' . $expression[0]['d_r1']) . '">';
