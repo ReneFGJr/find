@@ -717,7 +717,7 @@ class frbr extends CI_model {
 
         if ((count($rlt) == 0) and (perfil("#ADMIN"))) {
             $data['id'] = $id;
-            $sx .= '==>' . $this -> load -> view('find/view/expression_void', $data, true);
+            $sx .= $this -> load -> view('find/view/expression_void', $data, true);
         }
 
         for ($r = 0; $r < count($rlt); $r++) {
@@ -2122,10 +2122,11 @@ class frbr extends CI_model {
         $title_nr = $title;
         $sz = 45;
         if (strlen($title_nr) > $sz) {
-            $title_nr = substr($title_nr, 0, $sz) . '...';
+            $title_nr = substr($title_nr, 0, $sz);
             while (substr($title_nr, strlen($title_nr) - 1, 1) != ' ') {
                 $title_nr = substr($title_nr, 0, strlen($title_nr) - 1);
             }
+			$title_nr = trim($title_nr).'...';
         }
         $sx .= '<img src="' . $img . '" height="200"><br>' . cr();
         $sx .= '<span>' . $title_nr . '</span>';

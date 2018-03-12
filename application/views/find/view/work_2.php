@@ -7,9 +7,9 @@ $linkw = '<a href="#">';
 $linked_i_new = '';
 
 if (perfil("#ADM")) {
-	$linked_e = '<a href="' . base_url('index.php/main/a/' . $expression[0]['d_r1']) . '">';
+	$linked_e = '<a href="' . base_url('index.php/main/a/' . $expression[0]['d_r1']) . '" class="btn btn-secondary">';
 	if (isset($manifestation)) {
-		$linked_m = '<a href="' . base_url('index.php/main/a/' . $idm) . '">';
+		$linked_m = '<a href="' . base_url('index.php/main/a/' . $idm) . '" class="btn btn-secondary">';
 	} else {
 		$linked_m = '';
 	}
@@ -30,17 +30,15 @@ if (perfil("#ADM")) {
 	}
 
 	echo $linked_e . msg('edit_expression') . '</a> | ';
-	if (isset($manifestation))
-	{
+	if (isset($manifestation)) {
 		echo $linked_m . msg('edit_manifestation') . '</a> | ';
 	}
 	//echo $linked_e_new . ' | ';
 	echo $linked_m_new . ' | ';
-	if (strlen($linked_i_new) > 0)
-		{
-			echo $linked_i_new . ' | ';		
-		}
-	
+	if (strlen($linked_i_new) > 0) {
+		echo $linked_i_new . ' | ';
+	}
+
 }
 
 for ($r = 0; $r < count($work); $r++) {
@@ -93,7 +91,8 @@ for ($r = 0; $r < count($expression); $r++) {
  *******************************************************************************************/
 
 $cover = 'img/no_cover.png';
-$editor = msg('[s.n.]'); ;
+$editor = msg('[s.n.]');
+;
 $editor_n = 0;
 $year = '';
 $place = msg('[s.l.]');
@@ -104,16 +103,28 @@ $cdd = '';
 $title_alt = '';
 $linkm = '';
 $linka = '';
+$serie = '';
+$pag = '';
 if (isset($manifestation)) {
 	for ($r = 0; $r < count($manifestation); $r++) {
 		$type = $manifestation[$r]['c_class'];
 		$value = $manifestation[$r]['n_name'];
 
-		//echo '<br>'.$type.'->'.$value;
+		//echo '<br>' . $type . '->' . $value;
 		$link = '<a href="' . base_url('index.php/main/v/' . $manifestation[$r]['id_cc']) . '">';
 		$linkm = '<a href="' . base_url('index.php/main/v/' . $manifestation[0]['d_r1']) . '">';
 		$linka = '</a>';
 		switch($type) {
+			case 'hasPage' :
+				if (strlen($pag) > 0) { $pag .= '; ';
+				}
+				$pag .= $link . $value . $linka;
+				break;
+			case 'hasSerieName' :
+				if (strlen($serie) > 0) { $serie .= '; ';
+				}
+				$serie .= $link . $value . $linka;
+				break;
 			case 'hasTitleAlternative' :
 				$title = $value;
 				break;
@@ -164,34 +175,42 @@ if (isset($manifestation)) {
 </a>
 </div>
 <div class="col-lg-10 col-md-9 col-xs-8  col-sm-8">
-<b><span style="font-size: 140%; color: #000000;"><?php echo $linkm . $title . $linka; ?></span></b><br>
-<b><i><?php echo $author; ?></i><br></b>
+<b><span style="font-size: 140%; color: #000000;"><?php echo $linkm . $title . $linka; ?><
+/span></b><br>
+<b><i><?php echo $author; ?>
+</i><br></b>
 <?php echo $form; ?>:
-<?php echo $language; ?><br>
+<?php echo $language; ?>
+<br>
 <?php
 /**************************/
 if (!isset($manifestation)) {
 	echo '
-	<div class="alert alert-warning" role="alert">
-  		'.msg('manifestation_does_not_exist').' '.$linked_m_new.'
-	</div>
-	';
+<div class="alert alert-warning" role="alert">
+' . msg('manifestation_does_not_exist') . ' ' . $linked_m_new . '
+</div>
+';
 } else {
-	echo $place . ': ' . $editor . ', ' . $year . '<br>';
+	/**************** serie **************/
+	if (strlen($isbn) > 0) { echo msg('serie').': ' . $serie . '<br>';
+	}
+	
+	if (strlen($pag) > 0) { $pag = ', '.$pag; } else 
+		{ $pag ='.'; }
+	echo $place . ': ' . $editor . ', ' . $year . $pag . '<br>';
 	if (strlen($cdu) > 0) { echo 'CDU: ' . $cdu . '<br>';
 	}
 	if (strlen($isbn) > 0) { echo 'ISBN: ' . $isbn . '<br>';
 	}
-	if (strlen($itens) > 0) 
-		{
-			echo $itens;
-		} else {
-			echo '
-				<div class="alert alert-warning" role="alert">
-			  		'.msg('itens_does_not_exist').' '.$linked_i_new.'
-				</div>
-				';
-		}
+	if (strlen($itens) > 0) {
+		echo $itens;
+	} else {
+		echo '
+<div class="alert alert-warning" role="alert">
+' . msg('itens_does_not_exist') . ' ' . $linked_i_new . '
+</div>
+';
+	}
 }
 ?>
 </div>

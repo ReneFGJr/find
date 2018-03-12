@@ -58,8 +58,8 @@ class Main extends CI_controller {
 
         if (get("action") == '') {
             $data['li'] = $this -> frbr -> show_works();
-			$data['title_rs'] = '';
-			$data['title_cp'] = msg('last_update');
+			$data['title_rs'] = msg('acquisitions');
+			$data['title_cp'] = msg('last_buy');
 			$tela .= $this->load->view('find/bookself/bookself_h',$data,true);
         }
 
@@ -164,9 +164,25 @@ class Main extends CI_controller {
         //$tela .= $this -> frbr -> form($id, $data);
         $tela .= $this -> frbr -> form($id, $data);
 
+		switch($data['c_class'])
+			{
+			case 'Person':
+				$tela .= $this->frbr->show($id);
+				break;
+			case 'Person':
+				$tela .= $this->frbr->show($id);
+				break;
+			case 'Person':
+				$tela .= $this->frbr->show($id);
+				break;		
+			default:
+				
+				break;
+			}
+
         $data['title'] = '';
         $data['content'] = $tela;
-
+		
         $this -> load -> view('content', $data);
         $this -> foot();
     }
@@ -518,8 +534,9 @@ class Main extends CI_controller {
         $datac = $this -> frbr -> le_class($id);
 
         $tela = $this -> load -> view('find/view/class', $datac, true);
+		$tela .= $this -> vocabularies -> modal_th($id);
         $tela .= $this -> vocabularies -> list_vc($id);
-        $tela .= $this -> vocabularies -> modal_th($id);
+        
 
         $data['content'] = $tela;
         $this -> load -> view('content', $data);
@@ -1289,21 +1306,6 @@ class Main extends CI_controller {
                 case 'Work' :
                     /* Modo 2 */
                     $tela .= $this -> frbr -> work_show_2($id);
-
-                    /****************************************************** WORK *******/
-                    //$tela .= $this -> frbr -> work_show($id);
-
-                    /************************************************** EXPRESSION ***/
-                    //$tela .= $this -> frbr -> expression_show($id);
-                    //$exp = $this -> frbr -> expressions($id);
-                    //for ($r = 0; $r < count($exp); $r++) {
-                    //    $ide = $exp[$r];
-                    /************************************************** MANIFESTACAO ***/
-                    //    $tela .= $this -> frbr -> manifestation_show($ide, 0, $id);
-                    //$tela .= $this -> frbr -> itens_show($ide);
-                    //}
-                    /****************************************************** ITENS *****/
-
                     break;
                 case 'Item' :
                     $data = array();
@@ -1362,11 +1364,14 @@ class Main extends CI_controller {
         $this -> load -> model('cutters');
         $this -> load -> model('frbr');
 
+
         $data = $this -> frbr -> le($id);
         $name = $data['n_name'];
-        $n = $this -> cutters -> find_cutter($name);
 
+        $n = $this -> cutters -> find_cutter($name);
+				
         $item_nome = $this -> frbr -> frbr_name($n);
+
         $p_id = $this -> frbr -> rdf_concept($item_nome, 'Cutter');
         $this -> frbr -> set_propriety($id, 'hasCutter', $p_id, 0);
         redirect(base_url('index.php/main/v/' . $id));
