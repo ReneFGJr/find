@@ -48,12 +48,30 @@ $ac[$pag] = 'active';
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="<?php echo base_url('index.php/main/config'); ?>" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo msg('menu_config');?></a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+					<a class="dropdown-item" href="<?php echo base_url('index.php/main/config/updates'); ?>"><?php echo msg("menu_updates_check");?></a>                	
                     <a class="dropdown-item" href="<?php echo base_url('index.php/main/config/msg'); ?>"><?php echo msg("menu_msg");?></a>
                     <a class="dropdown-item" href="<?php echo base_url('index.php/main/config/forms'); ?>"><?php echo msg("menu_forms");?></a>
                     <a class="dropdown-item" href="<?php echo base_url('index.php/main/config/authority'); ?>"><?php echo msg("menu_authority");?></a>
+                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/config/class'); ?>"><?php echo msg("menu_class");?></a>
                 </div>
             </li>                
             <?php } ?>
+            
+			<!------ ADMIN CONFIG ---->
+            <?php 
+            if ((perfil('#ADM')==1) and (file_exists('application/controllers/Bibliometric.php')))
+            { ?>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="<?php echo base_url('index.php/biblimetric'); ?>" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo msg('menu_bibliometric');?></a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <a class="dropdown-item" href="<?php echo base_url('index.php/bibliometric'); ?>"><?php echo msg("menu_bibliometric");?></a>
+                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/config/forms'); ?>"><?php echo msg("menu_forms");?></a>
+                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/config/authority'); ?>"><?php echo msg("menu_authority");?></a>
+                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/config/class'); ?>"><?php echo msg("menu_class");?></a>
+                </div>
+            </li>                
+            <?php } ?>
+                        
             <li class="nav-item navbar-toggler-right">
                 <?php echo $this->socials->menu_user();?>
             </li>           
