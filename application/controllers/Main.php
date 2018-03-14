@@ -871,7 +871,39 @@ class Main extends CI_controller {
     public function label_pdf($tp = '') {
         $cols = 3;
         $lins = 10;
+        $cols = 4;
+        $lins = 20;
+        $mar_left = 1.3;
+        $mar_right = 1.3;
+        $etq_sz = 4.2;
+        $etq_sp = 0.3;        
+        $nm = 1;
         $this -> load -> library('tcpdf');
+        $icc = 1;
+        
+        $et = get("dd23");
+        $style = array('position' => '', 'align' => 'C', 'stretch' => false, 'fitwidth' => true, 'cellfitalign' => '', 'border' => false, 'hpadding' => 'auto', 'vpadding' => 'auto', 'fgcolor' => array(0, 0, 0), 'bgcolor' => false, //array(255,255,255),
+        'text' => true, 'font' => 'helvetica', 'fontsize' => 8, 'stretchtext' => 4);
+        
+        switch($et)
+            {
+                case '0':
+                    $cols = 4;
+                    $lins = 20;
+                    $mar_left = 1.8;
+                    $mar_right = 1.3;
+                    $mar_top = 1.3;
+                    $etq_sz = 4.2;
+                    $etq_sp = 0.45;
+                    $etq_hg = 1.275;
+                    $style = array('position' => '', 'align' => 'C', 'stretch' => false, 'fitwidth' => true, 'cellfitalign' => '', 'border' => false, 'hpadding' => 'auto', 'vpadding' => 'auto', 'fgcolor' => array(0, 0, 0), 'bgcolor' => false, //array(255,255,255),
+                    'text' => true, 'font' => 'helvetica', 'fontsize' => 4, 'stretchtext' => 4);
+                    $bar_px = 0.3;
+                    $bar_sz = 12;
+                    $nm = 2;  
+                    $icc = 2;                  
+                    break;
+            }
 
         $this -> load -> model('barcodes');
         // create new PDF document
@@ -880,10 +912,7 @@ class Main extends CI_controller {
 
         // set document information
         $pdf -> SetCreator(PDF_CREATOR);
-        //$pdf -> SetAuthor('Find');
-        //$pdf -> SetTitle('Label EAN13 - Find');
-        //$pdf -> SetSubject('Label');
-        //$pdf -> SetKeywords('Label');
+
 
         // set font
         $pdf -> SetFont('helvetica', '', 11);
@@ -893,8 +922,6 @@ class Main extends CI_controller {
         $pdf -> SetFont('helvetica', '', 10);
 
         // define barcode style
-        $style = array('position' => '', 'align' => 'C', 'stretch' => false, 'fitwidth' => true, 'cellfitalign' => '', 'border' => false, 'hpadding' => 'auto', 'vpadding' => 'auto', 'fgcolor' => array(0, 0, 0), 'bgcolor' => false, //array(255,255,255),
-        'text' => true, 'font' => 'helvetica', 'fontsize' => 8, 'stretchtext' => 4);
         $nr = 1;
         $pg = 1;
         if (strlen($tp) > 0) {
@@ -907,34 +934,53 @@ class Main extends CI_controller {
             $pg = round(get("dd22"));
         }
         $lib = $this -> lib;
-        $multx = round(215 / $cols);
-        $multy = round(260 / $lins);
+        $ic = 0;
         for ($pp = 0; $pp < $pg; $pp++) {
             // add a page
             $pdf -> AddPage();
             for ($r = 0; $r < $lins; $r++) {
+                /************************** coluna ************/
                 for ($q = 0; $q < $cols; $q++) {
-                    $y = $r * $multy + 12;
-                    $x = $q * $multx + 10;
-                    $pdf -> SetXY($x, $y);
+                    
+                    /*********** positions ************/
+                    $x = ($q * $etq_sz*10) + ($q * $etq_sp*10) + ($mar_left * 10);
+                    
+                    $y = ($r * $etq_hg * 10) + ($mar_top * 10);
 
                     $nrz = strzero(round($nr) + $lib, 11);
                     $nrz = $nrz . $this -> barcodes -> ean13($nrz);
 
-                    //$pdf -> Image('img/logo_library.jpg', '', '', '45', '', 'JPG', '', '');
-
                     $pdf -> SetXY($x, $y);
-                    $pdf -> write1DBarcode($nrz, 'EAN13', '', '', '', 18, 0.4, $style, 'N');
-
+                    $pdf -> write1DBarcode($nrz, 'EAN13', '', '', '', $bar_sz, $bar_px, $style, 'N');
                     $pdf -> SetFont('helvetica', '', 9);
 
-                    $pdf -> SetXY($x, $y + 16);
-                    $pdf -> Cell(48, 0, 'Sala de Leitura PROPEL', 0, 0, 'L', 0, '', 0);
+                    if ($nm == 1)
+                        {
+                            $pdf -> SetXY($x, $y + 16);
+                            $pdf -> Cell(48, 0, 'Sala de Leitura PROPEL', 0, 0, 'L', 0, '', 0);
+                        }
 
-                    $pdf -> SetXY($x, $y + 16);
-                    $pdf -> Cell(48, 0, 'Nr.:' . round($nr), 0, 0, 'R', 0, '', 0);
-
-                    $nr = $nr + 1;
+                    if ($nm == 1)
+                        {
+                            $pdf -> SetXY($x, $y + 16);
+                            $pdf -> Cell(48, 0, 'Nr.:' . round($nr), 0, 0, 'R', 0, '', 0);
+                        }
+                   /************ VERTICAL ************/
+                   if ($nm == 2)
+                        {
+                            $pdf -> SetXY($x+32, $y+11);
+                            $pdf->StartTransform();          
+                             $pdf->Rotate(90);
+                             $pdf->MultiCell(10, 5, round($nr), 0, 'C', false, 0, "", "", true, 0, false, true, 0, "T", false, true);
+                             $pdf->StopTransform();                            
+                            //$pdf -> Cell(48, 0, 'Nr.:' . round($nr),1,1,'C',0,'');
+                        }                        
+                    $ic++;
+                    if ($ic >= $icc)
+                        {
+                            $ic = 0;
+                            $nr = $nr + 1;
+                        }
                 }
                 $pdf -> SetXY(0, 8);
                 $pdf -> Cell(48, 0, '------', 0, 0, 'L', 0, '', 0);
@@ -1043,10 +1089,27 @@ class Main extends CI_controller {
         }
         $tela .= '</select>' . cr();
         $tela .= '</div>';
+        
+        $tela .= '<div class="col-md-2"><span style="font-size: 75%">tipo de etiqueta</span><br>';
+        $tela .= '  <select name="dd23" class="form-control">';
+        $dd13 = get("dd23");
+        $etq = array();
+        array_push($etq,'Pimaco 6287 12,7mm x 44,45mm');
+        array_push($etq,'Pimaco 6180 25,4mm x 66,7mm');
+        
+        for ($r = 0; $r < count($etq); $r++) {
+            $sel = '';
+            if ($r == $dd13) { $sel = 'selected';
+            }
+            $tela .= '  <option value="' . $r . '" ' . $sel . '>' . $etq[$r] . '</option>' . cr();
+        }
+        $tela .= '</select>' . cr();
+        $tela .= '</div>';
 
         $tela .= '<div class="col-md-2"><span style="font-size: 75%">total de páginas</span><br>';
         $tela .= '  <input type="submit" name="acao" value="Imprimir" class="btn btn-primary">';
         $tela .= '</div>';
+        
         $tela .= '</div>';
         $tela .= '</form> ';
 
