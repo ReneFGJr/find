@@ -175,8 +175,8 @@ if (isset($manifestation)) {
 </a>
 </div>
 <div class="col-lg-10 col-md-9 col-xs-8  col-sm-8">
-<b><span style="font-size: 140%; color: #000000;"><?php echo $linkm . $title . $linka; ?><
-/span></b><br>
+<b><span style="font-size: 140%; color: #000000;"><?php echo $linkm . $title . $linka; ?>
+</span></b><br>
 <b><i><?php echo $author; ?>
 </i><br></b>
 <?php echo $form; ?>:
