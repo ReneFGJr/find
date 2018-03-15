@@ -202,7 +202,7 @@ $lang['prev'] = 'Anterior';
 $lang['toCenter'] = 'Metade'; 
 $lang['next'] = 'Próximo'; 
 $lang['toEnd'] = 'Fim'; 
-$lang['index_serie'] = 'index_serie'; 
+$lang['index_serie'] = 'Nome da série'; 
 $lang['last_buy'] = 'Últimas aquisições'; 
 $lang['acquisitions'] = 'Aquisições'; 
 $lang['see_others_editions'] = 'see_others_editions'; 
@@ -220,4 +220,5 @@ $lang['primaryTopic'] = 'primaryTopic';
 $lang['hasAdvisor'] = 'Orientador'; 
 $lang['menu_bibliometric'] = 'Bibliometrias'; 
 $lang['menu_updates_check'] = 'Checar atualizações'; 
+$lang['menu_bibliometric_cited'] = 'menu_bibliometric_cited'; 
 ?>
