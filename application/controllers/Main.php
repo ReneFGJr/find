@@ -13,6 +13,7 @@ class Main extends CI_controller {
 		$this -> load -> helper('email');
 		$this -> load -> helper('url');
 		$this -> load -> library('session');
+
 		date_default_timezone_set('America/Sao_Paulo');
 		/* Security */
 		//      $this -> security();
@@ -1320,108 +1321,12 @@ class Main extends CI_controller {
 	public function v($id) {
 		$this -> load -> model('frbr');
 		$this -> cab();
-		$data = $this -> frbr -> le($id);
-		if (count($data) == 0) {
-			$this -> load -> view('error', $data);
-		} else {
-			$tela = '';
-			if (strlen($data['n_name']) > 0) {
-				$tela .= '<div class="row">';
-				$tela .= '<div class="col-md-12">';
-				$linkc = '<a href="' . base_url('index.php/main/v/' . $id) . '" class="middle">';
-				$linkca = '</a>';
-				$tela .= '<h2>' . $linkc . $data['n_name'] . $linkca . '</h2>';
-				$tela .= '</div>';
-				$tela .= '</div>';
-
-			}
-			/******** line #2 ***********/
-			$tela .= '<div class="row">';
-			$tela .= '<div class="col-md-11">';
-			$tela .= '<h5>' . msg('Class') . ': ' . $data['c_class'] . '</h5>';
-			$tela .= '</div>';
-			$tela .= '<div class="col-md-1 text-right">';
-			if (perfil("#ADMIN")) {
-				$tela .= '<a href="' . base_url('index.php/main/a/' . $id) . '" class="btn btn-secondary">' . msg('edit') . '</a>';
-			}
-			$tela .= '</div>';
-			$tela .= '</div>';
-
-			$tela .= '<hr>';
-			$class = trim($data['c_class']);
-			//echo '==>'.$class;
-			switch ($class) {
-				case 'Corporate Body' :
-					$tela = $this -> frbr -> person_show($id);
-
-					if (perfil("#ADM")) {
-						$tela .= $this -> frbr -> btn_editar($id);
-						if (strlen($data['cc_origin']) > 0) {
-							$tela .= ' ';
-							$tela .= $this -> frbr -> btn_update($id);
-						}
-					}
-					/********* WORK **/
-					$tela .= $this -> frbr -> related($id);
-
-					break;
-				case 'Person' :
-					$tela = $this -> frbr -> person_show($id);
-
-					if (perfil("#ADM")) {
-						$tela .= $this -> frbr -> btn_editar($id);
-						if (strlen($data['cc_origin']) > 0) {
-							$tela .= ' ';
-							$tela .= $this -> frbr -> btn_update($id);
-						}
-					}
-					/********* WORK **/
-					$wks = $this -> frbr -> person_work($id);
-					if (count($wks) > 0) {
-						$tela .= '<br><br>';
-						$tela .= '<h4>' . msg('Works') . '</h4>' . cr();
-						$tela .= '<div class="container"><div class="row">' . cr();
-						$tela .= $this -> frbr -> show_class($wks);
-						$tela .= '</div></div>' . cr();
-					}
-
-					break;
-				case 'Work' :
-					/* Modo 2 */
-					$tela .= $this -> frbr -> work_show_2($id);
-					break;
-				case 'Item' :
-					$data = array();
-					$tela = '';
-
-					/**************************************/
-					$data['id'] = $id;
-					$data['item'] = $this -> frbr -> le_data($id);
-					$work = $this -> frbr -> recupera($data['item'], 'isAppellationOfWork');
-					for ($r = 0; $r < count($work); $r++) {
-						$idw = $work[$r];
-						$data['work'] = $this -> frbr -> le_data($idw);
-						$tela .= $this -> load -> view('find/view/work', $data, true);
-					}
-
-					/************************** EXPRESSION ***/
-					$data['id'] = $id;
-					$tela .= $this -> frbr -> manifestation_show($id);
-
-					/************************** MANIFESTATION ***/
-					//$data['id'] = $id;
-					//$tela .= $this -> frbr -> manifestation_show($id);
-
-					/*********************************** ITEM ***/
-					$tela .= $this -> load -> view('find/view/item', $data, true);
-					break;
-				default :
-					$tela .= $this -> frbr -> related($id);
-					break;
-			}
-			$data['content'] = $tela;
-			$this -> load -> view('content', $data);
-		}
+        
+        $tela = $this->frbr->vv($id);
+        
+        $data['content'] = $tela;
+        $this -> load -> view('content', $data);
+        
 		$this -> foot();
 	}
 
@@ -1484,6 +1389,20 @@ class Main extends CI_controller {
 
 		$this -> foot();
 	}
-
+    function mod($mod='',$act='',$id='')
+        {
+            $this -> load -> model('frbr');
+            
+            $this->cab(1);
+            $title = '<sup>mod:</sup>'.UpperCase($mod);
+            
+            /*** load module ********/
+            $this->load->model($mod);
+            $cmd = '$tela = $this->'.$mod.'->'.$act.'('.$id.');';
+            eval($cmd);
+                       
+            $data['content'] = '<h1>' . $title . '</h1>' . $tela;
+            $this -> load -> view('content', $data);            
+        }
 }
 ?>

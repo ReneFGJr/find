@@ -59,15 +59,22 @@ $ac[$pag] = 'active';
             
 			<!------ ADMIN CONFIG ---->
             <?php 
-            if ((perfil('#ADM')==1) and (file_exists('application/controllers/Bibliometric.php')))
+            if ((perfil('#ADM')==1) and (file_exists('application/models/Labs.php')) and (isset($this->uri->segments[2])))
             { ?>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="<?php echo base_url('index.php/biblimetric'); ?>" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo msg('menu_bibliometric');?></a>
+                <a class="nav-link dropdown-toggle" href="<?php echo base_url('index.php/main/mod/lab/'); ?>" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo msg('menu_bibliometric');?></a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="<?php echo base_url('index.php/bibliometric'); ?>"><?php echo msg("menu_bibliometric");?></a>
-                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/config/forms'); ?>"><?php echo msg("menu_forms");?></a>
-                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/config/authority'); ?>"><?php echo msg("menu_authority");?></a>
-                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/config/class'); ?>"><?php echo msg("menu_class");?></a>
+                    <?php
+                    if (isset($this->uri->segments[2]))
+                        {
+                            $tp = $this->uri->segments[2];
+                            $idv = $this->uri->segments[3];
+                            if (($tp == 'a') or ($tp == 'v'))
+                                {
+                                    echo '<a class="dropdown-item" href="'.base_url('index.php/main/mod/labs/cited/'.$idv).'">'.msg("menu_bibliometric_cited").'</a>';
+                                }
+                        }
+                    ?>
                 </div>
             </li>                
             <?php } ?>
