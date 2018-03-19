@@ -708,6 +708,12 @@ class Main extends CI_controller {
 				redirect(base_url('index.php/main/v/' . $idw));
 			}
 		}
+        /* save file */
+        if (strlen(get("acao")) > 0) {
+                $idt = $this -> frbr -> item_add_file($idt);
+                redirect(base_url('index.php/main/v/' . $idw));
+            }
+                
 
 		$tela = '';
 		$data['content'] = $tela;

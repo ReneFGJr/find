@@ -647,9 +647,11 @@ class frbr extends CI_model {
             $xlocal = '';
             $xowner = '';
             $ex = 0;
+            $fl = '';
             for ($r = 0; $r < count($items); $r++) {
                 $line = $items[$r];
                 $type = $line['c_class'];
+
                 switch ($type) {
                     case 'isOwnedBy' :
                         $owner = $line['n_name'];
@@ -672,10 +674,15 @@ class frbr extends CI_model {
                         } else {
                             $sx .= '<td>';
                         }
-                        $link = '<a href="' . base_url('index.php/main/v/' . $line['d_r1']) . '">';
-                        $sx .= $link . substr($line['n_name'], 5, 6) . '</a>';
-                        $ex++;
+                        $sx .= substr($line['n_name'], 0, 15);
                         break;
+                    case 'hasFileName' :
+                        $sx .= '<td>';
+                        $link = '<a href="'.base_url($line['n_name']).'" target="_new">';
+                        $sx .= $link . msg('download') . '</a>';
+                        $fl++;
+                        $sx .= '</td>';
+                        break;                        
                 }
 
             }
@@ -2672,7 +2679,68 @@ class frbr extends CI_model {
                     break;
             }
         }
-        return($tela);
+        return ($tela);
+    }
+
+    function tombo_file() {
+        $prop = $this -> find_class('hasFileName');
+        $sql = "select count(*) as total from rdf_data where d_p = " . $prop;
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+
+        $line = $rlt[0];
+        $id = ($line['total'] + 1);
+        return ($id);
+    }
+
+    function item_add_file($id) {
+        $lib = $this -> lib;
+        $tombo = $this -> tombo_file();
+        $nrz = strzero(round($tombo) + $lib, 11);
+        $nrz = $nrz . $this -> barcodes -> ean13($nrz);
+        $tombo = 'FILE' . $nrz;
+
+        /* SAVE FILE */
+        $target_dir = "uploads/";
+        if (!is_dir($target_dir)) {
+            mkdir($target_dir);
+        }
+        $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+        $uploadOk = 1;
+        $FileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+        $ok = 0;
+        if ($FileType == 'pdf') {
+            $ok = 1;
+            $biblioteca = get("dd2");
+            /******/
+            $target_dir .= date("Y");
+            if (!is_dir($target_dir)) { mkdir($target_dir);
+            }
+            /******/
+            $target_dir .= '/' . date("m");
+            if (!is_dir($target_dir)) { mkdir($target_dir);
+            }
+
+            /*****************/
+            $target_file = $target_dir . '/' . $tombo . '.' . $FileType;
+            if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+                echo "The file " . basename($_FILES["fileToUpload"]["name"]) . " has been uploaded.";
+            } else {
+                echo "Sorry, there was an error uploading your file.";
+                exit;
+            }
+            $item_nome = $this -> frbr -> frbr_name($tombo);
+            $item_filename = $this -> frbr -> frbr_name($target_file);
+
+            $p_id = $this -> frbr -> rdf_concept($item_nome, 'Item');
+            $this -> frbr -> set_propriety($p_id, 'hasRegisterId', 0, $item_nome);
+            $this -> frbr -> set_propriety($p_id, 'isExemplifiedBy', $id, 0);
+            $this -> frbr -> set_propriety($p_id, 'isOwnedBy', $biblioteca, 0);
+            $this -> frbr -> set_propriety($p_id, 'hasFileName', 0, $item_filename);
+            //$this -> frbr -> set_propriety($p_id, 'wayOfAcquisition', $aquisicao, 0);
+        }
+        return (true);
     }
 
 }

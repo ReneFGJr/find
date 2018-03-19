@@ -39,8 +39,31 @@ class labs extends CI_model {
         return ($sx);
     }
 
+    function cited_list($id) {
+        $sql = "select * from bm_cited where ctd_source = ".$id." order by id_ctd";
+        $rlt = $this->db->query($sql);
+        $rlt = $rlt->result_array();
+        $sx = '<h3>Referências</h3>';
+        $sx .= '<ul>';
+        for ($r=0;$r < count($rlt);$r++)
+            {
+                $line = $rlt[$r];
+                $c = $line['ctd_ref'];
+                $c = troca($c,'<','&lt;');
+                $c = troca($c,'>','&gt;');
+                $sx .= '<li>';
+                $sx .= $c;
+                $sx .= '</li>';
+            }
+            $sx .= '</ul>';
+        if (count($rlt) == 0) { $sx = ''; }
+        return($sx);
+    }
+
     function cited($id) {
         $sx = $this -> frbr -> vv($id);
+        
+        $sx .= $this->cited_list($id);
 
         $form = new form;
         $cp = array();
