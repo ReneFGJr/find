@@ -81,7 +81,9 @@ class labs extends CI_model {
     }
 
     function process_cited($id, $t) {
-
+        $sql = "delete from bm_cited where ctd_source = $id";
+        $rlt = $this->db->query($sql);
+        
         $t = troca($t, chr(13), '');
         $t = troca($t, chr(10), '¢');
         $t = troca($t, '.¢', '£');
