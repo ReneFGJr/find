@@ -2058,6 +2058,7 @@ class frbr extends CI_model {
     function show_manifestation_by_works($id = '') {
         $img = base_url('img/no_cover.png');
         $data = $this -> le_data($id);
+        $year = '';
 
         $title = '';
         $autor = '';
@@ -2111,12 +2112,18 @@ class frbr extends CI_model {
 
                 /* Image */
                 $dt2 = $this -> le_data($idm);
+                //print_r($dt2);
+                //echo '<hr>';    
                 for ($r = 0; $r < count($dt2); $r++) {
                     $line = $dt2[$r];
                     $class = $line['c_class'];
                     if ($class == 'hasCover') {
                         $img = base_url('_repositorio/image/' . $line['n_name']);
                     }
+                    if ($class == 'dateOfPublication')
+                        {
+                            $year = '<br>'.$line['n_name'];
+                        }
                 }
             }
         }
@@ -2133,11 +2140,12 @@ class frbr extends CI_model {
             }
             $title_nr = trim($title_nr) . '...';
         }
-        $sx .= '<img src="' . $img . '" height="200"><br>' . cr();
+        $sx .= '<img src="' . $img . '" height="200" style="box-shadow: 5px 5px 8px #888888; margin-bottom: 10px;"><br>' . cr();
         $sx .= '<span>' . $title_nr . '</span>';
         $sx .= '</a>';
         $sx .= '<br>';
         $sx .= '<i>' . $autor . '</i>';
+        $sx .= $year;
         //echo $line['c_class'].'<br>';
         return ($sx);
     }
