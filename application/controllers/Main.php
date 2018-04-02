@@ -1395,7 +1395,7 @@ class Main extends CI_controller {
 
 		$this -> foot();
 	}
-    function mod($mod='',$act='',$id='')
+    function mod($mod='',$act='',$id='', $id2 = '', $id3 = '')
         {
             $this -> load -> model('frbr');
             
@@ -1404,7 +1404,8 @@ class Main extends CI_controller {
             
             /*** load module ********/
             $this->load->model($mod);
-            $cmd = '$tela = $this->'.$mod.'->'.$act.'('.$id.');';
+            $cmd = '$tela = $this->'.$mod.'->'.$act."('$id','$id2','$id3');";
+            //echo $cmd;
             eval($cmd);
                        
             $data['content'] = '<h1>' . $title . '</h1>' . $tela;

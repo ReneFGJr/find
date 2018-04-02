@@ -72,6 +72,7 @@ $ac[$pag] = 'active';
                             if (($tp == 'a') or ($tp == 'v'))
                                 {
                                     echo '<a class="dropdown-item" href="'.base_url('index.php/main/mod/labs/cited/'.$idv).'">'.msg("menu_bibliometric_cited").'</a>';
+                                    echo '<a class="dropdown-item" href="'.base_url('index.php/main/mod/labs/citeis/1').'">'.msg("menu_bibliometric_citeis").'</a>';
                                 }
                         }
                     ?>
