@@ -446,7 +446,7 @@ class frbr extends CI_model {
         return ($rs);
     }
 
-    function manifestation_show($id, $hd = 0, $ide) {
+    function manifestation_show($id, $hd = 0, $ide = '') {
         $sx = '';
         $item = array();
         $item = $this -> frbr -> recupera_resource($id, 'isEmbodiedIn');
@@ -528,6 +528,45 @@ class frbr extends CI_model {
             array_push($dt, $line['d_r2']);
         }
         return ($dt);
+    }
+
+    function recupera_item_pelo_tombo($tombo) {
+        $sql = "select * from rdf_name where n_name = '$tombo' ";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+
+        if (count($rlt) > 0) {
+            for ($r = 0; $r < count($rlt); $r++) {
+                $line = $rlt[$r];
+                $idi = $line['id_n'];
+                $sql = "select * from rdf_data
+                                        where d_literal = $idi";
+                $xrlt = $this -> db -> query($sql);
+                $xrlt = $xrlt -> result_array();
+
+                if (count($xrlt) > 0) {
+                    $id = $xrlt[0]['d_r1'];
+                    return ($id);
+                }
+
+            }
+        }
+        return (0);
+    }
+
+    function recupera_manifestacao_pelo_item($id) {
+        $item = $this -> frbr -> recupera_resource($id, 'isExemplifiedBy');
+        return ($item);
+    }
+
+    function recupera_work_pela_expressao($id) {
+        $item = $this -> frbr -> recupera_resource($id, 'isRealizedThrough');
+        return ($item);
+    }
+
+    function recupera_expressao_pela_manifestacao($id) {
+        $item = $this -> frbr -> recupera_resource($id, 'isEmbodiedIn');
+        return ($item);
     }
 
     function person_work($id) {
@@ -630,15 +669,17 @@ class frbr extends CI_model {
 					where c_class = 'isExemplifiedBy' and d_r2 = " . $id . "
 					order by c_order
 					";
+
         $rlt = $this -> db -> query($sql);
         $man = $rlt -> result_array();
         $sx = '<img src="' . base_url('img/icon/icone_bookcase.jpg') . '" height="32" title="' . msg('see_copies') . '" id="bookcase' . $id . '">' . cr();
         $sx .= '<script> $("#bookcase' . $id . '").click(function() { $("#samples' . $id . '").toggle(500); }); </script>' . cr();
         $sx .= '<table border=0 width="100%" id="samples' . $id . '" style="display: none;">';
         $sx .= '<tr class="small" style="background: #c0c0c0;">
-					<th width="33%">Biblioteca</th>
-					<th width="33%">local</th>
-					<th width="33%">exemplar</th>
+					<th width="25%">Biblioteca</th>
+					<th width="25%">local</th>
+					<th width="25%">exemplar</th>
+					<th width="25%">situação</th>
 				</tr>' . cr();
         for ($y = 0; $y < count($man); $y++) {
             $idm = $man[$y]['item'];
@@ -675,22 +716,34 @@ class frbr extends CI_model {
                             $sx .= '<td>';
                         }
                         $sx .= substr($line['n_name'], 0, 15);
+                        $tombo = $line['n_name'];
                         break;
                     case 'hasFileName' :
                         $sx .= '<td>';
-                        $link = '<a href="'.base_url($line['n_name']).'" target="_new">';
+                        $link = '<a href="' . base_url($line['n_name']) . '" target="_new">';
                         $sx .= $link . msg('download') . '</a>';
                         $fl++;
                         $sx .= '</td>';
-                        break;                        
+                        break;
                 }
-
             }
+            $sx .= '<td>' . msg('situacao_exemplar_' . $this -> exemplar_situacao($tombo)) . '</td>';
         }
         $sx .= '</table>';
         if (count($man) == 0) {$sx = '';
         }
         return ($sx);
+    }
+
+    function exemplar_situacao($tb) {
+        $sql = "select * from itens where i_tombo = '$tb' ";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        if (count($rlt) > 0) {
+            $line = $rlt[0];
+            return ($line['i_status']);
+        }
+        return (0);
     }
 
     function work_show($id) {
@@ -1181,6 +1234,21 @@ class frbr extends CI_model {
         $this -> frbr -> set_propriety($p_id, 'isOwnedBy', $biblioteca, 0);
         $this -> frbr -> set_propriety($p_id, 'hasLocatedIn', $bookcase, 0);
         $this -> frbr -> set_propriety($p_id, 'wayOfAcquisition', $aquisicao, 0);
+        return (true);
+    }
+
+    function item_remove($tombo) {
+        $item_nome = $this -> frbr -> frbr_name($tombo);
+        $p_id = $this -> frbr -> rdf_concept($item_nome, 'Item');
+
+        $sql = "delete from rdf_data where d_r1 = " . $p_id;
+        $rlt = $this -> db -> query($sql);
+
+        //        $this -> frbr -> set_propriety($p_id, 'hasRegisterId', 0, $item_nome);
+        //        $this -> frbr -> set_propriety($p_id, 'isExemplifiedBy', $idt, 0);
+        //        $this -> frbr -> set_propriety($p_id, 'isOwnedBy', $biblioteca, 0);
+        //        $this -> frbr -> set_propriety($p_id, 'hasLocatedIn', $bookcase, 0);
+        //        $this -> frbr -> set_propriety($p_id, 'wayOfAcquisition', $aquisicao, 0);
         return (true);
     }
 
@@ -2113,18 +2181,112 @@ class frbr extends CI_model {
                 /* Image */
                 $dt2 = $this -> le_data($idm);
                 //print_r($dt2);
-                //echo '<hr>';    
+                //echo '<hr>';
                 for ($r = 0; $r < count($dt2); $r++) {
                     $line = $dt2[$r];
                     $class = $line['c_class'];
                     if ($class == 'hasCover') {
                         $img = base_url('_repositorio/image/' . $line['n_name']);
                     }
-                    if ($class == 'dateOfPublication')
-                        {
-                            $year = '<br>'.$line['n_name'];
-                        }
+                    if ($class == 'dateOfPublication') {
+                        $year = '<br>' . $line['n_name'];
+                    }
                 }
+            }
+        }
+
+        $sx = '';
+        $link = '<a href="' . base_url('index.php/main/v/' . $id) . '" style="line-height: 120%;">';
+        $sx .= $link;
+        $title_nr = $title;
+        $sz = 45;
+        if (strlen($title_nr) > $sz) {
+            $title_nr = substr($title_nr, 0, $sz);
+            while (substr($title_nr, strlen($title_nr) - 1, 1) != ' ') {
+                $title_nr = substr($title_nr, 0, strlen($title_nr) - 1);
+            }
+            $title_nr = trim($title_nr) . '...';
+        }
+        $sx .= '<img src="' . $img . '" height="200" style="box-shadow: 5px 5px 8px #888888; margin-bottom: 10px;"><br>' . cr();
+        $sx .= '<span>' . $title_nr . '</span>';
+        $sx .= '</a>';
+        $sx .= '<br>';
+        $sx .= '<i>' . $autor . '</i>';
+        $sx .= $year;
+        //echo $line['c_class'].'<br>';
+        return ($sx);
+    }
+
+    function show_manifestation_by_item($id = '') {
+
+        $item = $this -> le_data($id);
+
+        $idm = $this -> recupera_manifestacao_pelo_item($id);
+        $mani = $this -> le_data($idm[0]);
+
+        $ide = $this -> recupera_expressao_pela_manifestacao($idm[0]);
+        $expr = $this -> le_data($ide[0]);
+
+        $idw = $this -> recupera_work_pela_expressao($ide[0]);
+        $work = $this -> le_data($idw[0]);
+
+        $data = array();
+        $data['manifestation'] = $mani;
+        $data['expression'] = $expr;
+        $data['work'] = $work;
+        $data['item'] = $item;
+        $data['id'] = $idm[0];
+        $tela = $this -> show_item($data);
+        return ($tela);
+    }
+
+    function show_item($dts) {
+        $img = base_url('img/no_cover.png');
+        $year = '';
+        $title = '';
+        $autor = '';
+        $id = $dts['id'];
+        /************************************** WORK ***********/
+        $data = $dts['work'];
+        for ($r = 0; $r < count($data); $r++) {
+            $line = $data[$r];
+            $class = $line['c_class'];
+            //echo '<br>'.$class;
+            switch($class) {
+                case 'hasTitle' :
+                    $title = $line['n_name'];
+                    break;
+                case 'hasOrganizator' :
+                    if (strlen($autor) > 0) {
+                        $autor .= '; ';
+                    }
+                    $link = '<a href="' . base_url('index.php/main/v/' . $line['id_cc']) . '" class="small">';
+                    $autor .= $link . $line['n_name'] . ' (org.)' . '</a>';
+                    break;
+                case 'hasAuthor' :
+                    if (strlen($autor) > 0) {
+                        $autor .= '; ';
+                    }
+
+                    //echo '<hr>';
+                    $link = '<a href="' . base_url('index.php/main/v/' . $line['id_cc']) . '" class="small">';
+                    $autor .= $link . $line['n_name'] . '</a>';
+                    break;
+            }
+        }
+        /* expression */
+        $data = $dts['expression'];
+
+        $data = $dts['manifestation'];
+        for ($r = 0; $r < count($data); $r++) {
+            $line = $data[$r];
+            $class = $line['c_class'];
+            //echo '<br>=>'.$class;
+            if ($class == 'hasCover') {
+                $img = base_url('_repositorio/image/' . $line['n_name']);
+            }
+            if ($class == 'dateOfPublication') {
+                $year = '<br>' . $line['n_name'];
             }
         }
 
@@ -2458,14 +2620,6 @@ class frbr extends CI_model {
         return ($sx);
     }
 
-    function recover_work_with_manifestation($id) {
-        $prop = $this -> find_class('Expression');
-        $sql = "select * from rdf_data as dt1 
-								where dt1.d_r2 = $id
-										and dt1.d_p = $prop";
-        echo $sql;
-    }
-
     function bookcase($id = '', $prop = 'hasClassificationCDU') {
         $propid = $this -> find_class($prop);
         $sql = "select * from rdf_data
@@ -2736,7 +2890,7 @@ class frbr extends CI_model {
                 echo "The file " . basename($_FILES["fileToUpload"]["name"]) . " has been uploaded.";
             } else {
                 echo "Sorry, there was an error uploading your file.";
-                exit;
+                exit ;
             }
             $item_nome = $this -> frbr -> frbr_name($tombo);
             $item_filename = $this -> frbr -> frbr_name($target_file);
@@ -2749,6 +2903,314 @@ class frbr extends CI_model {
             //$this -> frbr -> set_propriety($p_id, 'wayOfAcquisition', $aquisicao, 0);
         }
         return (true);
+    }
+
+    function label_book($a, $f) {
+        $sx = '';
+        $f = $this -> find_class($f);
+        $p = $this -> find_class('isExemplifiedBy');
+
+        $sql = "
+        select RD1.d_r1 as RD1, n_name, i_tombo,
+               RD1.d_r2 as pt, RD2.d_p as p1, 
+               RD2.d_r2 as RD2
+        from rdf_data as RD1 
+               LEFT JOIN rdf_name ON rd1.d_literal = id_n 
+               LEFT JOIN rdf_data as RD2 ON RD1.d_r1 = RD2.d_r1 and RD2.d_p = $p 
+               LEFT JOIN itens ON i_tombo = n_name 
+        where RD1.d_p = $f and ((i_tombo is null) or (i_status = 1) or (i_status = 2))                
+        ORDER BY n_name desc
+        ";       
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+
+        for ($r = 0; $r < count($rlt); $r++) {
+            $line = $rlt[$r];
+            $n = $line['n_name'];
+            $cuc = '';
+            $man = $line['RD2'];
+            $data = $this -> le_data($man);
+
+            for ($q = 0; $q < count($data); $q++) {
+                $ln = $data[$q];
+                switch($ln['c_class']) {
+                    case 'hasClassificationCDU' :
+                        if (strlen($cuc) == 0) {
+                            $cuc = $ln['n_name'];
+                            if (strpos($cuc, '-')) {
+                                $cuc = substr($cuc, 0, strpos($cuc, '-'));
+                            }
+                            break;
+                        }
+                }
+            }
+            if (strlen($cuc) > 0) {
+                $data = date("Y-m-d H:i");
+                $nr = round(substr($n, 5, 6));
+                $user = $_SESSION['id'];
+                $sql = "select * from itens where i_tombo = '$n' ";
+                $wrlt = $this -> db -> query($sql);
+                $wrlt = $wrlt -> result_array();
+                
+                if (count($wrlt) == 0) {
+                    $sql = "insert into itens
+                                (
+                                    i_tombo, i_status, i_update,
+                                    i_label_1, i_label_2, i_label_3,
+                                    i_user, i_namifestation                                     
+                                ) values (
+                                    '$n', 1, '$data',
+                                    '$cuc','','$nr',
+                                    $user, $man
+                                )";
+                    $rrr = $this -> db -> query($sql);
+                } else {
+                    $sql = "update itens set 
+                                    i_update = '$data',
+                                    i_label_1 = '$cuc', 
+                                    i_label_2 = ''
+                                    where i_tombo = '$n'";
+                    $rrr = $this -> db -> query($sql);   
+                }
+            }
+
+            /*************************************************************************************/
+            if (strlen($cuc) == 0) {
+                $link = '<a href="' . base_url('index.php/main/a/' . $man) . '">';
+                $sx .= ($r + 1) . '. <font color="red">Classificação não identificada</font>';
+                $sx .= $link . $n . '</a>';
+                $sx .= '<br>';
+            } else {
+                $sx .= ($r + 1) . '. ' . $cuc;
+                $sx .= $n;
+                $sx .= '<br>';
+            }
+
+        }
+
+        /*********************************************************************** PHASE II ****/
+        $p1 = $this -> find_class('isEmbodiedIn');
+        $sql = "select distinct RD2.d_r1 as id, i_namifestation, c_class, id_i, i_label_1
+                 from itens 
+                    INNER JOIN rdf_data AS RD1 on RD1.d_r2 = i_namifestation
+                    INNER JOIN rdf_data AS RD2 on RD2.d_r2 = RD1.d_r1
+                    INNER JOIN rdf_class ON id_c = RD2.d_p 
+                    where (i_status = 1 or i_status = 2)";
+
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        for ($r = 0; $r < count($rlt); $r++) {
+            $line = $rlt[$r];
+            $idm = $line['id'];
+            $cutter = '';
+            $title = '';
+            $man = $this -> le_data($idm);
+            for ($q = 0; $q < count($man); $q++) {
+                $m = $man[$q];
+                $class = trim($m['c_class']);
+                //print_r($m);
+                //echo '<hr>';
+
+                switch($class) {
+                    case 'hasAuthor' :
+                        if (strlen($cutter) == 0) {
+                            $cutter = $this -> cutters -> find_cutter($m['n_name']);
+                        }
+                        break;
+                    case 'hasTitle' : {
+                        $name = trim($m['n_name']);
+                        if (substr($name, 1, 1) == ' ') {
+                            $name = substr($name, 2, strlen($name));
+                        }
+                        $title = $this -> cutters -> find_cutter($name, 0);
+                        break;
+                    }
+                }
+            }
+
+            if (strlen($cutter) == 0) {
+                $cutter = $title;
+            }
+            if (strlen($cutter) > 0) {
+                $sql = "update itens set i_label_2 = '$cutter', i_status = 2 where id_i = " . $line['id_i'];
+                $xxx = $this -> db -> query($sql);
+            } else {
+                echo '<hr><font color="red">xERROx ' . $title . '</font>';
+                print_r($man);
+            }
+            if ($r > 0) { $sx .= ', ';
+            }
+            $sx .= $cutter;
+        }
+
+        if (count($rlt) == 0) {
+            $sx = 'Nenhum etiqueta para gerar - 2';
+            return ($sx);
+        }
+        return ($sx);
+    }
+
+    function inventario($tombo) {
+        if (strlen($tombo) < 8) {
+            $tombo = substr($this -> lib, 0, 4) . strzero($tombo, 7);
+            $tombo = $tombo;
+            $tombo = $tombo . $this -> barcodes -> ean13($tombo);
+        }
+        $sql = "select * from itens where i_tombo = '$tombo' ";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        if (count($rlt) == 0) {
+            $sx = 'Exemplar não localizado';
+        } else {
+            $line = $rlt[0];
+            $it = $this -> recupera_item_pelo_tombo($tombo);
+            $sx = '';
+            $sx .= $this -> show_manifestation_by_item($it);
+
+            $sx .= 'Exemplar localizado';
+            if (substr($line['i_inventario'], 0, 7) == date("Y-m")) {
+                $sx .= '<br>Itens já foi inventariado em ' . stodbr($line['i_inventario']);
+            } else {
+                $data['i_status'] = 3;
+                $data['i_inventario'] = date("Y-m-d");
+                $data['i_date_return'] = '0000-00-00';
+                $data['i_user'] = '0';
+
+                $this -> item_atualiza($tombo, $data);
+                $this -> item_historico($tombo, 3, 0);
+                $sx .= '<div class="alert alert-success">
+                          <strong>Successo!</strong> Item ' . $tombo . ' inventariado com sucesso
+                        </div>';
+                $sx .= '<br>' . date("Y-m-d H:i:s");
+            }
+
+        }
+        return ($sx);
+    }
+
+    function inventario_erro($tombo) {
+        if (strlen($tombo) < 8) {
+            $tombo = substr($this -> lib, 0, 4) . strzero($tombo, 7);
+            $tombo = $tombo;
+            $tombo = $tombo . $this -> barcodes -> ean13($tombo);
+        }
+        $sql = "select * from itens where i_tombo = '$tombo' ";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        if (count($rlt) == 0) {
+            $sx = 'Exemplar não localizado';
+        } else {
+            $line = $rlt[0];
+            $it = $this -> recupera_item_pelo_tombo($tombo);
+            $sx = '';
+            $sx .= $this -> show_manifestation_by_item($it);
+
+            $sx .= 'Exemplar localizado';
+
+            $data['i_status'] = 9;
+            //$data['i_inventario'] = date("Y-m-d");
+            //$data['i_date_return'] = '0000-00-00';
+            //$data['i_user'] = '0';
+
+            $this -> item_atualiza($tombo, $data);
+            $this -> item_historico($tombo, 3, 0);
+            $sx .= '<div class="alert alert-warning">
+                          <strong>Marcado!</strong> Item ' . $tombo . ' marcado como erro
+                        </div>';
+            $sx .= '<br>' . date("Y-m-d H:i:s");
+        }
+        return ($sx);
+    }
+
+    function etiqueta_consulta($tombo) {
+        if (strlen($tombo) < 8) {
+            $tombo = substr($this -> lib, 0, 4) . strzero($tombo, 7);
+            $tombo = $tombo;
+            $tombo = $tombo . $this -> barcodes -> ean13($tombo);
+        }
+        $sql = "select * from itens where i_tombo = '$tombo' ";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        if (count($rlt) == 0) {
+            $sx = 'Exemplar não localizado';
+        } else {
+            $line = $rlt[0];
+            $it = $this -> recupera_item_pelo_tombo($tombo);
+            $sx = '';
+            $sx .= $this -> show_manifestation_by_item($it);
+
+            $sx .= 'Exemplar localizado';
+
+            $data['i_status'] = 4;
+            //$data['i_inventario'] = date("Y-m-d");
+            //$data['i_date_return'] = '0000-00-00';
+            //$data['i_user'] = '0';
+
+            $sx .= '<br>' . date("Y-m-d H:i:s");
+        }
+        return ($sx);
+    }
+
+    function etiqueta_reimpressao($tombo) {
+        if (strlen($tombo) < 8) {
+            $tombo = substr($this -> lib, 0, 4) . strzero($tombo, 7);
+            $tombo = $tombo;
+            $tombo = $tombo . $this -> barcodes -> ean13($tombo);
+        }
+        $sql = "select * from itens where i_tombo = '$tombo' ";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        if (count($rlt) == 0) {
+            $sx = 'Exemplar não localizado';
+        } else {
+            $line = $rlt[0];
+            $it = $this -> recupera_item_pelo_tombo($tombo);
+            $sx = '';
+            $sx .= $this -> show_manifestation_by_item($it);
+
+            $sx .= 'Exemplar localizado';
+
+            $data['i_status'] = 4;
+            //$data['i_inventario'] = date("Y-m-d");
+            //$data['i_date_return'] = '0000-00-00';
+            //$data['i_user'] = '0';
+
+            $this -> item_atualiza($tombo, $data);
+            $this -> item_historico($tombo, 4, 0);
+            $sx .= '<div class="alert alert-warning">
+                          <strong>Marcado!</strong> Item ' . $tombo . ' marcado para reimpressao
+                        </div>';
+            $sx .= '<br>' . date("Y-m-d H:i:s");
+        }
+        return ($sx);
+    }
+
+    function item_atualiza($tombo, $data) {
+        $cps = '';
+        foreach ($data as $key => $value) {
+            if (strlen($cps) > 0) {
+                $cps .= ', ' . cr();
+            }
+            $cps .= " $key = '$value' ";
+        }
+        $data = date("Y-m-d H:i:s");
+        $sql = "update itens set
+                        $cps,
+                        i_update = '$data'
+                    where i_tombo = '$tombo' ";
+        $rlt = $this -> db -> query($sql);
+    }
+
+    function item_historico($tombo, $type, $user) {
+        $log = $_SESSION['id'];
+        $sql = "insert into itens_historico
+                    (
+                        ih_tombo, ih_type, ih_user, ih_log
+                    ) values (
+                        '$tombo',$type,$user,$log
+                    )
+                    ";
+        $this -> db -> query($sql);
     }
 
 }

@@ -11,15 +11,21 @@ class cutters extends CI_model
 				$tela = $form->editar($cp,'');
 				return($tela);
 			}
-		function find_cutter($name='')
+		function find_cutter($name='',$pre=1)
 			{
-				$nm = nbr_author($name,4);
-				$nm = nbr_author($nm,1);
+			    if ($pre == 1)
+                    {
+				        $nm = nbr_author($name,4);
+				        $nm = nbr_author($nm,1);
+                    } else {
+                        $nm = UpperCaseSql($name);
+                    }
 				
 				$sql = "select * from cutter where cutter_abrev like '".substr($nm,0,2)."%' order by cutter_abrev";
 				$rlt = $this->db->query($sql);
 				$rlt = $rlt->result_array();
 				$cutter = '';
+                $cutter_name = '';
 				for ($r=0;$r < count($rlt);$r++)
 					{
 						$line = $rlt[$r];
