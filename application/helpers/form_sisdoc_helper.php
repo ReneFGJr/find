@@ -93,22 +93,23 @@ function sn($it = 0) {
  * @return string O nome devidamente normalizado
  */
 function normalizarNome($nome) {
-    $nome = mb_ereg_replace(self::NN_PONTO, self::NN_PONTO_ESPACO, $nome);
-    $nome = mb_ereg_replace(self::NN_REGEX_MULTIPLOS_ESPACOS, self::NN_ESPACO, $nome);
-    $nome = ucwords(strtolower($nome));
-    // alterando essa linha pela anterior funciona para acentos
-    $partesNome = mb_split(self::NN_ESPACO, $nome);
-    $excecoes = array('de', 'do', 'di', 'da', 'dos', 'das', 'dello', 'della', 'dalla', 'dal', 'del', 'e', 'em', 'na', 'no', 'nas', 'nos', 'van', 'von', 'y', 'der');
+	return($nome);
+    //$nome = mb_ereg_replace(self::NN_PONTO, self::NN_PONTO_ESPACO, $nome);
+    //$nome = mb_ereg_replace(self::NN_REGEX_MULTIPLOS_ESPACOS, self::NN_ESPACO, $nome);
+    //$nome = ucwords(strtolower($nome));
+    //// alterando essa linha pela anterior funciona para acentos
+    //$partesNome = mb_split(self::NN_ESPACO, $nome);
+//    $excecoes = array('de', 'do', 'di', 'da', 'dos', 'das', 'dello', 'della', 'dalla', 'dal', 'del', 'e', 'em', 'na', 'no', 'nas', 'nos', 'van', 'von', 'y', 'der');
 
-    for ($i = 0; $i < count($partesNome); ++$i) {
-
-        if (mb_ereg_match(self::NN_REGEX_NUMERO_ROMANO, mb_strtoupper($partesNome[$i])))
-            $partesNome[$i] = mb_strtoupper($partesNome[$i]);
-        foreach ($excecoes as $excecao)
-            if (mb_strtolower($partesNome[$i]) == mb_strtolower($excecao))
-                $partesNome[$i] = $excecao;
-    }
-    $nomeCompleto = implode(self::NN_ESPACO, $partesNome);
+//    for ($i = 0; $i < count($partesNome); ++$i) {
+//
+//        if (mb_ereg_match(self::NN_REGEX_NUMERO_ROMANO, mb_strtoupper($partesNome[$i])))
+//            $partesNome[$i] = mb_strtoupper($partesNome[$i]);
+//        foreach ($excecoes as $excecao)
+//            if (mb_strtolower($partesNome[$i]) == mb_strtolower($excecao))
+//                $partesNome[$i] = $excecao;
+//    }
+//    $nomeCompleto = implode(self::NN_ESPACO, $partesNome);
     return addslashes($nomeCompleto);
 }
 

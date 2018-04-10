@@ -1152,8 +1152,7 @@ class Main extends CI_controller {
                 $obj_pdf -> Output();
                 exit ;
                 break;
-            default :
-                break;
+
         }
         $this -> cab();
         $data['title'] = 'Etiquetagem';

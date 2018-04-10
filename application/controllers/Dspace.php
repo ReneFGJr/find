@@ -33,6 +33,17 @@ class Dspace extends CI_controller {
         $_SESSION['id'] = 1;
     }
 
+	function tools_dir_created()
+		{
+			$this->cab();
+			$this -> load -> model('dspaces');
+			
+			$tela = $this->dspaces->tools_directory_create();	
+        	$data['content'] = $tela;
+        	$this->load->view('content',$data);
+        	$this -> foot();					
+		}
+
     /******************************************************************** LOGIN DO SISTEMA */
     function social($path = '', $d1 = '', $d2 = '') {
         $this -> load -> model('socials');
@@ -54,6 +65,9 @@ class Dspace extends CI_controller {
         $path = $this->dspaces->path;
         $data = $this->dspaces->le("1");
         $tela .= $this->load->view('dspace/sample/view',$data,true);
+		
+		$tela .= $this->dspaces->tools($path);
+		
         $tela .= $this->dspaces->directory($path);        
         $tela .= $this->dspaces->le_content($path);
         $tela .= $this->dspaces->le_handle($path);
