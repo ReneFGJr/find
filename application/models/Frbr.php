@@ -2915,7 +2915,7 @@ class frbr extends CI_model {
                RD1.d_r2 as pt, RD2.d_p as p1, 
                RD2.d_r2 as RD2
         from rdf_data as RD1 
-               LEFT JOIN rdf_name ON rd1.d_literal = id_n 
+               LEFT JOIN rdf_name ON RD1.d_literal = id_n 
                LEFT JOIN rdf_data as RD2 ON RD1.d_r1 = RD2.d_r1 and RD2.d_p = $p 
                LEFT JOIN itens ON i_tombo = n_name 
         where RD1.d_p = $f and ((i_tombo is null) or (i_status = 1) or (i_status = 2))                
