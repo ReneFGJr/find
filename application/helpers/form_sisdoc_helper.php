@@ -9,7 +9,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @category    Helpers
  * @author      Rene F. Gabriel Junior <renefgj@gmail.com>
  * @link        http://www.sisdoc.com.br/CodIgniter
- * @version     v0.18.02.22
+ * @version     v0.18.03.16
  */
  
  /* 2017-12-21 function read_link($url) */
@@ -94,23 +94,6 @@ function sn($it = 0) {
  */
 function normalizarNome($nome) {
 	return($nome);
-    //$nome = mb_ereg_replace(self::NN_PONTO, self::NN_PONTO_ESPACO, $nome);
-    //$nome = mb_ereg_replace(self::NN_REGEX_MULTIPLOS_ESPACOS, self::NN_ESPACO, $nome);
-    //$nome = ucwords(strtolower($nome));
-    //// alterando essa linha pela anterior funciona para acentos
-    //$partesNome = mb_split(self::NN_ESPACO, $nome);
-//    $excecoes = array('de', 'do', 'di', 'da', 'dos', 'das', 'dello', 'della', 'dalla', 'dal', 'del', 'e', 'em', 'na', 'no', 'nas', 'nos', 'van', 'von', 'y', 'der');
-
-//    for ($i = 0; $i < count($partesNome); ++$i) {
-//
-//        if (mb_ereg_match(self::NN_REGEX_NUMERO_ROMANO, mb_strtoupper($partesNome[$i])))
-//            $partesNome[$i] = mb_strtoupper($partesNome[$i]);
-//        foreach ($excecoes as $excecao)
-//            if (mb_strtolower($partesNome[$i]) == mb_strtolower($excecao))
-//                $partesNome[$i] = $excecao;
-//    }
-//    $nomeCompleto = implode(self::NN_ESPACO, $partesNome);
-    return addslashes($nomeCompleto);
 }
 
 /**
@@ -2848,5 +2831,5 @@ function nbr_author($xa,$tp)
 			$xa = troca($xa,'Do ','do ');
 		}		
 	return $xa;
-	}
+	}	
 ?>
