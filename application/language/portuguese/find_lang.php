@@ -221,4 +221,15 @@ $lang['hasAdvisor'] = 'Orientador';
 $lang['menu_bibliometric'] = 'Bibliometrias'; 
 $lang['menu_updates_check'] = 'Checar atualizações'; 
 $lang['menu_bibliometric_cited'] = 'menu_bibliometric_cited'; 
+$lang['sign_up'] = 'Cadastrar-se';
+$lang['Signup_user'] = 'Cadastro de usuário';
+
+$lang['	situacao_exemplar_1'] = 'Disponível';
+$lang['	situacao_exemplar_2'] = 'Disponível';
+$lang['	situacao_exemplar_3'] = 'Disponível';
+$lang['	situacao_exemplar_4'] = 'Disponível';
+$lang['	situacao_exemplar_5'] = 'Disponível';
+$lang['	situacao_exemplar_6'] = 'Disponível';
+
+$lang['loan_module'] = 'Módulo de empréstimo';
 ?>

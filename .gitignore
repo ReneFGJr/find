@@ -46,3 +46,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 *.pdf
+application/config/database.php
+application/config/database-propel.php
+application/config/database.php
+application/config/database.php

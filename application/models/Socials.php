@@ -153,14 +153,23 @@ class socials extends CI_Model {
             {
                 $name = $_SESSION['user'];
                 $sx = '
+                <li class="nav-item navbar-toggler-right">
                 <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> '.$name.' </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <a class="dropdown-item" href="'.base_url('index.php/main/social/perfil').'">'.msg('user_perfil').'</a>
                     <a class="dropdown-item" href="'.base_url('index.php/main/social/logout').'">'.msg('user_logout').'</a>
-                </div>                
+                </div>
+                </li>                
                 ';
             } else {
-                $sx = '<A href="#" class="nav-link" data-toggle="modal" data-target="#exampleModalLong">' . msg('sign_in') . '</a>';
+            	$sx = '';
+				$sx .= '
+							<li class="nav-item active">
+								<a class="nav-link" href="'.base_url('index.php/social/signup').'">'.msg('sign_up').'</a>
+							</li>';
+            	$sx .= '<li class="nav-item navbar-toggler-right">';
+                $sx .= '<a href="#" class="nav-link" data-toggle="modal" data-target="#exampleModalLong">' . msg('sign_in') . '</a>';
+				$sx .= '</li>';
                 $sx .= $this -> button_login_modal();                
             }
         return ($sx);
@@ -341,7 +350,20 @@ class socials extends CI_Model {
         }
     }
 
-    function cp($id) {
+    function cp_signup($id=0) {
+        $cp = array();
+        array_push($cp, array('$H8', 'id_us', '', False, True));
+        array_push($cp, array('$S80', 'us_nome', 'Nome', True, True));
+        if ($id == 0) {
+            array_push($cp, array('$S80', 'us_email', 'login/email', True, True));
+            array_push($cp, array('$P20', '', 'Senha', True, True));
+        }
+        array_push($cp, array('$HV', 'us_password', md5(get("dd3")), True, True));
+        array_push($cp, array('$HV', 'us_ativo', '1', True, True));
+        return ($cp);
+    }
+
+    function cp($id=0) {
         $cp = array();
         array_push($cp, array('$H8', 'id_us', '', False, True));
         array_push($cp, array('$S80', 'us_nome', 'Nome', True, True));
@@ -507,6 +529,7 @@ class socials extends CI_Model {
     }
 
     function security_login($login = '', $pass = '') {
+    	$login = troca($login,"'","´");
         $sql = "select * from " . $this -> table . " where us_email = '$login' OR us_login = '$login' ";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();

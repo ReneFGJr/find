@@ -30,7 +30,6 @@ class Dspace extends CI_controller {
         if ($navbar == 1) {
             $this -> load -> view('dspace/header/navbar', null);
         }
-        $_SESSION['id'] = 1;
     }
 
 	function tools_dir_created()
