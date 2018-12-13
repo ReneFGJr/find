@@ -24,7 +24,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |
 */
 $config['base_url'] = '';
-
+define('PATH','index.php/main/');
 /********* METHODO READ FILE 
  * file - read file with file_get_contents 
  * curl - read file with CURL
