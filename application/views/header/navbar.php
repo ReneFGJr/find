@@ -15,6 +15,16 @@ $ac[$pag] = 'active';
 			<li class="nav-item active">
 				<a class="nav-link" href="<?php echo base_url('index.php/main'); ?>">Catálogo <span class="sr-only">(current)</span></a>
 			</li>
+			<?php if (file_exists('application/models/Loans.php')) { ?>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <?php echo msg('Loans');?> </a>
+				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/mod/loans/books'); ?>"><?php echo msg("loan_book");?></a>
+				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/mod/loans/users'); ?>"><?php echo msg('load_users');?></a>
+				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/mod/loans/renove'); ?>"><?php echo msg('loan_renove');?></a>
+				</div>
+			</li>
+			<?php } ?>						
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <?php echo msg('index');?> </a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
@@ -34,9 +44,10 @@ $ac[$pag] = 'active';
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Catalogação </a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/authority'); ?>"><?php echo msg("authority");?></a>
-				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/catalog'); ?>">Preparo técnico</a>
+				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/catalog_work'); ?>">Bibliográfico</a>
                     <a class="dropdown-item" href="<?php echo base_url('index.php/main/cutter'); ?>"><?php echo msg("cutter");?></a>
                     <a class="dropdown-item" href="<?php echo base_url('index.php/main/vocabulary'); ?>">Vocabulários controlados</a>
+                    <a class="dropdown-item" href="<?php echo base_url('index.php/main/catalog'); ?>">Etiquetas</a>
 				</div>
 			</li>
 			<?php } ?>
@@ -80,7 +91,7 @@ $ac[$pag] = 'active';
             </li>                
             <?php } ?>
                         
-            <li class="nav-item navbar-toggler-right">
+            
                 <?php echo $this->socials->menu_user();?>
             </li>           
                        			

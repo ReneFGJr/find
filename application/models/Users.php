@@ -1,21 +1,4 @@
 <?php
-/****************** Security login ****************/
-function perfil($p, $trava = 0) {
-    $ac = 0;
-    if (isset($_SESSION['perfil'])) {
-        $perf = $_SESSION['perfil'];
-        for ($r = 0; $r < strlen($p); $r = $r + 4) {
-            $pc = substr($p, $r, 4);
-            //echo '<BR>'.$pc.'='.$perf.'=='.$ac;
-            if (strpos(' ' . $perf, $pc) > 0) { $ac = 1;
-            }
-        }
-    } else {
-        $ac = 0;
-    }
-    return ($ac);
-}
-
 class users extends CI_model {
     var $table = 'users';
 
@@ -49,24 +32,52 @@ class users extends CI_model {
         $this -> insert_new_user($dt);
     }
 
+    function create_user($dt) {
+        $this -> insert_new_user($dt);
+    }
+
     function row($id = '') {
         $form = new form;
 
-        $form -> fd = array('id_us', 'us_nome', 'us_login', 'us_ativo');
-        $form -> lb = array('id', msg('us_name'), msg('us_login'), msg('us_ativo'));
+        $form -> fd = array('id_us', 'us_nome', 'us_email', 'us_badge', 'us_ativo');
+        $form -> lb = array('id', msg('us_name'), msg('us_email'),msg('us_badge'), msg('us_ativo'));
         $form -> mk = array('', 'L', 'L', 'A');
 
         $form -> tabela = $this -> table;
-        $form -> see = true;
-        $form -> novo = true;
-        $form -> edit = true;
+        $form -> see = True;
+        $form -> novo = perfil("#ADMIN");
+        $form -> edit = perfil("#ADMIN");
 
-        $form -> row_edit = base_url('index.php/admin/user_edit');
-        $form -> row_view = base_url('index.php/admin/user');
-        $form -> row = base_url('index.php/admin/users');
+        $form -> row_edit = base_url('index.php/main/mod/loans/user');
+        $form -> row_view = base_url('index.php/main/mod/loans/loan_user');
+        $form -> row = base_url('index.php/main/mod/loans/users');
 
         return (row($form, $id));
     }
+	
+	function is_existe_email($email='')
+		{
+			if(filter_var($email, FILTER_VALIDATE_EMAIL))
+				{
+					$sql = "select * from users where us_email = '$email' ";
+					$rlt = $this->db->query($sql);
+					$rlt = $rlt->result_array();
+					if (count($rlt) > 0)
+						{
+							$ok = '<div class="alert alert-danger">
+								  <strong>Error!</strong> '.msg('signup_email_already').'
+								</div>';							
+						} else {
+							$ok = 1;		
+						}
+					
+				} else {
+					$ok = '<div class="alert alert-danger">
+								  <strong>Error!</strong> '.msg('signup_format_email_error').'
+								</div>';
+				}
+			return($ok);
+		}
 
     function editar($id, $chk) {
         $form = new form;

@@ -50,6 +50,7 @@ class social extends CI_Controller {
         parent::__construct();
 
         $this -> lang -> load("app", "portuguese");
+        $this -> lang -> load("find", "portuguese");
         $this -> load -> helper('form_sisdoc');
         $this -> load -> library('Oauth2');
         $this -> load -> database();
@@ -60,23 +61,52 @@ class social extends CI_Controller {
         date_default_timezone_set('America/Sao_Paulo');
     }
 
-    function cab($data = array()) {
-        $js = array();
-        $css = array();
-        array_push($js, 'form_sisdoc.js');
-        array_push($js, 'jquery-ui.min.js');
-        array_push($js, 'jquery.maximage.js');
-
-        array_push($css, 'asset/maximage.css');
-        array_push($css, 'asset/login_maximize.css');
-
-        $data = array();
-        $data['js'] = $js;
-        $data['css'] = $css;
-
-        $data['title'] = ':: Giga Informática ::';
+    private function cab($navbar = 1) {
+        $this -> load -> model("socials");
+        $data['title'] = 'Find - Library ::::';
         $this -> load -> view('header/header', $data);
+        if ($navbar == 1) {
+            $this -> load -> view('header/navbar', null);
+        }
     }
+	
+	function signup()
+		{
+			$this->load->model('users');
+			$this->cab();
+			
+			$form = new form;
+			$cp = $this->socials->cp_signup();
+			$tela = $form->editar($cp,'');
+			
+			if ($form->saved > 0)
+				{
+					$email = get("dd2");
+					$pass = get("dd3");
+					if (($ok = $this->users->is_existe_email($email))==1)
+						{
+							$tela .= 'OK';
+							    $dt = array();
+						        $dt['us_nome'] = get('dd1');
+						        $dt['us_email'] = $email;
+						        $dt['us_password'] = md5($pass);
+						        $dt['us_autenticador'] = 'MD5';
+								$this->users->create_user($dt);
+							    $tela = '<br><br>
+									<div class="alert alert-success">
+									  <strong>Success!</strong> '.msg('signup_success').'
+									</div>';								
+						} else {
+							$tela .= $ok;
+						}
+				}
+			
+			$data = array();
+			$data['content'] = $tela;	
+			$data['title'] = 'Signup_user';		
+			$this->load->view('content',$data);
+			
+		}
 
     public function index() {
         redirect(base_url('index.php'));
