@@ -1502,7 +1502,6 @@ class frbr extends CI_model {
                     INNER JOIN rdf_name ON id_n = cc_pref_term 
                     INNER JOIN rdf_class ON id_c = cc_class
                     WHERE $wh AND c_find = 1 ";
-
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
         $sx .= '<div class="container">' . cr();
@@ -1518,6 +1517,12 @@ class frbr extends CI_model {
                     $sx .= $this -> show_manifestation_by_works($idw) . cr();
                     $sx .= '</div>' . cr();
                     break;
+                case 'Person' :
+                    $idw = $line['id_cc'];
+                    $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
+                    $sx .= $this -> show_person($line) . cr();
+                    $sx .= '</div>' . cr();
+                    break;                    
                 default :
                     $link = '<a href="' . base_url(PATH.'v/' . $line['id_c']) . '" target="_new">';
                     $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
@@ -2102,7 +2107,15 @@ class frbr extends CI_model {
         $sx .= '</div>' . cr();
         return ($sx);
     }
-
+    function show_person($d)
+        {
+            $link = '<a href="'.base_url(PATH.'v/'.$d['id_cc']).'">';
+            $sx = $link.$d['n_name'].'</a>';
+            $sx .= '<br>';
+            $sx .= '<i class="small">'.msg('Person').'</i>';
+            return($sx);
+        }
+        
     function show_works($id = '') {
         $class = $this -> find_class('work');
         $sql = "select id_cc as w 
@@ -2500,12 +2513,12 @@ class frbr extends CI_model {
 
     function btn_editar($id) {
         $sx = '<a href="' . base_url(PATH.'a/' . $id) . '" class="btn btn-secondary">editar</a>';
+        $sx .= ' <a href="' . base_url(PATH.'authority_cutter/' . $id) . '" class="btn btn-secondary">atualizar Cutter</a>';        
         return ($sx);
     }
 
     function btn_update($id) {
         $sx = '<a href="' . base_url(PATH.'authority_inport_rdf/' . $id) . '" class="btn btn-secondary">atualizar dados</a> ';
-        $sx .= '<a href="' . base_url(PATH.'authority_cutter/' . $id) . '" class="btn btn-secondary">atualizar Cutter</a>';
 
         return ($sx);
     }

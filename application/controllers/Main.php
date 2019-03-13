@@ -772,34 +772,39 @@ class Main extends CI_controller {
         $this -> load -> view('find/authority');
         $this -> load -> view('find/search/search_authority', null);
         /***************/
-        $tela = '<br>';
-        $tela .= '<div class="row">' . cr();
-        $tela .= '  <div class="col-md-2">';
-        msg('find_viaf') . '</div>' . cr();
-        $tela .= '      <a href="' . base_url('index.php/main/authority_inport') . '" class="btn btn-secondary">';
-        $tela .= '      Importar MARC21';
-        $tela .= '      </a> ';
-        $tela .= '  </div>' . cr();
-        /***************/
-        $tela .= '  <div class="col-md-2">';
-        msg('find_viaf') . '</div>' . cr();
-        $tela .= '      <a href="' . base_url('index.php/main/authority_create') . '" class="btn btn-secondary">' . cr();
-        $tela .= '      Criar autoridade' . cr();
-        $tela .= '      </a> ' . cr();
-        $tela .= '  </div>' . cr();
-        $tela .= '</div>' . cr();
+        $dd1 = get("search");
+        if (strlen($dd1) > 0) {
+            $tela = $this -> frbr -> recupera_nomes($dd1);
+        } else {
 
-        /***************/
-        $tela .= '<div class="row" style="margin-top: 30px;">' . cr();
-        $tela .= '      <div class="col-md-2">';
-        $tela .= '          <a href="https://viaf.org/" target="_new_viaf_' . date("dhs") . '" class="btn btn-secondary">
+            $tela = '<br>';
+            $tela .= '<div class="row">' . cr();
+            $tela .= '  <div class="col-md-2">';
+            msg('find_viaf') . '</div>' . cr();
+            $tela .= '      <a href="' . base_url('index.php/main/authority_inport') . '" class="btn btn-secondary">';
+            $tela .= '      Importar MARC21';
+            $tela .= '      </a> ';
+            $tela .= '  </div>' . cr();
+            /***************/
+            $tela .= '  <div class="col-md-2">';
+            msg('find_viaf') . '</div>' . cr();
+            $tela .= '      <a href="' . base_url('index.php/main/authority_create') . '" class="btn btn-secondary">' . cr();
+            $tela .= '      Criar autoridade' . cr();
+            $tela .= '      </a> ' . cr();
+            $tela .= '  </div>' . cr();
+            $tela .= '</div>' . cr();
+
+            /***************/
+            $tela .= '<div class="row" style="margin-top: 30px;">' . cr();
+            $tela .= '      <div class="col-md-2">';
+            $tela .= '          <a href="https://viaf.org/" target="_new_viaf_' . date("dhs") . '" class="btn btn-secondary">
                             <img src="' . base_url('img/logo/logo_viaf.jpg') . '" class="img-fluid"></a>' . cr();
-        $tela .= '      </div>' . cr();
-        $tela .= '      <div class="col-md-10">' . cr();
-        $tela .= msg('find_viaf');
-        $tela .= '          <form method="post" action="' . base_url("index.php/main/authority/") . '">' . cr();
-        $tela .= '          ' . cr();
-        $tela .= '          <div class="input-group">
+            $tela .= '      </div>' . cr();
+            $tela .= '      <div class="col-md-10">' . cr();
+            $tela .= msg('find_viaf');
+            $tela .= '          <form method="post" action="' . base_url("index.php/main/authority/") . '">' . cr();
+            $tela .= '          ' . cr();
+            $tela .= '          <div class="input-group">
                               <input type="text" name="ulr_viaf" value="" class="form-control">
                               <input type="hidden" name="action" value="viaf_inport">
                               <span class="input-group-btn">
@@ -807,31 +812,27 @@ class Main extends CI_controller {
                               </span>
                               
                             </div>';
-        $tela .= '          </form>' . cr();
-        $tela .= '          <span class="small">Ex: https://viaf.org/viaf/122976/#Souza,_Herbert_de</span>';
-        $tela .= '      </div>' . cr();
-        $tela .= '  </div>' . cr();
+            $tela .= '          </form>' . cr();
+            $tela .= '          <span class="small">Ex: https://viaf.org/viaf/122976/#Souza,_Herbert_de</span>';
+            $tela .= '      </div>' . cr();
+            $tela .= '  </div>' . cr();
 
-        //https:
-        //viaf.org/viaf/170358043/#Silva,_Rubens_Ribeiro_Gonçalves_da
-        /* recupera */
-        $dd1 = get("search");
-        if (strlen($dd1) > 0) {
-            $tela .= $this -> frbr -> recupera_nomes($dd1);
-        }
+            //https:
+            //viaf.org/viaf/170358043/#Silva,_Rubens_Ribeiro_Gonçalves_da
+            /* recupera */
 
-        /***********************************/
-        $tela .= '<div class="row" style="margin-top: 30px;">' . cr();
-        $tela .= '      <div class="col-md-2">';
-        $tela .= '          <a href="http://www.geonames.org/" target="_new_geonames_' . date("dhs") . '" class="btn btn-secondary">
+            /***********************************/
+            $tela .= '<div class="row" style="margin-top: 30px;">' . cr();
+            $tela .= '      <div class="col-md-2">';
+            $tela .= '          <a href="http://www.geonames.org/" target="_new_geonames_' . date("dhs") . '" class="btn btn-secondary">
                             <img src="' . base_url('img/logo/logo_geonames.jpg') . '" class="img-fluid"></a>' . cr();
-        $tela .= '      </div>' . cr();
+            $tela .= '      </div>' . cr();
 
-        $tela .= '      <div class="col-md-10">' . cr();
-        $tela .= msg('find_geonames');
-        $tela .= '          <form method="post" action="' . base_url("index.php/main/authority/") . '">' . cr();
-        $tela .= '          ' . cr();
-        $tela .= '          <div class="input-group">
+            $tela .= '      <div class="col-md-10">' . cr();
+            $tela .= msg('find_geonames');
+            $tela .= '          <form method="post" action="' . base_url("index.php/main/authority/") . '">' . cr();
+            $tela .= '          ' . cr();
+            $tela .= '          <div class="input-group">
                               <input type="text" name="ulr_geonames" value="" class="form-control">
                               <input type="hidden" name="action" value="geonames_inport">
                               <span class="input-group-btn">
@@ -839,17 +840,18 @@ class Main extends CI_controller {
                               </span>
                               
                             </div>';
-        $tela .= '          </form>' . cr();
-        $tela .= '          <span class="small">Ex: http://www.geonames.org/3448439/sao-paulo.html</span>';
-        $tela .= '      </div>' . cr();
-        $tela .= '  </div>' . cr();
-        $tela .= '</div>' . cr();
-        /// http://www.geonames.org/3448439/sao-paulo.html
-        /// http://sws.geonames.org/3448439/about.rdf
-        /* recupera */
-        $dd1 = get("search");
-        if (strlen($dd1) > 0) {
-            //$tela .= $this -> frbr -> recupera_geonames($dd1);
+            $tela .= '          </form>' . cr();
+            $tela .= '          <span class="small">Ex: http://www.geonames.org/3448439/sao-paulo.html</span>';
+            $tela .= '      </div>' . cr();
+            $tela .= '  </div>' . cr();
+            $tela .= '</div>' . cr();
+            /// http://www.geonames.org/3448439/sao-paulo.html
+            /// http://sws.geonames.org/3448439/about.rdf
+            /* recupera */
+            $dd1 = get("search");
+            if (strlen($dd1) > 0) {
+                //$tela .= $this -> frbr -> recupera_geonames($dd1);
+            }
         }
 
         $data['content'] = $tela;
