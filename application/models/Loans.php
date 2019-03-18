@@ -1,5 +1,18 @@
 <?php
 class loans extends CI_model {
+    function index()
+        {
+            $sx = '<h1>'.msg('loans').'</h1>';
+            $sx .= '<ul>';
+            $sx .= '<li><a href="'.base_url(PATH.'mod/loans/users').'">'.msg("loan_users").'</a>'.cr();
+            $sx .= '</ul>';
+            return($sx);
+        }
+    function renove()
+        {
+            $sx = 'Renovação';
+            return($sx);
+        }
 	function users() {
 		$this -> load -> model("users");
 		$tela = $this -> users -> row();
@@ -74,6 +87,7 @@ class loans extends CI_model {
 					
 			//$rlt = $this->db->query($sql);
 		}
+
 
 }
 ?>

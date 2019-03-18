@@ -1537,6 +1537,17 @@ class Main extends CI_controller {
 
     function mod($mod = '', $act = '', $id = '', $id2 = '', $id3 = '') {
         $this -> load -> model('frbr');
+        if (strlen($act) == 0)
+            {
+                $act = 'index';
+            }
+        if ((strlen(trim($mod)) == 0) or (strlen($act) == 0))
+            {
+                $tela = "Mod = $mod, act = $act, id = $id, id2 = $id2, id3=$id3;";
+                $data['content'] = '<h1>ERRO MOD ACTION</h1>' . $tela;
+                $this -> load -> view('content', $data);
+                return('');
+            }
 
         $this -> cab(1);
         $title = '<sup>mod:</sup>' . UpperCase($mod);
@@ -1544,7 +1555,6 @@ class Main extends CI_controller {
         /*** load module ********/
         $this -> load -> model($mod);
         $cmd = '$tela = $this->' . $mod . '->' . $act . "('$id','$id2','$id3');";
-        //echo $cmd;
         eval($cmd);
 
         $data['content'] = '<h1>' . $title . '</h1>' . $tela;
