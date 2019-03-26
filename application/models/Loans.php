@@ -1,5 +1,16 @@
 <?php
 class loans extends CI_model {
+    function user($id='',$id2='')
+        {
+            $sx = msg('not_implemented');
+            return($sx);
+        }
+    
+    function books()
+        {
+            $sx = msg('not_implemented');
+            return($sx);
+        }
     function index()
         {
             $sx = '<h1>'.msg('loans').'</h1>';

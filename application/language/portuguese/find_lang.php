@@ -224,12 +224,29 @@ $lang['menu_bibliometric_cited'] = 'menu_bibliometric_cited';
 $lang['sign_up'] = 'Cadastrar-se';
 $lang['Signup_user'] = 'Cadastro de usuário';
 
-$lang['	situacao_exemplar_1'] = 'Disponível';
-$lang['	situacao_exemplar_2'] = 'Disponível';
-$lang['	situacao_exemplar_3'] = 'Disponível';
-$lang['	situacao_exemplar_4'] = 'Disponível';
-$lang['	situacao_exemplar_5'] = 'Disponível';
-$lang['	situacao_exemplar_6'] = 'Disponível';
+$lang['situacao_exemplar_0'] = '<span style="color: green"><b>Disponível</b></span>';
+$lang['situacao_exemplar_1'] = 'Disponível';
+$lang['situacao_exemplar_2'] = 'Disponível';
+$lang['situacao_exemplar_3'] = 'Disponível';
+$lang['situacao_exemplar_4'] = 'Disponível';
+$lang['situacao_exemplar_5'] = 'Disponível';
+$lang['situacao_exemplar_6'] = 'Disponível';
 
 $lang['loan_module'] = 'Módulo de empréstimo';
+
+$lang['bt_search'] = 'Busca';
+$lang['bt_clear'] = 'Limpar';
+$lang['bt_new'] = 'Novo';
+
+$lang['Loans'] = 'Empréstimo';
+$lang['loan_book'] = 'Consultar tombo';
+$lang['loan_users'] = 'Cadastro de Usuários';
+$lang['loan_renove'] = 'Renovação';
+
+$lang['us_nome'] = 'Nome completo';
+$lang['us_email'] = 'e-mail';
+$lang['us_badge'] = 'crachá';
+$lang['us_ativo'] = 'situação';
+$lang['action'] = 'ação';
+
 ?>

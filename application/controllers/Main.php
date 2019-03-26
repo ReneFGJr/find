@@ -436,6 +436,7 @@ class Main extends CI_controller {
         $this -> load -> model('barcodes');
         $this -> load -> model('frbr');
         $val = get("q");
+        
         switch ($path) {
             case 'hasPage' :
                 $val = sonumero($val);
@@ -455,6 +456,26 @@ class Main extends CI_controller {
                     echo $tela;
                 }
                 break;
+            case 'hasLattes' :
+                $pre = substr($val,0,22);
+                $lattes = substr($val,22,20);
+                
+                if ((sonumero($lattes) != $lattes) or (strlen($lattes < 10))) {
+                    $tela = '
+                                <div class="alert alert-danger" role="alert">
+                                  <strong>Error! (133)</strong> Lattes Inválido use: http://lattes.cnpq.br/0000000000000 "' . $val . '"
+                                </div>
+                                ';
+                    echo $tela;
+                } else {
+                    $name_pref = $val;
+                    $id_t = $this -> frbr -> frbr_name($name_pref);
+                    $p_id = $this -> frbr -> rdf_concept($id_t, 'LattesCurriculo', '');
+                    $this -> frbr -> set_propriety($p_id, 'prefLabel', 0, $id_t);
+                    $this -> frbr -> set_propriety($id, 'hasLattes', $p_id, 0);
+                    echo '<meta http-equiv="refresh" content="0;">';
+                }
+                break;                
             case 'hasISBN' :
                 $val = sonumero($val);
                 $dv = $this -> barcodes -> isbn13($val);
@@ -1125,36 +1146,37 @@ class Main extends CI_controller {
         $lib = $this -> lib;
         $this -> load -> model('barcodes');
         $acao = get("dd0");
-        switch($acao) {
-            default :
-                $data['nrtombo'] = round(get("dd1")) + $lib;
-                $data['pages'] = get("dd2");
-                $data['repetir'] = get("dd3");
-                $data['cols'] = get("dd4");
-                //$data['label'] = 'Sala de Leitura Propel';
-                $data['label'] = 'Propel - IFRGS';
-                $tela = $this -> load -> view('find/label/tombo_1', $data, true);
+        if (strlen($acao) > 0) {
+            switch($acao) {
+                default :
+                    $data['nrtombo'] = round(get("dd1")) + $lib;
+                    $data['pages'] = get("dd2");
+                    $data['repetir'] = get("dd3");
+                    $data['cols'] = get("dd4");
+                    //$data['label'] = 'Sala de Leitura Propel';
+                    $data['label'] = 'Propel - IFRGS';
+                    $tela = $this -> load -> view('find/label/tombo_1', $data, true);
 
-                $obj_pdf = new TCPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-                $obj_pdf -> SetCreator(PDF_CREATOR);
-                $title = "Etiqueta Bibliográfica";
-                $obj_pdf -> SetTitle('Bibliográfica');
-                //  $obj_pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, $title, "Monthly Report");
-                //  $obj_pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-                //  $obj_pdf -> setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-                //  $obj_pdf -> SetDefaultMonospacedFont('helvetica');
-                //  $obj_pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-                //  $obj_pdf -> SetFooterMargin(PDF_MARGIN_FOOTER);
-                //  $obj_pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-                //$obj_pdf -> SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-                $obj_pdf -> SetFont('helvetica', '', 9);
-                $obj_pdf -> setFontSubsetting(false);
-                $obj_pdf -> AddPage();
-                $obj_pdf -> writeHTML($tela, true, false, true, false, '');
-                $obj_pdf -> Output();
-                exit ;
-                break;
-
+                    $obj_pdf = new TCPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+                    $obj_pdf -> SetCreator(PDF_CREATOR);
+                    $title = "Etiqueta Bibliográfica";
+                    $obj_pdf -> SetTitle('Bibliográfica');
+                    //  $obj_pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, $title, "Monthly Report");
+                    //  $obj_pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+                    //  $obj_pdf -> setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+                    //  $obj_pdf -> SetDefaultMonospacedFont('helvetica');
+                    //  $obj_pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+                    //  $obj_pdf -> SetFooterMargin(PDF_MARGIN_FOOTER);
+                    //  $obj_pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+                    //$obj_pdf -> SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+                    $obj_pdf -> SetFont('helvetica', '', 9);
+                    $obj_pdf -> setFontSubsetting(false);
+                    $obj_pdf -> AddPage();
+                    $obj_pdf -> writeHTML($tela, true, false, true, false, '');
+                    $obj_pdf -> Output();
+                    exit ;
+                    break;
+            }
         }
         $this -> cab();
         $data['title'] = 'Etiquetagem';
@@ -1326,15 +1348,14 @@ class Main extends CI_controller {
         $tela .= '<a href="' . base_url('index.php/main/catalog_work') . '" class="btn btn-secondary">';
         $tela .= 'Incorporar novo trabalho';
         $tela .= '</a> ';
-        
+
         $tela .= '<a href="' . base_url('index.php/main/catalog_item') . '" class="btn btn-secondary">';
         $tela .= 'Incorporar novo item';
         $tela .= '</a> ';
-        
+
         $tela .= '<a href="' . base_url('index.php/main/inventario/3') . '" class="btn btn-secondary">';
         $tela .= 'Remover um Item';
-        $tela .= '</a> ';       
-        
+        $tela .= '</a> ';
 
         $tela .= '<a href="' . base_url('index.php/main/label') . '" class="btn btn-secondary">';
         $tela .= 'Gerar Etiquetas';
@@ -1355,11 +1376,11 @@ class Main extends CI_controller {
         $tela .= '<a href="' . base_url('index.php/main/inventario/2') . '" class="btn btn-secondary">';
         $tela .= 'Consultar Etiquetas';
         $tela .= '</a> ';
-        
+
         $tela .= '<a href="' . base_url('index.php/main/inventario/3') . '" class="btn btn-secondary">';
         $tela .= 'Remover Itens';
         $tela .= '</a> ';
-        
+
         $data['content'] = $tela;
         $this -> load -> view('content', $data);
     }
@@ -1537,17 +1558,15 @@ class Main extends CI_controller {
 
     function mod($mod = '', $act = '', $id = '', $id2 = '', $id3 = '') {
         $this -> load -> model('frbr');
-        if (strlen($act) == 0)
-            {
-                $act = 'index';
-            }
-        if ((strlen(trim($mod)) == 0) or (strlen($act) == 0))
-            {
-                $tela = "Mod = $mod, act = $act, id = $id, id2 = $id2, id3=$id3;";
-                $data['content'] = '<h1>ERRO MOD ACTION</h1>' . $tela;
-                $this -> load -> view('content', $data);
-                return('');
-            }
+        if (strlen($act) == 0) {
+            $act = 'index';
+        }
+        if ((strlen(trim($mod)) == 0) or (strlen($act) == 0)) {
+            $tela = "Mod = $mod, act = $act, id = $id, id2 = $id2, id3=$id3;";
+            $data['content'] = '<h1>ERRO MOD ACTION</h1>' . $tela;
+            $this -> load -> view('content', $data);
+            return ('');
+        }
 
         $this -> cab(1);
         $title = '<sup>mod:</sup>' . UpperCase($mod);
@@ -1619,7 +1638,7 @@ class Main extends CI_controller {
                 $tombo = get("dd1");
                 $tela .= $this -> frbr -> etiqueta_consulta($tombo);
             }
-        } 
+        }
         /***************************************** REIMPRESSAO ***************/
         if ($tipo == '3') {
             array_push($cp, array('$H8', '', '', false, false));
@@ -1627,7 +1646,7 @@ class Main extends CI_controller {
             array_push($cp, array('$B8', '', 'Consultar >>', false, false));
 
             $form = new form;
-            $tela = '<h1>Remover um item</h1>'.cr();
+            $tela = '<h1>Remover um item</h1>' . cr();
             $tela .= $form -> editar($cp, '');
 
             if ($form -> saved > 0) {
@@ -1636,7 +1655,7 @@ class Main extends CI_controller {
                 $tela .= $this -> frbr -> etiqueta_consulta($tombo);
                 $tela .= $this -> frbr -> item_remove($tombo);
             }
-        }               
+        }
         $data['content'] = $tela;
         $data['title'] = 'Inventário';
         $this -> load -> view('content', $data);

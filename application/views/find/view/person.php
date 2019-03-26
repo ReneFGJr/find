@@ -8,8 +8,9 @@ $notas = '';
 $w = $id;
 $link = '<a href="'.base_url('index.php/main/a/'.$w).'">';
 //echo $link.'[ed]</a>';
-$img = '<img src="' . base_url('img/no_image.png') . '" class="img-fluid">';
+$img = '<img src="' . base_url('img/icon/icone_author.jpg') . '" class="img-fluid">';
 $cutter = ''; 
+$lattes = '';
 for ($r=0;$r < count($person);$r++)
     {
         $line = $person[$r];
@@ -18,12 +19,17 @@ for ($r=0;$r < count($person);$r++)
         switch($class)
             {
 			case 'hasCutter':
-				$cutter = $link.trim($line['n_name']).'</a>';
+				$cutter = $link.'<span class="btn-primary" style="padding: 2px 5px; border-radius: 5px;" title="Cutter">'.trim($line['n_name']).'</span></a> ';
 				break;
             case 'prefLabel':
                 $link = '<a href="'.base_url('index.php/main/v/'.$id).'">';
                 $nome = $link.trim($line['n_name']).'</a>';
                 break;
+            case 'hasLattes':
+                $link = '<a href="'.trim($line['n_name']).'" target="_new">';
+                $lattes_icone = '<img src="'.base_url('img/icon/icone_lattes.png').'" style="height: 32px;" title="Link para o Lattes">';
+                $lattes = $link.$lattes_icone.'</a> ';
+                break;                
             case 'altLabel':
                 $alt .= '<li>'.trim($line['n_name']).'</li>';
                 break;
@@ -54,6 +60,9 @@ for ($r=0;$r < count($person);$r++)
             case 'hasCover' :
                 $img = $this -> frbr -> mostra_imagem($line['d_r2']);
                 break;
+            case 'hasFace' :
+                $img = $this -> frbr -> mostra_imagem($line['d_r2']);
+                break;                
             }
     }
     $dates = '';
@@ -96,7 +105,7 @@ $img = troca($img,'class="img-fluid"','class="img-fluid img-person"');
                     echo '</td>';
                     echo '</tr>';
 					echo '<tr>';
-					echo '<td>'.$cutter.'</td>'.cr();
+					echo '<td>'.$lattes.$cutter.'</td>'.cr();
 					echo '</tr>'.cr();
                     echo '</table>';
                 }                

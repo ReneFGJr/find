@@ -27,6 +27,9 @@ class frbr extends CI_model {
             case 'ISBN' :
                 $tela .= $this -> cas_flex($path, $id, $dt);
                 break;
+            case 'LattesCurriculo' :
+                $tela .= $this -> cas_flex($path, $id, $dt);
+                break;                
             case 'Work' :
                 $tela .= $this -> cas_flex($path, $id, $dt);
                 break;
@@ -240,12 +243,14 @@ class frbr extends CI_model {
         $rlt = $rlt -> result_array();
         if (count($rlt) > 0) {
             $line = $rlt[0];
-            $sql = "update rdf_data set
+            if ($line['d_r1'] > 0) {
+                $sql = "update rdf_data set
                                 d_r1 = " . ((-1) * $line['d_r1']) . " ,
                                 d_r2 = " . ((-1) * $line['d_r2']) . " ,
                                 d_p  = " . ((-1) * $line['d_p']) . " 
                                 where id_d = " . $line['id_d'];
-            $rlt = $this -> db -> query($sql);
+                $rlt = $this -> db -> query($sql);
+            }
         }
     }
 
@@ -381,6 +386,11 @@ class frbr extends CI_model {
         $rlt = $rlt -> result_array();
         return ($rlt);
     }
+    
+    function le_tombo($id) {
+           echo'==>'.$id;
+           exit;
+    }    
 
     function le_class($id) {
         $sql = "select * from rdf_class
@@ -674,7 +684,7 @@ class frbr extends CI_model {
         $man = $rlt -> result_array();
         $sx = '<img src="' . base_url('img/icon/icone_bookcase.jpg') . '" height="32" title="' . msg('see_copies') . '" id="bookcase' . $id . '">' . cr();
         $sx .= '<script> $("#bookcase' . $id . '").click(function() { $("#samples' . $id . '").toggle(500); }); </script>' . cr();
-        $sx .= '<table border=0 width="100%" id="samples' . $id . '" style="display: none;">';
+        $sx .= '<table border=0 width="100%" id="samples' . $id . '" style="display: block;">';
         $sx .= '<tr class="small" style="background: #c0c0c0;">
 					<th width="25%">Biblioteca</th>
 					<th width="25%">local</th>
@@ -1497,11 +1507,12 @@ class frbr extends CI_model {
         if (strlen($wh) == 0) {
             return ('');
         }
-
-        $sql = "select * from rdf_concept
+        $cps = 'c_class, id_c, n_name, id_cc';
+        $sql = "select $cps from rdf_concept
                     INNER JOIN rdf_name ON id_n = cc_pref_term 
                     INNER JOIN rdf_class ON id_c = cc_class
-                    WHERE $wh AND c_find = 1 ";
+                    WHERE $wh AND c_find = 1 
+                    group by $cps";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
         $sx .= '<div class="container">' . cr();
@@ -1519,10 +1530,18 @@ class frbr extends CI_model {
                     break;
                 case 'Person' :
                     $idw = $line['id_cc'];
+                    $img = $this->recupera_imagem($idw);
                     $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
                     $sx .= $this -> show_person($line) . cr();
                     $sx .= '</div>' . cr();
-                    break;                    
+                    break; 
+                case 'Item' :
+                    $idw = $line['id_cc'];
+                    $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
+                    $sx .= $this -> show_manifestation_by_item($idw) . cr();
+                    $sx .= '<br><br><span style="font-size: 12px;">Tombo:'.$line['n_name'].'</span>';
+                    $sx .= '</div>' . cr();
+                    break;                                        
                 default :
                     $link = '<a href="' . base_url(PATH.'v/' . $line['id_c']) . '" target="_new">';
                     $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
@@ -1625,7 +1644,7 @@ class frbr extends CI_model {
             $line = $rlt[0];
             $compl = '';
             if ((strlen($orign) > 0) and ((strlen(trim($line['cc_origin'])) == 0) or ($line['cc_origin'] == 'ERRO:'))) {
-                $compl = "', cc_origin = '$orign' ";
+                $compl = ", cc_origin = '$orign' ";
             }
             $sql = "update rdf_concept set cc_status = 1, cc_update = '$date' $compl where id_cc = " . $line['id_cc'];
             $rlt = $this -> db -> query($sql);
@@ -2109,8 +2128,11 @@ class frbr extends CI_model {
     }
     function show_person($d)
         {
+            $sx = '';
             $link = '<a href="'.base_url(PATH.'v/'.$d['id_cc']).'">';
-            $sx = $link.$d['n_name'].'</a>';
+            $img = $this->recupera_imagem($d['id_cc']);           
+            $sx .= $link.$img.'</a>';
+            $sx .= $link.$d['n_name'].'</a>';
             $sx .= '<br>';
             $sx .= '<i class="small">'.msg('Person').'</i>';
             return($sx);
@@ -2679,6 +2701,21 @@ class frbr extends CI_model {
         $sx .= '<ul>';
         return ($sx);
     }
+    
+    function recupera_imagem($id)
+        {
+            $d = $this->le_data($id);
+            $sx = '<img src="'.base_url('img/icon/icone_author.jpg').'" class="img-fluid img-person">';
+            for ($r=0;$r < count($d);$r++)
+                {
+                    $line = $d[$r];
+                    if ($line['c_class']=='hasFace')
+                        {
+                            $sx = '<img src="'.base_url('_repositorio/image/'.$line['n_name']).'" class="img-fluid img-person">';
+                        }
+                }
+            return($sx);
+        }
 
     function index_author($lt = '') {
         $class = "Person";
@@ -2754,6 +2791,7 @@ class frbr extends CI_model {
     }
 
     function vv($id) {
+        $tela = '';
         $data = $this -> frbr -> le($id);
         if (count($data) == 0) {
             $this -> load -> view('error', $data);

@@ -15,16 +15,19 @@ $ac[$pag] = 'active';
 			<li class="nav-item active">
 				<a class="nav-link" href="<?php echo base_url('index.php/main'); ?>">Catálogo <span class="sr-only">(current)</span></a>
 			</li>
+            <?php 
+            if (perfil('#ADM')==1) 
+            { ?>			
 			<?php if (file_exists('application/models/Loans.php')) { ?>
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <?php echo msg('Loans');?> </a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/mod/loans/books'); ?>"><?php echo msg("loan_book");?></a>
-				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/mod/loans/users'); ?>"><?php echo msg('load_users');?></a>
+				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/mod/loans/users'); ?>"><?php echo msg('loan_users');?></a>
 				    <a class="dropdown-item" href="<?php echo base_url('index.php/main/mod/loans/renove'); ?>"><?php echo msg('loan_renove');?></a>
 				</div>
 			</li>
-			<?php } ?>						
+			<?php } } ?>						
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <?php echo msg('index');?> </a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">

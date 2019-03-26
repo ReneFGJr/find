@@ -36,15 +36,14 @@ $lang['Keep me Signed in'] = 'Manter-se conectado';
 $lang['Sign In'] = 'Entrar';
 $lang['SIGN IN'] = 'Acessar';
 $lang['SIGN UP'] = 'Sobre';
+$lang['sign_up'] = 'Cadastrar-se';
 $lang['Forgot Password'] = 'Esqueceu sua senha';
 
 $lang['contato_T'] = 'Telefone';
 $lang['contato_E'] = 'E-mail';
 $lang['g_ingresso'] = 'Ano ingresso';
 $lang['g_integralizacao'] = 'Integralização';
-$lang['bt_search'] = 'Busca';
-$lang['bt_clear'] = 'Limpar';
-$lang['bt_new'] = 'Novo';
+
 
 $lang['i_i1'] = 'Cred. Total';
 $lang['i_i2'] = 'Cred. Obrigatórios';
