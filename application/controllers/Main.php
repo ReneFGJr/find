@@ -1,4 +1,6 @@
 <?php
+define('LIBRARY', '1001');
+define('PATH', 'index.php/main/');
 class Main extends CI_controller {
     var $lib = 10010000000;
 
@@ -22,7 +24,7 @@ class Main extends CI_controller {
 
     function login() {
         $_SESSION['user'] = 'FINDS';
-        redirect(base_url('index.php/main'));
+        redirect(base_url(PATH));
     }
 
     private function cab($navbar = 1) {
@@ -42,7 +44,13 @@ class Main extends CI_controller {
     }
 
     private function foot() {
-        $this -> load -> view('header/footer');
+        $footer = 'view/header/footer_' . LIBRARY . '.php';
+        if (file_exists($footer)) {
+            $footer = 'header/footer_' . LIBRARY . '.php';
+            $this -> load -> view('header/footer');
+        } else {
+            $this -> load -> view('header/footer');
+        }
     }
 
     public function index() {
@@ -86,7 +94,7 @@ class Main extends CI_controller {
         $this -> cab();
 
         if (!perfil("#ADM")) {
-            redirect(base_url('index.php/main'));
+            redirect(base_url(PATH));
         }
 
         $this -> load -> view('welcome');
@@ -124,7 +132,7 @@ class Main extends CI_controller {
                     if ($ac == 'update') {
                         $tela .= $this -> frbr -> viaf_update();
                     } else {
-                        $tela .= '<br><a href="' . base_url('index.php/main/config/authority/update') . '" class="btn btn-secondary">' . msg('authority_update') . '</a>';
+                        $tela .= '<br><a href="' . base_url(PATH . 'config/authority/update') . '" class="btn btn-secondary">' . msg('authority_update') . '</a>';
                     }
                     $tela .= '<br><br><h3>' . msg('Authority') . ' ' . msg('viaf') . '</h3>';
                     $tela .= $this -> frbr -> authority_class();
@@ -162,7 +170,7 @@ class Main extends CI_controller {
         $idp = $this -> frbr -> set_propriety($id, $ac, $idm, $lit = 0);
         /***************************************************/
 
-        redirect(base_url('index.php/main/a/' . $id));
+        redirect(base_url(PATH . 'a/' . $id));
     }
 
     function a($id = '') {
@@ -173,22 +181,29 @@ class Main extends CI_controller {
 
         //$tela = $this -> frbr -> show($id);
         $tela = '';
-        $linkc = '<a href="' . base_url('index.php/main/v/' . $id) . '" class="middle">';
+        $linkc = '<a href="' . base_url(PATH . 'v/' . $id) . '" class="middle">';
         $linkca = '</a>';
 
         if (strlen($data['n_name']) > 0) {
             $tela .= '<h2>' . $linkc . $data['n_name'] . $linkca . '</h2>';
         }
-        $linkc = '<a href="' . base_url('index.php/main/v/' . $id) . '" class="btn btn-secondary">';
+        $linkc = '<a href="' . base_url(PATH . 'v/' . $id) . '" class="btn btn-secondary">';
         $linkca = '</a>';
+
+        $linkd = '<a href="' . base_url(PATH . 'd/' . $id) . '" class="btn btn-danger">';
+        $linkda = '</a>';
 
         $tela .= '
                     <div class="row">
-                    <div class="col-md-11">
+                    <div class="col-md-8">
                     <h5>' . msg('class') . ': ' . $data['c_class'] . '</h5>
                     </div>
-                    <div class="col-md-1 text-right">
-                    ' . $linkc . msg('return') . $linkca . '
+                    <div class="col-md-4 text-right">';
+        if ((perfil("#ADM") > 0)) {
+            $tela .= $linkd . msg('delete') . $linkda.' ';            
+        }
+
+        $tela .= $linkc . msg('return') . $linkca . '
                     </div>
                     </div>';
         //$tela .= $this -> frbr -> form($id, $data);
@@ -334,7 +349,7 @@ class Main extends CI_controller {
                 $idp = $this -> frbr -> set_propriety($id, $class, $idm, 0);
 
                 echo "OK";
-                redirect(base_url('index.php/main/a/' . $id));
+                redirect(base_url(PATH . 'a/' . $id));
             } else {
                 echo "Descrição não realizada";
             }
@@ -436,7 +451,7 @@ class Main extends CI_controller {
         $this -> load -> model('barcodes');
         $this -> load -> model('frbr');
         $val = get("q");
-        
+
         switch ($path) {
             case 'hasPage' :
                 $val = sonumero($val);
@@ -457,9 +472,9 @@ class Main extends CI_controller {
                 }
                 break;
             case 'hasLattes' :
-                $pre = substr($val,0,22);
-                $lattes = substr($val,22,20);
-                
+                $pre = substr($val, 0, 22);
+                $lattes = substr($val, 22, 20);
+
                 if ((sonumero($lattes) != $lattes) or (strlen($lattes < 10))) {
                     $tela = '
                                 <div class="alert alert-danger" role="alert">
@@ -475,7 +490,7 @@ class Main extends CI_controller {
                     $this -> frbr -> set_propriety($id, 'hasLattes', $p_id, 0);
                     echo '<meta http-equiv="refresh" content="0;">';
                 }
-                break;                
+                break;
             case 'hasISBN' :
                 $val = sonumero($val);
                 $dv = $this -> barcodes -> isbn13($val);
@@ -536,7 +551,7 @@ class Main extends CI_controller {
         $form -> id = $id;
         $tela = $form -> editar($cp, 'rdf_class');
         if ($form -> saved > 0) {
-            redirect(base_url('index.php/main/vocabulary'));
+            redirect(base_url(PATH . 'vocabulary'));
         }
 
         $data['content'] = '<h1>Classes e Propriedades</h1>' . $tela;
@@ -607,7 +622,7 @@ class Main extends CI_controller {
             $form = trim(get("dd3"));
             if ((strlen($title) > 0) and (strlen($form) > 0)) {
                 $idt = $this -> frbr -> work($title, $subtitle, $form);
-                redirect(base_url('index.php/main/a/' . $idt));
+                redirect(base_url(PATH . 'a/' . $idt));
             }
         }
 
@@ -655,7 +670,7 @@ class Main extends CI_controller {
                 $prop = 'hasFormExpression';
                 $this -> frbr -> set_propriety($idc, $prop, $form, 0);
 
-                redirect(base_url('index.php/main/v/' . $id));
+                redirect(base_url(PATH . 'v/' . $id));
             }
         }
 
@@ -693,7 +708,7 @@ class Main extends CI_controller {
                 /* associa expressao ao trabalho */
                 $this -> frbr -> set_propriety($expression, $prop, $idc, 0);
 
-                redirect(base_url('index.php/main/v/' . $id));
+                redirect(base_url(PATH . 'v/' . $id));
             }
         }
 
@@ -726,13 +741,13 @@ class Main extends CI_controller {
             $aquisicao = trim(get("dd4"));
             if ((strlen($tombo) > 0) and (strlen($tombo) > 0) and (strlen($bookcase) > 0)) {
                 $idt = $this -> frbr -> item_add($idt, $tombo, $biblioteca, $bookcase, $aquisicao);
-                redirect(base_url('index.php/main/v/' . $idw));
+                redirect(base_url(PATH . 'v/' . $idw));
             }
         }
         /* save file */
         if (strlen(get("acao")) > 0) {
             $idt = $this -> frbr -> item_add_file($idt);
-            redirect(base_url('index.php/main/v/' . $idw));
+            redirect(base_url(PATH . 'v/' . $idw));
         }
 
         $tela = '';
@@ -749,7 +764,7 @@ class Main extends CI_controller {
         $this -> cab();
         $this -> load -> view('find/bibliographic');
         $this -> load -> view('find/search/search_bibliographic', null);
-        $tela = '<a href="' . base_url('index.php/main/bibliographic_inport') . '" class="btn btn-secundary">';
+        $tela = '<a href="' . base_url(PATH . 'bibliographic_inport') . '" class="btn btn-secundary">';
         $tela .= 'Importar MARC21';
         $tela .= '</a>';
 
@@ -802,14 +817,14 @@ class Main extends CI_controller {
             $tela .= '<div class="row">' . cr();
             $tela .= '  <div class="col-md-2">';
             msg('find_viaf') . '</div>' . cr();
-            $tela .= '      <a href="' . base_url('index.php/main/authority_inport') . '" class="btn btn-secondary">';
+            $tela .= '      <a href="' . base_url(PATH . 'authority_inport') . '" class="btn btn-secondary">';
             $tela .= '      Importar MARC21';
             $tela .= '      </a> ';
             $tela .= '  </div>' . cr();
             /***************/
             $tela .= '  <div class="col-md-2">';
             msg('find_viaf') . '</div>' . cr();
-            $tela .= '      <a href="' . base_url('index.php/main/authority_create') . '" class="btn btn-secondary">' . cr();
+            $tela .= '      <a href="' . base_url(PATH . 'authority_create') . '" class="btn btn-secondary">' . cr();
             $tela .= '      Criar autoridade' . cr();
             $tela .= '      </a> ' . cr();
             $tela .= '  </div>' . cr();
@@ -823,7 +838,7 @@ class Main extends CI_controller {
             $tela .= '      </div>' . cr();
             $tela .= '      <div class="col-md-10">' . cr();
             $tela .= msg('find_viaf');
-            $tela .= '          <form method="post" action="' . base_url("index.php/main/authority/") . '">' . cr();
+            $tela .= '          <form method="post" action="' . base_url(PATH . "authority/") . '">' . cr();
             $tela .= '          ' . cr();
             $tela .= '          <div class="input-group">
                               <input type="text" name="ulr_viaf" value="" class="form-control">
@@ -851,7 +866,7 @@ class Main extends CI_controller {
 
             $tela .= '      <div class="col-md-10">' . cr();
             $tela .= msg('find_geonames');
-            $tela .= '          <form method="post" action="' . base_url("index.php/main/authority/") . '">' . cr();
+            $tela .= '          <form method="post" action="' . base_url(PATH . "authority/") . '">' . cr();
             $tela .= '          ' . cr();
             $tela .= '          <div class="input-group">
                               <input type="text" name="ulr_geonames" value="" class="form-control">
@@ -1258,7 +1273,7 @@ class Main extends CI_controller {
         /****************************************************************/
         $tela .= '<br><br>';
         $tela .= '<h4>Etiqueta de tombo</h4>';
-        $tela .= '<form method="get" action="' . base_url('index.php/main/label_pdf/') . '">';
+        $tela .= '<form method="get" action="' . base_url(PATH . 'label_pdf/') . '">';
         $tela .= '<div class="row">';
         $tela .= '<div class="col-md-2"><span style="font-size: 75%"></span><br>';
         $tela .= '<b>Sem etiquetas</b>';
@@ -1318,7 +1333,7 @@ class Main extends CI_controller {
         $tela .= '</div>';
 
         $tela .= '<div class="col-md-2"><span style="font-size: 75%">total de páginas</span><br>';
-        $tela .= '  <a href="' . base_url('index.php/main/label_bok') . '" class="btn btn-primary">Imprimir</a>';
+        $tela .= '  <a href="' . base_url(PATH . 'label_bok') . '" class="btn btn-primary">Imprimir</a>';
         $tela .= '</div>';
         $tela .= '</div>';
         $tela .= '</form> ';
@@ -1345,39 +1360,39 @@ class Main extends CI_controller {
 
         $tela = '';
 
-        $tela .= '<a href="' . base_url('index.php/main/catalog_work') . '" class="btn btn-secondary">';
+        $tela .= '<a href="' . base_url(PATH . 'catalog_work') . '" class="btn btn-secondary">';
         $tela .= 'Incorporar novo trabalho';
         $tela .= '</a> ';
 
-        $tela .= '<a href="' . base_url('index.php/main/catalog_item') . '" class="btn btn-secondary">';
+        $tela .= '<a href="' . base_url(PATH . 'catalog_item') . '" class="btn btn-secondary">';
         $tela .= 'Incorporar novo item';
         $tela .= '</a> ';
 
-        $tela .= '<a href="' . base_url('index.php/main/inventario/3') . '" class="btn btn-secondary">';
+        $tela .= '<a href="' . base_url(PATH . 'inventario/3') . '" class="btn btn-secondary">';
         $tela .= 'Remover um Item';
         $tela .= '</a> ';
 
-        $tela .= '<a href="' . base_url('index.php/main/label') . '" class="btn btn-secondary">';
+        $tela .= '<a href="' . base_url(PATH . 'label') . '" class="btn btn-secondary">';
         $tela .= 'Gerar Etiquetas';
         $tela .= '</a> ';
 
-        $tela .= '<a href="' . base_url('index.php/main/label_book') . '" class="btn btn-secondary">';
+        $tela .= '<a href="' . base_url(PATH . 'label_book') . '" class="btn btn-secondary">';
         $tela .= 'Gerar Etiquetas de Lombada';
         $tela .= '</a> ';
 
-        $tela .= '<a href="' . base_url('index.php/main/inventario') . '" class="btn btn-secondary">';
+        $tela .= '<a href="' . base_url(PATH . 'inventario') . '" class="btn btn-secondary">';
         $tela .= 'Etiquetas Inventário';
         $tela .= '</a> ';
 
-        $tela .= '<a href="' . base_url('index.php/main/inventario/1') . '" class="btn btn-secondary">';
+        $tela .= '<a href="' . base_url(PATH . 'inventario/1') . '" class="btn btn-secondary">';
         $tela .= 'Etiquetas Reimpressao';
         $tela .= '</a> ';
 
-        $tela .= '<a href="' . base_url('index.php/main/inventario/2') . '" class="btn btn-secondary">';
+        $tela .= '<a href="' . base_url(PATH . 'inventario/2') . '" class="btn btn-secondary">';
         $tela .= 'Consultar Etiquetas';
         $tela .= '</a> ';
 
-        $tela .= '<a href="' . base_url('index.php/main/inventario/3') . '" class="btn btn-secondary">';
+        $tela .= '<a href="' . base_url(PATH . 'inventario/3') . '" class="btn btn-secondary">';
         $tela .= 'Remover Itens';
         $tela .= '</a> ';
 
@@ -1406,7 +1421,7 @@ class Main extends CI_controller {
                 $id_t = $this -> frbr -> frbr_name($title);
                 $p_id = $this -> frbr -> rdf_concept($id_t, $form);
                 $this -> frbr -> set_propriety($p_id, 'prefLabel', 0, $id_t);
-                redirect(base_url('index.php/main/a/' . $p_id));
+                redirect(base_url(PATH . 'a/' . $p_id));
             }
         }
 
@@ -1431,7 +1446,7 @@ class Main extends CI_controller {
             $url = $this -> frbr -> rdf_prefix($data['cc_origin']);
             $url .= $this -> frbr -> rdf_sufix($data['cc_origin']) . '/#';
             $tela = $this -> frbr -> viaf_inport($url);
-            $tela .= '<meta http-equiv="refresh" content="0;url=' . base_url('index.php/main/v/' . $id) . '" />';
+            $tela .= '<meta http-equiv="refresh" content="0;url=' . base_url(PATH . 'v/' . $id) . '" />';
         }
 
         $data['content'] = $tela;
@@ -1495,6 +1510,29 @@ class Main extends CI_controller {
 
         $this -> foot();
     }
+    
+    public function d($id,$conf = '') {
+        $idx = md5(date("Ymdh").$id);
+        $this -> load -> model('frbr');
+        
+        if ($idx == $conf)
+            {
+                $this->frbr->remove_concept($id);
+            }
+        $this -> cab();
+
+        $tela = $this -> frbr -> vv($id);
+
+        /***********************************/        
+        $link = '<a href="'.base_url(PATH.'d/'.$id.'/'.$idx).'" class="btn btn-danger">';
+        $tela .= '<hr>'.$link.msg("delete_confirm").'</a>';        
+
+        $data['content'] = $tela;
+
+        $this -> load -> view('content', $data);
+
+        $this -> foot();
+    }    
 
     function cutter() {
         $this -> load -> model('cutters');
@@ -1527,7 +1565,7 @@ class Main extends CI_controller {
 
         $p_id = $this -> frbr -> rdf_concept($item_nome, 'Cutter');
         $this -> frbr -> set_propriety($id, 'hasCutter', $p_id, 0);
-        redirect(base_url('index.php/main/v/' . $id));
+        redirect(base_url(PATH . 'v/' . $id));
     }
 
     function indice($type = '', $lt = '') {
@@ -1660,6 +1698,20 @@ class Main extends CI_controller {
         $data['title'] = 'Inventário';
         $this -> load -> view('content', $data);
     }
+function labels($pg='')
+    {
+        $this -> load -> model('frbr');
+        $this->cab();
+        $this->frbr->labels($pg);
+        $this->foot();
+    }
+function labels_ed($id='',$chk='')
+    {
+        $this -> load -> model('frbr');
+        $this->cab();
+        $this->frbr->labels_ed($id,$chk);
+        $this->foot();
+    }    
 
 }
 ?>

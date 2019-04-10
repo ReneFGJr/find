@@ -9,7 +9,7 @@ $localizacao = '';
 if ($hd == 0) {
     $img = '<img src="' . base_url('img/no_cover.png') . '" height="40">';
     $w = $id;
-    $link = '<a href="' . base_url('index.php/main/a/' . $id) . '">';
+    $link = '<a href="' . base_url(PATH.'a/' . $id) . '">';
 }
 {
     for ($r = 0; $r < count($rlt); $r++) {
@@ -18,12 +18,12 @@ if ($hd == 0) {
         //echo '<br>'.$class.'='.$line['n_name'];
         switch($class) {
             case 'hasClassificationCDU' :
-                $link = '<a href="' . base_url('index.php/main/a/' . $line['d_r2']) . '">';
+                $link = '<a href="' . base_url(PATH.'a/' . $line['d_r2']) . '">';
                 $linka = '</a>';
                 $localizacao = $link . 'CDU' . $line['n_name'] . $linka;
                 break;
             case 'hasClassificationCDD' :
-                $link = '<a href="' . base_url('index.php/main/a/' . $line['d_r2']) . '">';
+                $link = '<a href="' . base_url(PATH.'a/' . $line['d_r2']) . '">';
                 $linka = '</a>';
                 $localizacao = $link . 'CDD' . $line['n_name'] . $linka;
                 break;
@@ -31,12 +31,12 @@ if ($hd == 0) {
                 if (strlen($date) > 0) {
                     $date .= '; ';
                 }
-                $date .= '<a href="' . base_url('index.php/main/a/' . $line['d_r2']) . '">';
+                $date .= '<a href="' . base_url(PATH.'a/' . $line['d_r2']) . '">';
                 $date .= trim($line['n_name']);
                 $date .= '</a>';
                 break;
             case 'isPlaceOfPublication' :
-                $link = '<a href="' . base_url('index.php/main/a/' . $line['d_r2']) . '">';
+                $link = '<a href="' . base_url(PATH.'a/' . $line['d_r2']) . '">';
                 if (strlen($local) > 0) {
                     $local .= $link . trim($line['n_name']) . '</a>';
                 } else {
@@ -47,19 +47,19 @@ if ($hd == 0) {
                 if (strlen($editora) > 0) {
                     $editora .= '; ';
                 }
-                $editora .= '<a href="' . base_url('index.php/main/a/' . $line['d_r2']) . '">';
+                $editora .= '<a href="' . base_url(PATH.'a/' . $line['d_r2']) . '">';
                 $editora .= trim($line['n_name']);
                 $editora .= '</a>';
                 break;
             case 'hasISBN' :
-                $link = '<a href="' . base_url('index.php/main/a/' . $line['d_r2']) . '">';
+                $link = '<a href="' . base_url(PATH.'a/' . $line['d_r2']) . '">';
                 if (strlen($isbn) > 0) {
                     $isbn .= '; ';
                 }
                 $isbn = $link . trim($line['n_name']) . '</a>';
                 break;
             case 'isEdition' :
-                $link = '<a href="' . base_url('index.php/main/a/' . $line['d_r2']) . '">';
+                $link = '<a href="' . base_url(PATH.'a/' . $line['d_r2']) . '">';
                 if (strlen($edicao) > 0) {
                     $edicao .= ', ';
                 }
@@ -110,7 +110,7 @@ if ($hd == 0) {
 	<?php echo $localizacao; ?>
 	<br>
 	<?php if (perfil("#ADM")) {
-	       echo '<a href="'.base_url('index.php/main/a/' . $id).'" class="btn btn-secondary">editar</a>';
+	       echo '<a href="'.base_url(PATH.'a/' . $id).'" class="btn btn-secondary">editar</a>';
 	}
 	?>
 </div>

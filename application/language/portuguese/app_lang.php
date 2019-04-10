@@ -35,7 +35,7 @@ if (!function_exists(('msg_lista')))
                         for ($r=0;$r < count($rlt);$r++)
                             {
                                 $line = $rlt[$r];
-                                $link = '<span style="cursor: pointer;" onclick="newwin(\''.base_url('index.php/main/pop_config/msg/'.$line['id_msg']).'\',800,600);">';
+                                $link = '<span style="cursor: pointer;" onclick="newwin(\''.base_url(PATH.'pop_config/msg/'.$line['id_msg']).'\',800,600);">';
                                 $linka = '</span>';
                                 $sx .= '<tr style="border-top: 1px solid #a0a0a0;">';
                                 $sx .= '<td>';

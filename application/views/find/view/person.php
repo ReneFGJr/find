@@ -6,7 +6,7 @@ $born = '';
 $dead = '';
 $notas = '';
 $w = $id;
-$link = '<a href="'.base_url('index.php/main/a/'.$w).'">';
+$link = '<a href="'.base_url(PATH.'a/'.$w).'">';
 //echo $link.'[ed]</a>';
 $img = '<img src="' . base_url('img/icon/icone_author.jpg') . '" class="img-fluid">';
 $cutter = ''; 
@@ -22,7 +22,7 @@ for ($r=0;$r < count($person);$r++)
 				$cutter = $link.'<span class="btn-primary" style="padding: 2px 5px; border-radius: 5px;" title="Cutter">'.trim($line['n_name']).'</span></a> ';
 				break;
             case 'prefLabel':
-                $link = '<a href="'.base_url('index.php/main/v/'.$id).'">';
+                $link = '<a href="'.base_url(PATH.'v/'.$id).'">';
                 $nome = $link.trim($line['n_name']).'</a>';
                 break;
             case 'hasLattes':
@@ -48,12 +48,12 @@ for ($r=0;$r < count($person);$r++)
                     $notas .= $line['n_name'];
                 break;                
             case 'hasBorn':
-                $link = '<a href="'.base_url('index.php/main/v/'.$line['id_d']).'">';
+                $link = '<a href="'.base_url(PATH.'v/'.$line['id_d']).'">';
                 $born = $link.trim($line['n_name']);
                 $born .= '</a>';
                 break;
             case 'hasDie':
-                $link = '<a href="'.base_url('index.php/main/v/'.$line['id_d']).'">';
+                $link = '<a href="'.base_url(PATH.'v/'.$line['id_d']).'">';
                 $dead = $link.trim($line['n_name']);
                 $dead .= '</a>';
                 break;  

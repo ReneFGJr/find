@@ -18,16 +18,16 @@ for ($r = 0; $r < count($rlt); $r++) {
 	//echo '<br>' . $class . '=' . $line['n_name'];
 	switch($class) {
 		case 'hasRegisterId' :
-			$link = '<a href="' . base_url('index.php/main/a/' . $line['d_r1']) . '">';
+			$link = '<a href="' . base_url(PATH.'a/' . $line['d_r1']) . '">';
 			$linka = '</a>';
 			$nr .= $link . trim($line['n_name']) . $linka;
 			break;
 		case 'hasLocatedIn' :
-			$link = '<a href="' . base_url('index.php/main/a/' . $line['d_r2']) . '">';
+			$link = '<a href="' . base_url(PATH.'a/' . $line['d_r2']) . '">';
 			$local = $link . trim($line['n_name']) . '</a>';
 			break;
 		case 'isOwnedBy' :
-			$link = '<a href="' . base_url('index.php/main/a/' . $line['d_r2']) . '">';
+			$link = '<a href="' . base_url(PATH.'a/' . $line['d_r2']) . '">';
 			$biblioteca = $link . trim($line['n_name']) . '</a>';
 			break;
 		case 'isItemSituation' :

@@ -120,7 +120,7 @@ class socials extends CI_Model {
     function logout() {
         /* Salva session */
         $this -> security_logout();
-        redirect(base_url('index.php/'));
+        redirect(base_url(PATH));
     }
 
     function update() {
@@ -145,7 +145,7 @@ class socials extends CI_Model {
         $ss_perfil = $line['us_perfil'];
         $data = array('id' => $ss_id, 'user' => $ss_user, 'email' => $ss_email, 'image' => $ss_image, 'perfil' => $ss_perfil);
         $this -> session -> set_userdata($data);
-        redirect(base_url('index.php/home'));
+        redirect(base_url(PATH));
     }
 
     function menu_user() {
@@ -156,8 +156,8 @@ class socials extends CI_Model {
                 <li class="nav-item navbar-toggler-right">
                 <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> '.$name.' </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" href="'.base_url('index.php/main/social/perfil').'">'.msg('user_perfil').'</a>
-                    <a class="dropdown-item" href="'.base_url('index.php/main/social/logout').'">'.msg('user_logout').'</a>
+                    <a class="dropdown-item" href="'.base_url(PATH.'social/perfil').'">'.msg('user_perfil').'</a>
+                    <a class="dropdown-item" href="'.base_url(PATH.'social/logout').'">'.msg('user_logout').'</a>
                 </div>
                 </li>                
                 ';
@@ -189,7 +189,7 @@ class socials extends CI_Model {
                         </button>
                       </div>
                       <div class="modal-body">
-                        <form method="post" action="' . base_url('index.php/main/social/login') . '">
+                        <form method="post" action="' . base_url(PATH.'social/login') . '">
                             <span>' . msg("form_user_name") . '</span><br>
                             <input type="text" name="user_login" value="' . get("user_login") . '" class="form-control">
                             <br>
@@ -220,7 +220,7 @@ class socials extends CI_Model {
             $ok = $this -> users -> security_login($dd1, $dd2);
         }
         if ($ok == 1) {
-            redirect(base_url('index.php/home'));
+            redirect(base_url(PATH));
         } else {
             redirect(base_url('index.php/social/login/') . '?erro=ERRO_DE_LOGIN');
         }
@@ -514,14 +514,14 @@ class socials extends CI_Model {
                 $ok = $this -> security_login($user, $pass);
                 if ($ok != 1)
                    {
-                       redirect(base_url('index.php/main/social/form'));
+                       redirect(base_url(PATH.'social/form'));
                    } else {
-                       redirect(base_url('index.php/main'));
+                       redirect(base_url(PATH));
                    }
                 break;
             case 'logout':
                 $this->logout();
-                redirect(base_url('index.php/main'));
+                redirect(base_url(PATH));
             default :
                 echo 'Método não implementado';
                 exit;

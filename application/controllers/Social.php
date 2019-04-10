@@ -116,7 +116,7 @@ class social extends CI_Controller {
         /* Salva session */
         $this -> load -> model('users');
         $this -> users -> security_logout();
-        redirect(base_url('index.php/main'));
+        redirect(base_url(PATH));
     }
 
     function login_local() {
@@ -132,7 +132,7 @@ class social extends CI_Controller {
         }
 
         if ($ok == 1) {
-            redirect(base_url('index.php/main'));
+            redirect(base_url(PATH));
         } else {
             redirect(base_url('index.php/social/login/') . '?erro=ERRO_DE_LOGIN');
         }

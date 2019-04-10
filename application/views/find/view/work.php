@@ -7,7 +7,7 @@ $ilustrador = '';
 $organizador = '';
 $tipo = '';
 $w = $id;
-$link = '<a href="'.base_url('index.php/main/a/'.$w).'">';
+$link = '<a href="'.base_url(PATH.'a/'.$w).'">';
 //echo $link.'[ed]</a>';
 for ($r=0;$r < count($work);$r++)
     {
@@ -30,7 +30,7 @@ for ($r=0;$r < count($work);$r++)
                     {
                         $autor .= '; ';
                     }
-                $autor .= '<a href="'.base_url('index.php/main/v/'.$line['d_r2']).'" style="color: #00008;">';
+                $autor .= '<a href="'.base_url(PATH.'v/'.$line['d_r2']).'" style="color: #00008;">';
                 $autor .= trim($line['n_name']);
                 $autor .= '</a>';
                 break;
@@ -39,7 +39,7 @@ for ($r=0;$r < count($work);$r++)
                     {
                         $autor .= '; ';
                     }
-                $autor .= '<a href="'.base_url('index.php/main/v/'.$line['d_r2']).'" style="color: #00008;">';
+                $autor .= '<a href="'.base_url(PATH.'v/'.$line['d_r2']).'" style="color: #00008;">';
                 $autor .= trim($line['n_name']).' (org.)';
                 $autor .= '</a>';
                 break;                 
@@ -48,7 +48,7 @@ for ($r=0;$r < count($work);$r++)
                     {
                         $tradutor .= '; ';
                     }
-                $tradutor .= '<a href="'.base_url('index.php/main/v/'.$line['d_r2']).'" style="color: #000080;">';
+                $tradutor .= '<a href="'.base_url(PATH.'v/'.$line['d_r2']).'" style="color: #000080;">';
                 $tradutor .= trim($line['n_name']);
                 $tradutor .= '</a>';
                 break;                                
@@ -65,13 +65,13 @@ for ($r=0;$r < count($work);$r++)
             <tt style="font-size: 100%;"><?php echo msg('Work');?></tt>
         </div>
         <div class="col-md-10">
-            <a href="<?php echo base_url('index.php/main/v/'.$w);?>">
+            <a href="<?php echo base_url(PATH.'v/'.$w);?>">
             <span style="font-size: 140%; color: #000000;"><b><?php echo $title.$subtitle; ?></b></span>
             </a>
             <br>
             <i><?php echo '<b>'.$autor.'</b>';?></i>
             <?php if (perfil("#ADM")) {
-                   echo '<br><a href="'.base_url('index.php/main/a/' . $id).'"  class="btn btn-secondary">editar</a>';
+                   echo '<br><a href="'.base_url(PATH.'a/' . $id).'"  class="btn btn-secondary">editar</a>';
             }
             ?>            
             

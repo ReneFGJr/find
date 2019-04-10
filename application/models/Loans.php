@@ -38,7 +38,7 @@ class loans extends CI_model {
 		if (count($data) > 0) {
 			$tela = $this -> load -> view('auth_social/user', $data, true);
 		} else {
-			redirect(base_url('index.php/main'));
+			redirect(base_url(PATH));
 		}
 
 		$form = new form;

@@ -51,6 +51,7 @@ $ac[$pag] = 'active';
                     <a class="dropdown-item" href="<?php echo base_url('index.php/books/cutter'); ?>"><?php echo msg("cutter");?></a>
                     <a class="dropdown-item" href="<?php echo base_url('index.php/books/vocabulary'); ?>">Vocabulários controlados</a>
                     <a class="dropdown-item" href="<?php echo base_url('index.php/books/catalog'); ?>">Etiquetas</a>
+                    <a class="dropdown-item" href="<?php echo base_url(PATH.'labels'); ?>"><?php echo msg('menuLabels');?></a>
 				</div>
 			</li>
 			<?php } ?>

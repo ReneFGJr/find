@@ -249,4 +249,6 @@ $lang['us_badge'] = 'crachá';
 $lang['us_ativo'] = 'situação';
 $lang['action'] = 'ação';
 
+$lang['edit_expression'] = "Editar Expressão";
+$lang['edit_manifestation'] = "Editar Manifestação";
 ?>

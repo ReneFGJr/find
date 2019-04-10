@@ -48,9 +48,9 @@ class users extends CI_model {
         $form -> novo = perfil("#ADMIN");
         $form -> edit = perfil("#ADMIN");
 
-        $form -> row_edit = base_url('index.php/main/mod/loans/user');
-        $form -> row_view = base_url('index.php/main/mod/loans/loan_user');
-        $form -> row = base_url('index.php/main/mod/loans/users');
+        $form -> row_edit = base_url(PATH.'mod/loans/user');
+        $form -> row_view = base_url(PATH.'mod/loans/loan_user');
+        $form -> row = base_url(PATH.'mod/loans/users');
 
         return (row($form, $id));
     }

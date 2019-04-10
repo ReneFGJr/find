@@ -29,7 +29,7 @@ class frbr extends CI_model {
                 break;
             case 'LattesCurriculo' :
                 $tela .= $this -> cas_flex($path, $id, $dt);
-                break;                
+                break;
             case 'Work' :
                 $tela .= $this -> cas_flex($path, $id, $dt);
                 break;
@@ -79,7 +79,7 @@ class frbr extends CI_model {
                                 
                                 $.ajax({
                                     type: "POST",
-                                    url: "' . base_url(PATH.'ajax2/' . $path . '/' . $id . '/' . $type) . '",
+                                    url: "' . base_url(PATH . 'ajax2/' . $path . '/' . $id . '/' . $type) . '",
                                     data:"q="+$key,
                                     success: function(data){
                                         $("#dd51a").html(data);
@@ -92,7 +92,7 @@ class frbr extends CI_model {
                             var $key = jQuery("#dd51").val();
                             $.ajax({
                                     type: "POST",
-                                    url: "' . base_url(PATH.'ajax3/' . $path . '/' . $id) . '",
+                                    url: "' . base_url(PATH . 'ajax3/' . $path . '/' . $id) . '",
                                     data: "q="+$key,
                                     success: function(data){
                                         $("#dd51a").html(data);
@@ -107,7 +107,7 @@ class frbr extends CI_model {
                             var $key = jQuery("#dd50").val();
                             $.ajax({
                                     type: "POST",
-                                    url: "' . base_url(PATH.'ajax4/' . $path . '/' . $id) . '",
+                                    url: "' . base_url(PATH . 'ajax4/' . $path . '/' . $id) . '",
                                     data: "q="+$key,
                                     success: function(data){
                                         $("#dd51a").html(data);
@@ -122,7 +122,7 @@ class frbr extends CI_model {
     }
 
     function upload_image($path, $id, $dt) {
-        $sx = '   <form action="' . base_url(PATH.'upload/' . $path . '/' . $id) . '" method="POST" enctype="multipart/form-data">
+        $sx = '   <form action="' . base_url(PATH . 'upload/' . $path . '/' . $id) . '" method="POST" enctype="multipart/form-data">
                           Nome da imagem<br>
                           <input type="text" name="dd1" value="' . get("dd1") . '" class="form-control">
                           <br>
@@ -292,7 +292,7 @@ class frbr extends CI_model {
                                 
                                 $.ajax({
                                     type: "POST",
-                                    url: "' . base_url(PATH.'ajax2/' . $path . '/' . $id . '/' . $type) . '",
+                                    url: "' . base_url(PATH . 'ajax2/' . $path . '/' . $id . '/' . $type) . '",
                                     data:"q="+$key,
                                     success: function(data){
                                         $("#dd51a").html(data);
@@ -304,7 +304,7 @@ class frbr extends CI_model {
                             var $key = jQuery("#dd51").val();
                             $.ajax({
                                     type: "POST",
-                                    url: "' . base_url(PATH.'ajax3/' . $path . '/' . $id) . '",
+                                    url: "' . base_url(PATH . 'ajax3/' . $path . '/' . $id) . '",
                                     data: "q="+$key,
                                     success: function(data){
                                         $("#dd51a").html(data);
@@ -338,7 +338,7 @@ class frbr extends CI_model {
         $sx .= '<ul>' . cr();
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
-            $link = '<a href="' . base_url(PATH.'a/' . $line['id_cc']) . '">';
+            $link = '<a href="' . base_url(PATH . 'a/' . $line['id_cc']) . '">';
             $sx .= '<li>';
             $sx .= '<tt>';
             $sx .= $link . $line['n_name'] . '</a>';
@@ -386,11 +386,11 @@ class frbr extends CI_model {
         $rlt = $rlt -> result_array();
         return ($rlt);
     }
-    
+
     function le_tombo($id) {
-           echo'==>'.$id;
-           exit;
-    }    
+        echo '==>' . $id;
+        exit ;
+    }
 
     function le_class($id) {
         $sql = "select * from rdf_class
@@ -476,7 +476,7 @@ class frbr extends CI_model {
 
                 if (perfil("#ADM")) {
                     $sx .= '<div class="col-md-2">';
-                    $link = base_url(PATH.'item_create/' . $idw);
+                    $link = base_url(PATH . 'item_create/' . $idw);
                     $sx .= '<a href="' . $link . '" class="btn btn-secondary">' . msg('item_add') . '</a>';
                     $sx .= '</div> ';
                 }
@@ -625,11 +625,11 @@ class frbr extends CI_model {
                 $id2 = $line['d_r2'];
                 switch ($cl) {
                     case 'hasTitle' :
-                        $link = '<a href="' . base_url(PATH.'v/' . $id1) . '">';
+                        $link = '<a href="' . base_url(PATH . 'v/' . $id1) . '">';
                         array_push($wks, $id1);
                         break;
                     case 'hasAuthor' :
-                        $link = '<a href="' . base_url(PATH.'v/' . $id2) . '">';
+                        $link = '<a href="' . base_url(PATH . 'v/' . $id2) . '">';
                         $ss .= '<li>' . $link . $vl . ' (' . ($cl) . ')</a></li>' . cr();
                         break;
                     default :
@@ -686,11 +686,13 @@ class frbr extends CI_model {
         $sx .= '<script> $("#bookcase' . $id . '").click(function() { $("#samples' . $id . '").toggle(500); }); </script>' . cr();
         $sx .= '<table border=0 width="100%" id="samples' . $id . '" style="display: block;">';
         $sx .= '<tr class="small" style="background: #c0c0c0;">
+                    <th width="5%">Act</th>
 					<th width="25%">Biblioteca</th>
 					<th width="25%">local</th>
-					<th width="25%">exemplar</th>
+					<th width="20%">exemplar</th>
 					<th width="25%">situação</th>
 				</tr>' . cr();
+        /********************* digital ***********/
         for ($y = 0; $y < count($man); $y++) {
             $idm = $man[$y]['item'];
             $data['id'] = $idm;
@@ -699,15 +701,19 @@ class frbr extends CI_model {
             $xowner = '';
             $ex = 0;
             $fl = '';
+
             for ($r = 0; $r < count($items); $r++) {
                 $line = $items[$r];
-                $type = $line['c_class'];
-
+                $type = trim($line['c_class']);
+                //echo '<br>'.$type;
                 switch ($type) {
                     case 'isOwnedBy' :
                         $owner = $line['n_name'];
                         if ($xowner != $owner) {
-                            $sx .= '<tr><td>' . $owner . '</td>';
+                            $sx .= '<tr>';
+                            $linked = '<a href="#" onclick="newwin(\'' . base_url(PATH . 'item_edit') . '\',800,500);">';
+                            $sx .= '<td>' . $linked . '[ed]</a></td>';
+                            $sx .= '<td>' . $owner . '</td>';
                             $xowner = $owner;
                             $ex = 0;
                         }
@@ -915,7 +921,7 @@ class frbr extends CI_model {
         $sx = '<h3>Manifestation</h3>';
 
         $data['id'] = $id;
-        $data['content'] = '<a href="' . base_url(PATH.'i/' . $id . '/Manifestation/isAppellationOfManifestation') . '" class="btn btn-primary">Criar manifestação</a>';
+        $data['content'] = '<a href="' . base_url(PATH . 'i/' . $id . '/Manifestation/isAppellationOfManifestation') . '" class="btn btn-primary">Criar manifestação</a>';
         $sx .= $this -> load -> view('find/form/manifestation', $data, true);
 
         $sql = "select * from rdf_data 
@@ -982,7 +988,7 @@ class frbr extends CI_model {
                     $sx .= '</td>';
                     $sx .= '<td style="border-bottom: 1px solid #808080;">';
                     if (strlen($line['n_name']) > 0) {
-                        $linkc = '<a href="' . base_url(PATH.'v/' . $line['idcc']) . '" class="middle">';
+                        $linkc = '<a href="' . base_url(PATH . 'v/' . $line['idcc']) . '" class="middle">';
                         $linkca = '</a>';
                         $sx .= $linkc . $line['n_name'] . $linkca;
                         $link = ' <span id="ex' . $line['id_d'] . '" onclick="exclude(' . $line['id_d'] . ');" style="cursor: pointer;">';
@@ -1005,7 +1011,7 @@ class frbr extends CI_model {
                     function carrega($id)
                     {
                         jQuery.ajax({
-                          url: "' . base_url(PATH.'ajax/') . '"+$id+"/"+' . $id . ',
+                          url: "' . base_url(PATH . 'ajax/') . '"+$id+"/"+' . $id . ',
                           context: document.body
                         })  .done(function( html ) {
                             jQuery( "#model_texto" ).html( html );
@@ -1061,7 +1067,7 @@ class frbr extends CI_model {
                     function carrega($id)
                     {
                         jQuery.ajax({
-                          url: "' . base_url(PATH.'ajax/') . '"+$id+"/"+' . $id . ',
+                          url: "' . base_url(PATH . 'ajax/') . '"+$id+"/"+' . $id . ',
                           context: document.body
                         })  .done(function( html ) {
                             jQuery( "#model_texto" ).html( html );
@@ -1118,7 +1124,7 @@ class frbr extends CI_model {
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
             $id = $line['id_cc'];
-            $link = '<a href="' . base_url(PATH.'a/' . $line['id_cc']) . '">';
+            $link = '<a href="' . base_url(PATH . 'a/' . $line['id_cc']) . '">';
             $linka = '</a>';
             if (strlen($line['id_cc']) == 0) {
                 $link = '';
@@ -1309,7 +1315,7 @@ class frbr extends CI_model {
                 $p_id2 = $this -> frbr -> rdf_concept($item, $class);
                 $this -> frbr -> set_propriety($p_id, 'hasItemStatusCataloging', $p_id2, 0);
             }
-            redirect(base_url(PATH.'a/' . $p_id));
+            redirect(base_url(PATH . 'a/' . $p_id));
             exit ;
         }
         //$cla2 = $this->frbr->le_class("ItemStatusCataloging");
@@ -1373,7 +1379,7 @@ class frbr extends CI_model {
 
                 /* Administrativo */
             }
-            redirect(base_url(PATH.'v/' . $p_id));
+            redirect(base_url(PATH . 'v/' . $p_id));
             exit ;
         }
         $data = array();
@@ -1407,7 +1413,7 @@ class frbr extends CI_model {
 
                 /* Administrativo */
             }
-            redirect(base_url(PATH.'v/' . $p_id));
+            redirect(base_url(PATH . 'v/' . $p_id));
             exit ;
         }
         //$cla2 = $this->frbr->le_class("ItemStatusCataloging");
@@ -1511,7 +1517,7 @@ class frbr extends CI_model {
         $sql = "select $cps from rdf_concept
                     INNER JOIN rdf_name ON id_n = cc_pref_term 
                     INNER JOIN rdf_class ON id_c = cc_class
-                    WHERE $wh AND c_find = 1 
+                    WHERE $wh AND c_find = 1  AND cc_library = " . LIBRARY . "
                     group by $cps";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
@@ -1520,8 +1526,28 @@ class frbr extends CI_model {
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
             $class = $line['c_class'];
-
             switch ($class) {
+                case 'CDU' :
+                    $idw = $line['id_cc'];
+                    $img = $this -> recupera_imagem($idw, 'img/icon/icone_cdu.jpg');
+                    $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
+                    $sx .= $this -> show_type($line,'UDC',$img) . cr();
+                    $sx .= '</div>' . cr();
+                    break;                
+                case 'Corporate Body' :
+                    $idw = $line['id_cc'];
+                    $img = $this -> recupera_imagem($idw, 'img/icon/icone_build.jpg');
+                    $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
+                    $sx .= $this -> show_corporate($line) . cr();
+                    $sx .= '</div>' . cr();
+                    break;
+                case 'SerieName' :
+                    $idw = $line['id_cc'];
+                    $img = $this -> recupera_imagem($idw);
+                    $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
+                    $sx .= $this -> show_seriename($line) . cr();
+                    $sx .= '</div>' . cr();
+                    break;
                 case 'Work' :
                     $idw = $line['id_cc'];
                     $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
@@ -1530,20 +1556,20 @@ class frbr extends CI_model {
                     break;
                 case 'Person' :
                     $idw = $line['id_cc'];
-                    $img = $this->recupera_imagem($idw);
+                    $img = $this -> recupera_imagem($idw);
                     $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
                     $sx .= $this -> show_person($line) . cr();
                     $sx .= '</div>' . cr();
-                    break; 
+                    break;
                 case 'Item' :
                     $idw = $line['id_cc'];
                     $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
                     $sx .= $this -> show_manifestation_by_item($idw) . cr();
-                    $sx .= '<br><br><span style="font-size: 12px;">Tombo:'.$line['n_name'].'</span>';
+                    $sx .= '<br><br><span style="font-size: 12px;">Tombo:' . $line['n_name'] . '</span>';
                     $sx .= '</div>' . cr();
-                    break;                                        
+                    break;
                 default :
-                    $link = '<a href="' . base_url(PATH.'v/' . $line['id_c']) . '" target="_new">';
+                    $link = '<a href="' . base_url(PATH . 'v/' . $line['id_c']) . '" target="_new">';
                     $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
                     echo '[' . $class . ']';
                     $sx .= $link;
@@ -1632,9 +1658,9 @@ class frbr extends CI_model {
         if (count($rlt) == 0) {
 
             $sqli = "insert into rdf_concept
-                            (cc_class, cc_pref_term, cc_created, cc_origin, cc_update)
+                            (cc_class, cc_pref_term, cc_created, cc_origin, cc_update, cc_library)
                             VALUES
-                            ($cl,$term,'$dt','$orign', '$date')";
+                            ($cl,$term,'$dt','$orign', '$date'," . LIBRARY . ")";
             $rlt = $this -> db -> query($sqli);
             $rlt = $this -> db -> query($sql);
             $rlt = $rlt -> result_array();
@@ -1990,6 +2016,54 @@ class frbr extends CI_model {
         }
     }
 
+    function labels($pg) {
+        $form = new form;
+
+        $form -> fd = array('id_n', 'n_name');
+        $form -> lb = array('id', msg('n_name'));
+        $form -> mk = array('', 'L', 'L', 'L');
+
+        $form -> tabela = 'rdf_name';
+        $form -> see = false;
+        $form -> novo = false;
+        $form -> edit = true;
+
+        $form -> row_edit = base_url(PATH . 'labels_ed');
+        $form -> row_view = base_url(PATH . '');
+        $form -> row = base_url(PATH . 'labels');
+        $tela = row($form, $pg);
+        $data['content'] = $tela;
+        $this->load->view('content',$data);
+    }
+
+    function labels_ed($id,$chk) {
+        $form = new form;
+        $form->id = $id;
+        
+        $cp = array();
+        array_push($cp,array('$H8','id_n','',false,false));
+        array_push($cp,array('$T80:5','n_name',msg('Label'),True,True));
+        $tela = $form->editar($cp,'rdf_name');
+        $data['content'] = $tela;
+        $this->load->view('content',$data);
+        
+        if ($form->saved > 0)
+            {
+                redirect(base_url(PATH.'labels/'));
+            }
+    }
+
+    function remove_concept($id) {
+        $sql = "update rdf_data set
+                                d_r1 = ((-1) * d_r1) ,
+                                d_r2 = ((-1) * d_r2 ),
+                                d_p  = ((-1) * d_p) 
+                                where d_r1 = $id or d_r2 = $id";
+        $rlt = $this -> db -> query($sql);
+        redirect(base_url(PATH));
+        return ("");
+    }
+
     function find_conecpt($term) {
         $rs = 0;
         $sql = "select * from rdf_data
@@ -2059,7 +2133,7 @@ class frbr extends CI_model {
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
         $sx = '';
-        $link = '<a href="#" class="btn btn-secondary" onclick="newwin(\'' . base_url(PATH.'pop_config/forms/') . '\',800,600);">Novo registro</a>';
+        $link = '<a href="#" class="btn btn-secondary" onclick="newwin(\'' . base_url(PATH . 'pop_config/forms/') . '\',800,600);">Novo registro</a>';
         $sx .= '<br>' . $link;
         $sx .= '<table width="100%">' . cr();
         $sx .= '<tr style="border-bottom: 2px solid #505050;">
@@ -2096,7 +2170,7 @@ class frbr extends CI_model {
             $sx .= '<td>' . $st . msg($line['c3']) . $sta . '</td>';
             $sx .= '<td align="center">' . $st . ($line['sc_ord']) . $sta . '</td>';
             if ($admin == 1) {
-                $link = '<a href="#" onclick="newwin(\'' . base_url(PATH.'pop_config/forms/' . $line['id_sc']) . '\',800,600);">[ed]</a>';
+                $link = '<a href="#" onclick="newwin(\'' . base_url(PATH . 'pop_config/forms/' . $line['id_sc']) . '\',800,600);">[ed]</a>';
                 $sx .= '<td align="center">' . $link . '</td>';
             }
             $sx .= '</tr>' . cr();
@@ -2110,6 +2184,7 @@ class frbr extends CI_model {
         $sql = "select id_cc as w 
                             from rdf_concept 
                             where cc_class = " . $class . "
+                            AND cc_library = " . LIBRARY . "
                             ORDER BY id_cc desc
                             limit 18
                             ";
@@ -2126,23 +2201,57 @@ class frbr extends CI_model {
         $sx .= '</div>' . cr();
         return ($sx);
     }
-    function show_person($d)
-        {
-            $sx = '';
-            $link = '<a href="'.base_url(PATH.'v/'.$d['id_cc']).'">';
-            $img = $this->recupera_imagem($d['id_cc']);           
-            $sx .= $link.$img.'</a>';
-            $sx .= $link.$d['n_name'].'</a>';
-            $sx .= '<br>';
-            $sx .= '<i class="small">'.msg('Person').'</i>';
-            return($sx);
-        }
-        
+
+    function show_person($d) {
+        $sx = '';
+        $link = '<a href="' . base_url(PATH . 'v/' . $d['id_cc']) . '">';
+        $img = $this -> recupera_imagem($d['id_cc']);
+        $sx .= $link . $img . '</a>';
+        $sx .= $link . $d['n_name'] . '</a>';
+        $sx .= '<br>';
+        $sx .= '<i class="small">' . msg('Person') . '</i>';
+        return ($sx);
+    }
+
+    function show_seriename($d) {
+        $sx = '';
+        $link = '<a href="' . base_url(PATH . 'v/' . $d['id_cc']) . '">';
+        $img = $this -> recupera_imagem($d['id_cc']);
+        $sx .= $link . $img . '</a>';
+        $sx .= $link . $d['n_name'] . '</a>';
+        $sx .= '<br>';
+        $sx .= '<i class="small">' . msg('SerieName') . '</i>';
+        return ($sx);
+    }
+    
+    function show_type($d,$name,$img) {
+        $sx = '';
+        $link = '<a href="' . base_url(PATH . 'v/' . $d['id_cc']) . '">';
+        //$img = $this -> recupera_imagem($d['id_cc']);
+        $sx .= $link . $img . '</a>';
+        $sx .= $link . $d['n_name'] . '</a>';
+        $sx .= '<br>';
+        $sx .= '<i class="small">' . msg($name) . '</i>';
+        return ($sx);
+    }    
+
+    function show_corporate($d) {
+        $sx = '';
+        $link = '<a href="' . base_url(PATH . 'v/' . $d['id_cc']) . '">';
+        $img = $this -> recupera_imagem($d['id_cc'], 'img/icon/icone_build.jpg');
+        $sx .= $link . $img . '</a>';
+        $sx .= $link . $d['n_name'] . '</a>';
+        $sx .= '<br>';
+        $sx .= '<i class="small">' . msg('Corporate Body') . '</i>';
+        return ($sx);
+    }
+
     function show_works($id = '') {
         $class = $this -> find_class('work');
         $sql = "select id_cc as w 
                             from rdf_concept 
                             where cc_class = " . $class . "
+                            AND cc_library = " . LIBRARY . "
                             ORDER BY id_cc desc
                             limit 18
                             ";
@@ -2177,7 +2286,7 @@ class frbr extends CI_model {
                     if (strlen($autor) > 0) {
                         $autor .= '; ';
                     }
-                    $link = '<a href="' . base_url(PATH.'v/' . $line['id_cc']) . '" class="small">';
+                    $link = '<a href="' . base_url(PATH . 'v/' . $line['id_cc']) . '" class="small">';
                     $autor .= $link . $line['n_name'] . ' (org.)' . '</a>';
                     break;
                 case 'hasAuthor' :
@@ -2186,7 +2295,7 @@ class frbr extends CI_model {
                     }
 
                     //echo '<hr>';
-                    $link = '<a href="' . base_url(PATH.'v/' . $line['id_cc']) . '" class="small">';
+                    $link = '<a href="' . base_url(PATH . 'v/' . $line['id_cc']) . '" class="small">';
                     $autor .= $link . $line['n_name'] . '</a>';
                     break;
             }
@@ -2231,7 +2340,7 @@ class frbr extends CI_model {
         }
 
         $sx = '';
-        $link = '<a href="' . base_url(PATH.'v/' . $id) . '" style="line-height: 120%;">';
+        $link = '<a href="' . base_url(PATH . 'v/' . $id) . '" style="line-height: 120%;">';
         $sx .= $link;
         $title_nr = $title;
         $sz = 45;
@@ -2295,7 +2404,7 @@ class frbr extends CI_model {
                     if (strlen($autor) > 0) {
                         $autor .= '; ';
                     }
-                    $link = '<a href="' . base_url(PATH.'v/' . $line['id_cc']) . '" class="small">';
+                    $link = '<a href="' . base_url(PATH . 'v/' . $line['id_cc']) . '" class="small">';
                     $autor .= $link . $line['n_name'] . ' (org.)' . '</a>';
                     break;
                 case 'hasAuthor' :
@@ -2304,7 +2413,7 @@ class frbr extends CI_model {
                     }
 
                     //echo '<hr>';
-                    $link = '<a href="' . base_url(PATH.'v/' . $line['id_cc']) . '" class="small">';
+                    $link = '<a href="' . base_url(PATH . 'v/' . $line['id_cc']) . '" class="small">';
                     $autor .= $link . $line['n_name'] . '</a>';
                     break;
             }
@@ -2326,7 +2435,7 @@ class frbr extends CI_model {
         }
 
         $sx = '';
-        $link = '<a href="' . base_url(PATH.'v/' . $id) . '" style="line-height: 120%;">';
+        $link = '<a href="' . base_url(PATH . 'v/' . $id) . '" style="line-height: 120%;">';
         $sx .= $link;
         $title_nr = $title;
         $sz = 45;
@@ -2480,7 +2589,7 @@ class frbr extends CI_model {
             $url = $this -> frbr -> rdf_prefix($data['cc_origin']);
             $url .= $this -> frbr -> rdf_sufix($data['cc_origin']) . '/#';
             $tela = $this -> frbr -> viaf_inport($url);
-            $tela .= '<meta http-equiv="refresh" content="1;url=' . base_url(PATH.'config/authority/update') . '" />';
+            $tela .= '<meta http-equiv="refresh" content="1;url=' . base_url(PATH . 'config/authority/update') . '" />';
         }
         return ($tela);
     }
@@ -2507,7 +2616,7 @@ class frbr extends CI_model {
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
 
-            $link = '<a href="' . base_url(PATH.'v/' . $line['id_cc']) . '" class="_new' . $line['id_cc'] . '">';
+            $link = '<a href="' . base_url(PATH . 'v/' . $line['id_cc']) . '" class="_new' . $line['id_cc'] . '">';
             $linka = '</a>';
 
             $sx .= '<tr style="border-top: 1px solid #a0a0a0;">';
@@ -2534,13 +2643,13 @@ class frbr extends CI_model {
     }
 
     function btn_editar($id) {
-        $sx = '<a href="' . base_url(PATH.'a/' . $id) . '" class="btn btn-secondary">editar</a>';
-        $sx .= ' <a href="' . base_url(PATH.'authority_cutter/' . $id) . '" class="btn btn-secondary">atualizar Cutter</a>';        
+        $sx = '<a href="' . base_url(PATH . 'a/' . $id) . '" class="btn btn-secondary">editar</a>';
+        $sx .= ' <a href="' . base_url(PATH . 'authority_cutter/' . $id) . '" class="btn btn-secondary">atualizar Cutter</a>';
         return ($sx);
     }
 
     function btn_update($id) {
-        $sx = '<a href="' . base_url(PATH.'authority_inport_rdf/' . $id) . '" class="btn btn-secondary">atualizar dados</a> ';
+        $sx = '<a href="' . base_url(PATH . 'authority_inport_rdf/' . $id) . '" class="btn btn-secondary">atualizar dados</a> ';
 
         return ($sx);
     }
@@ -2574,7 +2683,7 @@ class frbr extends CI_model {
                 $sx .= $this -> show_manifestation_by_works($idm, 0, 0);
                 if ($line['mn'] > 1) {
                     $sx .= '<br>';
-                    $sx .= '<a href="' . base_url(PATH.'v/' . $idm) . '" class="small">';
+                    $sx .= '<a href="' . base_url(PATH . 'v/' . $idm) . '" class="small">';
                     $sx .= '<span style="color:red"><i>' . msg('see_others_editions') . '</i></span>';
                     $sx .= '</a>' . cr();
                 }
@@ -2601,7 +2710,7 @@ class frbr extends CI_model {
                     $sx .= $this -> show_manifestation_by_works($idm, 0, 0);
                     if ($line['mn'] > 1) {
                         $sx .= '<br>';
-                        $sx .= '<a href="' . base_url(PATH.'v/' . $idm) . '" class="small">';
+                        $sx .= '<a href="' . base_url(PATH . 'v/' . $idm) . '" class="small">';
                         $sx .= '<span style="color:red"><i>' . msg('see_others_editions') . '</i></span>';
                         $sx .= '</a>' . cr();
                     }
@@ -2694,28 +2803,25 @@ class frbr extends CI_model {
                 $sx .= '<h4>' . $xl . '</h4>';
                 $l = $xl;
             }
-            $link = '<a href="' . base_url(PATH.'v/' . $line['id_cc']) . '">';
+            $link = '<a href="' . base_url(PATH . 'v/' . $line['id_cc']) . '">';
             $name = $link . $line['n_name'] . '</a>';
             $sx .= '<li>' . $name . '</li>' . cr();
         }
         $sx .= '<ul>';
         return ($sx);
     }
-    
-    function recupera_imagem($id)
-        {
-            $d = $this->le_data($id);
-            $sx = '<img src="'.base_url('img/icon/icone_author.jpg').'" class="img-fluid img-person">';
-            for ($r=0;$r < count($d);$r++)
-                {
-                    $line = $d[$r];
-                    if ($line['c_class']=='hasFace')
-                        {
-                            $sx = '<img src="'.base_url('_repositorio/image/'.$line['n_name']).'" class="img-fluid img-person">';
-                        }
-                }
-            return($sx);
+
+    function recupera_imagem($id, $img = 'img/icon/icone_author.jpg') {
+        $d = $this -> le_data($id);
+        $sx = '<img src="' . base_url($img) . '" class="img-fluid img-person">';
+        for ($r = 0; $r < count($d); $r++) {
+            $line = $d[$r];
+            if ($line['c_class'] == 'hasFace') {
+                $sx = '<img src="' . base_url('_repositorio/image/' . $line['n_name']) . '" class="img-fluid img-person">';
+            }
         }
+        return ($sx);
+    }
 
     function index_author($lt = '') {
         $class = "Person";
@@ -2736,7 +2842,7 @@ class frbr extends CI_model {
                 $sx .= '<h4>' . $xl . '</h4>';
                 $l = $xl;
             }
-            $link = '<a href="' . base_url(PATH.'v/' . $line['id_cc']) . '">';
+            $link = '<a href="' . base_url(PATH . 'v/' . $line['id_cc']) . '">';
             $name = $link . $line['n_name'] . '</a>';
             $sx .= '<li>' . $name . '</li>' . cr();
         }
@@ -2760,7 +2866,7 @@ class frbr extends CI_model {
         $sx .= '<div class="col-md-5">';
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
-            $link = '<a href="' . base_url(PATH.'vocabulary_ed/' . $line['id_c']) . '">';
+            $link = '<a href="' . base_url(PATH . 'vocabulary_ed/' . $line['id_c']) . '">';
 
             $sx .= msg($line['c_class']);
             $sx .= ' (' . $link . $line['c_class'] . '</a>' . ')';
@@ -2780,7 +2886,7 @@ class frbr extends CI_model {
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
             $xtp = $line['c_type'];
-            $link = '<a href="' . base_url(PATH.'vocabulary_ed/' . $line['id_c']) . '">';
+            $link = '<a href="' . base_url(PATH . 'vocabulary_ed/' . $line['id_c']) . '">';
             $sx .= msg($line['c_class']);
             $sx .= ' (' . $link . $line['c_class'] . '</a>' . ')';
             $sx .= '<br>';
@@ -2800,7 +2906,7 @@ class frbr extends CI_model {
             if (strlen($data['n_name']) > 0) {
                 $tela .= '<div class="row">';
                 $tela .= '<div class="col-md-12">';
-                $linkc = '<a href="' . base_url(PATH.'v/' . $id) . '" class="middle">';
+                $linkc = '<a href="' . base_url(PATH . 'v/' . $id) . '" class="middle">';
                 $linkca = '</a>';
                 $tela .= '<h2>' . $linkc . $data['n_name'] . $linkca . '</h2>';
                 $tela .= '</div>';
@@ -2814,7 +2920,7 @@ class frbr extends CI_model {
             $tela .= '</div>';
             $tela .= '<div class="col-md-1 text-right">';
             if (perfil("#ADMIN")) {
-                $tela .= '<a href="' . base_url(PATH.'a/' . $id) . '" class="btn btn-secondary">' . msg('edit') . '</a>';
+                $tela .= '<a href="' . base_url(PATH . 'a/' . $id) . '" class="btn btn-secondary">' . msg('edit') . '</a>';
             }
             $tela .= '</div>';
             $tela .= '</div>';
@@ -2971,7 +3077,7 @@ class frbr extends CI_model {
                LEFT JOIN itens ON i_tombo = n_name 
         where RD1.d_p = $f and ((i_tombo is null) or (i_status = 1) or (i_status = 2))                
         ORDER BY n_name desc
-        ";       
+        ";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
 
@@ -3002,7 +3108,7 @@ class frbr extends CI_model {
                 $sql = "select * from itens where i_tombo = '$n' ";
                 $wrlt = $this -> db -> query($sql);
                 $wrlt = $wrlt -> result_array();
-                
+
                 if (count($wrlt) == 0) {
                     $sql = "insert into itens
                                 (
@@ -3021,13 +3127,13 @@ class frbr extends CI_model {
                                     i_label_1 = '$cuc', 
                                     i_label_2 = ''
                                     where i_tombo = '$n'";
-                    $rrr = $this -> db -> query($sql);   
+                    $rrr = $this -> db -> query($sql);
                 }
             }
 
             /*************************************************************************************/
             if (strlen($cuc) == 0) {
-                $link = '<a href="' . base_url(PATH.'a/' . $man) . '">';
+                $link = '<a href="' . base_url(PATH . 'a/' . $man) . '">';
                 $sx .= ($r + 1) . '. <font color="red">Classificação não identificada</font>';
                 $sx .= $link . $n . '</a>';
                 $sx .= '<br>';

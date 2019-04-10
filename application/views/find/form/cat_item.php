@@ -13,7 +13,7 @@ $dd4 = get("dd4");
 			<div class="col-md-1">
 				<?php
                 if (strlen($idw) > 0) {
-                    echo '<a href="' . base_url('index.php/main/v/' . $idw) . '" class="btn btn-secondary">voltar</a>';
+                    echo '<a href="' . base_url(PATH.'v/' . $idw) . '" class="btn btn-secondary">voltar</a>';
                 }
 				?>
 			</div>

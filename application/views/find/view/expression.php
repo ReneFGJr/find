@@ -28,13 +28,13 @@ for ($r=0;$r < count($expr);$r++)
             <tt style="font-size: 100%;"><?php echo msg('Expression');?></tt>
         </div>
         <div class="col-md-10">
-            <a href="<?php echo base_url('index.php/main/v/'.$w);?>">
+            <a href="<?php echo base_url(PATH.'v/'.$w);?>">
             <span style="font-size: 100%; color: #000000;"><b><?php echo $form; ?></b></span>
             <br>
             <span style="font-size: 100%; color: #000000;"><i><?php echo $language; ?></i></span>
             </a>            
             <?php if (perfil("#ADM")) {
-                   echo '<br><a href="'.base_url('index.php/main/a/' . $id).'"  class="btn btn-secondary">editar</a>';
+                   echo '<br><a href="'.base_url(PATH.'a/' . $id).'"  class="btn btn-secondary">editar</a>';
             }
             ?>            
             <br>

@@ -128,14 +128,14 @@ class labs extends CI_model {
     }
 
     function menus() {
-        $sx = '<a href="' . base_url('index.php/main/mod/labs/citeis/0') . '" class="btn btn-secondary">Ano</a>';
-        $sx .= '<a href="' . base_url('index.php/main/mod/labs/citeis/10') . '" class="btn btn-secondary">Erros Ano</a>';
-        $sx .= '<a href="' . base_url('index.php/main/mod/labs/citeis/20') . '" class="btn btn-secondary">Internet</a>';
-        $sx .= '<a href="' . base_url('index.php/main/mod/labs/citeis/1') . '" class="btn btn-secondary">Phase I</a>';
-        $sx .= '<a href="' . base_url('index.php/main/mod/labs/citeis/2') . '" class="btn btn-secondary">Source Find</a>';
-        $sx .= '<a href="' . base_url('index.php/main/mod/labs/citeis/3') . '" class="btn btn-secondary">Without Source</a>';
+        $sx = '<a href="' . base_url(PATH.'mod/labs/citeis/0') . '" class="btn btn-secondary">Ano</a>';
+        $sx .= '<a href="' . base_url(PATH.'mod/labs/citeis/10') . '" class="btn btn-secondary">Erros Ano</a>';
+        $sx .= '<a href="' . base_url(PATH.'mod/labs/citeis/20') . '" class="btn btn-secondary">Internet</a>';
+        $sx .= '<a href="' . base_url(PATH.'mod/labs/citeis/1') . '" class="btn btn-secondary">Phase I</a>';
+        $sx .= '<a href="' . base_url(PATH.'mod/labs/citeis/2') . '" class="btn btn-secondary">Source Find</a>';
+        $sx .= '<a href="' . base_url(PATH.'mod/labs/citeis/3') . '" class="btn btn-secondary">Without Source</a>';
         
-        $sx .= '<a href="' . base_url('index.php/main/mod/labs/citeis/99') . '" class="btn btn-secondary">Status</a>';
+        $sx .= '<a href="' . base_url(PATH.'mod/labs/citeis/99') . '" class="btn btn-secondary">Status</a>';
         return ($sx);
     }
 
@@ -152,7 +152,7 @@ class labs extends CI_model {
                             ctd_year = '$i'
                             where id_ctd = " . $q;
                 $xrlt = $this -> db -> query($sql);
-                redirect(base_url('index.php/main/mod/labs/ref/' . $id . '#' . $q));
+                redirect(base_url(PATH.'mod/labs/ref/' . $id . '#' . $q));
                 break;
         }
         /********************************************************************/
@@ -197,8 +197,8 @@ class labs extends CI_model {
             }
 
             $tag = '<a name="' . $line['id_ctd'] . '"></a>' . cr();
-            $link = '<a href="#' . $line['id_ctd'] . '" onclick="newxy(\'' . base_url('index.php/main/mod/labs/ref_edit/' . $line['id_ctd']) . '\',1024,600);" style="color: ' . $cor . ';">';
-            $cmd .= '<a href="#' . $line['id_ctd'] . '" onclick="newxy(\'' . base_url('index.php/main/mod/labs/ref_join/' . $line['id_ctd'] . '/' . $line2['id_ctd']) . '\',1024,600);" style="color: ' . $cor . ';">[+]</a>';
+            $link = '<a href="#' . $line['id_ctd'] . '" onclick="newxy(\'' . base_url(PATH.'mod/labs/ref_edit/' . $line['id_ctd']) . '\',1024,600);" style="color: ' . $cor . ';">';
+            $cmd .= '<a href="#' . $line['id_ctd'] . '" onclick="newxy(\'' . base_url(PATH.'mod/labs/ref_join/' . $line['id_ctd'] . '/' . $line2['id_ctd']) . '\',1024,600);" style="color: ' . $cor . ';">[+]</a>';
             $sx .= '<li>' . $tag . $link . $line['ctd_ref'] . '</a>' . $cmd . '</li>' . cr();
         }
         $sx .= '</ul>';
@@ -296,7 +296,7 @@ class labs extends CI_model {
             $y = (string)$r;
             $p = strpos($ln, $y);
             if ($p > 0) {
-                $link = '<a href="' . base_url('index.php/main/mod/labs/ref/' . $id) . '?c=set&q=' . $r . '&i=' . $idr . '">';
+                $link = '<a href="' . base_url(PATH.'mod/labs/ref/' . $id) . '?c=set&q=' . $r . '&i=' . $idr . '">';
                 if (strlen($sx) > 0) { $sx .= ', ';
                 }
                 $sx .= $link . '[' . $r . ']' . '</a>';
@@ -345,7 +345,7 @@ class labs extends CI_model {
                         {
                             $ab = ' <font color="red">['.$ab.']</font>';
                         }
-                    $link = '<a href="' . base_url('index.php/main/mod/labs/ref/' . $line['ctd_source']) . '">';
+                    $link = '<a href="' . base_url(PATH.'mod/labs/ref/' . $line['ctd_source']) . '">';
                     $sx .= '<li>' . $link . $line['ctd_ref'] . '</a>' . $ab . '</li>';
                     //$this->recupera_data($line['ctd_ref'],$line['id_ctd']);
                 }
@@ -380,7 +380,7 @@ class labs extends CI_model {
                 $sx .= '<ul>';
                 for ($r = 0; $r < count($rlt); $r++) {
                     $line = $rlt[$r];
-                    $link = '<a href="' . base_url('index.php/main/mod/labs/ref/' . $line['ctd_source']) . '">';
+                    $link = '<a href="' . base_url(PATH.'mod/labs/ref/' . $line['ctd_source']) . '">';
                     $sx .= '<li>' . $link . $line['ctd_ref'] . '</a>'  . '</li>';
                     //$this->recupera_data($line['ctd_ref'],$line['id_ctd']);
                 }
@@ -436,7 +436,7 @@ class labs extends CI_model {
                                     where id_ctd = ".$id_ctd;
                         $xrlt = $this -> db -> query($sql);
 
-                        $link = '<a href="' . base_url('index.php/main/mod/labs/ref/' . $line['ctd_source']) . '">';
+                        $link = '<a href="' . base_url(PATH.'mod/labs/ref/' . $line['ctd_source']) . '">';
                         $sx .= '<li>' . $link . $line['ctd_ref'] . '</a>' . '</li>';
                         //$this->recupera_data($line['ctd_ref'],$line['id_ctd']);
                     }
@@ -453,7 +453,7 @@ class labs extends CI_model {
                 $sx .= '<ul>';
                 for ($r = 0; $r < count($rlt); $r++) {
                     $line = $rlt[$r];
-                    $link = '<a href="' . base_url('index.php/main/mod/labs/ref/' . $line['ctd_source']) . '">';
+                    $link = '<a href="' . base_url(PATH.'mod/labs/ref/' . $line['ctd_source']) . '">';
                     $sx .= '<li>' . $link . $line['ctd_ref'] . '</a>' . '</li>';
                     //$this->recupera_data($line['ctd_ref'],$line['id_ctd']);
                 }
@@ -474,7 +474,7 @@ class labs extends CI_model {
                 $sx .= '<ul>';
                 for ($r = 0; $r < count($rlt); $r++) {
                     $line = $rlt[$r];
-                    $link = '<a href="' . base_url('index.php/main/mod/labs/ref/' . $line['ctd_source']) . '">';
+                    $link = '<a href="' . base_url(PATH.'mod/labs/ref/' . $line['ctd_source']) . '">';
                     $sx .= '<li>' . $link . $line['ctd_ref'] . '</a>' . '</li>';
                     //$this->recupera_data($line['ctd_ref'],$line['id_ctd']);
                 }

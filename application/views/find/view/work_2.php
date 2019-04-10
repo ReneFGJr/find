@@ -7,9 +7,9 @@ $linkw = '<a href="#">';
 $linked_i_new = '';
 
 if (perfil("#ADM")) {
-	$linked_e = '<a href="' . base_url('index.php/main/a/' . $expression[0]['d_r1']) . '" class="btn btn-secondary">';
+	$linked_e = '<a href="' . base_url(PATH.'a/' . $expression[0]['d_r1']) . '" class="btn btn-secondary">';
 	if (isset($manifestation)) {
-		$linked_m = '<a href="' . base_url('index.php/main/a/' . $idm) . '" class="btn btn-secondary">';
+		$linked_m = '<a href="' . base_url(PATH.'a/' . $idm) . '" class="btn btn-secondary">';
 	} else {
 		$linked_m = '';
 	}
@@ -45,11 +45,11 @@ for ($r = 0; $r < count($work); $r++) {
 	$type = $work[$r]['c_class'];
 	$value = $work[$r]['n_name'];
 	//echo '<br>'.$type.'->'.$value;
-	$link = '<a href="' . base_url('index.php/main/v/' . $work[$r]['id_cc']) . '">';
+	$link = '<a href="' . base_url(PATH.'v/' . $work[$r]['id_cc']) . '">';
 	$linka = '</a>';
 	switch($type) {
 		case 'hasTitle' :
-			$linkw = '<a href="' . base_url('index.php/main/v/' . $id) . '">';
+			$linkw = '<a href="' . base_url(PATH.'v/' . $id) . '">';
 			$title = $value;
 			break;
 		case 'hasAuthor' :
@@ -72,7 +72,7 @@ for ($r = 0; $r < count($expression); $r++) {
 	$type = $expression[$r]['c_class'];
 	$value = $expression[$r]['n_name'];
 	//echo '<br>'.$type.'->'.$value;
-	$link = '<a href="' . base_url('index.php/main/v/' . $expression[$r]['id_cc']) . '">';
+	$link = '<a href="' . base_url(PATH.'v/' . $expression[$r]['id_cc']) . '">';
 	$linka = '</a>';
 	switch($type) {
 		case 'hasFormExpression' :
@@ -111,8 +111,8 @@ if (isset($manifestation)) {
 		$value = $manifestation[$r]['n_name'];
 
 		//echo '<br>' . $type . '->' . $value;
-		$link = '<a href="' . base_url('index.php/main/v/' . $manifestation[$r]['id_cc']) . '">';
-		$linkm = '<a href="' . base_url('index.php/main/v/' . $manifestation[0]['d_r1']) . '">';
+		$link = '<a href="' . base_url(PATH.'v/' . $manifestation[$r]['id_cc']) . '">';
+		$linkm = '<a href="' . base_url(PATH.'v/' . $manifestation[0]['d_r1']) . '">';
 		$linka = '</a>';
 		switch($type) {
 			case 'hasPage' :

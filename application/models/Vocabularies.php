@@ -5,13 +5,13 @@ class vocabularies extends CI_model {
         if (perfil("#ADM")) {
             $dta = $this -> frbr -> le_class($id);
             $sx .= '
-                    <a href="' . base_url('index.php/main/vocabulary_ed/' . $dta['id_c']) . '" class="btn btn-secondary">Editar</a>
+                    <a href="' . base_url(PATH.'vocabulary_ed/' . $dta['id_c']) . '" class="btn btn-secondary">Editar</a>
                     ';
         }
         if (strlen($id) > 0) {
             $sx .= '
                     <!-- Button trigger modal -->
-                    <a href="' . base_url('index.php/main/vocabulary') . '" class="btn btn-secondary">Voltar</a>
+                    <a href="' . base_url(PATH.'vocabulary') . '" class="btn btn-secondary">Voltar</a>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
                       Atualizar Vocabulário
                     </button>
@@ -42,7 +42,7 @@ class vocabularies extends CI_model {
                             jQuery("#cnt").html("Buscando...");
                             $.ajax({
                                 method: "POST",
-                                url: "' . base_url('index.php/main/ajax_action/inport/' . $id) . '",
+                                url: "' . base_url(PATH.'ajax_action/inport/' . $id) . '",
                                 data: { name: "John", location: "Boston" }
                                 })
                                 .done(function( msg ) {
@@ -60,12 +60,12 @@ class vocabularies extends CI_model {
         if (strlen($id) > 0) {
             $sx .= '
                     <!-- Button trigger modal -->
-                    <form method="post" action="' . base_url('index.php/main/vocabulary/' . $id) . '">
-                    <a href="' . base_url('index.php/main/vocabulary') . '" class="btn btn-secondary">Voltar</a>' . cr();
+                    <form method="post" action="' . base_url(PATH.'vocabulary/' . $id) . '">
+                    <a href="' . base_url(PATH.'vocabulary') . '" class="btn btn-secondary">Voltar</a>' . cr();
             if (perfil("#ADM")) {
                 $dta = $this -> frbr -> le_class($id);
                 $sx .= '
-                    <a href="' . base_url('index.php/main/vocabulary_ed/' . $dta['id_c']) . '" class="btn btn-secondary">Editar</a>
+                    <a href="' . base_url(PATH.'vocabulary_ed/' . $dta['id_c']) . '" class="btn btn-secondary">Editar</a>
                     ';
             }
             $sx .= '
@@ -128,7 +128,7 @@ class vocabularies extends CI_model {
             $sx = '<ul>';
             for ($r = 0; $r < count($rlt); $r++) {
                 $line = $rlt[$r];
-                $link = '<a href="' . base_url('index.php/main/vocabulary/' . $line['c_class']) . '">';
+                $link = '<a href="' . base_url(PATH.'vocabulary/' . $line['c_class']) . '">';
                 $linka = '</a>';
                 $sx .= '<li>' . $link . msg($line['c_class']) . $linka . '</li>';
             }
@@ -138,7 +138,7 @@ class vocabularies extends CI_model {
             $sx = '<ul>';
             for ($r = 0; $r < count($ln); $r++) {
                 $l = $ln[$r];
-                $link = '<a href="' . base_url('index.php/main/v/' . $l['id_cc']) . '">';
+                $link = '<a href="' . base_url(PATH.'v/' . $l['id_cc']) . '">';
                 $linka = '</a>';
                 $sx .= '<li>' . $link . $l['n_name'] . $linka . '</li>';
             }
@@ -162,7 +162,7 @@ class vocabularies extends CI_model {
             for ($r = 0; $r < count($rlt); $r++) {
                 $line = $rlt[$r];
                 $up = stodbr($line['c_url_update']);
-                $link = '<a href="' . base_url('index.php/main/thesa/' . $line['c_class']) . '">';
+                $link = '<a href="' . base_url(PATH.'thesa/' . $line['c_class']) . '">';
                 $linka = '</a>';
                 $sx .= '<li>' . $link . msg($line['c_class']) . $linka . ' ' . $up . '</li>';
             }
@@ -172,7 +172,7 @@ class vocabularies extends CI_model {
             $sx = '<ul>';
             for ($r = 0; $r < count($ln); $r++) {
                 $l = $ln[$r];
-                $link = '<a href="' . base_url('index.php/main/v/' . $l['id_cc']) . '">';
+                $link = '<a href="' . base_url(PATH.'v/' . $l['id_cc']) . '">';
                 $linka = '</a>';
                 $sx .= '<li>' . $link . $l['n_name'] . $linka . '</li>';
             }

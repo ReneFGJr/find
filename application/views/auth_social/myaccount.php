@@ -36,11 +36,11 @@ if (!file_exists($pict)) {
 			<?php
 			if ($id_us == $_SESSION['id']) {
 				echo '<ul class="item_menu">' . cr();
-				echo '<li><a href="' . base_url('index.php/main/change_password') . '" class="middle">Alterar senha</a></li>';
-				echo '<li><a href="' . base_url('index.php/main/change_my_email') . '" class="middle">Alterar e-mail</a></li>';
+				echo '<li><a href="' . base_url(PATH.'change_password') . '" class="middle">Alterar senha</a></li>';
+				echo '<li><a href="' . base_url(PATH.'change_my_email') . '" class="middle">Alterar e-mail</a></li>';
 				echo '<li><a href="' . base_url('index.php/admin/user_drh_edit') . '" class="middle">Atualizar dados pessoais</a></li>';
-				echo '<li><a href="' . base_url('index.php/main/change_my_sign') . '" class="middle">Atualizar assinatura comercial</a></li>';
-				echo '<li><a href="' . base_url('index.php/main/change_my_picture/'.$id_us.'/'.checkpost_link($id_us)) . '" class="middle">Atualizar fotografia</a></li>';
+				echo '<li><a href="' . base_url(PATH.'change_my_sign') . '" class="middle">Atualizar assinatura comercial</a></li>';
+				echo '<li><a href="' . base_url(PATH.'change_my_picture/'.$id_us.'/'.checkpost_link($id_us)) . '" class="middle">Atualizar fotografia</a></li>';
 				echo '</ul>' . cr();
 			}
 			if (perfil("#ADM#DRH"))
@@ -48,7 +48,7 @@ if (!file_exists($pict)) {
 				echo '<ul class="item_menu">' . cr();
 				echo '<li><a href="' . base_url('index.php/admin/user_reset_password/'.$id_us.'/'.checkpost_link($id_us)) . '" class="middle">Gerar nova senha</a></li>';
                 echo '<li><a href="'.base_url('index.php/admin/user_drh_edit/'.$id_us.'/'.checkpost_link($id_us)).'" class="middle">'.msg('edit_person_data').'</a></li>';
-                echo '<li><a href="' . base_url('index.php/main/change_my_picture/'.$id_us.'/'.checkpost_link($id_us)) . '" class="middle">Atualizar fotografia</a></li>';                                
+                echo '<li><a href="' . base_url(PATH.'change_my_picture/'.$id_us.'/'.checkpost_link($id_us)) . '" class="middle">Atualizar fotografia</a></li>';                                
 				echo '</ul>' . cr();					
 				}
 			?>
