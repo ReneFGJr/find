@@ -103,7 +103,7 @@ $dd4 = get("dd4");
 			<div class="col-md-1 text-right" style="border-right: 4px solid #a050a0;">
 				ITEM
 				<br>
-				<span style="font-size: 75%"><I>updaload</I></span>
+				<span style="font-size: 75%"><I>upload</I></span>
 			</div>
 			<div class="col-md-11">
                 <!---------------------------- local do item ------------------->

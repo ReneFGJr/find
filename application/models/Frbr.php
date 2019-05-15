@@ -772,9 +772,34 @@ class frbr extends CI_model {
 
         return ($sx);
     }
+    
+    function book_new_chapter($id,$idm,$it)
+        {
+            $class = 'BookChapter';
+            $term = strzero($id,6).'-'.strzero($idm,6).'-'.strzero($it,4);
+            $item_nome = $this -> frbr -> frbr_name($term);
+            $idc = $this->rdf_concept($item_nome, $class, $orign = '');
+            $this -> set_propriety($idm, 'isChapterOf', $idc, 0);
+            return($idc);            
+        }
 
-    function work_show_2($id) {
+    function work_show_2($id,$act='') {
         $data = array();
+        
+        /************** actions *************/
+        $act = get("action");
+        $nri = round(get("dd1"));
+        $idm = round(get("dd2"));
+        
+        switch($act)
+            {
+            case 'chapter':
+                $idc = $this->book_new_chapter($id,$idm,($nri+1));
+                echo "OK $id - $nri";
+                exit;
+                break;
+            }
+        
 
         $prop_expression = $this -> find_class('isRealizedThrough');
         $prop_manifestation = $this -> find_class('isEmbodiedIn');
@@ -829,6 +854,7 @@ class frbr extends CI_model {
                 $its = $this -> itens_show_resume($idm);
                 $data['itens'] = $its;
                 $sx .= $this -> load -> view('find/view/work_2', $data, true);
+                
             }
         }
         return ($sx);
@@ -1144,7 +1170,7 @@ class frbr extends CI_model {
             $sx .= '</span>';
 
             /********************* prefer */
-            if ($line['c_class'] == 'altLabel') {
+            if (($line['c_class'] == 'altLabel') or ($line['c_class'] == 'hiddenLabel')) {
                 $link = '<span id="ep' . $line['id_d'] . '" onclick="setPrefTerm(' . $line['id_d'] . ',' . $line['id_n'] . ');" style="cursor: pointer;">';
                 $sx .= $link . '<font style="color: red;" title="Definir como preferencial">[pref]</font>' . $linka;
                 $sx .= '</span>';
@@ -1554,6 +1580,12 @@ class frbr extends CI_model {
                     $sx .= $this -> show_manifestation_by_works($idw) . cr();
                     $sx .= '</div>' . cr();
                     break;
+                case 'BookChapter' :
+                    $idw = $line['id_cc'];
+                    $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
+                    $sx .= $this -> show_chapter($line) . cr();
+                    $sx .= '</div>' . cr();
+                    break;                    
                 case 'Person' :
                     $idw = $line['id_cc'];
                     $img = $this -> recupera_imagem($idw);
@@ -1569,7 +1601,9 @@ class frbr extends CI_model {
                     $sx .= '</div>' . cr();
                     break;
                 default :
-                    $link = '<a href="' . base_url(PATH . 'v/' . $line['id_c']) . '" target="_new">';
+                    $idw = $line['id_cc'];
+                    //$link = '<a href="' . base_url(PATH . 'v/' . $line['id_c']) . '" target="_new">';
+                    $link = '<a href="' . base_url(PATH . 'v/' . $idw) . '" target="_new">';
                     $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
                     echo '[' . $class . ']';
                     $sx .= $link;
@@ -2223,6 +2257,17 @@ class frbr extends CI_model {
         $sx .= '<i class="small">' . msg('SerieName') . '</i>';
         return ($sx);
     }
+    
+    function show_chapter($d) {
+        $sx = '';
+        $link = '<a href="' . base_url(PATH . 'v/' . $d['id_cc']) . '">';
+        $img = $this -> recupera_imagem($d['id_cc'],'img/icon/icone_chapter.jpg');
+        $sx .= $link . $img . '</a>';
+        $sx .= $link . $d['n_name'] . '</a>';
+        $sx .= '<br>';
+        $sx .= '<i class="small">' . msg('ChapterBook') . '</i>';
+        return ($sx);
+    }    
     
     function show_type($d,$name,$img) {
         $sx = '';
