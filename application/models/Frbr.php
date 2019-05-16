@@ -39,6 +39,9 @@ class frbr extends CI_model {
             case 'Image' :
                 $tela .= $this -> upload_image($path, $id, $dt);
                 break;
+            case 'Text' :
+                $tela .= $this -> cas_text($path, $id, $dt);
+                break;
             default :
                 $dt['type'] = $type;
                 $tela .= $this -> cas_ajax($path, $id, $dt);
@@ -108,6 +111,41 @@ class frbr extends CI_model {
                             $.ajax({
                                     type: "POST",
                                     url: "' . base_url(PATH . 'ajax4/' . $path . '/' . $id) . '",
+                                    data: "q="+$key,
+                                    success: function(data){
+                                        $("#dd51a").html(data);
+                                    }
+                                });                           
+                            /*
+                            jQuery("#dialog").modal("toggle");
+                            */
+                         });                         
+                    </script>';
+        return ($tela);
+    }
+
+    function cas_text($path, $id, $dt) {
+        if (!isset($dt['label1'])) { $dt['label1'] = msg($path);
+        }
+
+        /* */
+        $type = '';
+        if (isset($dt['type'])) {
+            $type = $dt['type'];
+        }
+        $tela = '';
+        $tela .= '<span style="font-size: 75%">' . $dt['label1'] . '</span><br>';
+        $tela .= '<div id="dd51a"><textarea class="form-control" style="height: 150px;" name="dd50" id="dd50"></textarea></div>';
+        $tela .= '
+                    <script>
+                         $("#save").show();
+                         $("#submt").toggle();
+                         /************ insert ***************/
+                         jQuery("#save").click(function() {                            
+                            var $key = jQuery("#dd50").val();
+                            $.ajax({
+                                    type: "POST",
+                                    url: "' . base_url(PATH . 'ajax5/' . $path . '/' . $id) . '",
                                     data: "q="+$key,
                                     success: function(data){
                                         $("#dd51a").html(data);
@@ -772,34 +810,35 @@ class frbr extends CI_model {
 
         return ($sx);
     }
-    
-    function book_new_chapter($id,$idm,$it)
-        {
-            $class = 'BookChapter';
-            $term = strzero($id,6).'-'.strzero($idm,6).'-'.strzero($it,4);
-            $item_nome = $this -> frbr -> frbr_name($term);
-            $idc = $this->rdf_concept($item_nome, $class, $orign = '');
-            $this -> set_propriety($idm, 'isChapterOf', $idc, 0);
-            return($idc);            
-        }
 
-    function work_show_2($id,$act='') {
+    function book_new_chapter($id, $idm, $it, $title='') {
+        $class = 'BookChapter';
+        $term = strzero($id, 6) . '-' . strzero($idm, 6) . '-' . strzero($it, 4);
+        $item_nome = $this -> frbr -> frbr_name($title);        
+        $item_id = $this -> frbr -> frbr_name($term);
+        $idc = $this -> rdf_concept($item_nome, $class, $orign = '');
+        $this -> set_propriety($idm, 'hasChapterOf', $idc, 0);
+        $this -> set_propriety($idc, 'hasTitleChapter', 0, $item_nome);
+        $this -> set_propriety($idc, 'hiddenLabel', 0, $item_id);
+        return ($idc);
+    }
+
+    function work_show_2($id, $act = '') {
         $data = array();
-        
+
         /************** actions *************/
         $act = get("action");
         $nri = round(get("dd1"));
         $idm = round(get("dd2"));
-        
-        switch($act)
-            {
-            case 'chapter':
-                $idc = $this->book_new_chapter($id,$idm,($nri+1));
-                echo "OK $id - $nri";
-                exit;
-                break;
+        $title = trim(get("dd50"));
+        if (perfil("#CAT#ADM")) {
+            switch($act) {
+                case 'chapter' :
+                    $idc = $this -> book_new_chapter($id, $idm, ($nri + 1), $title);
+                    redirect(base_url(PATH . 'v/' . $id));
+                    break;
             }
-        
+        }
 
         $prop_expression = $this -> find_class('isRealizedThrough');
         $prop_manifestation = $this -> find_class('isEmbodiedIn');
@@ -853,11 +892,28 @@ class frbr extends CI_model {
 
                 $its = $this -> itens_show_resume($idm);
                 $data['itens'] = $its;
+
+                $data['chapter'] = $this -> chapters($idm);
+
                 $sx .= $this -> load -> view('find/view/work_2', $data, true);
-                
+
             }
         }
         return ($sx);
+    }
+
+    function chapters($id = 0) {
+        $cap = array();
+        $a = $this -> le_data($id);
+        for ($r = 0; $r < count($a); $r++) {
+            $ln = $a[$r];
+            $class = $ln['c_class'];
+            $d = $ln['d_r2'];
+            if ($class == 'hasChapterOf') {
+                $cap[$d] = $this -> le_data($d);
+            }
+        }
+        return ($cap);
     }
 
     function show_rdf($url) {
@@ -971,7 +1027,7 @@ class frbr extends CI_model {
         /* complementos */
         switch($class) {
             default :
-                $cp = 'n_name, cpt.id_cc as idcc, d_p as prop, id_d';
+                $cp = 'n_name, cpt.id_cc as idcc, d_p as prop, id_d, id_n';
                 $sqla = "select $cp from rdf_data as rdata
                                 INNER JOIN rdf_class as prop ON d_p = prop.id_c 
                                 INNER JOIN rdf_concept as cpt ON d_r2 = id_cc 
@@ -988,7 +1044,7 @@ class frbr extends CI_model {
                             INNER JOIN rdf_class ON id_c = sc_propriety
                             LEFT JOIN (" . $sqla . ") as table1 ON id_c = prop 
                         where sc_class = $class 
-                        order by sc_ord, id_sc, c_order";
+                        order by sc_ord, id_sc, c_order, id_n";
                 $rlt = $this -> db -> query($sql);
                 $rlt = $rlt -> result_array();
                 $sx .= '<table width="100%" cellpadding=5>';
@@ -1016,9 +1072,19 @@ class frbr extends CI_model {
                     if (strlen($line['n_name']) > 0) {
                         $linkc = '<a href="' . base_url(PATH . 'v/' . $line['idcc']) . '" class="middle">';
                         $linkca = '</a>';
+                        $del = 1;
+                        if (strlen($line['idcc']) == 0)
+                            {
+                                $linkc = '<a href="#" onclick="newxy(\'' . base_url(PATH . 'labels_ed/' . $line['id_n']).'/'.checkpost_link($line['id_n']).'/1' . '\',800,600);" class="middle" target="_new'.date("His").'">';
+                                $linkca = '</a>';
+                                $del = 0;                                
+                            }
                         $sx .= $linkc . $line['n_name'] . $linkca;
                         $link = ' <span id="ex' . $line['id_d'] . '" onclick="exclude(' . $line['id_d'] . ');" style="cursor: pointer;">';
-                        $sx .= $link . '<font style="color: red;" title="Excluir lancamento">[X]</font>' . $linka;
+                        if ($del ==1)
+                        {
+                            $sx .= $link . '<font style="color: red;" title="Excluir lancamento">[X]</font>' . $linka;
+                        }
                         $sx .= '</span>';
                     }
                     $sx .= '</td>';
@@ -1545,6 +1611,7 @@ class frbr extends CI_model {
                     INNER JOIN rdf_class ON id_c = cc_class
                     WHERE $wh AND c_find = 1  AND cc_library = " . LIBRARY . "
                     group by $cps";
+                    echo $sql;
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
         $sx .= '<div class="container">' . cr();
@@ -1557,9 +1624,9 @@ class frbr extends CI_model {
                     $idw = $line['id_cc'];
                     $img = $this -> recupera_imagem($idw, 'img/icon/icone_cdu.jpg');
                     $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
-                    $sx .= $this -> show_type($line,'UDC',$img) . cr();
+                    $sx .= $this -> show_type($line, 'UDC', $img) . cr();
                     $sx .= '</div>' . cr();
-                    break;                
+                    break;
                 case 'Corporate Body' :
                     $idw = $line['id_cc'];
                     $img = $this -> recupera_imagem($idw, 'img/icon/icone_build.jpg');
@@ -1585,7 +1652,7 @@ class frbr extends CI_model {
                     $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
                     $sx .= $this -> show_chapter($line) . cr();
                     $sx .= '</div>' . cr();
-                    break;                    
+                    break;
                 case 'Person' :
                     $idw = $line['id_cc'];
                     $img = $this -> recupera_imagem($idw);
@@ -1651,6 +1718,11 @@ class frbr extends CI_model {
 								('$r1','$pr','$r2',$lit)";
             $rlt = $this -> db -> query($sql);
         } else {
+            $ln = $rlt[0];
+            if ($pr != $ln['d_p']) {
+                echo 'Já existe uma propriedade registrada para estes recursos [' . $prop . ']';
+                exit ;
+            }
 
         }
     }
@@ -2067,24 +2139,29 @@ class frbr extends CI_model {
         $form -> row = base_url(PATH . 'labels');
         $tela = row($form, $pg);
         $data['content'] = $tela;
-        $this->load->view('content',$data);
+        $this -> load -> view('content', $data);
     }
 
-    function labels_ed($id,$chk) {
+    function labels_ed($id, $chk, $close=0) {
         $form = new form;
-        $form->id = $id;
-        
+        $form -> id = $id;
+
         $cp = array();
-        array_push($cp,array('$H8','id_n','',false,false));
-        array_push($cp,array('$T80:5','n_name',msg('Label'),True,True));
-        $tela = $form->editar($cp,'rdf_name');
+        array_push($cp, array('$H8', 'id_n', '', false, false));
+        array_push($cp, array('$T80:5', 'n_name', msg('Label'), True, True));
+        $tela = $form -> editar($cp, 'rdf_name');
+
+
+        if ($form -> saved > 0) {
+            if ($close==1)
+                {
+                    $tela = '<script> wclose(); </script>';
+                } else {
+                    redirect(base_url(PATH . 'labels/'));        
+                }            
+        }
         $data['content'] = $tela;
-        $this->load->view('content',$data);
-        
-        if ($form->saved > 0)
-            {
-                redirect(base_url(PATH.'labels/'));
-            }
+        $this -> load -> view('content', $data);        
     }
 
     function remove_concept($id) {
@@ -2257,19 +2334,19 @@ class frbr extends CI_model {
         $sx .= '<i class="small">' . msg('SerieName') . '</i>';
         return ($sx);
     }
-    
+
     function show_chapter($d) {
         $sx = '';
         $link = '<a href="' . base_url(PATH . 'v/' . $d['id_cc']) . '">';
-        $img = $this -> recupera_imagem($d['id_cc'],'img/icon/icone_chapter.jpg');
+        $img = $this -> recupera_imagem($d['id_cc'], 'img/icon/icone_chapter.jpg');
         $sx .= $link . $img . '</a>';
         $sx .= $link . $d['n_name'] . '</a>';
         $sx .= '<br>';
         $sx .= '<i class="small">' . msg('ChapterBook') . '</i>';
         return ($sx);
-    }    
-    
-    function show_type($d,$name,$img) {
+    }
+
+    function show_type($d, $name, $img) {
         $sx = '';
         $link = '<a href="' . base_url(PATH . 'v/' . $d['id_cc']) . '">';
         //$img = $this -> recupera_imagem($d['id_cc']);
@@ -2278,7 +2355,7 @@ class frbr extends CI_model {
         $sx .= '<br>';
         $sx .= '<i class="small">' . msg($name) . '</i>';
         return ($sx);
-    }    
+    }
 
     function show_corporate($d) {
         $sx = '';

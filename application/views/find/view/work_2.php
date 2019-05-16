@@ -168,18 +168,44 @@ if (isset($manifestation)) {
     }
 }
 
+/************** Capítulos do Livro ******************************************/
+$chapter_text = '';
 if (isset($chapter)) {
-    for ($r = 0; $r < count($chapter); $r++) {
-        $type = $manifestation[$r]['c_class'];
-        $value = $manifestation[$r]['n_name'];
+    foreach ($chapter as $key => $cap) {
+        $autor = '';
+        $titulo = '';
 
-        //echo '<br>' . $type . '->' . $value;
-        $link = '<a href="' . base_url(PATH . 'v/' . $chapter[$r]['id_cc']) . '">';
-        $linkm = '<a href="' . base_url(PATH . 'v/' . $chapter[0]['d_r1']) . '">';
-        $linka = '</a>';
-        switch($type) {
+        for ($y = 0; $y < count($cap); $y++) {
+            $type = $cap[$y]['c_class'];
+            $value = $cap[$y]['n_name'];
+
+            //echo '<br>' . $type . '->' . $value;
+
+            $link = '<a href="' . base_url(PATH . 'v/' . $cap[$y]['id_cc']) . '">';
+            $linkm = '<a href="' . base_url(PATH . 'v/' . $cap[0]['d_r1']) . '">';
+            $linka = '</a>';
+
+            switch($type) {
+                case 'hasAuthor' :
+                    $autor .= $link . $value . $linka;
+                    break;
+                case 'hasTitleChapter' :
+                    $titulo .= $linkm . $value . $linka;
+                    break;
+            }
         }
+        if (strlen($titulo) == 0) {
+            $titulo = msg('without_title');
+        }
+        if (perfil("#ADM#CAT")) {
+            $link = '<a href="' . base_url(PATH . 'a/' . $key) . '">';            
+            $chapter_text .= $link.'[ed]</a> ';
+        }
+        $chapter_text .= $titulo;
+        $chapter_text .= '<br><i>' . $autor . '</i>';
+        $chapter_text .= '</br></br>';
     }
+    $chapter_text = '<div class="summary" style="margin-left: 100px;">'.$chapter_text.'</div>';
 }
 ?>
 <div class="row" style="margin-bottom: 20px;">
@@ -200,10 +226,10 @@ if (isset($chapter)) {
 /**************************/
 if (!isset($manifestation)) {
     echo '
-        <div class="alert alert-warning" role="alert">
-        ' . msg('manifestation_does_not_exist') . ' ' . $linked_m_new . '
-        </div>
-        ';
+<div class="alert alert-warning" role="alert">
+' . msg('manifestation_does_not_exist') . ' ' . $linked_m_new . '
+</div>
+';
 } else {
     /**************** serie **************/
     if (strlen($serie) > 0) { echo msg('serie') . ': ' . $serie . '<br>';
@@ -220,18 +246,40 @@ if (!isset($manifestation)) {
 
     /*************************************************************************** Chapters ***/
     echo '<br/>';
-    echo '<h4>' . msg('Summary') . '</h4>';
-    echo '<a href="' . base_url(PATH . 'v/' . $id . '?action=chapter&chk=' . checkpost_link($id)) . '&dd2='.$idm.'" class="btn btn-secondary">' . msg('chapter_new') . '</a>';
-    echo '<hr>';
+    echo '<h5>' . msg('Summary') . '</h5>';
+    echo $chapter_text;
+    if (perfil("#ADM#CAT")) {
+        echo '</br>';
+        echo '<span id="new_chapter" style="cursor: pointer;" >' . msg('inclue_chapter_new') . ' >>></span>';
+        echo '<script> $("#new_chapter").click(function() {
+                            $("#form_chapter").toggle();
+                            $("#new_chapter").toggle();                            
+                             
+                        });</script>';
+        
+        echo '<form method="post" action="' . base_url(PATH . 'v/' . $id) . '">'.cr();
+        echo '<div id="form_chapter" style="display: none;">'.cr();
+        echo '<h6>'.msg('title_chapter_inform').'</h6>';
+        echo '<textarea class="form-control" name="dd50"></textarea>'.cr();
+        echo '<input type="hidden" name="action" value="chapter">';
+        echo '<input type="hidden" name="dd1" value="' . count($chapter) . '">';
+        echo '<input type="hidden" name="dd2" value="' . $idm . '">';
+        echo '<input type="hidden" name="chk" value="' . checkpost_link($id) . '">';
+        echo '<input type="submit" name="acao" value="' . msg('chapter_new') . '" class="btn btn-secondary">';        
+        echo '</form>';
+        echo '<br>';
+        echo '</div>';
+        echo '<br>';        
+    }
 
     /************************************************************************** Itens *******/
     if (strlen($itens) > 0) {
         echo $itens;
     } else {
         echo '
-            <div class="alert alert-warning" role="alert">
-            ' . msg('itens_does_not_exist') . ' ' . $linked_i_new . '
-            </div>';
+<div class="alert alert-warning" role="alert">
+' . msg('itens_does_not_exist') . ' ' . $linked_i_new . '
+</div>';
     }
 }
 ?>

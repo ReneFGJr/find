@@ -1,7 +1,7 @@
 <?php
-define('LIBRARY','1002');
-define('PATH','index.php/biblio/');
-define('LOGO','img/logo-biblioteca-ci_mini.png');
+define('LIBRARY', '1002');
+define('PATH', 'index.php/biblio/');
+define('LOGO', 'img/logo-biblioteca-ci_mini.png');
 class Biblio extends CI_controller {
     var $lib = 10000000000;
 
@@ -47,11 +47,11 @@ class Biblio extends CI_controller {
     }
 
     private function foot() {
-        $dir = troca($_SERVER['SCRIPT_FILENAME'],'index.php','application/');
-        $footer_file = $dir.'views/header/footer_'.LIBRARY.'.php';
-        $footer = 'header/footer_'.LIBRARY.'.php';
+        $dir = troca($_SERVER['SCRIPT_FILENAME'], 'index.php', 'application/');
+        $footer_file = $dir . 'views/header/footer_' . LIBRARY . '.php';
+        $footer = 'header/footer_' . LIBRARY . '.php';
         if (file_exists($footer_file)) {
-            
+
             $this -> load -> view($footer);
         } else {
             $this -> load -> view('header/footer');
@@ -63,7 +63,7 @@ class Biblio extends CI_controller {
 
         $this -> cab();
         $data['logo'] = LOGO;
-        $this -> load -> view('welcome_brapci',$data);
+        $this -> load -> view('welcome_brapci', $data);
         $this -> load -> view('find/search/search_simple', $data);
 
         /*************************** find */
@@ -138,7 +138,7 @@ class Biblio extends CI_controller {
                     if ($ac == 'update') {
                         $tela .= $this -> frbr -> viaf_update();
                     } else {
-                        $tela .= '<br><a href="' . base_url(PATH.'config/authority/update') . '" class="btn btn-secondary">' . msg('authority_update') . '</a>';
+                        $tela .= '<br><a href="' . base_url(PATH . 'config/authority/update') . '" class="btn btn-secondary">' . msg('authority_update') . '</a>';
                     }
                     $tela .= '<br><br><h3>' . msg('Authority') . ' ' . msg('viaf') . '</h3>';
                     $tela .= $this -> frbr -> authority_class();
@@ -176,7 +176,7 @@ class Biblio extends CI_controller {
         $idp = $this -> frbr -> set_propriety($id, $ac, $idm, $lit = 0);
         /***************************************************/
 
-        redirect(base_url(PATH.'a/' . $id));
+        redirect(base_url(PATH . 'a/' . $id));
     }
 
     function a($id = '') {
@@ -187,9 +187,9 @@ class Biblio extends CI_controller {
 
         //$tela = $this -> frbr -> show($id);
         $tela = '';
-        $linkc = '<a href="' . base_url(PATH.'v/' . $id) . '" class="middle">';
+        $linkc = '<a href="' . base_url(PATH . 'v/' . $id) . '" class="middle">';
         $linkca = '</a>';
-        
+
         if (strlen($data['n_name']) > 0) {
             $tela .= '<h2>' . $linkc . $data['n_name'] . $linkca . '</h2>';
         }
@@ -206,10 +206,10 @@ class Biblio extends CI_controller {
                     </div>
                     <div class="col-md-4 text-right">';
         if ((perfil("#ADM") > 0)) {
-            $tela .= $linkd . msg('delete') . $linkda.' ';            
-        } 
+            $tela .= $linkd . msg('delete') . $linkda . ' ';
+        }
         $tela .= $linkc . msg('return') . $linkca;
-        
+
         $tela .= '</div></div>';
         $tela .= $this -> frbr -> form($id, $data);
 
@@ -353,7 +353,7 @@ class Biblio extends CI_controller {
                 $idp = $this -> frbr -> set_propriety($id, $class, $idm, 0);
 
                 echo "OK";
-                redirect(base_url(PATH.'a/' . $id));
+                redirect(base_url(PATH . 'a/' . $id));
             } else {
                 echo "Descrição não realizada";
             }
@@ -520,6 +520,20 @@ class Biblio extends CI_controller {
         return ("");
     }
 
+    public function ajax5($path = '', $id = '') {
+        $this -> load -> model('frbr');
+        $text = get("q");
+        if (strlen($text) > 0) {
+            $id_t = $this -> frbr -> frbr_name($text);
+            $this -> frbr -> set_propriety($id, $path, 0, $id_t);
+            echo '<meta http-equiv="refresh" content="0;">';
+        } else {
+            $tela = '<textarea class="form-control" style="height: 150px;" name="dd51" id="dd51"></textarea>';
+            echo $tela;
+        }
+        return ("");
+    }
+
     function vocabulary_ed($id = '') {
         $this -> cab();
         $cp = array();
@@ -534,7 +548,7 @@ class Biblio extends CI_controller {
         $form -> id = $id;
         $tela = $form -> editar($cp, 'rdf_class');
         if ($form -> saved > 0) {
-            redirect(base_url(PATH.'vocabulary'));
+            redirect(base_url(PATH . 'vocabulary'));
         }
 
         $data['content'] = '<h1>Classes e Propriedades</h1>' . $tela;
@@ -605,7 +619,7 @@ class Biblio extends CI_controller {
             $form = trim(get("dd3"));
             if ((strlen($title) > 0) and (strlen($form) > 0)) {
                 $idt = $this -> frbr -> work($title, $subtitle, $form);
-                redirect(base_url(PATH.'a/' . $idt));
+                redirect(base_url(PATH . 'a/' . $idt));
             }
         }
 
@@ -653,7 +667,7 @@ class Biblio extends CI_controller {
                 $prop = 'hasFormExpression';
                 $this -> frbr -> set_propriety($idc, $prop, $form, 0);
 
-                redirect(base_url(PATH.'v/' . $id));
+                redirect(base_url(PATH . 'v/' . $id));
             }
         }
 
@@ -691,7 +705,7 @@ class Biblio extends CI_controller {
                 /* associa expressao ao trabalho */
                 $this -> frbr -> set_propriety($expression, $prop, $idc, 0);
 
-                redirect(base_url(PATH.'v/' . $id));
+                redirect(base_url(PATH . 'v/' . $id));
             }
         }
 
@@ -724,13 +738,13 @@ class Biblio extends CI_controller {
             $aquisicao = trim(get("dd4"));
             if ((strlen($tombo) > 0) and (strlen($tombo) > 0) and (strlen($bookcase) > 0)) {
                 $idt = $this -> frbr -> item_add($idt, $tombo, $biblioteca, $bookcase, $aquisicao);
-                redirect(base_url(PATH.'v/' . $idw));
+                redirect(base_url(PATH . 'v/' . $idw));
             }
         }
         /* save file */
         if (strlen(get("acao")) > 0) {
             $idt = $this -> frbr -> item_add_file($idt);
-            redirect(base_url(PATH.'v/' . $idw));
+            redirect(base_url(PATH . 'v/' . $idw));
         }
 
         $tela = '';
@@ -747,7 +761,7 @@ class Biblio extends CI_controller {
         $this -> cab();
         $this -> load -> view('find/bibliographic');
         $this -> load -> view('find/search/search_bibliographic', null);
-        $tela = '<a href="' . base_url(PATH.'bibliographic_inport') . '" class="btn btn-secundary">';
+        $tela = '<a href="' . base_url(PATH . 'bibliographic_inport') . '" class="btn btn-secundary">';
         $tela .= 'Importar MARC21';
         $tela .= '</a>';
 
@@ -800,14 +814,14 @@ class Biblio extends CI_controller {
             $tela .= '<div class="row">' . cr();
             $tela .= '  <div class="col-md-2">';
             msg('find_viaf') . '</div>' . cr();
-            $tela .= '      <a href="' . base_url(PATH.'authority_inport') . '" class="btn btn-secondary">';
+            $tela .= '      <a href="' . base_url(PATH . 'authority_inport') . '" class="btn btn-secondary">';
             $tela .= '      Importar MARC21';
             $tela .= '      </a> ';
             $tela .= '  </div>' . cr();
             /***************/
             $tela .= '  <div class="col-md-2">';
             msg('find_viaf') . '</div>' . cr();
-            $tela .= '      <a href="' . base_url(PATH.'authority_create') . '" class="btn btn-secondary">' . cr();
+            $tela .= '      <a href="' . base_url(PATH . 'authority_create') . '" class="btn btn-secondary">' . cr();
             $tela .= '      Criar autoridade' . cr();
             $tela .= '      </a> ' . cr();
             $tela .= '  </div>' . cr();
@@ -821,7 +835,7 @@ class Biblio extends CI_controller {
             $tela .= '      </div>' . cr();
             $tela .= '      <div class="col-md-10">' . cr();
             $tela .= msg('find_viaf');
-            $tela .= '          <form method="post" action="' . base_url(PATH."authority/") . '">' . cr();
+            $tela .= '          <form method="post" action="' . base_url(PATH . "authority/") . '">' . cr();
             $tela .= '          ' . cr();
             $tela .= '          <div class="input-group">
                               <input type="text" name="ulr_viaf" value="" class="form-control">
@@ -849,7 +863,7 @@ class Biblio extends CI_controller {
 
             $tela .= '      <div class="col-md-10">' . cr();
             $tela .= msg('find_geonames');
-            $tela .= '          <form method="post" action="' . base_url(PATH."authority/") . '">' . cr();
+            $tela .= '          <form method="post" action="' . base_url(PATH . "authority/") . '">' . cr();
             $tela .= '          ' . cr();
             $tela .= '          <div class="input-group">
                               <input type="text" name="ulr_geonames" value="" class="form-control">
@@ -1173,7 +1187,6 @@ class Biblio extends CI_controller {
                 $obj_pdf -> Output();
                 exit ;
                 break;
-
         }
         $this -> cab();
         $data['title'] = 'Etiquetagem';
@@ -1255,7 +1268,7 @@ class Biblio extends CI_controller {
         /****************************************************************/
         $tela .= '<br><br>';
         $tela .= '<h4>Etiqueta de tombo</h4>';
-        $tela .= '<form method="get" action="' . base_url(PATH.'label_pdf/') . '">';
+        $tela .= '<form method="get" action="' . base_url(PATH . 'label_pdf/') . '">';
         $tela .= '<div class="row">';
         $tela .= '<div class="col-md-2"><span style="font-size: 75%"></span><br>';
         $tela .= '<b>Sem etiquetas</b>';
@@ -1315,7 +1328,7 @@ class Biblio extends CI_controller {
         $tela .= '</div>';
 
         $tela .= '<div class="col-md-2"><span style="font-size: 75%">total de páginas</span><br>';
-        $tela .= '  <a href="' . base_url(PATH.'label_bok') . '" class="btn btn-primary">Imprimir</a>';
+        $tela .= '  <a href="' . base_url(PATH . 'label_bok') . '" class="btn btn-primary">Imprimir</a>';
         $tela .= '</div>';
         $tela .= '</div>';
         $tela .= '</form> ';
@@ -1342,43 +1355,42 @@ class Biblio extends CI_controller {
 
         $tela = '';
 
-        $tela .= '<a href="' . base_url(PATH.'catalog_work') . '" class="btn btn-secondary">';
+        $tela .= '<a href="' . base_url(PATH . 'catalog_work') . '" class="btn btn-secondary">';
         $tela .= 'Incorporar novo trabalho';
         $tela .= '</a> ';
-        
-        $tela .= '<a href="' . base_url(PATH.'catalog_item') . '" class="btn btn-secondary">';
+
+        $tela .= '<a href="' . base_url(PATH . 'catalog_item') . '" class="btn btn-secondary">';
         $tela .= 'Incorporar novo item';
         $tela .= '</a> ';
-        
-        $tela .= '<a href="' . base_url(PATH.'inventario/3') . '" class="btn btn-secondary">';
-        $tela .= 'Remover um Item';
-        $tela .= '</a> ';       
-        
 
-        $tela .= '<a href="' . base_url(PATH.'label') . '" class="btn btn-secondary">';
+        $tela .= '<a href="' . base_url(PATH . 'inventario/3') . '" class="btn btn-secondary">';
+        $tela .= 'Remover um Item';
+        $tela .= '</a> ';
+
+        $tela .= '<a href="' . base_url(PATH . 'label') . '" class="btn btn-secondary">';
         $tela .= 'Gerar Etiquetas';
         $tela .= '</a> ';
 
-        $tela .= '<a href="' . base_url(PATH.'label_book') . '" class="btn btn-secondary">';
+        $tela .= '<a href="' . base_url(PATH . 'label_book') . '" class="btn btn-secondary">';
         $tela .= 'Gerar Etiquetas de Lombada';
         $tela .= '</a> ';
 
-        $tela .= '<a href="' . base_url(PATH.'inventario') . '" class="btn btn-secondary">';
+        $tela .= '<a href="' . base_url(PATH . 'inventario') . '" class="btn btn-secondary">';
         $tela .= 'Etiquetas Inventário';
         $tela .= '</a> ';
 
-        $tela .= '<a href="' . base_url(PATH.'inventario/1') . '" class="btn btn-secondary">';
+        $tela .= '<a href="' . base_url(PATH . 'inventario/1') . '" class="btn btn-secondary">';
         $tela .= 'Etiquetas Reimpressao';
         $tela .= '</a> ';
 
-        $tela .= '<a href="' . base_url(PATH.'inventario/2') . '" class="btn btn-secondary">';
+        $tela .= '<a href="' . base_url(PATH . 'inventario/2') . '" class="btn btn-secondary">';
         $tela .= 'Consultar Etiquetas';
         $tela .= '</a> ';
-        
-        $tela .= '<a href="' . base_url(PATH.'inventario/3') . '" class="btn btn-secondary">';
+
+        $tela .= '<a href="' . base_url(PATH . 'inventario/3') . '" class="btn btn-secondary">';
         $tela .= 'Remover Itens';
         $tela .= '</a> ';
-        
+
         $data['content'] = $tela;
         $this -> load -> view('content', $data);
     }
@@ -1404,7 +1416,7 @@ class Biblio extends CI_controller {
                 $id_t = $this -> frbr -> frbr_name($title);
                 $p_id = $this -> frbr -> rdf_concept($id_t, $form);
                 $this -> frbr -> set_propriety($p_id, 'prefLabel', 0, $id_t);
-                redirect(base_url(PATH.'a/' . $p_id));
+                redirect(base_url(PATH . 'a/' . $p_id));
             }
         }
 
@@ -1429,7 +1441,7 @@ class Biblio extends CI_controller {
             $url = $this -> frbr -> rdf_prefix($data['cc_origin']);
             $url .= $this -> frbr -> rdf_sufix($data['cc_origin']) . '/#';
             $tela = $this -> frbr -> viaf_inport($url);
-            $tela .= '<meta http-equiv="refresh" content="0;url=' . base_url(PATH.'v/' . $id) . '" />';
+            $tela .= '<meta http-equiv="refresh" content="0;url=' . base_url(PATH . 'v/' . $id) . '" />';
         }
 
         $data['content'] = $tela;
@@ -1525,7 +1537,7 @@ class Biblio extends CI_controller {
 
         $p_id = $this -> frbr -> rdf_concept($item_nome, 'Cutter');
         $this -> frbr -> set_propriety($id, 'hasCutter', $p_id, 0);
-        redirect(base_url(PATH.'v/' . $id));
+        redirect(base_url(PATH . 'v/' . $id));
     }
 
     function indice($type = '', $lt = '') {
@@ -1628,7 +1640,7 @@ class Biblio extends CI_controller {
                 $tombo = get("dd1");
                 $tela .= $this -> frbr -> etiqueta_consulta($tombo);
             }
-        } 
+        }
         /***************************************** REIMPRESSAO ***************/
         if ($tipo == '3') {
             array_push($cp, array('$H8', '', '', false, false));
@@ -1636,7 +1648,7 @@ class Biblio extends CI_controller {
             array_push($cp, array('$B8', '', 'Consultar >>', false, false));
 
             $form = new form;
-            $tela = '<h1>Remover um item</h1>'.cr();
+            $tela = '<h1>Remover um item</h1>' . cr();
             $tela .= $form -> editar($cp, '');
 
             if ($form -> saved > 0) {
@@ -1645,11 +1657,34 @@ class Biblio extends CI_controller {
                 $tela .= $this -> frbr -> etiqueta_consulta($tombo);
                 $tela .= $this -> frbr -> item_remove($tombo);
             }
-        }               
+        }
         $data['content'] = $tela;
         $data['title'] = 'Inventário';
         $this -> load -> view('content', $data);
     }
+
+    function d($id, $chk = '') {
+        $this -> cab();
+        if (perfil("#ADM#CAT")) {
+            $this -> load -> model("frbr");
+            $this -> frbr -> remove_concept($id);
+        }
+        redirect(PATH);
+    }
+
+    function labels($pg = '') {
+        $this -> load -> model('frbr');
+        $this -> cab();
+        $this -> frbr -> labels($pg);
+        $this -> foot();
+    }
+
+    function labels_ed($id = '', $chk = '', $close=0) {
+        $this -> load -> model('frbr');
+        $this -> cab();
+        $this -> frbr -> labels_ed($id, $chk, $close);
+        $this -> foot();
+    }   
 
 }
 ?>

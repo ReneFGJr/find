@@ -537,6 +537,21 @@ class Main extends CI_controller {
         return ("");
     }
 
+    public function ajax5($path = '', $id = '') {
+        $this -> load -> model('frbr');
+        $text = get("q");
+        if (strlen($text) > 0)
+            {
+                $id_t = $this -> frbr -> frbr_name($text);
+                $this -> frbr -> set_propriety($id, $path, 0, $id_t);
+                echo '<meta http-equiv="refresh" content="0;">';
+            } else {
+                $tela = '<textarea class="form-control" style="height: 150px;" name="dd51" id="dd51"></textarea>';
+                echo $tela;
+            }
+        return ("");
+    }
+    
     function vocabulary_ed($id = '') {
         $this -> cab();
         $cp = array();
