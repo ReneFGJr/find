@@ -23,6 +23,9 @@ if (!isset($logo))
 			<li class="nav-item active">
 				<a class="nav-link" href="<?php echo base_url($url); ?>">Catálogo <span class="sr-only">(current)</span></a>
 			</li>
+            <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url($url.'/bookshelf'); ?>"><?php echo msg("bookshelf");?></span></a>
+            </li>
 			<?php if (file_exists('application/models/Loans.php-2')) { ?>
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <?php echo msg('Loans');?> </a>
@@ -39,6 +42,7 @@ if (!isset($logo))
 				    <a class="dropdown-item" href="<?php echo base_url($url.'/indice/author'); ?>"><?php echo msg("index_authority");?></a>
 				    <a class="dropdown-item" href="<?php echo base_url($url.'/indice/editor'); ?>"><?php echo msg('index_editor');?></a>
 				    <a class="dropdown-item" href="<?php echo base_url($url.'/indice/serie'); ?>"><?php echo msg('index_serie');?></a>
+				    <a class="dropdown-item" href="<?php echo base_url(PATH.'indice/title'); ?>"><?php echo msg('index_title');?></a>
 				</div>
 			</li>
             <li class="nav-item">

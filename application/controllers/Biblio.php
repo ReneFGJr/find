@@ -3,7 +3,7 @@ define('LIBRARY', '1002');
 define('PATH', 'index.php/biblio/');
 define('LOGO', 'img/logo-biblioteca-ci_mini.png');
 class Biblio extends CI_controller {
-    var $lib = 10000000000;
+    var $lib = 10020000000;
 
     function __construct() {
         parent::__construct();
@@ -1097,9 +1097,17 @@ class Biblio extends CI_controller {
         }
 
         /*****/
-        $sql = "select * from itens where (i_status = 2 or i_status = 4)order by i_tombo";
+        $sql = "select * from itens 
+                    where (i_status = 2 or i_status = 4)
+                    and i_tombo like '".substr($this->lib,0,4)."%'  
+                    order by i_tombo";
         $rlt = $this -> db -> query($sql);
         $xrlt = $rlt -> result_array();
+        if (count($xrlt) == 0)
+            {
+                echo 'Nenhum registro encontrado';
+                exit;
+            }
 
         $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', true);
         $pdf -> SetCreator(PDF_CREATOR);
@@ -1159,7 +1167,7 @@ class Biblio extends CI_controller {
         $this -> load -> model('barcodes');
         $acao = get("dd0");
         switch($acao) {
-            default :
+            case 'pr' :
                 $data['nrtombo'] = round(get("dd1")) + $lib;
                 $data['pages'] = get("dd2");
                 $data['repetir'] = get("dd3");
@@ -1297,7 +1305,7 @@ class Biblio extends CI_controller {
         $tela .= '</form> ';
 
         /****************************************************************/
-        $sql = "select count(*) as total from itens where i_status = 2";
+        $sql = "select count(*) as total from itens where i_status = 2 and i_tombo like '".substr($this->lib,0,4)."%'";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
         $line = $rlt[0];
@@ -1345,6 +1353,8 @@ class Biblio extends CI_controller {
 
         $data['content'] = $this -> frbr -> label_book($lt, 'hasRegisterId');
         $this -> load -> view('content', $data);
+        
+        $this->foot();
 
     }
 
@@ -1352,6 +1362,7 @@ class Biblio extends CI_controller {
         $this -> cab();
         $data['title'] = 'Preparo técnico';
         $this -> load -> view('find/title', $data);
+        $this -> load -> view('find/labels', $data);
 
         $tela = '';
 
@@ -1559,6 +1570,11 @@ class Biblio extends CI_controller {
                 $sx = $this -> frbr -> index_other($lt, 'isPublisher');
 
                 break;
+            case 'title' :
+                $title = msg('index') . ': ' . msg('index_title');
+                $sx = $this -> frbr -> index_work($lt, 'hasTitle');
+
+                break;                
         }
         $data['content'] = '<h1>' . $title . '</h1>' . $sx;
         $this -> load -> view('content', $data);
@@ -1685,6 +1701,18 @@ class Biblio extends CI_controller {
         $this -> frbr -> labels_ed($id, $chk, $close);
         $this -> foot();
     }   
-
+    function bookshelf($id='')
+        {
+            $this -> load -> model('frbr');
+            $tela = '';
+            $this->cab();
+            $data['content'] = $this -> frbr -> show_bookshelf();        
+            $data['title'] = msg('Bookshelf');
+            $this -> load -> view('content', $data);
+                    
+            $this->foot();
+        }
+        
+        
 }
 ?>

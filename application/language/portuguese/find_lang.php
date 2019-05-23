@@ -190,14 +190,18 @@ $lang['cutter'] = 'Classificação Cutter';
 $lang['cutter_search'] = 'Busca Cutter'; 
 $lang['hasCutter'] = 'hasCutter'; 
 $lang['index'] = 'Índices'; 
-$lang['index_authority'] = 'Autores'; 
-$lang['index_editor'] = 'Editoras'; 
-$lang['index_autor'] = 'index_autor'; 
-$lang['index_author'] = 'index_author'; 
-$lang['Corporate Body'] = 'Corporate Body'; 
+$lang['index_authority'] = 'Autores';
+ 
+$lang['index_editor'] = 'Editoras';
+$lang['index_title'] = 'Títulos'; 
+$lang['index_autor'] = 'Índice de autores'; 
+$lang['index_author'] = 'Índice de autores'; 
+$lang['Corporate Body'] = 'Empresa/Organização/Instituição'; 
 $lang['Checksum'] = 'Checksum'; 
 $lang['DateTime'] = 'DateTime'; 
-$lang['Family'] = 'Family'; 
+$lang['Family'] = 'Family';
+$lang['menuLabels'] = 'Termos / Nomes';
+$lang['bookshelf'] = 'EstanteVirtual';
 $lang['FileStorage'] = 'FileStorage'; 
 $lang['toStart'] = 'Início'; 
 $lang['page'] = 'Página'; 
@@ -254,4 +258,7 @@ $lang['action'] = 'ação';
 
 $lang['edit_expression'] = "Editar Expressão";
 $lang['edit_manifestation'] = "Editar Manifestação";
+
+$lang['label_create'] = 'Imprimir etiquetas';
+$lang['label_book_create'] = 'Atualizar etiquetas de lombada';
 ?>

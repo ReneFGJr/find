@@ -34,6 +34,7 @@ $ac[$pag] = 'active';
 				    <a class="dropdown-item" href="<?php echo base_url(PATH.'indice/author'); ?>"><?php echo msg("index_authority");?></a>
 				    <a class="dropdown-item" href="<?php echo base_url(PATH.'indice/editor'); ?>"><?php echo msg('index_editor');?></a>
 				    <a class="dropdown-item" href="<?php echo base_url(PATH.'indice/serie'); ?>"><?php echo msg('index_serie');?></a>
+				    <a class="dropdown-item" href="<?php echo base_url(PATH.'indice/title'); ?>"><?php echo msg('index_title');?></a>
 				</div>
 			</li>			
 			<li class="nav-item">
