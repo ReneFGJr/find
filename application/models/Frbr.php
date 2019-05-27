@@ -1487,12 +1487,18 @@ class frbr extends CI_model {
         $dd3 = get("dd3");
         $dd4 = get("dd4");
         $dd10 = get("dd10");
+        $erro = '';
         /****************************************************************************/
         if (strlen($dd10) > 0) {
             $dd1 = '';
             $dd2 = '';
             $data = $this -> api_google_book($dd10);
-            $this -> register_work($data);
+            if ($data['error'] == 0)
+                {
+                    $this -> register_work($data);
+                } else {
+                    $erro = $data['error_msg'];
+                }
         }
         /****************************************************************************/
         if ((strlen($dd1) > 0) and (strlen($dd2) >= 0)) {
@@ -1520,6 +1526,7 @@ class frbr extends CI_model {
         //$data['form'] = $this -> vocabularies -> list_vc_attr($cla2);
         //$data['acqu'] = $this -> vocabularies -> list_vc_type('TypeOfAcquisition');
         $tela = $this -> load -> view('find/form/cat_work', $data, true);
+        $tela .= $erro;
         return ($tela);
     }
 
@@ -1677,7 +1684,7 @@ class frbr extends CI_model {
                     //$link = '<a href="' . base_url(PATH . 'v/' . $line['id_c']) . '" target="_new">';
                     $link = '<a href="' . base_url(PATH . 'v/' . $idw) . '" target="_new">';
                     $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
-                    echo '[' . $class . ']';
+                    $sx .= '<h1>[' . $class . ']</h1>';
                     $sx .= $link;
                     $sx .= $line['n_name'];
                     $sx .= '</a>';
@@ -3614,15 +3621,14 @@ class frbr extends CI_model {
         if (substr($isbn, strlen($isbn), 1) == 'X') {
             $isbn .= 'X';
         }
-        echo '<h1>' . $isbn . '</h1>';
-        
+       
         if (strlen($isbn) == 13) 
             {
-                $rsp['isbn13'] = $isnb;
-                $rsp['isbn10'] = isbn13to10($isnb);                
+                $rsp['isbn13'] = $isbn;
+                $rsp['isbn10'] = isbn13to10($isbn);                
             } else {
-                $rsp['isbn10'] = $isnb;
-                $rsp['isbn13'] = isbn10to13($isnb);                
+                $rsp['isbn10'] = $isbn;
+                $rsp['isbn13'] = isbn10to13($isbn);                
             }
         
         
@@ -3675,9 +3681,10 @@ class frbr extends CI_model {
             $rsp['error'] = 1;
             $rsp['error_msg'] = msg('ISBN_not_found');
         }
-        echo '<pre><span style="color: blue">';
-        print_r($rsp);
-        echo '</span></pre>';
+        
+        //echo '<pre><span style="color: blue">';
+        //print_r($rsp);
+        //echo '</span></pre>';
         return ($rsp);
     }
 
@@ -3688,7 +3695,6 @@ class frbr extends CI_model {
         $class = 'Work';
         $p_id = $this -> rdf_concept($id_t, $class);
         $this -> set_propriety($p_id, 'hasTitle', 0, $id_t);
-        echo '<h1>' . $p_id . '</h1>';
 
         /* AUTORES */
         for ($r = 0; $r < count($w['authors']); $r++) {
@@ -3773,6 +3779,23 @@ class frbr extends CI_model {
                 $prop = 'hasPage';
                 $this -> set_propriety($id_m, $prop, $id_p, 0);                
             }
+        if (isset($w['isbn10']))
+            {
+                /****** pages */
+                $id_isbn = $this -> frbr_name($w['isbn10']);
+                $id_isbn = $this -> rdf_concept($id_isbn, 'Isbn');                                
+                $prop = 'hasIsbn';
+                $this -> set_propriety($id_m, $prop, $id_isbn, 0);                
+            }            
+        if (isset($w['isbn13']))
+            {
+                /****** pages */
+                $id_isbn = $this -> frbr_name($w['isbn13']);
+                $id_isbn = $this -> rdf_concept($id_isbn, 'Isbn');                                
+                $prop = 'hasIsbn';
+                $this -> set_propriety($id_m, $prop, $id_isbn, 0);                
+            }  
+        redirect(base_url(PATH.'a/'.$id_m));          
 
     }
 

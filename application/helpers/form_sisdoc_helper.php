@@ -3057,6 +3057,27 @@ function isbn10to13($isbn)
    return ($isbn13);
 }
 
+function isbn13to10($isbn) {
+    if (preg_match('/^\d{3}(\d{9})\d$/', $isbn, $m)) {
+        $sequence = $m[1];
+        $sum = 0;
+        $mul = 10;
+        for ($i = 0; $i < 9; $i++) {
+            $sum = $sum + ($mul * (int) $sequence{$i});
+            $mul--;
+        }
+        $mod = 11 - ($sum%11);
+        if ($mod == 10) {
+            $mod = "X";
+        }
+        else if ($mod == 11) {
+            $mod = 0;
+        }
+        $isbn = $sequence.$mod;
+    }
+    return $isbn;
+}
+
 function genchksum13($isbn)
 {
    $isbn = trim($isbn);
