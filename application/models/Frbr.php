@@ -1486,6 +1486,14 @@ class frbr extends CI_model {
         $dd2 = get("dd2");
         $dd3 = get("dd3");
         $dd4 = get("dd4");
+        $dd10 = get("dd10");
+        /****************************************************************************/
+        if (strlen($dd10) > 0) {
+            $dd1 = '';
+            $dd2 = '';
+            $data = $this -> api_google_book($dd10);
+            $this -> register_work($data);
+        }
         /****************************************************************************/
         if ((strlen($dd1) > 0) and (strlen($dd2) >= 0)) {
 
@@ -2170,6 +2178,40 @@ class frbr extends CI_model {
         return ("");
     }
 
+    function find($n, $prop = '', $equal = 1) {
+        /* EQUAL */
+        $wh = "(n_name like '%" . $n . "%')";
+        if ($equal == 1) {
+            $wh = "(n_name = '" . $n . "')";
+        } else {
+            if (perfil("#ADM")) {
+                echo "** ALERT - use like in " . $n . ' ********<br>';
+            }
+        }
+
+        /* PROPRIETY */
+        if (strlen($prop) > 0) {
+            $class = $this -> find_class($prop);
+            $wh .= "and ((d_p = $class) or (cc_class = $class))";
+        } else {
+            $wh .= '';
+        }
+
+        $sql = "select d_r1, c_class, d_r2, n_name from rdf_name
+                        INNER JOIN rdf_data on d_literal = id_n 
+                        INNER JOIN rdf_class ON d_p = id_c
+                        INNER JOIN rdf_concept ON id_cc = d_r1
+                        where $wh";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+
+        if (count($rlt) > 0) {
+            $line = $rlt[0];
+            return ($line['d_r1']);
+        }
+        return (0);
+    }
+
     function find_conecpt($term) {
         $rs = 0;
         $sql = "select * from rdf_data
@@ -2387,7 +2429,7 @@ class frbr extends CI_model {
     function show_bookshelf($id = '') {
         $class = $this -> find_class('CDU');
         $class_work = $this -> find_class('work');
-        
+
         $sql = "select id_cc as c, n_name 
                             from rdf_concept
                             inner join rdf_name ON id_n = cc_pref_term 
@@ -2398,39 +2440,35 @@ class frbr extends CI_model {
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
         $sx = '';
-        for ($r=0;$r < count($rlt);$r++)
-            {
-                $line = $rlt[$r];
-                
-                
-                $sql = "select n_name, id_cc as w from rdf_data as data1 
+        for ($r = 0; $r < count($rlt); $r++) {
+            $line = $rlt[$r];
+
+            $sql = "select n_name, id_cc as w from rdf_data as data1 
                             inner join rdf_data as data2 ON data1.d_r1 = data2.d_r2 
                             inner join rdf_data as data3 ON data2.d_r1 = data3.d_r2
                             inner join rdf_concept ON data3.d_r1 = id_cc and cc_class= $class_work
                             inner join rdf_name ON id_n = cc_pref_term
-                            where data1.d_r2 = ".$line['c']." AND cc_library = " . LIBRARY . "
+                            where data1.d_r2 = " . $line['c'] . " AND cc_library = " . LIBRARY . "
                             order by n_name
                             ";
-                $rlt2 = $this -> db -> query($sql);
-                $rlt2 = $rlt2 -> result_array();
-                
-                if (count($rlt2) > 0)
-                    {
-                        $sx .= '<div class="col-md-12"><h3>'.$line['n_name'].'</h3></div>';
-                    }
-                for ($y=0;$y < count($rlt2);$y++)
-                    {
-                        $ln = $rlt2[$y];
-                        $sx .= '<div class="col-md-2" style="height: 190px; padding: 2px 2px 2px 2px; margin-right: 15px; margin-bottom: 15px;">'.cr();
-                        $sx .= $this -> show_manifestation_by_works($ln['w'], 180, 1).cr();
-                        $sx .= '</div>'.cr();        
-                    }                                                
+            $rlt2 = $this -> db -> query($sql);
+            $rlt2 = $rlt2 -> result_array();
+
+            if (count($rlt2) > 0) {
+                $sx .= '<div class="col-md-12"><h3>' . $line['n_name'] . '</h3></div>';
             }
-        $sx = '<div class="row">'.$sx.'</div>';
+            for ($y = 0; $y < count($rlt2); $y++) {
+                $ln = $rlt2[$y];
+                $sx .= '<div class="col-md-2" style="height: 190px; padding: 2px 2px 2px 2px; margin-right: 15px; margin-bottom: 15px;">' . cr();
+                $sx .= $this -> show_manifestation_by_works($ln['w'], 180, 1) . cr();
+                $sx .= '</div>' . cr();
+            }
+        }
+        $sx = '<div class="row">' . $sx . '</div>';
         return ($sx);
     }
 
-    function show_manifestation_by_works($id = '',$img_size=200, $mini = 0) {
+    function show_manifestation_by_works($id = '', $img_size = 200, $mini = 0) {
         $img = base_url('img/no_cover.png');
         $data = $this -> le_data($id);
         $year = '';
@@ -2518,19 +2556,18 @@ class frbr extends CI_model {
             }
             $title_nr = trim($title_nr) . '...';
         }
-        
-        if ($mini == 1)
-            {
-                $sx .= '<img src="' . $img . '" height="'.$img_size.'" style="box-shadow: 5px 5px 8px #888888; margin-bottom: 10px;" title="'.$title_nr.cr().$nautor.cr().troca($year,'<br>','').'">' . cr();
-                $sx .= '</a>';        
-            } else {
-                $sx .= '<img src="' . $img . '" height="200" style="box-shadow: 5px 5px 8px #888888; margin-bottom: 10px;"><br>' . cr();
-                $sx .= '<span>' . $title_nr . '</span>';
-                $sx .= '</a>';
-                $sx .= '<br>';
-                $sx .= '<i>' . $autor . '</i>';
-                $sx .= $year;                
-            }
+
+        if ($mini == 1) {
+            $sx .= '<img src="' . $img . '" height="' . $img_size . '" style="box-shadow: 5px 5px 8px #888888; margin-bottom: 10px;" title="' . $title_nr . cr() . $nautor . cr() . troca($year, '<br>', '') . '">' . cr();
+            $sx .= '</a>';
+        } else {
+            $sx .= '<img src="' . $img . '" height="200" style="box-shadow: 5px 5px 8px #888888; margin-bottom: 10px;"><br>' . cr();
+            $sx .= '<span>' . $title_nr . '</span>';
+            $sx .= '</a>';
+            $sx .= '<br>';
+            $sx .= '<i>' . $autor . '</i>';
+            $sx .= $year;
+        }
         //echo $line['c_class'].'<br>';
         return ($sx);
     }
@@ -3020,7 +3057,7 @@ class frbr extends CI_model {
             $name = $link . $line['n_name'] . '</a>';
             $sx .= '<li>' . $name . '</li>' . cr();
         }
-        return($sx);
+        return ($sx);
     }
 
     function index_author($lt = '') {
@@ -3570,5 +3607,176 @@ class frbr extends CI_model {
         $this -> db -> query($sql);
     }
 
+    function api_google_book($isbn) {
+        $rsp = array('count' => 0);
+        
+        $isbn = sonumero($isbn);
+        if (substr($isbn, strlen($isbn), 1) == 'X') {
+            $isbn .= 'X';
+        }
+        echo '<h1>' . $isbn . '</h1>';
+        
+        if (strlen($isbn) == 13) 
+            {
+                $rsp['isbn13'] = $isnb;
+                $rsp['isbn10'] = isbn13to10($isnb);                
+            } else {
+                $rsp['isbn10'] = $isnb;
+                $rsp['isbn13'] = isbn10to13($isnb);                
+            }
+        
+        
+        $url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:9788585637231';
+        $url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' . $isbn;
+        $t = read_link($url);
+        $w = (array)json_decode($t);
+
+        /*******************************************************************************/
+        
+
+        if ($w['totalItems'] > 0) {
+            $rsp['expressao']['genere'] = $w['kind'];
+            $w = (array)$w['items'][0];
+            $w = (array)$w['volumeInfo'];
+            $rsp['titulo'] = trim((string)$w['title']);
+            if (isset($w['subtitle'])) {
+                $rsp['titulo'] .= ': ' . trim($w['subtitle']);
+            }
+            /********** Autores ****************************/
+            $rsp['authors'] = $w['authors'];
+            if (isset($w['publishedDate'])) {
+                $rsp['data'] = $w['publishedDate'];
+            } else {
+                $rsp['data'] = '';
+            }
+
+            /********** Descricao ****************************/
+            if (isset($w['description'])) {
+                $rsp['descricao'] = $w['description'];
+            } else {
+                $rsp['descricao'] = '';
+            }
+
+            /********** Páginas ****************************/
+            if (isset($w['pageCount'])) {
+                $rsp['pages'] = $w['pageCount'];
+            } else {
+                $rsp['pages'] = '';
+            }
+            /********** Idioma ****************************/
+            if (isset($w['language'])) {
+                $rsp['expressao']['idioma'] = $w['language'];
+            } else {
+                $rsp['expressao']['idioma'] = '';
+            }
+            $rsp['error'] = 0;
+            $rsp['error_msg'] = msg('ISBN_inported');
+        } else {
+            $rsp['error'] = 1;
+            $rsp['error_msg'] = msg('ISBN_not_found');
+        }
+        echo '<pre><span style="color: blue">';
+        print_r($rsp);
+        echo '</span></pre>';
+        return ($rsp);
+    }
+
+    function register_work($w) {
+        /* REGISTRA WORK */
+        /* concept */
+        $id_t = $this -> frbr_name($w['titulo']);
+        $class = 'Work';
+        $p_id = $this -> rdf_concept($id_t, $class);
+        $this -> set_propriety($p_id, 'hasTitle', 0, $id_t);
+        echo '<h1>' . $p_id . '</h1>';
+
+        /* AUTORES */
+        for ($r = 0; $r < count($w['authors']); $r++) {
+            /* Entrada preferencial */
+            $autor = nbr_autor($w['authors'][$r], 11);
+            $class = 'Person';
+            $id_p = $this -> frbr_name($autor);
+            $p_a = $this -> rdf_concept($id_p, $class);
+            $this -> set_propriety($p_id, 'hasAuthor', $p_a, 0);
+
+            $autor = nbr_autor($w['authors'][$r], 3);
+            $id_a = $this -> frbr_name($autor);
+            $this -> set_propriety($p_a, 'altLabel', 0, $id_a);
+
+            $autor = nbr_autor($w['authors'][$r], 5);
+            $id_a = $this -> frbr_name($autor);
+            $this -> set_propriety($p_a, 'altLabel', 0, $id_a);
+
+            //https://viaf.org/viaf/AutoSuggest?query=Marina%20de%20Andrade%20Marconi
+            echo $autor . '<br>';
+        }
+        /* Expressão */
+
+        
+        $expression = md5($w['titulo'] . $p_id);
+        $class = 'Expression';
+        $id_ex = $this -> frbr_name($expression);
+        $id_e = $this -> rdf_concept($id_ex, $class);
+
+        /* nome da expressão */
+        $linguage = $this -> find($w['expressao']['idioma'], 'Linguage');
+        if ($linguage == 0) {
+            echo "OPS " . $w['expressao']['idioma'] . ' not found';
+            exit ;
+        }
+        
+        /* genero */
+        $form = $this -> find($w['expressao']['genere'], 'FormWork');
+        if ($form == 0) {
+            echo "OPS " . $w['expressao']['genere'] . ' not found';
+            exit ;
+        }
+        
+        $prop = 'hasLanguageExpression';
+        $this -> frbr -> set_propriety($id_e, $prop, $linguage, 0);
+
+        /* nome da expressão */
+        $prop = 'hasFormExpression';
+        $this -> frbr -> set_propriety($id_e, $prop, $form, 0);
+
+        echo '<br>==>' . $id_e;
+        $class = "isRealizedThrough";
+        $this -> set_propriety($p_id, $class, $id_e, 0);
+       
+        /* manifestation ***********************************************/
+        $Manifestation = md5($w['titulo'] . $p_id).'-M';
+        $class = 'Manifestation';
+        $id_ma = $this -> frbr_name($Manifestation);
+        $id_m = $this -> rdf_concept($id_ma, $class);
+        
+        $class = 'isEmbodiedIn';
+        $this -> set_propriety($id_e, $class, $id_m, 0);
+        
+        if (isset($w['data']))
+            {
+                echo "Data";
+                $id_dt = $this->find($w['data'], 'Date', 1);
+                if ($id_dt > 0)
+                    {
+                        $prop = 'dateOfPublication';
+                        $this -> set_propriety($id_m, $prop, $id_dt, 0);        
+                    } else {
+                        
+                    }
+            }
+        if (isset($w['pages']))
+            {
+                /****** pages */
+                $id_pg = $this -> frbr_name($w['pages'].' p.');
+                $id_p = $this -> rdf_concept($id_pg, 'Pages');
+                                
+                $prop = 'hasPage';
+                $this -> set_propriety($id_m, $prop, $id_p, 0);                
+            }
+
+    }
+
 }
+
+
 ?>

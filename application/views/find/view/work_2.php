@@ -6,7 +6,7 @@ $author = '';
 $linkw = '<a href="#">';
 $linked_i_new = '';
 
-if (perfil("#ADM")) {
+if ((perfil("#ADM") == 1) and (isset($expression[0]['d_r1'])) ) {
     $linked_e = '<a href="' . base_url(PATH . 'a/' . $expression[0]['d_r1']) . '" class="btn btn-secondary">';
     if (isset($manifestation)) {
         $linked_m = '<a href="' . base_url(PATH . 'a/' . $idm) . '" class="btn btn-secondary">';
@@ -224,7 +224,7 @@ if (isset($chapter)) {
 <br>
 <?php
 /**************************/
-if (!isset($manifestation)) {
+if (!isset($manifestation) and isset($linked_m_new)) {
     echo '
 <div class="alert alert-warning" role="alert">
 ' . msg('manifestation_does_not_exist') . ' ' . $linked_m_new . '
@@ -273,7 +273,7 @@ if (!isset($manifestation)) {
     }
 
     /************************************************************************** Itens *******/
-    if (strlen($itens) > 0) {
+    if (isset($itens) and (strlen($itens) > 0)) {
         echo $itens;
     } else {
         echo '

@@ -2,6 +2,11 @@
 $dd1 = get("dd1");
 $dd2 = get("dd2");
 $dd3 = get("dd3");
+$dd10 = get("dd10");
+if (!isset($error))
+    {
+        $error = '';
+    }
 ?>
 <form method="post">
 <div class="container">
@@ -41,6 +46,24 @@ $dd3 = get("dd3");
             </div>
         </div>
     </div>
+    
+    <div class="row">
+        <div class="col-md-1 text-right" style="border-right: 4px solid #a050a0; font-size: 150%;">
+            <tt>&nbsp;</tt>                
+        </div>
+        <div class="col-md-11">
+            <h2>Importar ISBN do Google Books</h2>
+            <span>ISBN</span><br>
+            <Input type="text" class="form-control" name="dd10" value="<?php echo $dd10;?>">
+            <br>
+            <div class="text-right">
+                <input type="submit" name="action" value="importar >>>>" class="btn btn-primary">
+            </div>
+            </br></br>
+            <?php echo $error;?>
+        </div>
+    </div>
+    
 </div>
 </form>
 <style>
