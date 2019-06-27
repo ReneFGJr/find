@@ -446,6 +446,9 @@ class frbr extends CI_model {
 
     function le_data($id) {
         $cp = '*';
+        if (strlen(trim($id) == 0)) {
+            return ( array());
+        }
         $sql = "select $cp from rdf_data as rdata
                         INNER JOIN rdf_class as prop ON d_p = prop.id_c 
                         INNER JOIN rdf_concept ON d_r2 = id_cc 
@@ -1043,8 +1046,8 @@ class frbr extends CI_model {
                 $sql = "select * from rdf_form_class
                             INNER JOIN rdf_class ON id_c = sc_propriety
                             LEFT JOIN (" . $sqla . ") as table1 ON id_c = prop 
-                        where sc_class = $class 
-                        order by sc_ord, id_sc, c_order, id_n";
+                        where sc_class = $class  
+                        order by sc_ord, id_sc, c_order, id_d";
                 $rlt = $this -> db -> query($sql);
                 $rlt = $rlt -> result_array();
                 $sx .= '<table width="100%" cellpadding=5>';
@@ -1493,12 +1496,11 @@ class frbr extends CI_model {
             $dd1 = '';
             $dd2 = '';
             $data = $this -> api_google_book($dd10);
-            if ($data['error'] == 0)
-                {
-                    $this -> register_work($data);
-                } else {
-                    $erro = $data['error_msg'];
-                }
+            if ($data['error'] == 0) {
+                $this -> register_work($data);
+            } else {
+                $erro = $data['error_msg'];
+            }
         }
         /****************************************************************************/
         if ((strlen($dd1) > 0) and (strlen($dd2) >= 0)) {
@@ -1631,7 +1633,12 @@ class frbr extends CI_model {
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
             $class = $line['c_class'];
-            switch ($class) {
+            $classC = $line['c_class'];
+            if (substr($class,0,strlen('Tesauro')) == 'Tesauro')
+                {
+                    $classC = 'Tesauro';
+                }
+            switch ($classC) {
                 case 'CDU' :
                     $idw = $line['id_cc'];
                     $img = $this -> recupera_imagem($idw, 'img/icon/icone_cdu.jpg');
@@ -1651,6 +1658,20 @@ class frbr extends CI_model {
                     $img = $this -> recupera_imagem($idw);
                     $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
                     $sx .= $this -> show_seriename($line) . cr();
+                    $sx .= '</div>' . cr();
+                    break;
+                case 'Tesauro' :
+                    $idw = $line['id_cc'];
+                    //$link = '<a href="' . base_url(PATH . 'v/' . $line['id_c']) . '" target="_new">';
+                    $link = '<a href="' . base_url(PATH . 'v/' . $idw) . '" target="_new">';
+                    $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
+                    $img = $this -> recupera_imagem($idw);                    
+                    $sx .= $link;
+                    $sx .= $img;
+                    $sx .= $line['n_name'];
+                    $sx .= '</a><br><sup>';
+                    $sx .= msg($line['c_class']);
+                    $sx .= '</sup>';
                     $sx .= '</div>' . cr();
                     break;
                 case 'Work' :
@@ -1684,7 +1705,7 @@ class frbr extends CI_model {
                     //$link = '<a href="' . base_url(PATH . 'v/' . $line['id_c']) . '" target="_new">';
                     $link = '<a href="' . base_url(PATH . 'v/' . $idw) . '" target="_new">';
                     $sx .= '<div class="col-lg-2 col-md-4 col-xs-3 col-sm-6 text-center" style="line-height: 80%; margin-top: 40px;">' . cr();
-                    $sx .= '<h1>[' . $class . ']</h1>';
+                    //$sx .= '<h1>[' . $class . ']</h1>';
                     $sx .= $link;
                     $sx .= $line['n_name'];
                     $sx .= '</a>';
@@ -2434,13 +2455,15 @@ class frbr extends CI_model {
     }
 
     function show_bookshelf($id = '') {
-        $class = $this -> find_class('CDU');
+        $class_1 = $this -> find_class('CDU');
+        $class_2 = $this -> find_class('CDD');
+        $class_3 = $this -> find_class('ClassificacaoCromatica');
         $class_work = $this -> find_class('work');
 
         $sql = "select id_cc as c, n_name 
                             from rdf_concept
                             inner join rdf_name ON id_n = cc_pref_term 
-                            where cc_class = " . $class . "
+                            where (cc_class = " . $class_1 . " or cc_class = " . $class_2 . " or cc_class = " . $class_3 . ")
                             /* AND cc_library = " . LIBRARY . " */
                             ORDER BY n_name
                             ";
@@ -3455,15 +3478,16 @@ class frbr extends CI_model {
         if (strlen($tombo) < 8) {
             $tombo = substr($this -> lib, 0, 4) . strzero($tombo, 7);
             $tombo = $tombo;
-            $tombo = $tombo . $this -> barcodes -> ean13($tombo);
+            //$tombo = $tombo . $this -> barcodes -> ean13($tombo);
         }
-        $sql = "select * from itens where i_tombo = '$tombo' ";
+        $sql = "select * from itens where i_tombo like '$tombo%' ";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
         if (count($rlt) == 0) {
             $sx = 'Exemplar não localizado';
         } else {
             $line = $rlt[0];
+            $tombo = $line['i_tombo'];
             $it = $this -> recupera_item_pelo_tombo($tombo);
             $sx = '';
             $sx .= $this -> show_manifestation_by_item($it);
@@ -3616,29 +3640,26 @@ class frbr extends CI_model {
 
     function api_google_book($isbn) {
         $rsp = array('count' => 0);
-        
+
         $isbn = sonumero($isbn);
         if (substr($isbn, strlen($isbn), 1) == 'X') {
             $isbn .= 'X';
         }
-       
-        if (strlen($isbn) == 13) 
-            {
-                $rsp['isbn13'] = $isbn;
-                $rsp['isbn10'] = isbn13to10($isbn);                
-            } else {
-                $rsp['isbn10'] = $isbn;
-                $rsp['isbn13'] = isbn10to13($isbn);                
-            }
-        
-        
+
+        if (strlen($isbn) == 13) {
+            $rsp['isbn13'] = $isbn;
+            $rsp['isbn10'] = isbn13to10($isbn);
+        } else {
+            $rsp['isbn10'] = $isbn;
+            $rsp['isbn13'] = isbn10to13($isbn);
+        }
+
         $url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:9788585637231';
         $url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' . $isbn;
         $t = read_link($url);
         $w = (array)json_decode($t);
 
         /*******************************************************************************/
-        
 
         if ($w['totalItems'] > 0) {
             $rsp['expressao']['genere'] = $w['kind'];
@@ -3681,7 +3702,7 @@ class frbr extends CI_model {
             $rsp['error'] = 1;
             $rsp['error_msg'] = msg('ISBN_not_found');
         }
-        
+
         //echo '<pre><span style="color: blue">';
         //print_r($rsp);
         //echo '</span></pre>';
@@ -3718,7 +3739,6 @@ class frbr extends CI_model {
         }
         /* Expressão */
 
-        
         $expression = md5($w['titulo'] . $p_id);
         $class = 'Expression';
         $id_ex = $this -> frbr_name($expression);
@@ -3730,14 +3750,14 @@ class frbr extends CI_model {
             echo "OPS " . $w['expressao']['idioma'] . ' not found';
             exit ;
         }
-        
+
         /* genero */
         $form = $this -> find($w['expressao']['genere'], 'FormWork');
         if ($form == 0) {
             echo "OPS " . $w['expressao']['genere'] . ' not found';
             exit ;
         }
-        
+
         $prop = 'hasLanguageExpression';
         $this -> frbr -> set_propriety($id_e, $prop, $linguage, 0);
 
@@ -3748,58 +3768,51 @@ class frbr extends CI_model {
         echo '<br>==>' . $id_e;
         $class = "isRealizedThrough";
         $this -> set_propriety($p_id, $class, $id_e, 0);
-       
+
         /* manifestation ***********************************************/
-        $Manifestation = md5($w['titulo'] . $p_id).'-M';
+        $Manifestation = md5($w['titulo'] . $p_id) . '-M';
         $class = 'Manifestation';
         $id_ma = $this -> frbr_name($Manifestation);
         $id_m = $this -> rdf_concept($id_ma, $class);
-        
+
         $class = 'isEmbodiedIn';
         $this -> set_propriety($id_e, $class, $id_m, 0);
-        
-        if (isset($w['data']))
-            {
-                echo "Data";
-                $id_dt = $this->find($w['data'], 'Date', 1);
-                if ($id_dt > 0)
-                    {
-                        $prop = 'dateOfPublication';
-                        $this -> set_propriety($id_m, $prop, $id_dt, 0);        
-                    } else {
-                        
-                    }
+
+        if (isset($w['data'])) {
+            echo "Data";
+            $id_dt = $this -> find($w['data'], 'Date', 1);
+            if ($id_dt > 0) {
+                $prop = 'dateOfPublication';
+                $this -> set_propriety($id_m, $prop, $id_dt, 0);
+            } else {
+
             }
-        if (isset($w['pages']))
-            {
-                /****** pages */
-                $id_pg = $this -> frbr_name($w['pages'].' p.');
-                $id_p = $this -> rdf_concept($id_pg, 'Pages');
-                                
-                $prop = 'hasPage';
-                $this -> set_propriety($id_m, $prop, $id_p, 0);                
-            }
-        if (isset($w['isbn10']))
-            {
-                /****** pages */
-                $id_isbn = $this -> frbr_name($w['isbn10']);
-                $id_isbn = $this -> rdf_concept($id_isbn, 'Isbn');                                
-                $prop = 'hasIsbn';
-                $this -> set_propriety($id_m, $prop, $id_isbn, 0);                
-            }            
-        if (isset($w['isbn13']))
-            {
-                /****** pages */
-                $id_isbn = $this -> frbr_name($w['isbn13']);
-                $id_isbn = $this -> rdf_concept($id_isbn, 'Isbn');                                
-                $prop = 'hasIsbn';
-                $this -> set_propriety($id_m, $prop, $id_isbn, 0);                
-            }  
-        redirect(base_url(PATH.'a/'.$id_m));          
+        }
+        if (isset($w['pages'])) {
+            /****** pages */
+            $id_pg = $this -> frbr_name($w['pages'] . ' p.');
+            $id_p = $this -> rdf_concept($id_pg, 'Pages');
+
+            $prop = 'hasPage';
+            $this -> set_propriety($id_m, $prop, $id_p, 0);
+        }
+        if (isset($w['isbn10'])) {
+            /****** pages */
+            $id_isbn = $this -> frbr_name($w['isbn10']);
+            $id_isbn = $this -> rdf_concept($id_isbn, 'Isbn');
+            $prop = 'hasIsbn';
+            $this -> set_propriety($id_m, $prop, $id_isbn, 0);
+        }
+        if (isset($w['isbn13'])) {
+            /****** pages */
+            $id_isbn = $this -> frbr_name($w['isbn13']);
+            $id_isbn = $this -> rdf_concept($id_isbn, 'Isbn');
+            $prop = 'hasIsbn';
+            $this -> set_propriety($id_m, $prop, $id_isbn, 0);
+        }
+        redirect(base_url(PATH . 'a/' . $id_m));
 
     }
 
 }
-
-
 ?>

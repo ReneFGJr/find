@@ -80,6 +80,7 @@ function enviaremail($para, $assunto, $texto, $de, $anexos = array()) {
 		$CI -> email -> subject($assunto);
 		$CI -> email -> message($email_header . $texto . $email_footer);
 		
+        /*
 		if (isset($_SESSION['id']))
 			{
 				$id_us = $_SESSION['id'];
@@ -88,7 +89,7 @@ function enviaremail($para, $assunto, $texto, $de, $anexos = array()) {
 				array_push($bcc, trim($us['us_email']));
 				$CI -> email -> from(trim($us['us_email']), utf8_decode(utf8_decode(trim($us['us_com_nome']))));
 			}
-		
+		*/
 
 		if ($sem_copia != 1) {
 			array_push($para, trim($line['m_email']));

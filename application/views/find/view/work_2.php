@@ -105,16 +105,26 @@ $linkm = '';
 $linka = '';
 $serie = '';
 $pag = '';
+$class = '';
 if (isset($manifestation)) {
     for ($r = 0; $r < count($manifestation); $r++) {
         $type = $manifestation[$r]['c_class'];
         $value = $manifestation[$r]['n_name'];
 
-        //echo '<br>' . $type . '->' . $value;
+        ///echo '<br>' . $type . '->' . $value;
         $link = '<a href="' . base_url(PATH . 'v/' . $manifestation[$r]['id_cc']) . '">';
         $linkm = '<a href="' . base_url(PATH . 'v/' . $manifestation[0]['d_r1']) . '">';
         $linka = '</a>';
         switch($type) {
+            case 'hasColorclassification':
+                $valuec = '#888888';
+                if (strpos($value,'#') > 0)
+                    {
+                        $valuec = substr($value,strpos($value,'#'),strlen($value)-2);
+                        $value = substr($value,0,strpos($value,'#'));
+                    }
+                $class .= $link.'<div style="background-color: '.$valuec.'; width: 400px; padding: 5px 10px;"><span style="color: #ffffff;">'.$value.$linka.'</span></div>';               
+                break;
             case 'hasPage' :
                 if (strlen($pag) > 0) { $pag .= '; ';
                 }
@@ -246,6 +256,13 @@ if (!isset($manifestation) and isset($linked_m_new)) {
 
     /*************************************************************************** Chapters ***/
     echo '<br/>';
+/*********************************/
+    if (strlen($class) > 0)
+        {             
+            echo 'Localização:'.$class;
+            echo '<br>';
+        }
+    /***************************** SUMARY ***/            
     echo '<h5>' . msg('Summary') . '</h5>';
     echo $chapter_text;
     if (perfil("#ADM#CAT")) {
@@ -272,6 +289,7 @@ if (!isset($manifestation) and isset($linked_m_new)) {
         echo '<br>';        
     }
 
+
     /************************************************************************** Itens *******/
     if (isset($itens) and (strlen($itens) > 0)) {
         echo $itens;
@@ -283,5 +301,6 @@ if (!isset($manifestation) and isset($linked_m_new)) {
     }
 }
 ?>
+
 </div>
 </div>

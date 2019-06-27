@@ -475,12 +475,23 @@ class Biblio extends CI_controller {
                 }
                 break;
             case 'hasISBN' :
+                $tela = '';
+                $valx = substr($val,strlen($val),1);
                 $val = sonumero($val);
-                $dv = $this -> barcodes -> isbn13($val);
+                if (strlen($val) <= 10)
+                    {
+                        $val = isbn10to13($val);
+                        $tela .= '====>'. $val;
+                        $dv = $this -> barcodes -> isbn13($val);
+                        $isbn10 = isbn13to10($val);
+                    } else {
+                        $dv = $this -> barcodes -> isbn13($val);
+                        $isbn10 = isbn13to10($val);        
+                    }
                 if (substr($val, strlen($val), 1) != $dv) {
                     $tela = '
                                 <div class="alert alert-danger" role="alert">
-                                  <strong>Error! (130)</strong> Número do ISBN inválido "' . $val . '"
+                                  <strong>Error! (130A) Main</strong> Número do ISBN inválido "' . $val . '"
                                 </div>
                                 ';
                     echo $tela;

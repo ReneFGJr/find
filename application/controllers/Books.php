@@ -1,6 +1,8 @@
 <?php
 define('LIBRARY', '1000');
 define('PATH', 'index.php/books/');
+define('LOGO', 'img/logo-brapci_livros_mini.png');
+
 class Books extends CI_controller {
     var $lib = 10000000000;
 
@@ -24,15 +26,18 @@ class Books extends CI_controller {
 
     function login() {
         $_SESSION['user'] = 'FINDS';
-        redirect(base_url('index.php/books'));
+        redirect(base_url('index.php/biblio'));
     }
+
 
     private function cab($navbar = 1) {
         $this -> load -> model("socials");
-        $data['title'] = 'Brapci Livros ::::';
+        $data['title'] = 'Biblioteca em Ciência da Informação ::::';
+        $data['logo'] = LOGO;
+        $data['url'] = PATH;
         $this -> load -> view('header/books_header', $data);
         if ($navbar == 1) {
-            $this -> load -> view('header/books_navbar', null);
+            $this -> load -> view('header/books_navbar', $data);
         }
         $_SESSION['id'] = 1;
     }
@@ -59,8 +64,9 @@ class Books extends CI_controller {
         $this -> load -> model('frbr');
 
         $this -> cab();
-        $this -> load -> view('welcome_brapci');
-        $this -> load -> view('find/search/search_simple', null);
+        $data['logo'] = LOGO;
+        $this -> load -> view('welcome_brapci', $data);
+        $this -> load -> view('find/search/search_simple', $data);
 
         /*************************** find */
         $gets = array_merge($_POST, $_GET);
@@ -471,12 +477,23 @@ class Books extends CI_controller {
                 }
                 break;
             case 'hasISBN' :
+                $tela = '';
+                $valx = substr($val,strlen($val),1);
                 $val = sonumero($val);
-                $dv = $this -> barcodes -> isbn13($val);
+                if (strlen($val) <= 10)
+                    {
+                        $val = isbn10to13($val);
+                        $tela .= '====>'. $val;
+                        $dv = $this -> barcodes -> isbn13($val);
+                        $isbn10 = isbn13to10($val);
+                    } else {
+                        $dv = $this -> barcodes -> isbn13($val);
+                        $isbn10 = isbn13to10($val);        
+                    }
                 if (substr($val, strlen($val), 1) != $dv) {
-                    $tela = '
+                    $tela .= '
                                 <div class="alert alert-danger" role="alert">
-                                  <strong>Error! (130)</strong> Número do ISBN inválido "' . $val . '"
+                                  <strong>Error! (130E) Main</strong> Número do ISBN inválido "' . $val . '"
                                 </div>
                                 ';
                     echo $tela;
@@ -1093,9 +1110,16 @@ class Books extends CI_controller {
         }
 
         /*****/
-        $sql = "select * from itens where (i_status = 2 or i_status = 4)order by i_tombo";
+        $sql = "select * from itens 
+                    where (i_status = 2 or i_status = 4)
+                    and i_tombo like '" . substr($this -> lib, 0, 4) . "%'  
+                    order by i_tombo";
         $rlt = $this -> db -> query($sql);
         $xrlt = $rlt -> result_array();
+        if (count($xrlt) == 0) {
+            echo 'Nenhum registro encontrado';
+            exit ;
+        }
 
         $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', true);
         $pdf -> SetCreator(PDF_CREATOR);
@@ -1155,7 +1179,7 @@ class Books extends CI_controller {
         $this -> load -> model('barcodes');
         $acao = get("dd0");
         switch($acao) {
-            default :
+            case 'pr' :
                 $data['nrtombo'] = round(get("dd1")) + $lib;
                 $data['pages'] = get("dd2");
                 $data['repetir'] = get("dd3");
@@ -1293,7 +1317,7 @@ class Books extends CI_controller {
         $tela .= '</form> ';
 
         /****************************************************************/
-        $sql = "select count(*) as total from itens where i_status = 2";
+        $sql = "select count(*) as total from itens where i_status = 2 and i_tombo like '" . substr($this -> lib, 0, 4) . "%'";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
         $line = $rlt[0];
@@ -1342,12 +1366,15 @@ class Books extends CI_controller {
         $data['content'] = $this -> frbr -> label_book($lt, 'hasRegisterId');
         $this -> load -> view('content', $data);
 
+        $this -> foot();
+
     }
 
     public function catalog() {
         $this -> cab();
         $data['title'] = 'Preparo técnico';
         $this -> load -> view('find/title', $data);
+        $this -> load -> view('find/labels', $data);
 
         $tela = '';
 
@@ -1482,11 +1509,10 @@ class Books extends CI_controller {
     }
 
     public function about() {
-        $this -> load -> model('comgrads');
         $this -> cab();
         $data = array();
-        $data['title'] = '';
-        $data['content'] = $this -> comgrads -> about();
+        $data['title'] = 'Sobre';
+        $data['content'] = '<h1>Sobre a Biblioteca</h1>';
         $this -> load -> view('content', $data);
     }
 
@@ -1553,6 +1579,11 @@ class Books extends CI_controller {
             case 'editor' :
                 $title = msg('index') . ': ' . msg('index_editor');
                 $sx = $this -> frbr -> index_other($lt, 'isPublisher');
+
+                break;
+            case 'title' :
+                $title = msg('index') . ': ' . msg('index_title');
+                $sx = $this -> frbr -> index_work($lt, 'hasTitle');
 
                 break;
         }
@@ -1675,12 +1706,33 @@ class Books extends CI_controller {
         $this -> foot();
     }
 
-    function labels_ed($id = '', $chk = '') {
+    function labels_ed($id = '', $chk = '', $close = 0) {
         $this -> load -> model('frbr');
         $this -> cab();
-        $this -> frbr -> labels_ed($id, $chk);
+        $this -> frbr -> labels_ed($id, $chk, $close);
         $this -> foot();
     }
 
+    function bookshelf($id = '') {
+        $this -> load -> model('frbr');
+        $tela = '';
+        $this -> cab();
+        $data['content'] = $this -> frbr -> show_bookshelf();
+        $data['title'] = msg('Bookshelf');
+        $this -> load -> view('content', $data);
+
+        $this -> foot();
+    }
+    function termo($id = '') {
+        $this -> load -> model('termos');
+        $tela = '';
+        $this -> cab();
+        $data['content'] = $this -> termos -> termo_form();
+        
+        $data['title'] = msg('Bookshelf');
+        $this -> load -> view('content', $data);
+
+        $this -> foot();
+    }
 }
 ?>

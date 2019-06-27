@@ -165,7 +165,7 @@ class socials extends CI_Model {
             	$sx = '';
 				$sx .= '
 							<li class="nav-item active">
-								<a class="nav-link" href="'.base_url('index.php/social/signup').'">'.msg('sign_up').'</a>
+								<a class="nav-link" href="'.base_url(PATH.'social/signup').'">'.msg('sign_up').'</a>
 							</li>';
             	$sx .= '<li class="nav-item navbar-toggler-right">';
                 $sx .= '<a href="#" class="nav-link" data-toggle="modal" data-target="#exampleModalLong">' . msg('sign_in') . '</a>';

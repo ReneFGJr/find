@@ -13,9 +13,9 @@
 <style>
     .footer
     {
-        border-top: 1px solid #c0c0c0; 
+        border-top: 1px solid #333333; 
         margin-top: 150px; 
-        background-color: #ffc0ff;  min-height: 200px;"    
+        background-color: #cccccc;  min-height: 200px;"    
     }
     .link
         {

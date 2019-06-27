@@ -1,8 +1,10 @@
 <?php
-define('LIBRARY', '1001');
-define('PATH', 'index.php/main/');
-class Main extends CI_controller {
-    var $lib = 10010000000;
+define('LIBRARY', '1004');
+define('PATH', 'index.php/africanamente/');
+define('LOGO', 'img/logo-biblioteca-africanamente.png');
+
+class Africanamente extends CI_controller {
+    var $lib = 10040000000;
 
     function __construct() {
         parent::__construct();
@@ -24,15 +26,18 @@ class Main extends CI_controller {
 
     function login() {
         $_SESSION['user'] = 'FINDS';
-        redirect(base_url(PATH));
+        redirect(base_url('index.php/biblio'));
     }
+
 
     private function cab($navbar = 1) {
         $this -> load -> model("socials");
-        $data['title'] = 'Find - Library ::::';
-        $this -> load -> view('header/header', $data);
+        $data['title'] = 'Biblioteca em Ciência da Informação ::::';
+        $data['logo'] = LOGO;
+        $data['url'] = PATH;
+        $this -> load -> view('header/books_header', $data);
         if ($navbar == 1) {
-            $this -> load -> view('header/navbar', null);
+            $this -> load -> view('header/books_navbar', $data);
         }
         $_SESSION['id'] = 1;
     }
@@ -44,10 +49,12 @@ class Main extends CI_controller {
     }
 
     private function foot() {
-        $footer = 'view/header/footer_' . LIBRARY . '.php';
-        if (file_exists($footer)) {
-            $footer = 'header/footer_' . LIBRARY . '.php';
-            $this -> load -> view('header/footer');
+        $dir = troca($_SERVER['SCRIPT_FILENAME'], 'index.php', 'application/');
+        $footer_file = $dir . 'views/header/footer_' . LIBRARY . '.php';
+        $footer = 'header/footer_' . LIBRARY . '.php';
+        if (file_exists($footer_file)) {
+
+            $this -> load -> view($footer);
         } else {
             $this -> load -> view('header/footer');
         }
@@ -57,8 +64,9 @@ class Main extends CI_controller {
         $this -> load -> model('frbr');
 
         $this -> cab();
-        $this -> load -> view('welcome');
-        $this -> load -> view('find/search/search_simple', null);
+        $data['logo'] = LOGO;
+        $this -> load -> view('welcome_brapci', $data);
+        $this -> load -> view('find/search/search_simple', $data);
 
         /*************************** find */
         $gets = array_merge($_POST, $_GET);
@@ -200,13 +208,11 @@ class Main extends CI_controller {
                     </div>
                     <div class="col-md-4 text-right">';
         if ((perfil("#ADM") > 0)) {
-            $tela .= $linkd . msg('delete') . $linkda.' ';            
+            $tela .= $linkd . msg('delete') . $linkda . ' ';
         }
+        $tela .= $linkc . msg('return') . $linkca;
 
-        $tela .= $linkc . msg('return') . $linkca . '
-                    </div>
-                    </div>';
-        //$tela .= $this -> frbr -> form($id, $data);
+        $tela .= '</div></div>';
         $tela .= $this -> frbr -> form($id, $data);
 
         switch($data['c_class']) {
@@ -451,7 +457,6 @@ class Main extends CI_controller {
         $this -> load -> model('barcodes');
         $this -> load -> model('frbr');
         $val = get("q");
-
         switch ($path) {
             case 'hasPage' :
                 $val = sonumero($val);
@@ -471,26 +476,6 @@ class Main extends CI_controller {
                     echo $tela;
                 }
                 break;
-            case 'hasLattes' :
-                $pre = substr($val, 0, 22);
-                $lattes = substr($val, 22, 20);
-
-                if ((sonumero($lattes) != $lattes) or (strlen($lattes < 10))) {
-                    $tela = '
-                                <div class="alert alert-danger" role="alert">
-                                  <strong>Error! (133)</strong> Lattes Inválido use: http://lattes.cnpq.br/0000000000000 "' . $val . '"
-                                </div>
-                                ';
-                    echo $tela;
-                } else {
-                    $name_pref = $val;
-                    $id_t = $this -> frbr -> frbr_name($name_pref);
-                    $p_id = $this -> frbr -> rdf_concept($id_t, 'LattesCurriculo', '');
-                    $this -> frbr -> set_propriety($p_id, 'prefLabel', 0, $id_t);
-                    $this -> frbr -> set_propriety($id, 'hasLattes', $p_id, 0);
-                    echo '<meta http-equiv="refresh" content="0;">';
-                }
-                break;
             case 'hasISBN' :
                 $tela = '';
                 $valx = substr($val,strlen($val),1);
@@ -505,10 +490,11 @@ class Main extends CI_controller {
                         $dv = $this -> barcodes -> isbn13($val);
                         $isbn10 = isbn13to10($val);        
                     }
+                
                 if (substr($val, strlen($val), 1) != $dv) {
                     $tela .= '
                                 <div class="alert alert-danger" role="alert">
-                                  <strong>Error! (130B) Main</strong> Número do ISBN inválido "' . $val . '"
+                                  <strong>Error! (130C)</strong> Número do ISBN inválido "' . $val . '"
                                 </div>
                                 ';
                     echo $tela;
@@ -551,18 +537,17 @@ class Main extends CI_controller {
     public function ajax5($path = '', $id = '') {
         $this -> load -> model('frbr');
         $text = get("q");
-        if (strlen($text) > 0)
-            {
-                $id_t = $this -> frbr -> frbr_name($text);
-                $this -> frbr -> set_propriety($id, $path, 0, $id_t);
-                echo '<meta http-equiv="refresh" content="0;">';
-            } else {
-                $tela = '<textarea class="form-control" style="height: 150px;" name="dd51" id="dd51"></textarea>';
-                echo $tela;
-            }
+        if (strlen($text) > 0) {
+            $id_t = $this -> frbr -> frbr_name($text);
+            $this -> frbr -> set_propriety($id, $path, 0, $id_t);
+            echo '<meta http-equiv="refresh" content="0;">';
+        } else {
+            $tela = '<textarea class="form-control" style="height: 150px;" name="dd51" id="dd51"></textarea>';
+            echo $tela;
+        }
         return ("");
     }
-    
+
     function vocabulary_ed($id = '') {
         $this -> cab();
         $cp = array();
@@ -1126,9 +1111,16 @@ class Main extends CI_controller {
         }
 
         /*****/
-        $sql = "select * from itens where (i_status = 2 or i_status = 4)order by i_tombo";
+        $sql = "select * from itens 
+                    where (i_status = 2 or i_status = 4)
+                    and i_tombo like '" . substr($this -> lib, 0, 4) . "%'  
+                    order by i_tombo";
         $rlt = $this -> db -> query($sql);
         $xrlt = $rlt -> result_array();
+        if (count($xrlt) == 0) {
+            echo 'Nenhum registro encontrado';
+            exit ;
+        }
 
         $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', true);
         $pdf -> SetCreator(PDF_CREATOR);
@@ -1187,37 +1179,35 @@ class Main extends CI_controller {
         $lib = $this -> lib;
         $this -> load -> model('barcodes');
         $acao = get("dd0");
-        if (strlen($acao) > 0) {
-            switch($acao) {
-                default :
-                    $data['nrtombo'] = round(get("dd1")) + $lib;
-                    $data['pages'] = get("dd2");
-                    $data['repetir'] = get("dd3");
-                    $data['cols'] = get("dd4");
-                    //$data['label'] = 'Sala de Leitura Propel';
-                    $data['label'] = 'Propel - IFRGS';
-                    $tela = $this -> load -> view('find/label/tombo_1', $data, true);
+        switch($acao) {
+            case 'pr' :
+                $data['nrtombo'] = round(get("dd1")) + $lib;
+                $data['pages'] = get("dd2");
+                $data['repetir'] = get("dd3");
+                $data['cols'] = get("dd4");
+                //$data['label'] = 'Sala de Leitura Propel';
+                $data['label'] = 'Propel - IFRGS';
+                $tela = $this -> load -> view('find/label/tombo_1', $data, true);
 
-                    $obj_pdf = new TCPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-                    $obj_pdf -> SetCreator(PDF_CREATOR);
-                    $title = "Etiqueta Bibliográfica";
-                    $obj_pdf -> SetTitle('Bibliográfica');
-                    //  $obj_pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, $title, "Monthly Report");
-                    //  $obj_pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-                    //  $obj_pdf -> setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-                    //  $obj_pdf -> SetDefaultMonospacedFont('helvetica');
-                    //  $obj_pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-                    //  $obj_pdf -> SetFooterMargin(PDF_MARGIN_FOOTER);
-                    //  $obj_pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-                    //$obj_pdf -> SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-                    $obj_pdf -> SetFont('helvetica', '', 9);
-                    $obj_pdf -> setFontSubsetting(false);
-                    $obj_pdf -> AddPage();
-                    $obj_pdf -> writeHTML($tela, true, false, true, false, '');
-                    $obj_pdf -> Output();
-                    exit ;
-                    break;
-            }
+                $obj_pdf = new TCPDF('P', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+                $obj_pdf -> SetCreator(PDF_CREATOR);
+                $title = "Etiqueta Bibliográfica";
+                $obj_pdf -> SetTitle('Bibliográfica');
+                //  $obj_pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, $title, "Monthly Report");
+                //  $obj_pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+                //  $obj_pdf -> setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+                //  $obj_pdf -> SetDefaultMonospacedFont('helvetica');
+                //  $obj_pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
+                //  $obj_pdf -> SetFooterMargin(PDF_MARGIN_FOOTER);
+                //  $obj_pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+                //$obj_pdf -> SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+                $obj_pdf -> SetFont('helvetica', '', 9);
+                $obj_pdf -> setFontSubsetting(false);
+                $obj_pdf -> AddPage();
+                $obj_pdf -> writeHTML($tela, true, false, true, false, '');
+                $obj_pdf -> Output();
+                exit ;
+                break;
         }
         $this -> cab();
         $data['title'] = 'Etiquetagem';
@@ -1328,7 +1318,7 @@ class Main extends CI_controller {
         $tela .= '</form> ';
 
         /****************************************************************/
-        $sql = "select count(*) as total from itens where i_status = 2";
+        $sql = "select count(*) as total from itens where i_status = 2 and i_tombo like '" . substr($this -> lib, 0, 4) . "%'";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
         $line = $rlt[0];
@@ -1377,12 +1367,15 @@ class Main extends CI_controller {
         $data['content'] = $this -> frbr -> label_book($lt, 'hasRegisterId');
         $this -> load -> view('content', $data);
 
+        $this -> foot();
+
     }
 
     public function catalog() {
         $this -> cab();
         $data['title'] = 'Preparo técnico';
         $this -> load -> view('find/title', $data);
+        $this -> load -> view('find/labels', $data);
 
         $tela = '';
 
@@ -1517,11 +1510,10 @@ class Main extends CI_controller {
     }
 
     public function about() {
-        $this -> load -> model('comgrads');
         $this -> cab();
         $data = array();
-        $data['title'] = '';
-        $data['content'] = $this -> comgrads -> about();
+        $data['title'] = 'Sobre';
+        $data['content'] = '<h1>Sobre a Biblioteca</h1>';
         $this -> load -> view('content', $data);
     }
 
@@ -1536,29 +1528,6 @@ class Main extends CI_controller {
 
         $this -> foot();
     }
-    
-    public function d($id,$conf = '') {
-        $idx = md5(date("Ymdh").$id);
-        $this -> load -> model('frbr');
-        
-        if ($idx == $conf)
-            {
-                $this->frbr->remove_concept($id);
-            }
-        $this -> cab();
-
-        $tela = $this -> frbr -> vv($id);
-
-        /***********************************/        
-        $link = '<a href="'.base_url(PATH.'d/'.$id.'/'.$idx).'" class="btn btn-danger">';
-        $tela .= '<hr>'.$link.msg("delete_confirm").'</a>';        
-
-        $data['content'] = $tela;
-
-        $this -> load -> view('content', $data);
-
-        $this -> foot();
-    }    
 
     function cutter() {
         $this -> load -> model('cutters');
@@ -1613,6 +1582,11 @@ class Main extends CI_controller {
                 $sx = $this -> frbr -> index_other($lt, 'isPublisher');
 
                 break;
+            case 'title' :
+                $title = msg('index') . ': ' . msg('index_title');
+                $sx = $this -> frbr -> index_work($lt, 'hasTitle');
+
+                break;
         }
         $data['content'] = '<h1>' . $title . '</h1>' . $sx;
         $this -> load -> view('content', $data);
@@ -1622,15 +1596,6 @@ class Main extends CI_controller {
 
     function mod($mod = '', $act = '', $id = '', $id2 = '', $id3 = '') {
         $this -> load -> model('frbr');
-        if (strlen($act) == 0) {
-            $act = 'index';
-        }
-        if ((strlen(trim($mod)) == 0) or (strlen($act) == 0)) {
-            $tela = "Mod = $mod, act = $act, id = $id, id2 = $id2, id3=$id3;";
-            $data['content'] = '<h1>ERRO MOD ACTION</h1>' . $tela;
-            $this -> load -> view('content', $data);
-            return ('');
-        }
 
         $this -> cab(1);
         $title = '<sup>mod:</sup>' . UpperCase($mod);
@@ -1638,6 +1603,7 @@ class Main extends CI_controller {
         /*** load module ********/
         $this -> load -> model($mod);
         $cmd = '$tela = $this->' . $mod . '->' . $act . "('$id','$id2','$id3');";
+        //echo $cmd;
         eval($cmd);
 
         $data['content'] = '<h1>' . $title . '</h1>' . $tela;
@@ -1724,20 +1690,40 @@ class Main extends CI_controller {
         $data['title'] = 'Inventário';
         $this -> load -> view('content', $data);
     }
-function labels($pg='')
-    {
-        $this -> load -> model('frbr');
-        $this->cab();
-        $this->frbr->labels($pg);
-        $this->foot();
+
+    function d($id, $chk = '') {
+        $this -> cab();
+        if (perfil("#ADM#CAT")) {
+            $this -> load -> model("frbr");
+            $this -> frbr -> remove_concept($id);
+        }
+        redirect(PATH);
     }
-function labels_ed($id='',$chk='')
-    {
+
+    function labels($pg = '') {
         $this -> load -> model('frbr');
-        $this->cab();
-        $this->frbr->labels_ed($id,$chk);
-        $this->foot();
-    }    
+        $this -> cab();
+        $this -> frbr -> labels($pg);
+        $this -> foot();
+    }
+
+    function labels_ed($id = '', $chk = '', $close = 0) {
+        $this -> load -> model('frbr');
+        $this -> cab();
+        $this -> frbr -> labels_ed($id, $chk, $close);
+        $this -> foot();
+    }
+
+    function bookshelf($id = '') {
+        $this -> load -> model('frbr');
+        $tela = '';
+        $this -> cab();
+        $data['content'] = $this -> frbr -> show_bookshelf();
+        $data['title'] = msg('Bookshelf');
+        $this -> load -> view('content', $data);
+
+        $this -> foot();
+    }
 
 }
 ?>
