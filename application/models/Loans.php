@@ -48,7 +48,6 @@ class loans extends CI_model {
 		array_push($cp, array('$S10', '', 'Patrimonio da obra', True, True));
 		$tela1 = $form -> editar($cp, '');
 		$tela2 = '';
-		
 		if ($form -> saved > 0) {
 			$tombo = get("dd2");
 			$tela2 .= $this -> loan_tombo($tombo, $user);
@@ -66,7 +65,7 @@ class loans extends CI_model {
 	function loan_tombo($tombo, $user) {
 		$tela = '';
 		$data = $this -> frbr -> le_tombo($tombo);
-
+        print_r($data);
 		if ($data['i_status'] == 3) {
 			$manifestation = $data['i_namifestation'];
 			$tombo = $data['i_tombo'];

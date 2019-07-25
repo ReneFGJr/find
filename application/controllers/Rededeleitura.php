@@ -1,7 +1,9 @@
 <?php
 define('LIBRARY', '1003');
-define('PATH', 'index.php/girasol/');
+define('PATH', 'index.php/rededeleitura/');
 define('LOGO', 'img/logo-biblioteca-girasol.png');
+define('LIBRARY_NAME', 'Rede de Leitura');
+define('LIBRARY_LEMA', 'Incentivando a Leitura');
 
 class Rededeleitura extends CI_controller {
     var $lib = 10030000000;
@@ -39,13 +41,76 @@ class Rededeleitura extends CI_controller {
         if ($navbar == 1) {
             $this -> load -> view('header/books_navbar', $data);
         }
-        $_SESSION['id'] = 1;
+        $_SESSION['id'] = 1;             
     }
 
     /******************************************************************** LOGIN DO SISTEMA */
-    function social($path = '', $d1 = '', $d2 = '') {
-        $this -> load -> model('socials');
-        $this -> socials -> action($path, $d1, $d2);
+    /* LOGIN */
+    function social($act = '') {
+        $this -> cab();
+        if ($act == 'user_password_new') { $act = 'npass';
+        }
+        switch($act) {
+            case 'perfil' :
+                break;
+            case 'pwsend' :
+                $this -> socials -> resend();
+                break;
+            case 'signup' :
+                $this -> socials -> signup();
+                break;
+            case 'logoff' :
+                $this -> socials -> logout();
+                break;
+            case 'logout' :
+                $this -> socials -> logout();
+                break;                
+            case 'forgot' :
+                $this -> socials -> forgot();
+                break;
+            case 'npass' :
+                $email = get("dd0");
+                $chk = get("chk");
+                $chk2 = checkpost_link($email . $email);
+                $chk3 = checkpost_link($email . date("Ymd"));
+
+                if ((($chk != $chk2) AND ($chk != $chk3)) AND (!isset($_POST['dd1']))) {
+                    $data['content'] = 'Erro de Check';
+                    $this -> load -> view('show', $data);
+                } else {
+                    $dt = $this -> socials -> le_email($email);
+                    if (count($dt) > 0) {
+                        $id = $dt['id_us'];
+                        $data['title'] = '';
+                        $tela = '<br><br><h1>' . msg('change_password') . '</h1>';
+                        $new = 1;
+                        // Novo registro
+                        $data['content'] = $tela . $this -> socials -> change_password($id, $new);
+                        $this -> load -> view('show', $data);
+                        //redirect(base_url("index.php/thesa/social/login"));
+                    } else {
+                        $data['content'] = 'Email não existe!';
+                        $this -> load -> view('error', $data);
+                    }
+                }
+
+                $this -> footer();
+                break;
+            case 'login' :
+                $this -> socials -> login();
+                break;
+            case 'login_local' :
+                $ok = $this -> socials -> login_local();
+                if ($ok == 1) {
+                    redirect(base_url(PATH));
+                } else {
+                    redirect(base_url(PATH . 'social/login/') . '?erro=ERRO_DE_LOGIN');
+                }
+                break;
+            default :
+                echo "Function not found";
+                break;
+        }
     }
 
     private function foot() {
@@ -1724,6 +1789,14 @@ class Rededeleitura extends CI_controller {
 
         $this -> foot();
     }
+
+    function superadmin($id='',$act='')
+        {
+            $this->cab();
+            $this->load->model("superadmin");
+            $this->superadmin->index($id,$act);
+            $this->foot();
+        }
 
 }
 ?>

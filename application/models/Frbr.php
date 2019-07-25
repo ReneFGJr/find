@@ -12,7 +12,8 @@ class frbr extends CI_model {
         $sql = "select cl2.c_class as rg from rdf_class as cl1
                         LEFT JOIN rdf_form_class ON sc_propriety = cl1.id_c
                         LEFT JOIN rdf_class as cl2 ON cl2.id_c = sc_range
-                        WHERE cl1.c_class = '" . $path . "' and cl1.c_type = 'P' ";
+                        WHERE cl1.c_class = '" . $path . "' and cl1.c_type = 'P' 
+                            AND cl2.c_class <> ''";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
         $type = $path;
@@ -425,8 +426,17 @@ class frbr extends CI_model {
         return ($rlt);
     }
 
-    function le_tombo($id) {
-        echo '==>' . $id;
+    function le_tombo($tombo) {
+        if (strlen($tombo) < 8) {
+            $tombo = LIBRARY . strzero($tombo, 7);
+            $tombo = $tombo;
+            $tombo = $tombo . $this -> barcodes -> ean13($tombo);
+        }
+        $sql = "select * from itens where i_tombo = '$tombo' ";
+        echo $sql;
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        print_r($rlt);        
         exit ;
     }
 
@@ -2485,7 +2495,12 @@ class frbr extends CI_model {
             $rlt2 = $rlt2 -> result_array();
 
             if (count($rlt2) > 0) {
-                $sx .= '<div class="col-md-12"><h3>' . $line['n_name'] . '</h3></div>';
+                $name = $line['n_name'];
+                if (strpos($name,'#') > 0)
+                    {
+                        $name = substr($name,0,strpos($name,'#'));
+                    }
+                $sx .= '<div class="col-md-12"><h3>' . $name . '</h3></div>';
             }
             for ($y = 0; $y < count($rlt2); $y++) {
                 $ln = $rlt2[$y];

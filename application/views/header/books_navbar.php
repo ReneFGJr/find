@@ -26,7 +26,7 @@ if (!isset($logo))
             <li class="nav-item">
                 <a class="nav-link" href="<?php echo base_url(PATH.'bookshelf'); ?>"><?php echo msg("bookshelf");?></span></a>
             </li>
-			<?php if (file_exists('application/models/Loans.php-2')) { ?>
+			<?php if (file_exists('application/models/Loans.php')) { ?>
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <?php echo msg('Loans');?> </a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
@@ -86,22 +86,13 @@ if (!isset($logo))
             
 			<!------ ADMIN CONFIG ---->
             <?php 
-            if ((perfil('#ADM')==1) and (file_exists('application/models/Labs.php')) and (isset($this->uri->segments[2])))
+            if (perfil('#ADM')==1)
             { ?>
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="<?php echo base_url(PATH.'mod/lab/'); ?>" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo msg('menu_bibliometric');?></a>
+                <a class="nav-link dropdown-toggle" href="<?php echo base_url(PATH.'superadmin/'); ?>" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo msg('superadmin');?></a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <?php
-                    if (isset($this->uri->segments[2]))
-                        {
-                            $tp = $this->uri->segments[2];
-                            $idv = $this->uri->segments[3];
-                            if (($tp == 'a') or ($tp == 'v'))
-                                {
-                                    echo '<a class="dropdown-item" href="'.base_url(PATH.'mod/labs/cited/'.$idv).'">'.msg("menu_bibliometric_cited").'</a>';
-                                    echo '<a class="dropdown-item" href="'.base_url(PATH.'mod/labs/citeis/1').'">'.msg("menu_bibliometric_citeis").'</a>';
-                                }
-                        }
+                        echo '<a class="dropdown-item" href="'.base_url(PATH.'superadmin/own/').'">'.msg("superadmin_own").'</a>';
                     ?>
                 </div>
             </li>                

@@ -94,9 +94,7 @@ $ac[$pag] = 'active';
                     ?>
                 </div>
             </li>                
-            <?php } ?>
-                        
-            
+            <?php } ?>                     
                 <?php echo $this->socials->menu_user();?>
             </li>           
                        			

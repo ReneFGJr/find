@@ -197,6 +197,10 @@ if (isset($chapter)) {
 
             switch($type) {
                 case 'hasAuthor' :
+                    if (strlen($autor) > 0)
+                        {
+                            $autor .='; ';
+                        }
                     $autor .= $link . $value . $linka;
                     break;
                 case 'hasTitleChapter' :

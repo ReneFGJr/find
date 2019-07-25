@@ -1554,10 +1554,13 @@ class Biblio extends CI_controller {
         $name = $data['n_name'];
 
         $n = $this -> cutters -> find_cutter($name);
-
         $item_nome = $this -> frbr -> frbr_name($n);
+        
 
         $p_id = $this -> frbr -> rdf_concept($item_nome, 'Cutter');
+        
+        //echo $n.'-'.$item_nome.'-'.$p_id.'-'.$id;
+        //exit;
         $this -> frbr -> set_propriety($id, 'hasCutter', $p_id, 0);
         redirect(base_url(PATH . 'v/' . $id));
     }

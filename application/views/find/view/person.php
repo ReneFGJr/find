@@ -14,7 +14,7 @@ $lattes = '';
 for ($r=0;$r < count($person);$r++)
     {
         $line = $person[$r];
-        $class = $line['c_class'];
+        $class = trim($line['c_class']);
         //echo '<br>'.$class.'='.$line['n_name'];
         switch($class)
             {
@@ -92,11 +92,14 @@ $img = troca($img,'class="img-fluid"','class="img-fluid img-person"');
                     echo '<br><tt>'.$this->frbr->show_rdf($cc_origin).'</tt>';
                 }
             
-            if (strlen($alt.$hid) > 0)
+            if (strlen($alt.$hid.$cutter) > 0)
                 {
                     echo '<table width="100%">';
                     echo '<tr valign="top"><td width="50%">';
-                    echo msg('alternativeNames').': <ul>'.$alt.'</ul>';
+                    if (strlen($hid) > 0)
+                        {
+                        echo msg('alternativeNames').': <ul>'.$alt.'</ul>';
+                        }
                     echo '</td>';
                     echo '<td width="50%">';
                     echo '<div id="hden" style="display: none;">'.cr();
