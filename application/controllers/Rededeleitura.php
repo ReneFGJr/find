@@ -34,7 +34,7 @@ class Rededeleitura extends CI_controller {
 
     private function cab($navbar = 1) {
         $this -> load -> model("socials");
-        $data['title'] = 'Biblioteca em Ciência da Informação ::::';
+        $data['title'] = LIBRARY_NAME;
         $data['logo'] = LOGO;
         $data['url'] = PATH;
         $this -> load -> view('header/books_header', $data);
@@ -1796,6 +1796,12 @@ class Rededeleitura extends CI_controller {
             $this->load->model("superadmin");
             $this->superadmin->index($id,$act);
             $this->foot();
+        }
+        
+    function help($id='',$act='')
+        {
+            $this->load->model('manuals');
+            $this->manuals->index($id,$act);
         }
 
 }

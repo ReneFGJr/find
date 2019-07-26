@@ -161,7 +161,7 @@ class socials extends CI_Model {
                 ';
         } else {
             $sx = '<A href="' . base_url(PATH.'social/signup') . '" class="nav-link" >' . msg('sign_up') . '</a>';            
-            $sx .= '<A href="#" class="nav-link" data-toggle="modal" data-target="#exampleModalLong">' . msg('sign_in') . '</a>';
+            $sx .= '<A href="#" class="nav-link navbar-toggler-right" data-toggle="modal" data-target="#exampleModalLong">' . msg('sign_in') . '</a>';
             $sx .= $this -> button_login_modal();
         }
         return ($sx);

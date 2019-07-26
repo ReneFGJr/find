@@ -1,10 +1,5 @@
 <?php
-define('LIBRARY', '1000');
-define('PATH', 'index.php/books/');
-define('LOGO', 'img/logo-brapci_livros_mini.png');
-
-class Books extends CI_controller {
-    var $lib = 10000000000;
+class Books extends CI_controller {    
 
     function __construct() {
         parent::__construct();
@@ -19,20 +14,28 @@ class Books extends CI_controller {
         $this -> load -> library('session');
 
         date_default_timezone_set('America/Sao_Paulo');
+        
+        $this->load->model("libraries");
         /* Security */
         //      $this -> security();
 
     }
 
-    function login() {
-        $_SESSION['user'] = 'FINDS';
-        redirect(base_url('index.php/biblio'));
+    private function cab1($navbar = 1) {
+        $this -> load -> model("socials");
+        $data['title'] = LIBRARY_NAME;
+        $data['logo'] = LOGO;
+        $data['url'] = PATH;
+        $this -> load -> view('header/header', $data);
+        if ($navbar == 1) {
+            $this -> load -> view('header/navbar', $data);
+        }
+        $_SESSION['id'] = 1;
     }
-
-
+    
     private function cab($navbar = 1) {
         $this -> load -> model("socials");
-        $data['title'] = 'Biblioteca em Ciência da Informação ::::';
+        $data['title'] = LIBRARY_NAME;
         $data['logo'] = LOGO;
         $data['url'] = PATH;
         $this -> load -> view('header/books_header', $data);
@@ -40,12 +43,76 @@ class Books extends CI_controller {
             $this -> load -> view('header/books_navbar', $data);
         }
         $_SESSION['id'] = 1;
-    }
+    }    
 
     /******************************************************************** LOGIN DO SISTEMA */
-    function social($path = '', $d1 = '', $d2 = '') {
-        $this -> load -> model('socials');
-        $this -> socials -> action($path, $d1, $d2);
+    /******************************************************************** LOGIN DO SISTEMA */
+    /* LOGIN */
+    function social($act = '') {
+        $this -> cab();
+        if ($act == 'user_password_new') { $act = 'npass';
+        }
+        switch($act) {
+            case 'perfil' :
+                break;
+            case 'pwsend' :
+                $this -> socials -> resend();
+                break;
+            case 'signup' :
+                $this -> socials -> signup();
+                break;
+            case 'logoff' :
+                $this -> socials -> logout();
+                break;
+            case 'logout' :
+                $this -> socials -> logout();
+                break;                
+            case 'forgot' :
+                $this -> socials -> forgot();
+                break;
+            case 'npass' :
+                $email = get("dd0");
+                $chk = get("chk");
+                $chk2 = checkpost_link($email . $email);
+                $chk3 = checkpost_link($email . date("Ymd"));
+
+                if ((($chk != $chk2) AND ($chk != $chk3)) AND (!isset($_POST['dd1']))) {
+                    $data['content'] = 'Erro de Check';
+                    $this -> load -> view('show', $data);
+                } else {
+                    $dt = $this -> socials -> le_email($email);
+                    if (count($dt) > 0) {
+                        $id = $dt['id_us'];
+                        $data['title'] = '';
+                        $tela = '<br><br><h1>' . msg('change_password') . '</h1>';
+                        $new = 1;
+                        // Novo registro
+                        $data['content'] = $tela . $this -> socials -> change_password($id, $new);
+                        $this -> load -> view('show', $data);
+                        //redirect(base_url("index.php/thesa/social/login"));
+                    } else {
+                        $data['content'] = 'Email não existe!';
+                        $this -> load -> view('error', $data);
+                    }
+                }
+
+                $this -> footer();
+                break;
+            case 'login' :
+                $this -> socials -> login();
+                break;
+            case 'login_local' :
+                $ok = $this -> socials -> login_local();
+                if ($ok == 1) {
+                    redirect(base_url(PATH));
+                } else {
+                    redirect(base_url(PATH . 'social/login/') . '?erro=ERRO_DE_LOGIN');
+                }
+                break;
+            default :
+                echo "Function not found";
+                break;
+        }
     }
 
     private function foot() {
@@ -61,6 +128,30 @@ class Books extends CI_controller {
     }
 
     public function index() {
+        $this -> load -> model('frbr');
+        $this->load->model('bookshelfs');
+
+        $this -> cab1();
+
+        /*************************** find */
+        $gets = array_merge($_POST, $_GET);
+        $tela = $this -> frbr -> search($gets);
+
+        if (get("action") == '') {
+            $tela = '';
+            $tela .= '<div class="row">';
+            $tela .= $this->bookshelfs->lastupdate();
+            $tela .= '</div>';
+        } else {
+            
+        }
+
+        $data['content'] = $tela;
+        $this -> load -> view('content', $data);
+        $this -> foot();
+    }
+    
+    public function index2() {
         $this -> load -> model('frbr');
 
         $this -> cab();
@@ -84,6 +175,7 @@ class Books extends CI_controller {
         $this -> load -> view('content', $data);
         $this -> foot();
     }
+    
 
     public function config($tools = '', $ac = '') {
         $this -> load -> model("frbr");

@@ -7,37 +7,30 @@ body {
     font-family: 'Titillium Web', sans-serif;
     /* font-size: 100%; */
     color: #333333;
+    line-height: 100%;
 }
 
-/* Font size */
-.small, .small a {
-    font-size: 70%;
-}
-.std, .std a {
-    font-size: 100%;
-}
-.middle, .middle a {
-    font-size: 150%;
-    color: #4040ef;
-}
-.big, .big a {
-    font-size: 200%;
-}
-
-a {
-  color: #444444;
-  text-decoration: none;
-  line-height: 150%;
-}
-
-a:focus, a:hover {
-  color: #000000;
-  text-decoration: underline;
-}
-
-.img-person
+.header
     {
-        border: 2px solid #808080;
-        border-radius: 10px;
-        box-shadow: 2px 2px;
+        border-bottom: 2px solid #808080;
+    }
+a, a:hover
+    {
+        color: #333333;
+    }
+    
+.book_small
+    {
+        font-size: 70%;
+        line-height: 100%;
+    }
+.book_image
+    {
+        box-shadow: 5px 5px 8px #888888; 
+        margin-bottom: 10px; 
+        padding: 0px;
+    }
+.book_image_div
+    {
+        padding: 0px 10px;
     }
