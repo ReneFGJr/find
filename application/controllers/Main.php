@@ -1802,7 +1802,9 @@ class Main extends CI_controller {
         {
             $this->cab();
             $this->load->model("superadmin");
-            $this->superadmin->index($id,$act);
+            $data['content'] = $this->superadmin->index($id,$act);
+            $data['title'] = msg('libraries_row');
+            $this->load->view("show",$data);
             $this->foot();
         }    
 }
