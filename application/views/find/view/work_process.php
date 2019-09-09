@@ -29,14 +29,14 @@ if ((perfil("#ADM") == 1) and (isset($expression[0]['d_r1']))) {
         $data['linkm'] = '';
     }
 
-    echo $linked_e . msg('edit_expression') . '</a> | ';
+    $expre = $linked_e . msg('edit_expression') . '</a> | ';
     if (isset($manifestation)) {
-        echo $linked_m . msg('edit_manifestation') . '</a> | ';
+        $mani = $linked_m . msg('edit_manifestation') . '</a> | ';
     }
     //echo $linked_e_new . ' | ';
-    echo $linked_m_new . ' | ';
+    $mani .= $linked_m_new . ' | ';
     if (strlen($linked_i_new) > 0) {
-        echo $linked_i_new . ' | ';
+        $mani .= $linked_i_new . ' | ';
     }
 
 }
@@ -257,7 +257,7 @@ if (isset($itens) and (strlen($itens) > 0)) {
 /********************* Summary *********************/
 /***************************** SUMARY ***/
 $summary = '<h5>' . msg('Summary') . '</h5>';
-echo $chapter_text;
+//echo $chapter_text;
 if (perfil("#ADM#CAT")) {
     $summary .= '</br>';
     $summary .= '<span id="new_chapter" style="cursor: pointer;" >' . msg('inclue_chapter_new') . ' >>></span>';

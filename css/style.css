@@ -34,3 +34,17 @@ a, a:hover
     {
         padding: 0px 10px;
     }
+    
+.work_title
+    {
+        font-size: 250%;
+        line-height: 140%;
+        font-weight: bold;   
+    }
+.work_author
+    {
+        font-size: 150%;
+        line-height: 140%;
+        font-style: italic;
+        font-weight: bold;   
+    }

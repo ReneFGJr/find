@@ -1,11 +1,11 @@
 <?php
-define('LIBRARY', '1001');
-define('PATH', 'index.php/main/');
-define('LOGO', 'img/logo_library.png');
-define('LIBRARY_NAME', 'Rede de Leitura');
-define('LIBRARY_LEMA', 'Incentivando a Leitura');
-
-
+/*
+ define('LIBRARY', '1001');
+ define('PATH', 'index.php/main/');
+ define('LOGO', 'img/logo_library.png');
+ define('LIBRARY_NAME', 'Rede de Leitura');
+ define('LIBRARY_LEMA', 'Incentivando a Leitura');
+ */
 class Main extends CI_controller {
     var $lib = 10010000000;
 
@@ -20,6 +20,9 @@ class Main extends CI_controller {
         $this -> load -> helper('email');
         $this -> load -> helper('url');
         $this -> load -> library('session');
+        $this -> load -> helper('cookie');
+
+        $this -> load -> model('libraries');
 
         date_default_timezone_set('America/Sao_Paulo');
         /* Security */
@@ -32,17 +35,33 @@ class Main extends CI_controller {
         redirect(base_url('index.php/biblio'));
     }
 
-
     private function cab($navbar = 1) {
+
         $this -> load -> model("socials");
-        $data['title'] = 'Biblioteca em Ciência da Informação ::::';
+        $data['title'] = LIBRARY_NAME;
         $data['logo'] = LOGO;
         $data['url'] = PATH;
         $this -> load -> view('header/books_header', $data);
         if ($navbar == 1) {
             $this -> load -> view('header/books_navbar', $data);
         }
-        $_SESSION['id'] = 1;
+    }
+
+    function library($id = '') {
+        $this -> load -> model('libraries');
+        $data = array();
+        $data['title'] = ':: ' . msg('Libraries');
+        $this -> load -> view('header/books_header', $data);
+
+        if (strlen($id) > 0) {
+            $this -> libraries -> select($id);
+            redirect(base_url(PATH));
+        }
+
+        $sx = '<h1>'.msg('Libraries').'</h1><hr>';
+        $data['content'] = $sx . $this -> libraries -> list_libraries($id);
+        $this -> load -> view('content', $data);
+
     }
 
     function social($act = '') {
@@ -51,6 +70,7 @@ class Main extends CI_controller {
         }
         switch($act) {
             case 'perfil' :
+                $this -> socials -> perfil();
                 break;
             case 'pwsend' :
                 $this -> socials -> resend();
@@ -63,7 +83,7 @@ class Main extends CI_controller {
                 break;
             case 'logout' :
                 $this -> socials -> logout();
-                break;                
+                break;
             case 'forgot' :
                 $this -> socials -> forgot();
                 break;
@@ -113,21 +133,14 @@ class Main extends CI_controller {
     }
 
     private function foot() {
-        $dir = troca($_SERVER['SCRIPT_FILENAME'], 'index.php', 'application/');
-        $footer_file = $dir . 'views/header/footer_' . LIBRARY . '.php';
-        $footer = 'header/footer_' . LIBRARY . '.php';
-        if (file_exists($footer_file)) {
-
-            $this -> load -> view($footer);
-        } else {
-            $this -> load -> view('header/footer');
-        }
+        $this -> load -> view('header/footer');
     }
 
     public function index() {
+        $this -> cab();
+
         $this -> load -> model('frbr');
 
-        $this -> cab();
         $data['logo'] = LOGO;
         $this -> load -> view('welcome_brapci', $data);
         $this -> load -> view('find/search/search_simple', $data);
@@ -542,18 +555,17 @@ class Main extends CI_controller {
                 break;
             case 'hasISBN' :
                 $tela = '';
-                $valx = substr($val,strlen($val),1);
+                $valx = substr($val, strlen($val), 1);
                 $val = sonumero($val);
-                if (strlen($val) <= 10)
-                    {
-                        $val = isbn10to13($val);
-                        $tela .= '====>'. $val;
-                        $dv = $this -> barcodes -> isbn13($val);
-                        $isbn10 = isbn13to10($val);
-                    } else {
-                        $dv = $this -> barcodes -> isbn13($val);
-                        $isbn10 = isbn13to10($val);        
-                    }
+                if (strlen($val) <= 10) {
+                    $val = isbn10to13($val);
+                    $tela .= '====>' . $val;
+                    $dv = $this -> barcodes -> isbn13($val);
+                    $isbn10 = isbn13to10($val);
+                } else {
+                    $dv = $this -> barcodes -> isbn13($val);
+                    $isbn10 = isbn13to10($val);
+                }
                 if (substr($val, strlen($val), 1) != $dv) {
                     $tela .= '
                                 <div class="alert alert-danger" role="alert">
@@ -1787,25 +1799,27 @@ class Main extends CI_controller {
 
         $this -> foot();
     }
+
     function termo($id = '') {
         $this -> load -> model('termos');
         $tela = '';
         $this -> cab();
         $data['content'] = $this -> termos -> termo_form();
-        
+
         $data['title'] = msg('Bookshelf');
         $this -> load -> view('content', $data);
 
         $this -> foot();
     }
-    function superadmin($id='',$act='')
-        {
-            $this->cab();
-            $this->load->model("superadmin");
-            $data['content'] = $this->superadmin->index($id,$act);
-            $data['title'] = msg('libraries_row');
-            $this->load->view("show",$data);
-            $this->foot();
-        }    
+
+    function superadmin($id = '', $act = '') {
+        $this -> cab();
+        $this -> load -> model("superadmin");
+        $data['content'] = $this -> superadmin -> index($id, $act);
+        $data['title'] = msg('libraries_row');
+        $this -> load -> view("show", $data);
+        $this -> foot();
+    }
+
 }
 ?>

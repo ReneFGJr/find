@@ -4,7 +4,7 @@
 		    <div class="container">
 			footer
 			<ul style="list-style: none;">
-			    <li><a href="#" class="link">contact</a></li>
+			    <li><a href="#" class="link"><?php echo msg('Contact');?></a></li>
 			</ul>
 			</div>
 		</div>

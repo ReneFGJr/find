@@ -261,4 +261,7 @@ $lang['edit_manifestation'] = "Editar Manifestação";
 
 $lang['label_create'] = 'Imprimir etiquetas';
 $lang['label_book_create'] = 'Atualizar etiquetas de lombada';
+
+$lang['Loan'] = 'Emprestar';
+$lang['Reserve'] = 'Reservar';
 ?>

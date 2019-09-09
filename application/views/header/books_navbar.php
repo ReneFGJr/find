@@ -30,8 +30,10 @@ if (!isset($logo))
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <?php echo msg('Loans');?> </a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-				    <a class="dropdown-item" href="<?php echo base_url(PATH.'mod/loans/books'); ?>"><?php echo msg("loan_book");?></a>
+				    <?php if (perfil("#ADM#OPE")) { ?>
 				    <a class="dropdown-item" href="<?php echo base_url(PATH.'mod/loans/users'); ?>"><?php echo msg('load_users');?></a>
+				    <a class="dropdown-item" href="<?php echo base_url(PATH.'mod/loans/books'); ?>"><?php echo msg("loan_book");?></a>
+				    <?php } ?>				    
 				    <a class="dropdown-item" href="<?php echo base_url(PATH.'mod/loans/renove'); ?>"><?php echo msg('loan_renove');?></a>
 				</div>
 			</li>

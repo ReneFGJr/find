@@ -11,7 +11,7 @@ if (!file_exists($pict)) {
 
 		<div class="col-md-10">	
 			<font class="small">nome</font><br>
-			<font class="middle"><?php echo $us_nome; ?></font>	
+			<font class="big"><?php echo $us_nome; ?></font>	
 			
 			<div class="row">
 			<div class="col-md-5">

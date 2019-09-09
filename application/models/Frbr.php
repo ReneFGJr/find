@@ -837,6 +837,8 @@ class frbr extends CI_model {
     }
 
     function work_show_2($id, $act = '') {
+        $this -> load -> model('avaliations');
+        $this -> load -> model('loans');
         $data = array();
 
         /************** actions *************/
@@ -905,10 +907,9 @@ class frbr extends CI_model {
 
                 $its = $this -> itens_show_resume($idm);
                 $data['itens'] = $its;
-
                 $data['chapter'] = $this -> chapters($idm);
 
-                $sx .= $this -> load -> view('find/view/work_2', $data, true);
+                $sx .= $this -> load -> view('find/view/work_3', $data, true);
 
             }
         }
@@ -3248,7 +3249,7 @@ class frbr extends CI_model {
                     break;
                 case 'Work' :
                     /* Modo 2 */
-                    $tela .= $this -> frbr -> work_show_2($id);
+                    $tela = $this -> frbr -> work_show_2($id);
                     break;
                 case 'Item' :
                     $data = array();

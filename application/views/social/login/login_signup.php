@@ -15,9 +15,9 @@
 		<div class="col-1 col-md-3"></div>
 		<div class="col-10 col-md-6 box100">
 			<form method="post" action="<?php echo base_url(PATH.'social/signup');?>">
-				<span class="form_title"> <?php echo LIBRARY_NAME;?> </span>
+				<span class="form_title"> BRAPCI <sup>2.0</sup> </span>
                 <br/>
-                <span class="login100-form-title p-b-48"> <i class="zmdi zmdi-font"><?php echo LIBRARY_LEMA; ?></i> </span>
+                <span class="login100-form-title p-b-48"> <i class="zmdi zmdi-font">information science database</i> </span>
                 <br/>
                 <br/>
 				
@@ -31,13 +31,10 @@
                     <span class="focus-input100" data-placeholder="fullName"></span>
                 </div>
                 
-                <!--<br/> -->
+                <br/>
                 <div class="" >
-                    <!-- 
                     <span><?php echo msg('Institution'); ?></span>
-                    <input class="form-control" type="text" name="Institution" id="Institution" value="<?php echo get("Institution");?>"> 
-                    -->
-                    <input class="form-control" type="hidden" name="Institution" id="Institution" value="<?php echo LIBRARY_NAME;?>">
+                    <input class="form-control" type="text" name="Institution" id="Institution" value="<?php echo get("Institution");?>">
                     <span class="focus-input100" data-placeholder="<?php echo msg('Institution'); ?>"></span>
                 </div>                
 

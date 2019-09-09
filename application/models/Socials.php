@@ -576,6 +576,19 @@ class socials extends CI_Model {
         }
         return ($dd2);
     }
+    
+    function perfil()
+        {
+            $id = $_SESSION['id'];
+            $line = $this->le($id);
+            
+            $sx = $this -> load -> view('auth_social/user', $line, true);
+            
+            $data['content'] = $sx;
+            $data['title'] = '';
+            $this->load->view("content",$data);
+            return($sx);
+        }
 
     function change_password($id, $new = 0) {
         $form = new form;

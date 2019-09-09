@@ -4,7 +4,7 @@ require ("work_process.php");
 
 <style>
     div {
-        border: 1px solid #000000;
+        border: 5px solid #000000;
     }
 </style>
 <!------------------------------------------------------------>

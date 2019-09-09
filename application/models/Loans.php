@@ -26,9 +26,37 @@ class loans extends CI_model {
         }
 	function users() {
 		$this -> load -> model("users");
-		$tela = $this -> users -> row();
+		$tela = $this ->  row();
 		return ($tela);
 	}
+    
+    function loan($id)
+        {
+            $sx = '';
+            $sx .= '<a href="#" class="btn btn-danger">'.msg("Loan").'</a>';
+            $sx .= ' ';
+            $sx .= '<a href="#" class="btn btn-warning">'.msg("Reserve").'</a>';
+            return($sx);
+        }
+    
+    function row($id = '') {
+        $form = new form;
+
+        $form -> fd = array('id_us', 'us_nome', 'us_email', 'us_badge', 'us_ativo');
+        $form -> lb = array('id', msg('us_name'), msg('us_email'),msg('us_badge'), msg('us_ativo'));
+        $form -> mk = array('', 'L', 'L', 'A');
+
+        $form -> tabela = $this -> table;
+        $form -> see = True;
+        $form -> novo = perfil("#ADM");
+        $form -> edit = perfil("#ADM");
+
+        $form -> row_edit = base_url(PATH.'mod/loans/user');
+        $form -> row_view = base_url(PATH.'mod/loans/loan_user');
+        $form -> row = base_url(PATH.'mod/loans/users');
+
+        return (row($form, $id));
+    }    
 
 	function loan_user($user = 0, $chk = '') {
 		$this -> load -> model("users");
