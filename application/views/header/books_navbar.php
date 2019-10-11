@@ -20,12 +20,6 @@ if (!isset($logo))
 
 	<div class="collapse navbar-collapse" id="navbarSupportedContent">
 		<ul class="navbar-nav mr-auto">
-			<li class="nav-item active">
-				<a class="nav-link" href="<?php echo base_url(PATH); ?>">Catálogo <span class="sr-only">(current)</span></a>
-			</li>
-            <li class="nav-item">
-                <a class="nav-link" href="<?php echo base_url(PATH.'bookshelf'); ?>"><?php echo msg("bookshelf");?></span></a>
-            </li>
 			<?php if (file_exists('application/models/Loans.php')) { ?>
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <?php echo msg('Loans');?> </a>
@@ -37,7 +31,15 @@ if (!isset($logo))
 				    <a class="dropdown-item" href="<?php echo base_url(PATH.'mod/loans/renove'); ?>"><?php echo msg('loan_renove');?></a>
 				</div>
 			</li>
-			<?php } ?>						
+			<?php } ?>
+			
+			<li class="nav-item active">
+				<a class="nav-link" href="<?php echo base_url(PATH); ?>">Catálogo <span class="sr-only">(current)</span></a>
+			</li>
+            <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(PATH.'bookshelf'); ?>"><?php echo msg("bookshelf");?></span></a>
+            </li>
+						
 			<li class="nav-item dropdown">
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <?php echo msg('index');?> </a>
 				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">

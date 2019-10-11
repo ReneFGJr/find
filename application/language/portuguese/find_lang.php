@@ -246,8 +246,9 @@ $lang['bt_clear'] = 'Limpar';
 $lang['bt_new'] = 'Novo';
 
 $lang['Loans'] = 'Empréstimo';
+$lang['LOANS'] = 'Empréstimo';
 $lang['loan_book'] = 'Consultar tombo';
-$lang['loan_users'] = 'Cadastro de Usuários';
+$lang['load_users'] = 'Cadastro de Usuários';
 $lang['loan_renove'] = 'Renovação';
 
 $lang['us_nome'] = 'Nome completo';
@@ -264,4 +265,7 @@ $lang['label_book_create'] = 'Atualizar etiquetas de lombada';
 
 $lang['Loan'] = 'Emprestar';
 $lang['Reserve'] = 'Reservar';
+
+$lang['highlights'] = 'Destaques';
+$lang['showcase'] = 'Vitrine';
 ?>
