@@ -154,28 +154,45 @@
             redirect(base_url(PATH));
         }
 
-        $tela = $rdf->config($tools,$ac,$id);
-            case 'forms' :
-            $tela .= msg('FORMS');
-            $tela .= $this -> frbr -> form_class();
-            break;
-
-            case 'authority' :
-            if (perfil("#ADM") == 1) {
-                if ($ac == 'update') {
-                    $tela .= $this -> frbr -> viaf_update();
-                } else {
-                    $tela .= '<br><a href="' . base_url(PATH . 'config/authority/update') . '" class="btn btn-secondary">' . msg('authority_update') . '</a>';
-                }
-                $tela .= '<br><br><h3>' . msg('Authority') . ' ' . msg('viaf') . '</h3>';
-                $tela .= $this -> frbr -> authority_class();
-            }
-            break;
-        }
+        $tela = $rdf->config($tools,$ac,$id); 
         $data['content'] = $tela;
         $this -> load -> view('content', $data);
         $this -> foot();
     }
 
+    function about()
+    {
+        $this -> load -> model('libraries');
+        $tela = '';
+        $this -> cab();
+        $data['content'] = $this -> libraries->about();     
+        $data['title'] = msg('About');
+        $this -> load -> view('content', $data);
+
+        $this -> foot();        
+    }
+
+    function contact()
+    {
+        $this -> load -> model('libraries');
+        $tela = '';
+        $this -> cab();
+        $data['content'] = $this -> libraries->about();     
+        $data['title'] = msg('About');
+        $this -> load -> view('content', $data);
+
+        $this -> foot();        
+    }    
+
+    function bookshelf($id = '') {
+        $this -> load -> model('libraries');
+        $tela = '';
+        $this -> cab();
+        $data['content'] = $this -> libraries->highlights('bookself');     
+        $data['title'] = msg('Bookshelf');
+        $this -> load -> view('content', $data);
+
+        $this -> foot();
+    }
 }
 ?>

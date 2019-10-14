@@ -12,7 +12,7 @@ require ("work_process.php");
     </div>
     
     <!-- Dados da Obra -->
-    <div class="col-lg-6 col-md-7 col-xs-8  col-sm-8">
+    <div class="col-lg-5 col-md-7 col-xs-8  col-sm-8">
         <!---- Autor ---->
         <span class="work_title"><?php echo $linkm . $title . $linka; ?></span>
         <br>
@@ -40,7 +40,7 @@ require ("work_process.php");
         <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>xx
         
     </div>
-    <div class="col-lg-3 col-md-7 col-xs-8  col-sm-8">
+    <div class="col-lg-4 col-md-7 col-xs-8  col-sm-8" style="border: 1px solid #00000;">
         <?php echo $itens; ?>
     </div>
 </div>

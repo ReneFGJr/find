@@ -45,7 +45,7 @@ for ($r = 0; $r < count($work); $r++) {
     $type = $work[$r]['c_class'];
     $value = $work[$r]['n_name'];
     //echo '<br>'.$type.'->'.$value;
-    $link = '<a href="' . base_url(PATH . 'v/' . $work[$r]['id_cc']) . '">';
+    $link = '<a href="' . base_url(PATH . 'v/' . $work[$r]['d_r1']) . '">';
     $linka = '</a>';
     switch($type) {
         case 'hasTitle' :
@@ -72,7 +72,7 @@ for ($r = 0; $r < count($expression); $r++) {
     $type = $expression[$r]['c_class'];
     $value = $expression[$r]['n_name'];
     //echo '<br>'.$type.'->'.$value;
-    $link = '<a href="' . base_url(PATH . 'v/' . $expression[$r]['id_cc']) . '">';
+    $link = '<a href="' . base_url(PATH . 'v/' . $expression[$r]['d_r1']) . '">';
     $linka = '</a>';
     switch($type) {
         case 'hasFormExpression' :
@@ -112,7 +112,7 @@ if (isset($manifestation)) {
         $value = $manifestation[$r]['n_name'];
 
         ///echo '<br>' . $type . '->' . $value;
-        $link = '<a href="' . base_url(PATH . 'v/' . $manifestation[$r]['id_cc']) . '">';
+        $link = '<a href="' . base_url(PATH . 'v/' . $manifestation[$r]['d_r1']) . '">';
         $linkm = '<a href="' . base_url(PATH . 'v/' . $manifestation[0]['d_r1']) . '">';
         $linka = '</a>';
         switch($type) {

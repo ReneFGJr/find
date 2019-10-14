@@ -27,6 +27,7 @@ if (!isset($logo))
 				    <?php if (perfil("#ADM#OPE")) { ?>
 				    <a class="dropdown-item" href="<?php echo base_url(PATH.'mod/loans/users'); ?>"><?php echo msg('load_users');?></a>
 				    <a class="dropdown-item" href="<?php echo base_url(PATH.'mod/loans/books'); ?>"><?php echo msg("loan_book");?></a>
+				    <a class="dropdown-item" href="<?php echo base_url(PATH.'mod/loans/reports'); ?>"><?php echo msg("loan_reports");?></a>
 				    <?php } ?>				    
 				    <a class="dropdown-item" href="<?php echo base_url(PATH.'mod/loans/renove'); ?>"><?php echo msg('loan_renove');?></a>
 				</div>

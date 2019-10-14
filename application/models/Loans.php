@@ -7,11 +7,59 @@ class loans extends CI_model {
 		return($sx);
 	}
 
+	function reports($ac='',$id='')
+	{
+		$sx = '';
+		switch ($ac)
+		{
+			case 'loan1':
+				$sx = $this->r_loan_1();
+				break;
+			default:
+			$sx .= '<ul>';
+			$sx .= '<li>'.'<a href="'.base_url(PATH.'mod/loans/reports/loan1').'">'.msg('load_report_1').'</a>';
+			$sx .= '</ul>';
+			break;
+		}
+		return($sx);
+	}
+
+	function r_loan_1()
+		{
+			$sx = '<h1>'.msg("report_loan_1").'</h1>';
+			$sql = "select * from itens where i_status = 2";
+			$rlt = $this->db->query($sql);
+			$rlt = $rlt->result_array();
+
+			$sx = '<table class="table">'.cr();
+			$sx .= '<tr>';
+			$sx .= '<th width="10%">'.msg('transaction').'</th>';
+			$sx .= '<th width="20%">'.msg('date').'</th>';
+			$sx .= '<th width="40%">'.msg('user').'</th>';
+			$sx .= '<th width="30%">'.msg('operator').'</th>';
+			$sx .= '</tr>';
+
+			for ($r=0;$r < count($rlt);$r++)
+				{
+					$line = $rlt[$r];
+					$sx .= '<tr>';
+					$sx .= '<td>'.($line['i_tombo']).'</td>';
+					$sx .= '<td>'.stodbr($line['i_date_return']).'</td>';
+					//$sx .= '<td>'.$line['us_nome_usuario'].'</td>';
+					//$sx .= '<td>'.$line['us_nome_operador'].'</td>';
+					$sx .= '</tr>';
+				}
+			$sx .= '</table>'.cr();
+
+			return($sx);
+		}
+
 	function books()
 	{
 		$sx = msg('not_implemented');
 		return($sx);
 	}
+
 	function index()
 	{
 		$sx = '<h1>'.msg('loans').'</h1>';
@@ -20,6 +68,7 @@ class loans extends CI_model {
 		$sx .= '</ul>';
 		return($sx);
 	}
+
 	function renove()
 	{
 		$sx = 'Renovação';
@@ -61,7 +110,6 @@ class loans extends CI_model {
 
 	function loan_user($user = 0, $chk = '') {
 		$this -> load -> model("users");
-		$this -> load -> model("frbr");
 		$this -> load -> model("barcodes");
 		$data = $this -> users -> le($user);
 		if (count($data) > 0) {
@@ -108,7 +156,6 @@ class loans extends CI_model {
 			$tombo = $tombo . $this -> barcodes -> ean13($tombo);
 		}
 		$sql = "select * from itens where i_tombo = '$tombo' ";
-		ECHO $sql;
 		$rlt = $this -> db -> query($sql);
 		$rlt = $rlt -> result_array();
 		if (count($rlt) > 0)
@@ -126,38 +173,96 @@ class loans extends CI_model {
 		$data = $this -> le_tombo($tombo);
 		if (isset($data['i_status']))
 		{
-			if ($data['i_status'] == 3) {
-				$manifestation = $data['i_namifestation'];
+			switch($data['i_status'])
+			{
+				case '5':
+				$tela = '<div class="alert alert-danger" role="alert">';
+				$tela = 'Obra não disponível para empréstimo';
+				$tela .= ' =x=> '.$data['i_status'];
+				$tela .= '</div>';				
+				break;
+
+				case '2':
+				$tela = '<div class="alert alert-danger" role="alert">';
+				$tela = 'Livro emprestados';
+				$tela .= ' =x=> '.$data['i_status'];
+				$tela .= '</div>';				
+				break;				
+
+				default:
+				$manifestation = $data['i_manifestation'];
 				$tombo = $data['i_tombo'];
 				$tela = $rdf ->  related($manifestation,0);
 
-				$this->loan_historico($tombo,$user,2);
-				$this->loan_emprestimo($tombo,$user,$data);
-			} else {
-				$tela = 'Obra não disponível para empréstimo';
+				$this->loan_historico_add($tombo,$user,2);
+				$this->loan_emprestimo($tombo,$user,$data);			
+				break;				
 			}
+			$tela .= $this->loan_historico($tombo,$user);
 		} else {
 			$tela = 'Número tombo inválido!';
 		}
 		return ($tela);
 	}
 
+	function load_email($user)
+	{
+
+	}
+
 	function loan_emprestimo($tombo,$user,$data)
 	{
 		$dias = strtotime("+7 days");
 		$dateSrc = date('d/m/Y')+$dias;
-		echo date("d/m/Y",$dateSrc);
-		exit;
+		$dater = date("d/m/Y",$dateSrc);
+
+		$sql = "update itens set i_status = 2, i_user = $user, i_date_return = $dater where i_tombo = '".$tombo."'";
+		$rlt = $this->db->query($sql);
+		return(1);
 
 	}
-	function loan_historico($tombo,$user,$type)
+
+	function loan_historico($tombo,$user)
+		{
+			$sx = '<table class="table">'.cr();
+			$sx .= '<tr>';
+			$sx .= '<th width="10%">'.msg('transaction').'</th>';
+			$sx .= '<th width="20%">'.msg('date').'</th>';
+			$sx .= '<th width="40%">'.msg('user').'</th>';
+			$sx .= '<th width="30%">'.msg('operator').'</th>';
+			$sx .= '</tr>';
+
+			$sql = "select logs.us_nome as us_nome_operador, 
+						   usr.us_nome as us_nome_usuario, 
+							id_ih, ih_created
+					from itens_historico 
+					inner join users as logs on logs.id_us = ih_log
+					inner join users as usr on usr.id_us = ih_user
+							where ih_user = ".$user." 
+							order by ih_created desc";
+			$rlt = $this->db->query($sql);
+			$rlt = $rlt->result_array();
+			for ($r=0;$r < count($rlt);$r++)
+				{
+					$line = $rlt[$r];
+					$sx .= '<tr>';
+					$sx .= '<td>'.($line['id_ih']).'</td>';
+					$sx .= '<td>'.stodbr($line['ih_created']).' '.substr($line['ih_created'],11,8).'</td>';
+					$sx .= '<td>'.$line['us_nome_usuario'].'</td>';
+					$sx .= '<td>'.$line['us_nome_operador'].'</td>';
+					$sx .= '</tr>';
+				}
+			$sx .= '</table>'.cr();
+			return($sx);
+		}
+	function loan_historico_add($tombo,$user,$type)
 	{
 		print_r($_SESSION);
 		$log = $_SESSION['id'];
-		$sql = "insert into itens_historico (ih_tombo, ih_type, ih_user, ih_log)
+		$sql = "insert into itens_historico (ih_tombo, ih_type, ih_user, ih_log, ih_operador)
 		values
-		('$tombo','$type','$user','$log')";
-		echo $sql;
+		('$tombo','$type',$user,'$log',$user_id)";
+		$this->db->query($sql);
 	}
 }
 ?>

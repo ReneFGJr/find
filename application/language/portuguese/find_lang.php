@@ -233,11 +233,13 @@ $lang['Signup_user'] = 'Cadastro de usuário';
 
 $lang['situacao_exemplar_0'] = '<span style="color: green"><b>Disponível</b></span>';
 $lang['situacao_exemplar_1'] = 'Disponível';
-$lang['situacao_exemplar_2'] = 'Disponível';
+$lang['situacao_exemplar_2'] = '<span style="color: orange"><b>Emprestado</b></span>';
 $lang['situacao_exemplar_3'] = 'Disponível';
 $lang['situacao_exemplar_4'] = 'Disponível';
 $lang['situacao_exemplar_5'] = 'Disponível';
 $lang['situacao_exemplar_6'] = 'Disponível';
+$lang['situacao_exemplar_9'] = '<span style="color: red"><b>Em preparo</b></span>';
+$lang['status'] = 'Situação';
 
 $lang['loan_module'] = 'Módulo de empréstimo';
 

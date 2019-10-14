@@ -67,20 +67,9 @@ class socials extends CI_Model {
     var $linkedin_redirect = 'http://www.brapci.inf.br/oauth_linkedin.php';
 
     function __construct() {
-        global $db_public;
-
-        $db_public = 'brapci_publico.';
         parent::__construct();
-
-        $this -> lang -> load("app", "portuguese");
-        $this -> load -> library('form_validation');
-        $this -> load -> database();
-        $this -> load -> helper('form');
-        $this -> load -> helper('form_sisdoc');
-        $this -> load -> helper('url');
-        $this -> load -> library('session');
-        //$this -> load -> library('Oauth2');
-        date_default_timezone_set('America/Sao_Paulo');
+        global $lang;
+        $lang['SignUp'] = 'Cadastro';
     }
 
     function menu_user() {
