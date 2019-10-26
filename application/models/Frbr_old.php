@@ -2138,26 +2138,7 @@ class frbr extends CI_model {
         return ($sx);
     }
 
-    function show_works($id = '') {
-        $class = $this -> find_class('work');
-        $sql = "select id_cc as w 
-                            from rdf_concept 
-                            where cc_class = " . $class . "
-                            AND cc_library = " . LIBRARY . "
-                            ORDER BY id_cc desc
-                            limit 18
-                            ";
-        $rlt = $this -> db -> query($sql);
-        $rlt = $rlt -> result_array();
-        $sx = '';
-        for ($r = 0; $r < count($rlt); $r++) {
-            $line = $rlt[$r];
-            $sx .= '<li>';
-            $sx .= $this -> show_manifestation_by_works($line['w']);
-            $sx .= '</il>' . cr();
-        }
-        return ($sx);
-    }
+
 
     function show_bookshelf($id = '') {
         $class_1 = $this -> find_class('CDU');
