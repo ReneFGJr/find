@@ -9,8 +9,6 @@ class libraries extends CI_model {
                 if ($key == 'library') {
                     $id = $value;
                     $this->select($id);
-                    echo '=SELECAO==>'.$id;
-                    exit;
                     redirect(base_url('index.php/main/library/' . $id));
                 }
             }
@@ -32,12 +30,25 @@ class libraries extends CI_model {
             $id = round($_SESSION['library']);
             $this->select($id);
         }
-        $data = $this -> le($id);
-        define('LIBRARY', $data['l_id']);
-        define('PATH', 'index.php/main/');
-        define('LOGO', $data['l_logo']);
-        define('LIBRARY_NAME', $data['l_name']);
-        define('LIBRARY_LEMA', $data['l_about']);   
+
+        if (!isset($id))
+            {
+                echo "OPS - ".$page;
+                if (strpos($page, '/library')) { 
+                    define('PATH', 'index.php/main/');
+                    /* Nothing */
+                } else {
+                    redirect(base_url('index.php/main/library/'));    
+                }
+                
+            } else {
+                $data = $this -> le($id);
+                define('LIBRARY', $data['l_id']);
+                define('PATH', 'index.php/main/');
+                define('LOGO', $data['l_logo']);
+                define('LIBRARY_NAME', $data['l_name']);
+                define('LIBRARY_LEMA', $data['l_about']);                  
+            }
 
         return ('');
     }
