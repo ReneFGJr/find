@@ -194,5 +194,35 @@
 
         $this -> foot();
     }
+    function indice($type = '', $lt = '') {
+        $rdf = new rdf;
+        $this -> cab();
+        switch ($type) {
+            case 'author' :
+            $title = msg('index') . ': ' . msg('index_authority');
+            $sx = $rdf -> index_author($lt);
+
+            break;
+            case 'serie' :
+            $title = msg('index') . ': ' . msg('index_serie');
+            $sx = $rdf -> index_other($lt, 'hasSerieName');
+
+            break;
+            case 'editor' :
+            $title = msg('index') . ': ' . msg('index_editor');
+            $sx = $rdf -> index_other($lt, 'isPublisher');
+
+            break;
+            case 'title' :
+            $title = msg('index') . ': ' . msg('index_title');
+            $sx = $rdf -> index_work($lt, 'hasTitle');
+
+            break;
+        }
+        $data['content'] = '<h1>' . $title . '</h1>' . $sx;
+        $this -> load -> view('content', $data);
+
+        $this -> foot();
+    }    
 }
 ?>

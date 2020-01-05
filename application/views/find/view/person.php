@@ -76,7 +76,11 @@ for ($r=0;$r < count($person);$r++)
                 }
             $dates .= $dead;                
         }
-$img = troca($img,'class="img-fluid"','class="img-fluid img-person"');        
+$img = troca($img,'class="img-fluid"','class="img-fluid img-person"'); 
+
+/********  Classe RDF **/
+$rdf = new rdf;       
+
 ?>
 <!---------------- WORK --------------------------------------------------------------->
 <div class="container">
@@ -89,7 +93,7 @@ $img = troca($img,'class="img-fluid"','class="img-fluid img-person"');
             <?php
             if (strlen($cc_origin) > 0)
                 {
-                    echo '<br><tt>'.$this->frbr->show_rdf($cc_origin).'</tt>';
+                    echo '<br><tt>'.$rdf->show_rdf($cc_origin).'</tt>';
                 }
             
             if (strlen($alt.$hid.$cutter) > 0)

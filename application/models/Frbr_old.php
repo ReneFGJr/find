@@ -2696,52 +2696,9 @@ class frbr extends CI_model {
         return ($sx);
     }
 
-    function bookcase($id = '', $prop = 'hasClassificationCDU') {
-        $propid = $this -> find_class($prop);
-        $sql = "select * from rdf_data
-                    INNER JOIN rdf_concept ON d_r2 = id_cc
-                    INNER JOIN rdf_name ON cc_pref_term = id_n 
-                    where d_p = " . $propid . "
-                    ORDER BY n_name";
-        $rlt = $this -> db -> query($sql);
-        $rlt = $rlt -> result_array();
-        $sx = '';
-        for ($r = 0; $r < count($rlt); $r++) {
-            $line = $rlt[$r];
-            $idm = $line['d_r1'];
-            $note = $line['n_name'];
-            $sx .= $this -> frbr -> show_manifestation_by_works($idm);
-        }
-        return ($sx);
-    }
 
-    function index_other($lt = '', $class = 'isPublisher') {
-        $f = $this -> find_class($class);
 
-        $sql = "select d_r2, n_name, id_cc from rdf_data
-						LEFT JOIN rdf_concept on d_r2 = id_cc  
-						LEFT JOIN rdf_name ON cc_pref_term = id_n
-						where d_P = " . $f . " AND cc_library = " . LIBRARY . "
-						GROUP BY d_r2, n_name, id_cc
-						ORDER BY n_name";
-        $rlt = $this -> db -> query($sql);
-        $rlt = $rlt -> result_array();
-        $sx = '<ul>';
-        $l = '';
-        for ($r = 0; $r < count($rlt); $r++) {
-            $line = $rlt[$r];
-            $xl = substr($line['n_name'], 0, 1);
-            if ($xl != $l) {
-                $sx .= '<h4>' . $xl . '</h4>';
-                $l = $xl;
-            }
-            $link = '<a href="' . base_url(PATH . 'v/' . $line['id_cc']) . '">';
-            $name = $link . $line['n_name'] . '</a>';
-            $sx .= '<li>' . $name . '</li>' . cr();
-        }
-        $sx .= '<ul>';
-        return ($sx);
-    }
+
 
     function recupera_imagem($id, $img = 'img/icon/icone_author.jpg') {
         $d = $this -> le_data($id);
