@@ -194,6 +194,23 @@
 
         $this -> foot();
     }
+
+    function catalog($act='',$id='')
+    {
+        $this->load->model("catalog");
+        $rdf = new rdf;
+        $this -> cab();
+        $data['content'] = $this->catalog->index();
+        
+        $data['title'] = msg('Cataloging');
+        $this -> load -> view('content', $data);
+
+        $this -> foot();
+
+
+
+
+    }
     function indice($type = '', $lt = '') {
         $rdf = new rdf;
         $this -> cab();
