@@ -41,15 +41,6 @@ if (!isset($logo))
                 <a class="nav-link" href="<?php echo base_url(PATH.'bookshelf'); ?>"><?php echo msg("bookshelf");?></span></a>
             </li>
 						
-			<li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <?php echo msg('index');?> </a>
-				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-				    <a class="dropdown-item" href="<?php echo base_url(PATH.'indice/author'); ?>"><?php echo msg("index_authority");?></a>
-				    <a class="dropdown-item" href="<?php echo base_url(PATH.'indice/editor'); ?>"><?php echo msg('index_editor');?></a>
-				    <a class="dropdown-item" href="<?php echo base_url(PATH.'indice/serie'); ?>"><?php echo msg('index_serie');?></a>
-				    <a class="dropdown-item" href="<?php echo base_url(PATH.'indice/title'); ?>"><?php echo msg('index_title');?></a>
-				</div>
-			</li>
             <li class="nav-item">
                 <a class="nav-link" href="<?php echo base_url(PATH.'about'); ?>">Sobre</a>
             </li>
@@ -58,19 +49,11 @@ if (!isset($logo))
 			</li>
 			<!------ catalog ---->
 			<?php 
-			if (perfil('#ADM')==1) 
+			if (perfil('#ADM#PRP')==1) 
 			{ ?>
-			<li class="nav-item dropdown">
-				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> Catalogação </a>
-				<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-				    <a class="dropdown-item" href="<?php echo base_url(PATH.'authority'); ?>"><?php echo msg("authority");?></a>
-				    <a class="dropdown-item" href="<?php echo base_url(PATH.'catalog_work'); ?>">Bibliográfico</a>
-                    <a class="dropdown-item" href="<?php echo base_url(PATH.'cutter'); ?>"><?php echo msg("cutter");?></a>
-                    <a class="dropdown-item" href="<?php echo base_url(PATH.'vocabulary'); ?>">Vocabulários controlados</a>
-                    <a class="dropdown-item" href="<?php echo base_url(PATH.'catalog'); ?>">Etiquetas</a>
-                    <a class="dropdown-item" href="<?php echo base_url(PATH.'labels'); ?>"><?php echo msg('menuLabels');?></a>
-				</div>
-			</li>
+            <li class="nav-item">
+                <a class="nav-link" href="<?php echo base_url(PATH.'catalog'); ?>"><?php echo msg("cataloging");?></span></a>
+            </li>
 			<?php } ?>
 			
 			<!------ ADMIN CONFIG ---->

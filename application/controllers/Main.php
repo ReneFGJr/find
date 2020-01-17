@@ -48,6 +48,32 @@
         }
     }
 
+    function ajax($path='',$id='')
+    {
+        switch($path)
+        {
+            case 'viaf_autocomplete':
+            $term = get("term");
+            $ak = array('label' => 'Alaska');
+            $al = array('label' => 'Alabama');
+            $ar = array('label' => 'Arkansas');
+            $az = array('label' => $term);
+
+            $arr[0] = $ak;
+            $arr[1] = $al;
+            $arr[2] = $ar;
+            $arr[3] = $az;
+
+# echo the json data back to the html web page
+            echo json_encode($arr);
+            break;
+
+            default:
+            $sx = '[{ value: "1463", label: "dealer 5"}, { value: "269", label: "dealer 6" }]';
+            echo $sx;
+        }
+    }
+
     function library($id = '') {        
         $this -> load -> model('libraries');
         $data = array();
@@ -200,7 +226,7 @@
         $this->load->model("catalog");
         $rdf = new rdf;
         $this -> cab();
-        $data['content'] = $this->catalog->index();
+        $data['content'] = $this->catalog->index($act,$id);
         
         $data['title'] = msg('Cataloging');
         $this -> load -> view('content', $data);

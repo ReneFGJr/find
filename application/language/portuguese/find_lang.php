@@ -88,7 +88,7 @@ $lang['Expression'] = 'Expression';
 $lang['hasLanguageExpression'] = 'hasLanguageExpression'; 
 $lang['hasFormExpression'] = 'hasFormExpression'; 
 $lang['authority'] = 'Autoridade'; 
-$lang['find_viaf'] = 'Buscar no VIAF'; 
+$lang['find_viaf'] = 'Buscar no VIAF ou Inserir link VIAF para importação'; 
 $lang['inport'] = 'Importar'; 
 $lang['FORMS'] = 'FORMS'; 
 $lang['resource'] = 'Fonte'; 
@@ -270,4 +270,6 @@ $lang['Reserve'] = 'Reservar';
 
 $lang['highlights'] = 'Destaques';
 $lang['showcase'] = 'Vitrine';
+
+$lang['cataloging'] = 'Preparo técnico';
 ?>

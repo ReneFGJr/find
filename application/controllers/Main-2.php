@@ -700,7 +700,7 @@ public function authority() {
 
     $this -> cab();
     $this -> load -> view('find/authority');
-    $this -> load -> view('find/search/search_authority', null);
+    //$this -> load -> view('find/search/search_authority', null);
     /***************/
     $dd1 = get("search");
     if (strlen($dd1) > 0) {
