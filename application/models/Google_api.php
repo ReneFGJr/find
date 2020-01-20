@@ -4,8 +4,8 @@ class google_api extends CI_model
 	function book($isbn) {
 		$rsp = array('count' => 0);
 
-		$url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' . $isbn;
-		$t = read_link($url);
+		$type = 'GOOGL';
+		$t = $this->isbn->get($isbn,$type);
 		$w = (array)json_decode($t);
 
 		/*******************************************************************************/

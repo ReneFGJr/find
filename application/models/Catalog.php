@@ -15,10 +15,14 @@ class catalog extends CI_model
 
 	function book($act='')
 	{
+		$this->load->model("covers");
 		$this->load->model("books");
 		$this->load->model("isbn");
+		$this->load->model("languages");
+		$this->load->model("generes");
 		$this->load->model("google_api");
 		$this->load->model("amazon_api");
+
 		
 		$sx = '<div class="row">';
 		$sx .= '<div class="col-md-2"><img src="'.base_url('img/others/isbn.png').'" class="img-fluid"></div>';

@@ -3,26 +3,31 @@ class Amazon_api extends CI_model
 {
 	function book($isbn) {
 		$rsp = array('count' => 0);	
+		$type = 'AMAZO';
+		$t = $this->isbn->get($isbn,$type);
 
-/* Imagem */
-
-		/* https://www.amazon.com.br/dp/8571933421 */
-		$url = 'https://www.amazon.com.br/dp/' . $isbn;
-		$t = read_link($url);
 		$w = array();
-
 		/************************* Título */
 		$f = 'id="productTitle"';
 		$title = substr($t,strpos($t,$f)+strlen($f),strlen($t));
 		$title = substr($title,strpos($title,'>')+1,strlen($title));
 		$title = substr($title,0,strpos($title,'</span>'));
-		$w['title'] = $title;
+		$w['title'] = nbr_author($title,18);
 
 		/************************* Editora */
 		$f = '<b>Editora:</b>';
 		$s = substr($t,strpos($t,$f)+strlen($f),strlen($t));
 		$s = substr($s,0,strpos($s,'</li>'));
-		$w['editora'] = $s;	
+		$w['editora'] = nbr_author($s,17);
+		$w['ano'] = '';	
+
+		/************************* Ano ****************/
+		if (strpos($s,'(') > 0)
+		{
+			$w['editora'] = nbr_author(substr($s,0,strpos($s,'(')),7);
+			$w['data'] = sonumero(substr($s,strpos($s,'('),20));
+			$w['data'] = substr($w['data'],strlen($w['data'])-4,4);
+		}
 
 		/************************* Idioma */
 		$f = '<b>Idioma:</b>';
@@ -30,15 +35,30 @@ class Amazon_api extends CI_model
 		$s = substr($s,0,strpos($s,'</li>'));
 		$w['expressao'] = array('genere'=>'books','idioma'=>$s);
 
-		/************************* Dimensões do produto */
+		/************************* Dimensões do produto */			
+		$f = 'Dimensões da embalagem:';
+		if (strpos($t,$f) > 0)
+		{
+			$s = substr($t,strpos($t,$f)+strlen($f),strlen($t));
+			$s = substr($s,0,strpos($s,'</li>'));
+			$s = strip_tags($s);
+			$s = troca($s,chr(13),'');
+			$s = troca($s,chr(10),'');
+			$s = trim($s);
+			$w['size'] = $s;
+		}
+
 		$f = 'Dimensões do produto:';
-		$s = substr($t,strpos($t,$f)+strlen($f),strlen($t));
-		$s = substr($s,0,strpos($s,'</li>'));
-		$s = strip_tags($s);
-		$s = troca($s,chr(13),'');
-		$s = troca($s,chr(10),'');
-		$s = trim($s);
-		$w['size'] = $s;
+		if (strpos($t,$f) > 0)
+		{
+			$s = substr($t,strpos($t,$f)+strlen($f),strlen($t));
+			$s = substr($s,0,strpos($s,'</li>'));
+			$s = strip_tags($s);
+			$s = troca($s,chr(13),'');
+			$s = troca($s,chr(10),'');
+			$s = trim($s);
+			$w['size'] = $s;
+		}
 
 		/************************* Peso */
 		$f = '<b>Peso de envio:</b>';
@@ -69,20 +89,31 @@ class Amazon_api extends CI_model
 			$s = trim($s);
 			if (strlen($s) > 0)
 			{
+				$s = nbr_author($s,7);
 				array_push($authors,$s);
 			}
 		}
 
 		/************************* Imagem */
 		$f = 'data-a-dynamic-image="';
-		$s = substr($t,strpos($t,$f)+strlen($f)+1,strlen($t));
-		$s = substr($s,0,strpos($s,';'));
+		$s = substr($t,strpos($t,$f)+strlen($f)+7,200);		
+		$s = substr($s,0,strpos($s,'&quot;'));
+		$s = troca($s,'200_.jpg','800_.jpg');
 		$w['cover'] = $s;
 
 		$w['author'] = $authors;		
 		$w['error'] = 0;
-		$w['error_msg'] = 'ISBN_inported';
-		$w['count'] = 1;
+
+		if (strlen($title) > 0)
+		{
+			$w['error_msg'] = 'ISBN_inported';
+			$w['count'] = 1;
+			$w['error'] = 0;
+		} else {
+			$w['error'] = 1;
+			$w['error_msg'] = 'ISBN_not_found';
+			$w['count'] = 0;
+		}
 		return($w);
 		/*******************************************************************************/
 	}
