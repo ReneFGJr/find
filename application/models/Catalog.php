@@ -13,6 +13,28 @@ class catalog extends CI_model
 		return($sx);
 	}
 
+	function book($act='')
+	{
+		$this->load->model("books");
+		$this->load->model("isbn");
+		$this->load->model("google_api");
+		$this->load->model("amazon_api");
+		
+		$sx = '<div class="row">';
+		$sx .= '<div class="col-md-2"><img src="'.base_url('img/others/isbn.png').'" class="img-fluid"></div>';
+		$sx .= '<div class="col-md-10">'.msg('search_isbn').'</div>';
+		$sx .= '<div class="col-md-12">'.$this -> books->search().'</div>';
+		$sx .= '</div>';
+
+		$isbn = get("dd2");
+		if (strlen($isbn) > 0)
+			{
+				$sx .= $this->books->locate($isbn);
+			}
+		
+		return($sx);
+	}	
+
 	function viaf()
 	{
 		/***************/
@@ -70,6 +92,10 @@ class catalog extends CI_model
 		{
 			switch($path)
 			{
+				case 'book':
+				$sx = $this->book();
+				break;
+
 				case 'authority':
 				$sx = $this->authority();
 				break;
@@ -85,25 +111,32 @@ class catalog extends CI_model
 		{
 			$sx = '<div class="container">';
 			$sx .= '<div class="row">';
-			$sx .= '<div class="col=md-2">';
+
+			$sx .= '<div class="col=md-1">';
+			$sx .= '<a href="'.base_url(PATH.'catalog/book').'">';
+			$sx .= '<img src="'.base_url('img/icon/icon_book.png').'" class="img-fluid" >';
+			$sx .= '</a>';
+			$sx .= '</div>';
+
+			$sx .= '<div class="col=md-1">';
 			$sx .= '<a href="'.base_url(PATH.'catalog/authority').'">';
 			$sx .= '<img src="'.base_url('img/icon/icone_authority.png').'" class="img-fluid" style="width: 100%;">';
 			$sx .= '</a>';
 			$sx .= '</div>';
 
-			$sx .= '<div class="col=md-2">';
+			$sx .= '<div class="col=md-1">';
 			$sx .= '<a href="'.base_url(PATH.'catalog/concept').'">';
 			$sx .= '<img src="'.base_url('img/icon/icon_concept.png').'" class="img-fluid" style="width: 100%;">';
 			$sx .= '</a>';
 			$sx .= '</div>';
 
-			$sx .= '<div class="col=md-2">';
+			$sx .= '<div class="col=md-1">';
 			$sx .= '<a href="'.base_url(PATH.'catalog/geoname').'">';
-			$sx .= '<img src="'.base_url('img/icon/icon_geo.png').'" class="img-fluid" style="width: 100%;">';
+			$sx .= '<img src="'.base_url('img/icon/icon_geo.png').'" class="img-fluid">';
 			$sx .= '</a>';
 			$sx .= '</div>';
 
-			$sx .= '<div class="col=md-2">';
+			$sx .= '<div class="col=md-1">';
 			$sx .= '<a href="'.base_url(PATH.'catalog/editora').'">';
 			$sx .= '<img src="'.base_url('img/icon/icon_editora.png').'" class="img-fluid" style="width: 100%;">';
 			$sx .= '</a>';
