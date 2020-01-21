@@ -20,6 +20,7 @@ class catalog extends CI_model
 		$this->load->model("isbn");
 		$this->load->model("languages");
 		$this->load->model("generes");
+		$this->load->model("authors");
 		$this->load->model("google_api");
 		$this->load->model("amazon_api");
 

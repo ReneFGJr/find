@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.4.1
--- http://www.phpmyadmin.net
+-- version 5.0.0-alpha1
+-- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Jan 20, 2020 at 09:12 PM
--- Server version: 5.7.11
--- PHP Version: 7.0.3
+-- Generation Time: Jan 21, 2020 at 12:01 AM
+-- Server version: 8.0.18-0ubuntu0.19.10.1
+-- PHP Version: 7.3.11-0ubuntu0.19.10.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -32,15 +34,7 @@ CREATE TABLE `find_expression` (
   `e_language` char(5) NOT NULL,
   `e_type` char(5) NOT NULL,
   `e_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `find_expression`
---
-
-INSERT INTO `find_expression` (`id_e`, `e_work`, `e_language`, `e_type`, `e_created`) VALUES
-(1, 1, 'pt', 'book', '2020-01-20 20:14:42'),
-(2, 0, 'pt', 'book', '2020-01-20 20:36:53');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 -- --------------------------------------------------------
 
@@ -54,14 +48,19 @@ CREATE TABLE `find_manifestation` (
   `m_isbn13` char(13) NOT NULL,
   `m_edition` int(11) NOT NULL DEFAULT '0',
   `m_year` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- --------------------------------------------------------
 
 --
--- Dumping data for table `find_manifestation`
+-- Table structure for table `find_manifestation_url`
 --
 
-INSERT INTO `find_manifestation` (`id_m`, `m_expression`, `m_isbn13`, `m_edition`, `m_year`) VALUES
-(3, 1, '9788573598278', 0, 2009);
+CREATE TABLE `find_manifestation_url` (
+  `id_mu` bigint(20) UNSIGNED NOT NULL,
+  `mu_url` text NOT NULL,
+  `mu_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -74,14 +73,7 @@ CREATE TABLE `find_work` (
   `w_title` text NOT NULL,
   `w_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `w_id` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `find_work`
---
-
-INSERT INTO `find_work` (`id_w`, `w_title`, `w_created`, `w_id`) VALUES
-(1, 'Inclusão digital e empregabilidade', '2020-01-20 19:55:11', 0);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- Indexes for dumped tables
@@ -100,6 +92,12 @@ ALTER TABLE `find_manifestation`
   ADD UNIQUE KEY `id_m` (`id_m`);
 
 --
+-- Indexes for table `find_manifestation_url`
+--
+ALTER TABLE `find_manifestation_url`
+  ADD UNIQUE KEY `id_mu` (`id_mu`);
+
+--
 -- Indexes for table `find_work`
 --
 ALTER TABLE `find_work`
@@ -113,17 +111,28 @@ ALTER TABLE `find_work`
 -- AUTO_INCREMENT for table `find_expression`
 --
 ALTER TABLE `find_expression`
-  MODIFY `id_e` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_e` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `find_manifestation`
 --
 ALTER TABLE `find_manifestation`
-  MODIFY `id_m` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_m` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `find_manifestation_url`
+--
+ALTER TABLE `find_manifestation_url`
+  MODIFY `id_mu` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT for table `find_work`
 --
 ALTER TABLE `find_work`
-  MODIFY `id_w` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_w` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+

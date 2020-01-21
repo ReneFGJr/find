@@ -1,6 +1,23 @@
 <?php
 class isbn extends CI_model
 {
+	var $vurl = '';
+	function urls($isbn,$type)
+	{
+		switch($type)
+		{
+			case 'GOOGL':
+			$url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' . $isbn;
+			break;
+
+			case 'AMAZO':
+			$url = 'https://www.amazon.com.br/dp/'.$isbn;
+			break;
+		}
+		return($url);
+	}
+
+	/**********************************************************************/
 	function get($isbn,$type)
 	{
 		$file = $this->file_locate($isbn,$type);
@@ -17,19 +34,21 @@ class isbn extends CI_model
 		{
 			/**************************************** GOOGLE *******************/
 			case 'GOOGL':
-			$url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' . $isbn;
+			$url = $this->urls($isbn,$type);
 			$t = read_link($url);
+			$this->vurl = $url;
 			break;
 
 			/***************************************** AMAZON ********************/
 			case 'AMAZO':
-			$url = 'https://www.amazon.com.br/dp/' . $isbns['isbn10'];
+			$url = $this->urls($isbns['isbn10'],$type);
 			$t = read_link($url);
 			if (strlen($t)==0)
 			{
-				$url = 'https://www.amazon.com.br/dp/' . $isbns['isbn13'];
+				$url = $this->urls($isbns['isbn13'],$type);
 				$t = read_link($url);			
 			}
+			$this->vurl = $url;
 			break;
 		}
 		if (isset($t))
@@ -67,6 +86,9 @@ class isbn extends CI_model
 			$rsp['isbn10'] = $isbn;
 			$rsp['isbn13'] = isbn10to13($isbn);
 		}
+
+		$rsp['isbn10f'] = substr($rsp['isbn10'],0,2).'-'.substr($rsp['isbn10'],2,5).'-'.substr($rsp['isbn10'],7,2).'-'.substr($rsp['isbn10'],9,1);
+		$rsp['isbn13f'] = substr($rsp['isbn13'],0,3).'-'.substr($rsp['isbn13'],3,4).'-'.substr($rsp['isbn13'],7,5).'-'.substr($rsp['isbn13'],12,1);
 		return($rsp);	
 	}
 

@@ -2,7 +2,6 @@
 class Amazon_api extends CI_model
 {
 	function book($isbn) {
-		$rsp = array('count' => 0);	
 		$type = 'AMAZO';
 		$t = $this->isbn->get($isbn,$type);
 
@@ -19,14 +18,28 @@ class Amazon_api extends CI_model
 		$s = substr($t,strpos($t,$f)+strlen($f),strlen($t));
 		$s = substr($s,0,strpos($s,'</li>'));
 		$w['editora'] = nbr_author($s,17);
-		$w['ano'] = '';	
+		$w['data'] = '';
+
+		/************************************* Descricao */
+ 		$f = '<div>';
+ 		$s = substr($t,strpos($t,$f)+strlen($f),strlen($t));
+		$s = substr($s,strpos($s,$f)+strlen($f),strlen($s));
+		$s = substr($s,0,strpos($s,'</div>'));
+		$w['descricao'] = trim(strip_tags($s));
 
 		/************************* Ano ****************/
 		if (strpos($s,'(') > 0)
 		{
 			$w['editora'] = nbr_author(substr($s,0,strpos($s,'(')),7);
-			$w['data'] = sonumero(substr($s,strpos($s,'('),20));
-			$w['data'] = substr($w['data'],strlen($w['data'])-4,4);
+			$ano = sonumero(substr($s,strpos($s,'('),30));
+			$ano = substr($ano,strlen($ano)-4,4);
+			if (($ano >= 1900) and ($ano <= (date("Y")+2)))
+			{
+				$w['data'] = $ano;
+			} else {
+				$w['data'] = '';
+			}
+				
 		}
 
 		/************************* Idioma */
@@ -101,18 +114,21 @@ class Amazon_api extends CI_model
 		$s = troca($s,'200_.jpg','800_.jpg');
 		$w['cover'] = $s;
 
-		$w['author'] = $authors;		
+		$w['authors'] = $authors;		
 		$w['error'] = 0;
+		$w['type'] = $type;
 
 		if (strlen($title) > 0)
 		{
 			$w['error_msg'] = 'ISBN_inported';
-			$w['count'] = 1;
+			$w['totalItems'] = 1;
 			$w['error'] = 0;
+			$w['url'] = $this->isbn->vurl;
 		} else {
 			$w['error'] = 1;
 			$w['error_msg'] = 'ISBN_not_found';
-			$w['count'] = 0;
+			$w['totalItems'] = 0;
+			$w['url'] = '';
 		}
 		return($w);
 		/*******************************************************************************/

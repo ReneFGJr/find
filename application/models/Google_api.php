@@ -18,8 +18,17 @@ class google_api extends CI_model
 			if (isset($w['subtitle'])) {
 				$rsp['titulo'] .= ': ' . trim($w['subtitle']);
 			}
+			$rsp['titulo'] = troca($rsp['titulo'], ' - ',': ');
+			$rsp['titulo'] = nbr_author($rsp['titulo'],18);
 			/********** Autores ****************************/
 			$rsp['authors'] = $w['authors'];
+			for ($q=0;$q < count($rsp['authors']);$q++)
+			{
+				$rsp['authors'][$q] = nbr_author($rsp['authors'][$q],7);
+			}
+
+
+			/********** Data ****************************/
 			if (isset($w['publishedDate'])) {
 				$rsp['data'] = $w['publishedDate'];
 			} else {
@@ -47,14 +56,16 @@ class google_api extends CI_model
 			}
 			$rsp['error'] = 0;
 			$rsp['error_msg'] = msg('ISBN_inported');
+			$rsp['totalItems'] = 1;
+			$rsp['url'] = $this->isbn->vurl;
+			$rsp['type'] = $type;
 		} else {
+			$rsp = $w;
 			$rsp['error'] = 1;
 			$rsp['error_msg'] = msg('ISBN_not_found');
+			$rsp['totalItems'] = 0;
+			$rsp['url'] = '';
 		}
-
-        //echo '<pre><span style="color: blue">';
-        //print_r($rsp);
-        //echo '</span></pre>';
 		return ($rsp);
 	}
 

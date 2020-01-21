@@ -102,6 +102,8 @@
 
     public function index() {
         $this -> cab();
+        $this->load->model("books");
+        $this->load->model("covers");
         $rdf = new rdf;
 
         $data['logo'] = LOGO;
@@ -112,6 +114,8 @@
         $gets = array_merge($_POST, $_GET);
         $tela = $rdf -> search($gets);
         //$tela .= $this->frbr->bookcase();
+
+        $tela .= $this->books->vitrine();
 
         if (get("action") == '') {
             $tela .= $this -> libraries -> highlights('sc');

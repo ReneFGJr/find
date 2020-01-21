@@ -3,12 +3,16 @@ class Languages extends CI_model
 	{
 		function code($l)
 			{
-				$o = array('Português'=>'pt', 'pt'=>'pt');
-				if (isset($o[$l]))
-				{
-					return($o[$l]);
+				$l = trim($l);
+				$o = array('Português'=>'pt', 'pt'=>'pt' , 'en' => 'en');
+				foreach ($o as $key => $value) {
+					if ($l==$key)
+					{
+						return($value);	
+					}
+					
 				}
 				return('');
 			}
 	}
-?>	
+?>
