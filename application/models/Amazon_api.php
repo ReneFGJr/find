@@ -98,7 +98,7 @@ class Amazon_api extends CI_model
 			$s = substr($s,0,strpos($s,'</span>'));
 			$ts = substr($ts,strpos($ts,$f)+strlen($f),strlen($ts));			
 			$s = trim(strip_tags($s));
-			if (strpos($s,'(') > 0) { $s = substr($s,0,strpos($s,'(')); }
+			if (strpos($s,'(') > 0) { $s = substr($s,0,str	pos($s,'(')); }
 			$s = trim($s);
 			if (strlen($s) > 0)
 			{
