@@ -39,9 +39,6 @@
 		{
 			$dt = $this->marc_api->book($t);
 			$isbn = $dt['isbn']['isbn13'];
-			echo '<pre>';
-			print_r($dt);
-			echo '</pre>';
 			$this->process_register($isbn,$dt,'MARC2');
 			$sx = 'Marc 21 imported<br>';
 			return($sx);
@@ -80,9 +77,9 @@
 			/********************************** F.R.B.R. */
 			$isbns = $this->isbn->isbns($isbn);
 			$isbn = $isbns['isbn13'];
+			$this->query_isbn($isbn);
+
 			$dt['isbn13'] = $isbn;
-			echo '<pre>';
-			print_r($dt);
 			$idioma = trim($dt['expressao']['idioma']);
 			$genere = trim($dt['expressao']['genere']);
 
@@ -150,11 +147,14 @@
 			}
 
 			/* Manifestation - Serie e Volume */	
-			$txt = trim(troca($dt['serie'],"'","´"));
-			if (strlen($txt) > 0)
+			if (isset($dt['serie']))
 			{
-				$idc = $rdf->rdf_concept_create('SerieName', $txt, '', $idioma);
-				$rdf->set_propriety($iddm,'hasSerieName',$idc);
+				$txt = trim(troca($dt['serie'],"'","´"));
+				if (strlen($txt) > 0)
+				{
+					$idc = $rdf->rdf_concept_create('SerieName', $txt, '', $idioma);
+					$rdf->set_propriety($iddm,'hasSerieName',$idc);
+				}
 			}	
 
 			if (isset($dt['volume']))
@@ -170,9 +170,9 @@
 			{
 				for ($r=0;$r < count($dt['subject']);$r++)
 				{
-				$txt = Nbr_author($dt['subject'][$r],18);
-				$idc = $rdf->rdf_concept_create('Subject', $txt, '', $idioma);
-				$rdf->set_propriety($iddm,'hasSubject',$idc);	
+					$txt = Nbr_author($dt['subject'][$r],18);
+					$idc = $rdf->rdf_concept_create('Subject', $txt, '', $idioma);
+					$rdf->set_propriety($iddm,'hasSubject',$idc);	
 				}
 			}
 			
@@ -487,6 +487,25 @@
 			$sx .= '</div>';
 			return($sx);
 		}
+
+		function query_isbn($isbn)
+		{
+			if (strlen($isbn) > 0)
+			{
+				$sql = "select * from _queue_isbn where q_isbn13 = '$isbn' ";
+				$rlt = $this->db->query($sql);
+				$rlt = $rlt->result_array();
+				if (count($rlt) == 0)
+				{
+					$sql = "insert into _queue_isbn
+							(q_isbn13)
+							values
+							('$isbn')";
+					$rlt = $this->db->query($sql);							
+				}				
+			}
+			return(1);
+		}
 	}
 
 /*
@@ -499,5 +518,6 @@ TRUNCATE find_work_authors;
 TRUNCATE rdf_concept;
 TRUNCATE rdf_data;
 TRUNCATE rdf_name;
+TRUNCATE _queue_isbn;
 */
 ?>

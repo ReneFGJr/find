@@ -61,7 +61,47 @@ class libraries extends CI_model {
 
     function about()
     {
-        $sx = 'Sobre';
+        if (isset($_SESSION['library']))
+        {
+            $id = $_SESSION['library'];
+        } else {
+            redirect(PATH);
+        }
+        $dt = $this->le($id);
+        $logo = $dt['l_logo'];
+        if (file_exists($logo))
+        {
+            $logo = base_url($logo);
+        } else {
+            $logo = base_url('img/logo/no_logo.png');
+        }
+        $sx = '<div class="row">';
+        $sx .= '<div class="col-md-10">'.cr();
+        $sx .= '<h3>'.msg("About").'</h3>'.cr();
+
+        $sx .= '<span class="small">'.msg('library_name').'</span><br/>'.cr();
+        $sx .= '<h2>'.$dt['l_name'].'</h2>'.cr();
+        $sx .= '<p>'.mst($dt['l_about']).'</p>'.cr();
+
+        $sx .= '<span class="small">'.msg('address').'</span><br/>'.cr();
+        $sx .= '<p>'.mst($dt['l_endereco']).'</p>'.cr();
+
+        $sx .= '<span class="small">'.msg('opening_hours').'</span><br/>'.cr();
+        $sx .= '<p>'.mst($dt['l_horario']).'</p>'.cr();
+
+        $sx .= '<span class="small">'.msg('contact').'</span><br/>'.cr();
+        $sx .= '<p>e-mail: '.$dt['l_contato_email'].'</p>'.cr();        
+        $sx .= '<p>telefone: '.$dt['l_contato_fone'].'</p>'.cr();   
+        $sx .= '<p>Site/Facebook: '.$dt['l_site'].'</p>'.cr();                 
+
+        $sx .= '<span class="small">'.msg('collection').'</span><br/>'.cr();
+        $sx .= '<p>books: '.$dt['l_obras'].' - '.msg("update").': '.stodbr($dt['l_obras_update']).'</p>'.cr();        
+
+        $sx .= '</div>'.cr();
+        $sx .= '<div class="col-md-2">'.cr();
+        $sx .= '<img src="'.$logo.'" class="img-fluid">'.cr();
+        $sx .= '</div>'.cr();
+        $sx .= '</div>'.cr();
         return($sx);
     }
 
@@ -140,6 +180,11 @@ class libraries extends CI_model {
         array_push($cp, array('$H8', 'l_id', msg('library_id'), false, true));
         array_push($cp, array('$S100', 'l_logo', msg('library_logo'), false, true));
         array_push($cp, array('$T80:5', 'l_about', msg('library_about'), false, true));
+        array_push($cp, array('$T80:5', 'l_endereco', msg('l_endereco'), false, true));
+        array_push($cp, array('$T80:5', 'l_horario', msg('l_horario'), false, true));
+        array_push($cp, array('$S80', 'l_contato_email', msg('l_contato_email'), false, true));
+        array_push($cp, array('$S80', 'l_contato_fone', msg('l_contato_fone'), false, true));
+        array_push($cp, array('$S80', ' l_site', msg('l_site'), false, true));
         $form = new form;
         $form -> id = $ac;
         $sx = $form -> editar($cp, $this -> table);
