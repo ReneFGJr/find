@@ -193,7 +193,6 @@
     function about()
     {
         $this -> load -> model('libraries');
-        $tela = '';
         $this -> cab();
         $data['content'] = $this -> libraries->about();     
         $data['title'] = msg('About');

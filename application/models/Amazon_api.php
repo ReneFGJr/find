@@ -17,23 +17,34 @@ class Amazon_api extends CI_model
 
 		/************************* Editora */
 		$f = '<b>Editora:</b>';
-		$s = substr($t,strpos($t,$f)+strlen($f),strlen($t));
-		$s = substr($s,0,strpos($s,'</li>'));
-		$w['editora'] = nbr_author($s,17);
-		$w['data'] = '';
+		if (strpos($t,$f) > 0)
+		{
+			$s = substr($t,strpos($t,$f)+strlen($f),strlen($t));
+			$s = substr($s,0,strpos($s,'</li>'));
+			$w['editora'] = nbr_author($s,17);
+			$w['data'] = '';
+		} else {
+			$w['editora'] = '';
+			$w['data'] = '';			
+		}
 
 		/************************************* Descricao */
- 		$f = '<div>';
- 		$s = substr($t,strpos($t,$f)+strlen($f),strlen($t));
-		$s = substr($s,strpos($s,$f)+strlen($f),strlen($s));
-		$s = substr($s,0,strpos($s,'</div>'));
-		$w['descricao'] = trim(strip_tags($s));
+		$f = '<div>';
+		$s = substr($t,strpos($t,$f)+strlen($f),strlen($t));
+		if (strpos($s,'<em></em>') > 0)
+		{
+			$s = substr($s,strpos($s,$f)+strlen($f),strlen($s));
+			$s = substr($s,0,strpos($s,'</div>'));
+			$w['descricao'] = trim(strip_tags($s));
+		} else {
+			$w['descricao'] = '';
+		}
 
 		/************************* Ano ****************/
-		if (strpos($s,'(') > 0)
+		if (strpos($w['editora'],'(') > 0)
 		{
-			$w['editora'] = nbr_author(substr($s,0,strpos($s,'(')),7);
-			$ano = sonumero(substr($s,strpos($s,'('),30));
+			$w['editora'] = nbr_author(substr($w['editora'],0,strpos($w['editora'],'(')),7);
+			$ano = sonumero(substr($w['editora'],strpos($w['editora'],'('),30));
 			$ano = substr($ano,strlen($ano)-4,4);
 			if (($ano >= 1900) and ($ano <= (date("Y")+2)))
 			{
@@ -41,7 +52,7 @@ class Amazon_api extends CI_model
 			} else {
 				$w['data'] = '';
 			}
-				
+
 		}
 
 		/************************* Idioma */
@@ -101,9 +112,9 @@ class Amazon_api extends CI_model
 			$ts = substr($ts,strpos($ts,$f)+strlen($f),strlen($ts));			
 			$s = trim(strip_tags($s));
 			if (strpos($s,'(') > 0) 
-				{ 
-					$s = substr($s,0,strpos($s,'(')); 
-				}
+			{ 
+				$s = substr($s,0,strpos($s,'(')); 
+			}
 			$s = trim($s);
 			if (strlen($s) > 0)
 			{
