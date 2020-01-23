@@ -23,6 +23,8 @@ class catalog extends CI_model
 		$this->load->model("authors");
 		$this->load->model("google_api");
 		$this->load->model("amazon_api");
+		$this->load->model("oclc_api");
+		$this->load->model("marc_api");
 
 		
 		$sx = '<div class="row">';
@@ -31,11 +33,20 @@ class catalog extends CI_model
 		$sx .= '<div class="col-md-12">'.$this -> books->search().'</div>';
 		$sx .= '</div>';
 
+		/***************************************************************************/
+		$sx .= $this->marc_api->form();
+
 		$isbn = get("dd2");
 		if (strlen($isbn) > 0)
 			{
 				$sx .= $this->books->locate($isbn);
 			}
+
+		$marc = get("dd6");
+		if (strlen($marc) > 0)
+			{
+				$sx .= $this->books->marc_import($marc);
+			}			
 		
 		return($sx);
 	}	

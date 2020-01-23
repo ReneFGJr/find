@@ -19,12 +19,32 @@
 			if (strlen($url) > 0)
 			{
 				$sql = "insert into find_manifestation_url
-				(mu_url)
+				(mu_m, mu_url)
 				values
-				('$url')";
+				($m,'$url')";
 				$this->db->query($sql);
 			}
 			return(1);
+		}
+
+		function recover_urls($m)
+		{
+			$sql = "select * from find_manifestation_url where mu_m = $m";
+			$rlt = $this->db->query($sql);
+			$rlt = $rlt->result_array();
+			return($rlt);
+		}
+
+		function marc_import($t)
+		{
+			$dt = $this->marc_api->book($t);
+			$isbn = $dt['isbn']['isbn13'];
+			echo '<pre>';
+			print_r($dt);
+			echo '</pre>';
+			$this->process_register($isbn,$dt,'MARC2');
+			$sx = 'Marc 21 imported<br>';
+			return($sx);
 		}
 
 		function locate($isbn)
@@ -33,51 +53,49 @@
 			/* Google */
 			$google = $this->google_api->book($isbn);
 			$amazon = $this->amazon_api->book($isbn);
-			
-			/*
-			echo '<pre>';
-			print_r($google);
-			echo '<hr>';
-			print_r($amazon);
-			echo '</pre>';
-			*/
+
 			
 			/************************************** Título *****************/
 			if ($google['totalItems'] > 0)
 			{
-				$title = $google['titulo'];
-				$idioma = $google['expressao']['idioma'];
-				$genere = $google['expressao']['genere'];
-				$dt = $google;				
-			} else {
-				if ($amazon['totalItems'] > 0)	
-				{
-					$title = $amazon['title'];
-					$idioma = $amazon['expressao']['idioma'];
-					$genere = $amazon['expressao']['genere'];
-					$dt = $amazon;
-				}
-			}
-			if (strlen($title) > 0)
-			{
-				$isbns = $this->isbn->isbns($isbn);
-				$dt['cover'] = $amazon['cover'];
-				$dt['editora'] = $amazon['editora'];
-				$dt['isbn13'] = $isbns['isbn13'];
-				$dt['isbn10'] = $isbns['isbn10'];
-				$dt['work'] = $this->work($title,$idioma);
-				$dt['expression'] = $this->expression($dt['work'],$idioma,$genere);
-				$dt['manifestation'] = $this->manifestation($dt['expression'],$dt);
-				$this->save_urls($dt['manifestation'],$google['url']);
-				$this->save_urls($dt['manifestation'],$amazon['url']);
-				$this->authors->authors_save($dt);
-				$this->covers->save($dt['cover'],$dt['manifestation']);
+				$dt = $google;	
+				$this->process_register($isbn,$dt,'GOOGL');
+				$sx .= 'Google Book imported<br>';			
 			}
 
-			/* RDF */
+			if ($amazon['totalItems'] > 0)	
+			{				
+				$dt = $amazon;
+				$sx .= 'Amazon Book imported<br>';
+				$this->process_register($isbn,$dt,'AMAZO');
+			}
+			return($sx);
+
+		}
+
+
+		function process_register($isbn,$dt,$type)
+		{
+			$sx = '';
+			/********************************** F.R.B.R. */
+			$isbns = $this->isbn->isbns($isbn);
+			$isbn = $isbns['isbn13'];
+			$dt['isbn13'] = $isbn;
+			echo '<pre>';
+			print_r($dt);
+			$idioma = trim($dt['expressao']['idioma']);
+			$genere = trim($dt['expressao']['genere']);
+
+			$dt['work'] = $this->work($dt['title'],$idioma);
+			$dt['expression'] = $this->expression($dt['work'],$idioma,$genere);
+			$dt['manifestation'] = $this->manifestation($dt['expression'],$dt);
+			$this->save_urls($dt['manifestation'],$dt['url']);
+			$this->authors->authors_save($dt);
+			$this->covers->save($dt['cover'],$dt['manifestation']);		
+
 			/* WORK */
 			$rdf = new rdf;
-			$idn = $rdf->rdf_name('W'.strzero($dt['work'],9));
+			$idn = $rdf->rdf_name('W'.$isbn);
 			$iddw = $rdf->rdf_concept($idn,'Work');
 			$this->update_id($dt['work'],$iddw,'w');
 
@@ -91,15 +109,25 @@
 			$iddm = $rdf->rdf_concept($idn,'Manifestation');
 			$this->update_id($dt['manifestation'],$iddm,'m');	
 
-			/* Manifestation - Pages */	
+			/* Manifestation - Pages *********************************************/	
 			$pags = sonumero($dt['pages']);
 			if ($pags > 0)
 			{
 				$pags .= ' p.';
-				$idc = $rdf->rdf_concept_create('Pages', $pags, '', $idioma);
-				$rdf->set_propriety($iddm,'hasPage',$idc);
-			}
 
+				/* Manifestation - PrePages ******************************/	
+				if (isset($dt['pages_pre']))
+				{
+					$ppags = trim($dt['pages_pre']);
+					if (strlen($ppags) > 0)
+					{
+						$pags = strtolower(trim($ppags)).', '.$pags;
+					}
+
+					$idc = $rdf->rdf_concept_create('Pages', $pags, '', $idioma);
+					$rdf->set_propriety($iddm,'hasPage',$idc);				
+				}
+			}			
 
 			/* Manifestation - Editora */	
 			$editora = $dt['editora'];
@@ -110,7 +138,7 @@
 					$editora = substr($editora,0,strpos($editora,';'));
 				}
 				$idc = $rdf->rdf_concept_create('Editora', $editora, '', $idioma);
-				$rdf->set_propriety($iddm,'hasEditora',$idc);
+				$rdf->set_propriety($iddm,'isPublisher',$idc);
 			}
 
 			/* Manifestation - Descriptions */	
@@ -119,7 +147,35 @@
 			{
 				$idn = $rdf->rdf_name($txt);
 				$rdf->set_propriety($iddm,'dc:description',0,$idn);
-			}				
+			}
+
+			/* Manifestation - Serie e Volume */	
+			$txt = trim(troca($dt['serie'],"'","´"));
+			if (strlen($txt) > 0)
+			{
+				$idc = $rdf->rdf_concept_create('SerieName', $txt, '', $idioma);
+				$rdf->set_propriety($iddm,'hasSerieName',$idc);
+			}	
+
+			if (isset($dt['volume']))
+			{
+				$txt = $dt['volume'];
+				$idc = $rdf->rdf_concept_create('Number', $txt, '', $idioma);
+				$rdf->set_propriety($iddm,'hasVolumeNumber',$idc);
+
+			}
+
+			/* Manifestation - Subject */	
+			if (isset($dt['subject']) and (count($dt['subject']) > 0))
+			{
+				for ($r=0;$r < count($dt['subject']);$r++)
+				{
+				$txt = Nbr_author($dt['subject'][$r],18);
+				$idc = $rdf->rdf_concept_create('Subject', $txt, '', $idioma);
+				$rdf->set_propriety($iddm,'hasSubject',$idc);	
+				}
+			}
+			
 
 			/* Mostra Item */
 			$d = $this->le_m($dt['manifestation']);
@@ -181,7 +237,7 @@
 				$rlt = $this->db->query($sql);
 				$rlt = $rlt->result_array();
 			}
-			
+
 			if (count($rlt) == 0)
 			{
 				echo "OPS - ERRO DE GRAVAÇÃO";
@@ -245,7 +301,7 @@
 			{
 				$wh = "and (m_year = '$data')";	
 			}
-			
+
 			/********************** CONSULTA ************/
 			$sql = "select * from find_manifestation where m_isbn13 = '$isbn13' $wh";
 			$rlt = $this->db->query($sql);
@@ -286,7 +342,7 @@
 
 			$rdf = new rdf;
 			$line['rdf'] = $rdf->le_data($line['m_id']);
-			print_r($line);
+			$line['links'] = $this->recover_urls($id);
 			return($line);
 		}
 
@@ -318,7 +374,7 @@
 				$sx .= 'ISBN10: <b>'.$dt['isbn']['isbn10f'].'</b>';
 				$sx .= '</div>';
 
-				$sx .= '<div class="s1_isbn10">';
+				$sx .= '<div class="s1_year">';
 				$year = $dt['m_year'];
 				if ($year == 0) { $year = '&nbsp;-&nbsp;'; }
 				$sx .= 'Edição: <b>'.$year.'</b>';
@@ -335,9 +391,21 @@
 					$sx .= '</div>';
 				}
 
+				/* Links */
+				$sx .= '<div class="s1_links"><i>';
+				for ($r=0;$r < count($dt['links']);$r++)
+				{
+					$line = $dt['links'][$r];
+					if ($r > 0) { echo '<br/>'; }
+					$sx .= '<a href="'.$line['mu_url'].'" target="_blank">';
+					$sx .= $line['mu_url'];
+					$sx .= '</a>'.cr();
+				}				
+
 				$sx .= '</div>';
 				$sx .= '</div>';
-				$sx .= '<style> div { border: 1px solid #000000; } </style>';
+				$sx .= '</div>';
+				//$sx .= '<style> div { border: 1px solid #000000; } </style>';
 				break;
 			}
 			return($sx);
@@ -390,6 +458,7 @@
 
 		}
 
+
 		function vitrine()
 		{
 			$sx = '<h1>Vitrine</h1>';
@@ -405,9 +474,13 @@
 				$line = $rlt[$r];
 				$id = $line['id_m'];
 				$img = $this->covers->img($id);
+				$link = '<a href="'.base_url(PATH.'m/'.$id).'">';
+				$linka = '</a>';
 				$sx .= '<div class="col-md-2">';
 				$sx .= 'Book '.($r+1);
+				$sx .= $link;
 				$sx .= '<img src="'.$img.'" class="img-fluid">';
+				$sx .= $linka;
 				$sx .= $line['w_title'];
 				$sx .= '</div>';
 			}

@@ -272,4 +272,6 @@ $lang['highlights'] = 'Destaques';
 $lang['showcase'] = 'Vitrine';
 
 $lang['cataloging'] = 'Preparo técnico';
+$lang['hasPagePre'] = 'Páginas pré-textuais';
+$lang['hasSubject'] = 'Assunto';
 ?>

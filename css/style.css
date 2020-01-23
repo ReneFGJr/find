@@ -79,3 +79,17 @@ a, a:hover
         font-weight: bold;   
     }
 
+/*************************************************/
+.s1_title
+  {
+    font-size: 170%;
+    font-weight: bold;
+  }
+.s1_isbn13
+  {
+    margin-top: 20px;
+  }
+  .s1_year
+  {
+    margin-bottom: 10px;
+  }

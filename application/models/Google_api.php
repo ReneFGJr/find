@@ -7,7 +7,8 @@ class google_api extends CI_model
 		$type = 'GOOGL';
 		$t = $this->isbn->get($isbn,$type);
 		$w = (array)json_decode($t);
-
+		$w['serie'] = '';
+		$w['subject']= array();
 		/*******************************************************************************/
 
 		if ($w['totalItems'] > 0) {

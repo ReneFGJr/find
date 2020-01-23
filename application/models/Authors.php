@@ -14,9 +14,6 @@ class authors extends CI_model
 	/***************************************************************** Authors - WORK ***/
 	function authors_save($dt)
 	{
-		echo '<pre>';
-		print_r($dt);
-		echo '</pre>';
 		$authors = $dt['authors'];
 		for ($r=0;$r < count($authors);$r++)
 		{

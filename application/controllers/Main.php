@@ -271,5 +271,19 @@
 
         $this -> foot();
     }    
+    function m($id)
+    {
+        $this->load->model("covers");
+        $this->load->model("books");
+        $this->load->model("isbn");
+        $this->load->model("authors");
+        $dt = $this->books->le_m($id);
+        $this->cab();
+        $sx = $this->books->show($dt,1);
+        $data['content'] = $sx;
+        $this -> load -> view('content', $data);
+
+        $this->foot();
+    }
 }
 ?>

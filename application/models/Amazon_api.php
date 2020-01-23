@@ -6,6 +6,8 @@ class Amazon_api extends CI_model
 		$t = $this->isbn->get($isbn,$type);
 
 		$w = array();
+		$w['serie'] = '';
+		$w['subject']= array();
 		/************************* Título */
 		$f = 'id="productTitle"';
 		$title = substr($t,strpos($t,$f)+strlen($f),strlen($t));
@@ -98,7 +100,10 @@ class Amazon_api extends CI_model
 			$s = substr($s,0,strpos($s,'</span>'));
 			$ts = substr($ts,strpos($ts,$f)+strlen($f),strlen($ts));			
 			$s = trim(strip_tags($s));
-			if (strpos($s,'(') > 0) { $s = substr($s,0,str	pos($s,'(')); }
+			if (strpos($s,'(') > 0) 
+				{ 
+					$s = substr($s,0,strpos($s,'(')); 
+				}
 			$s = trim($s);
 			if (strlen($s) > 0)
 			{
