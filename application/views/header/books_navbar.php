@@ -4,12 +4,12 @@ if (!isset($pag)) { $pag = 0;
 }
 $ac[$pag] = 'active';
 if (!isset($url))
-    {
-        $url = PATH;
-    }
+{
+	$url = PATH;
+}
 if (!isset($logo))
 {
-    $logo = 'img/logo-brapci_livros_mini.png';
+	$logo = 'img/logo-brapci_livros_mini.png';
 }
 ?>
 <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
@@ -25,21 +25,31 @@ if (!isset($logo))
 			<li class="nav-item active">
 				<a class="nav-link" href="<?php echo base_url(PATH); ?>">Catálogo <span class="sr-only">(current)</span></a>
 			</li>
-            <li class="nav-item">
-                <a class="nav-link" href="<?php echo base_url(PATH.'bookshelf'); ?>"><?php echo msg("bookshelf");?></span></a>
-            </li>
-						
-            <li class="nav-item">
-                <a class="nav-link" href="<?php echo base_url(PATH.'about'); ?>">Sobre</a>
-            </li>
+			<li class="nav-item">
+				<a class="nav-link" href="<?php echo base_url(PATH.'bookshelf'); ?>"><?php echo msg("bookshelf");?></span></a>
+			</li>
+
+			<li class="nav-item">
+				<a class="nav-link" href="<?php echo base_url(PATH.'about'); ?>">Sobre</a>
+			</li>
+			<?php
+			if (perfil("#ADM#PPT") > 0)
+			{ 
+				echo '
+				<li class="nav-item">
+				<a class="nav-link" href="'.base_url(PATH.'preparation').'">Preparo Técnico</a>
+				</li>';
+			}
+			?>
+
 			<li class="nav-item">
 				<a class="nav-link" href="<?php echo base_url(PATH.'contact'); ?>">Contato</a>
 			</li>
-                        
-            <li class="nav-item">
-                <?php echo $this->socials->menu_user();?>
-            </li>           
-                       			
+
+			<li class="nav-item">
+				<?php echo $this->socials->menu_user();?>
+			</li>           
+
 		</ul>
 	</div>
 </nav>

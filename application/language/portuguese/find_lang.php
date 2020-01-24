@@ -274,4 +274,13 @@ $lang['showcase'] = 'Vitrine';
 $lang['cataloging'] = 'Preparo técnico';
 $lang['hasPagePre'] = 'Páginas pré-textuais';
 $lang['hasSubject'] = 'Assunto';
+$lang['without_isbn'] = 'Obra sem ISBN registrado';
+
+$lang['item_status_0'] = 'Em preparo';
+$lang['item_status_1'] = 'Em processamento II';
+$lang['item_status_5'] = 'Disponível';
+$lang['item_status_6'] = 'Emprestado';
+$lang['item_status_9'] = 'Baixado';
+
+$lang['item_aquisicao_1'] = 'Incorporado';
 ?>
