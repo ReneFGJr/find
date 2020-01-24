@@ -131,6 +131,7 @@ class Amazon_api extends CI_model
 		$w['cover'] = $s;
 
 		$w['authors'] = $authors;		
+		$w['authors'] = array();		
 		$w['error'] = 0;
 		$w['type'] = $type;
 

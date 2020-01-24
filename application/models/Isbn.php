@@ -27,8 +27,6 @@ class isbn extends CI_model
 			return($t);
 		}
 
-		$isbns = $this->isbns($isbn);
-
 		/***** File Cached not found ***************************************/
 		switch($type)
 		{
@@ -78,7 +76,14 @@ class isbn extends CI_model
 	/************* ISBNS ***********************************/
 	function isbns($isbn)
 	{
+		if (is_array($isbn))
+		{
+			$isbn = $isbn['isbn13'];
+		}
+		$isbn = troca($isbn,'-','');
+		$isbn = troca($isbn,'.','');
 		$rsp = array();
+
 		if (strlen($isbn) == 13) {
 			$rsp['isbn13'] = $isbn;
 			$rsp['isbn10'] = isbn13to10($isbn);

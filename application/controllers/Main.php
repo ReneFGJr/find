@@ -36,6 +36,19 @@
         redirect(base_url('index.php/biblio'));
     }
 
+    function preparation()
+    {
+        $this->cab();
+        $sx = '';
+        $sx .= '<div class="col-md-2 text-center">';
+        $sx .= '<img src="'.base_url('img/icon/icone_processament_tecnico_256.jpg').'" class="img_menu img-fluid" alt="Preparo Técnico"  title="Preparo técnico">';
+        $sx .= '<br>Preparo téncico';
+        $sx .= '</div>';
+
+        $data['content'] = $sx;
+        $this -> load -> view('content', $data);            
+    }
+
     private function cab($navbar = 1) {
 
         $this -> load -> model("socials");

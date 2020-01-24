@@ -32,12 +32,16 @@
 body {
     margin: 0px;
     padding: 0px;
-    background-color: #FFFFFF;
+    
     /* font-family: 'Open Sans Condensed', sans-serif; */
     font-family: "Titillium Web","Anonymous Pro", sans-serif;
     /* font-size: 100%; */
     color: #333333;
     /* line-height: 100%; */
+    background-image: url("../img/background/background.jpg");
+    background-color: #AAFFFF;
+    background-repeat: no-repeat, repeat;
+    background-size: cover; 
 }
 
 .header
@@ -93,3 +97,18 @@ a, a:hover
   {
     margin-bottom: 10px;
   }
+
+  .img_menu
+    {
+      margin: 10px 5px;
+      border: 12px solid #A0A0A0;
+      border-radius: 15%;
+      opacity: 0.6;
+    }
+
+.img_menu:hover
+    {
+      margin: 10px 5px;
+      border: 12px solid #909090;
+      opacity: 1;
+    }    

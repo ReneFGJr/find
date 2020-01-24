@@ -41,25 +41,30 @@
 			$isbn = $dt['isbn']['isbn13'];
 			$this->process_register($isbn,$dt,'MARC2');
 			$sx = 'Marc 21 imported<br>';
+
+			$this->locate($isbn);
+
 			return($sx);
 		}
 
 		function locate($isbn)
 		{
 			$sx = '';
+
 			/* Google */
 			$google = $this->google_api->book($isbn);
 			$amazon = $this->amazon_api->book($isbn);
 
 			
-			/************************************** Título *****************/
+			/************************************** Processar Google ************/
 			if ($google['totalItems'] > 0)
 			{
 				$dt = $google;	
 				$this->process_register($isbn,$dt,'GOOGL');
-				$sx .= 'Google Book imported<br>';			
+				$sx .= 'Google Book imported<br>';	
 			}
 
+			/************************************** Processar Amazon ***********/
 			if ($amazon['totalItems'] > 0)	
 			{				
 				$dt = $amazon;
@@ -67,7 +72,6 @@
 				$this->process_register($isbn,$dt,'AMAZO');
 			}
 			return($sx);
-
 		}
 
 
@@ -75,8 +79,6 @@
 		{
 			$sx = '';
 			/********************************** F.R.B.R. */
-			$isbns = $this->isbn->isbns($isbn);
-			$isbn = $isbns['isbn13'];
 			$this->query_isbn($isbn);
 
 			$dt['isbn13'] = $isbn;
@@ -145,6 +147,18 @@
 				$idn = $rdf->rdf_name($txt);
 				$rdf->set_propriety($iddm,'dc:description',0,$idn);
 			}
+
+			/* Manifestatiion - Peso */
+			
+			if (isset($dt['weight']))
+			{
+				$txt = trim($dt['weight']);
+				if (strlen($txt) > 0)
+				{
+					$idc = $rdf->rdf_concept_create('Weight', $txt, '', $idioma);
+					$rdf->set_propriety($iddm,'hasWeight',$idc);
+				}
+			}			
 
 			/* Manifestation - Serie e Volume */	
 			if (isset($dt['serie']))
