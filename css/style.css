@@ -33,9 +33,9 @@ body {
   margin: 0px;
   padding: 0px;
 
-  /* font-family: 'Open Sans Condensed', sans-serif; */
-  font-family: "Titillium Web","Anonymous Pro", sans-serif;
-  /* font-size: 100%; */
+  font-family: 'Open Sans Condensed', sans-serif; 
+  /* font-family: "Titillium Web","Anonymous Pro", sans-serif; */
+  /* font-family: 'Anonymous Pro'; */
   color: #333333;
   /* line-height: 100%; */
   background-image: url("../img/background/background.jpg");
@@ -122,25 +122,92 @@ input[type=text]
   box-sizing: border-box;  
   border: 2px solid #888;
   border-radius: 4px;
+  background-color: #e0e0f0;
 }
 
-input[type=text]:focus {
+.form_control select, select {
+  font-size: 22px;
+  padding: 10px 10px;  
+  margin: 8px 0;
+  box-sizing: border-box;  
+  border: 2px solid #888;
+  border-radius: 4px;
+  background-color: #e0e0f0;
+}
+
+input:focus {
   border: 2px solid #555;
 }
 
 #dd1
-  {
-    background-image: url('../img/icon/icon_find.png');
-    background-position: 4px 4px; 
-    background-repeat: no-repeat;  
-    padding-left: 60px;
-    icon_register
-  }
+{
+  background-image: url('../img/icon/icon_find.png');
+  background-position: 4px 4px; 
+  background-repeat: no-repeat;  
+  padding-left: 60px;
+  icon_register
+}
 
 #dd2
+{
+  background-image: url('../img/icon/icon_register.png');
+  background-position: 4px 4px; 
+  background-repeat: no-repeat;  
+  padding-left: 60px;    
+}
+
+.img_cover
+{
+  box-shadow: 5px 5px 10px 0 rgba(0, 0, 0, 0.8), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  text-align: center;  
+}
+
+/* menu_config */
+.menu_setup li, .menu_setup li a
+{
+  font-size: 20px;
+  margin-left: 0px;
+  line-height: 200%;
+  list-style: none;
+  color: #808080;
+  text-decoration: none;
+}
+
+a
+{
+  opacity: 0.7;
+}
+a:hover
+{
+  opacity: 1;
+}
+.line
   {
-    background-image: url('../img/icon/icon_register.png');
-    background-position: 4px 4px; 
-    background-repeat: no-repeat;  
-    padding-left: 60px;    
+    display: inline;
+  }
+.item_status
+  {
+    padding: 5px 10px;
+    font-weight: bold;
+    border-radius: 15px;
+    box-shadow: 3px 3px 8px #888888; 
+  }
+/* Disponível */
+.item_status_1
+  {
+    background-color: #ff9900;
+  }
+
+/* Disponível */
+.item_status_7
+  {
+    background-color: #80FF80;
+  }
+.item_status_8
+  {
+    background-color: #FFFF80;
+  }  
+.item_status_0, .item_status_5
+  {
+    background-color: #808080;
   }

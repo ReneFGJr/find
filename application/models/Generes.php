@@ -13,4 +13,4 @@ class generes extends CI_model
 			}
 
 	}
-?>	
+?>

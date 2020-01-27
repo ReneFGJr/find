@@ -53,4 +53,4 @@ class authors extends CI_model
 		}
 	}
 }
-?>	
+?>

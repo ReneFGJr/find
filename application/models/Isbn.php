@@ -39,12 +39,13 @@ class isbn extends CI_model
 
 			/***************************************** AMAZON ********************/
 			case 'AMAZO':
-			$url = $this->urls($isbns['isbn10'],$type);
+			$isbns = $this->isbn->isbns($isbn);
+			$url = $this->urls($isbns['isbn13'],$type);
 			$t = read_link($url);
 			if (strlen($t)==0)
 			{
-				$url = $this->urls($isbns['isbn13'],$type);
-				$t = read_link($url);			
+				$url = $this->urls($isbns['isbn10'],$type);
+				$t = read_link($url);
 			}
 			$this->vurl = $url;
 			break;
@@ -124,4 +125,4 @@ class isbn extends CI_model
 			$rsp['isbn13'] = isbn10to13($isbn);
 		}
 		*/
-		?>	
+		?>

@@ -1,6 +1,7 @@
 <?php
 class libraries extends CI_model {
     var $table = 'library';
+    var $table_place = 'library_place';
     function __construct() {
 
         if (!isset($_SESSION['library']) or (round($_SESSION['library']) == 0)) {
@@ -59,6 +60,42 @@ class libraries extends CI_model {
         return($sx);            
     }
 
+    function about_places($dt=array())
+    {
+        if (isset($_SESSION['library']))
+        {
+            $id = $_SESSION['library'];
+        } else {
+            redirect(PATH);
+        }
+        $sx = '<h3>'.msg('library_places').'</h3>';
+        $sql = "select * from library_place where lp_LIBRARY = '".LIBRARY."' ";
+        $rlt = $this->db->query($sql);
+        $rlt = $rlt->result_array();
+        for ($r=0;$r < count($rlt);$r++)
+        {
+            $line = $rlt[$r];
+            $sx .= '<hr>';
+            $sx .= '<h3>'.$line['lp_name'].'</h3>';
+            if (isset($dt['edit']))
+            {
+                $sx .= '<a href="'.base_url(PATH.$dt['edit'].$line['id_lp']).'" class="btn btn-outline-primary">';
+                $sx .= msg('edit');
+                $sx .= '</a>';
+            }
+
+            /***/
+            $sx .= '<div class="info1">'.mst($line['lp_address']).'</div>'.cr();
+            $sx .= '<div class="info1">'.$line['lp_email'].'</div>'.cr();
+            $sx .= '<div class="info1">'.$line['lp_contato'].'</div>'.cr();
+            $sx .= '<div class="info1">'.$line['lp_responsavel'].'</div>'.cr();
+            $sx .= '<div class="info1">'.$line['lp_telefone'].'</div>'.cr();
+            $sx .= '<div class="info1">'.$line['lp_site'].'</div>'.cr();
+            $sx .= '<div class="info1">'.mst($line['lp_obs']).'</div>'.cr();
+        }
+        return($sx);
+    }
+
     function about()
     {
         if (isset($_SESSION['library']))
@@ -82,20 +119,6 @@ class libraries extends CI_model {
         $sx .= '<span class="small">'.msg('library_name').'</span><br/>'.cr();
         $sx .= '<h2>'.$dt['l_name'].'</h2>'.cr();
         $sx .= '<p>'.mst($dt['l_about']).'</p>'.cr();
-
-        $sx .= '<span class="small">'.msg('address').'</span><br/>'.cr();
-        $sx .= '<p>'.mst($dt['l_endereco']).'</p>'.cr();
-
-        $sx .= '<span class="small">'.msg('opening_hours').'</span><br/>'.cr();
-        $sx .= '<p>'.mst($dt['l_horario']).'</p>'.cr();
-
-        $sx .= '<span class="small">'.msg('contact').'</span><br/>'.cr();
-        $sx .= '<p>e-mail: '.$dt['l_contato_email'].'</p>'.cr();        
-        $sx .= '<p>telefone: '.$dt['l_contato_fone'].'</p>'.cr();   
-        $sx .= '<p>Site/Facebook: '.$dt['l_site'].'</p>'.cr();                 
-
-        $sx .= '<span class="small">'.msg('collection').'</span><br/>'.cr();
-        $sx .= '<p>books: '.$dt['l_obras'].' - '.msg("update").': '.stodbr($dt['l_obras_update']).'</p>'.cr();        
 
         $sx .= '</div>'.cr();
         $sx .= '<div class="col-md-2">'.cr();
@@ -130,6 +153,20 @@ class libraries extends CI_model {
         
         return ($line);
     }
+
+    function le_id($id) {
+        $sql = "select * from library where l_id = '" . $id."'";
+        $rlt = $this -> db -> query($sql);
+        $rlt = $rlt -> result_array();
+        if (count($rlt) > 0)
+        {
+            $line = $rlt[0];            
+        } else {
+            $line = array();
+        }
+        
+        return ($line);
+    }    
 
     function list_libraries($id = '') {
         $sql = "select * from library order by l_name";
@@ -172,24 +209,42 @@ class libraries extends CI_model {
         return (row($form, $id));
     }
 
-    function edit($id = '', $ac = '') {
+    function edit($id = '') {
         $cp = array();
         array_push($cp, array('$H8', 'id_l', '', false, true));
         array_push($cp, array('$S100', 'l_name', msg('library_name'), true, true));
-        array_push($cp, array('$S10', 'l_code', msg('library_code'), false, true));
+        array_push($cp, array('$S30', 'l_code', msg('library_code'), false, false));
         array_push($cp, array('$H8', 'l_id', msg('library_id'), false, true));
         array_push($cp, array('$S100', 'l_logo', msg('library_logo'), false, true));
         array_push($cp, array('$T80:5', 'l_about', msg('library_about'), false, true));
-        array_push($cp, array('$T80:5', 'l_endereco', msg('l_endereco'), false, true));
-        array_push($cp, array('$T80:5', 'l_horario', msg('l_horario'), false, true));
-        array_push($cp, array('$S80', 'l_contato_email', msg('l_contato_email'), false, true));
-        array_push($cp, array('$S80', 'l_contato_fone', msg('l_contato_fone'), false, true));
-        array_push($cp, array('$S80', ' l_site', msg('l_site'), false, true));
         $form = new form;
-        $form -> id = $ac;
+        $form -> id = $id;
         $sx = $form -> editar($cp, $this -> table);
         return ( array($sx, $form));
     }
+
+    function edit_places($id = '') {
+        $cp = array();
+        array_push($cp, array('$H8', 'id_lp', '', false, true));
+        array_push($cp, array('$S100', 'lp_name', msg('library_name'), true, true));
+        array_push($cp, array('$HV', 'lp_LIBRARY ', LIBRARY, false, true));
+        array_push($cp, array('$T80:5', 'lp_address', msg('l_endereco'), false, true));
+        array_push($cp, array('$T80:5', 'lp_obs', msg('lp_obs'), false, true));
+        array_push($cp, array('$S80', 'lp_email', msg('lp_email'), false, true));
+        array_push($cp, array('$S80', 'lp_responsavel', msg('lp_responsavel'), false, true));
+        array_push($cp, array('$S80', 'lp_site', msg('lp_site'), false, true));
+        array_push($cp, array('$S80', 'lp_coord_x', msg('lp_coord_x'), false, true));
+        array_push($cp, array('$S80', 'lp_coord_y', msg('lp_coord_y'), false, true));
+
+
+        array_push($cp, array('$SN', 'lp_active', msg('lp_active'), true, true));        
+        
+        $form = new form;
+        $form -> id = $id;
+        $sx = $form -> editar($cp, $this -> table_place);
+        return ( array($sx, $form));
+    }
+
     function highlights($tp='',$force=0)
     {
         $rdf = new rdf;
@@ -270,39 +325,7 @@ class libraries extends CI_model {
         return($sx);
     }
 
-    function image_resize($file, $w, $h, $crop=FALSE) {
-        list($width, $height) = getimagesize($file);
-        $r = $width / $height;
-        if ($crop) {
-            if ($width > $height) {
-                $width = ceil($width-($width*abs($r-$w/$h)));
-            } else {
-                $height = ceil($height-($height*abs($r-$w/$h)));
-            }
-            $newwidth = $w;
-            $newheight = $h;
-        } else {
-            if ($w/$h > $r) {
-                $newwidth = $h*$r;
-                $newheight = $h;
-            } else {
-                $newheight = $w/$r;
-                $newwidth = $w;
-            }
-        }
-        $src = imagecreatefromjpeg($file);
-        $dst = imagecreatetruecolor($newwidth, $newheight);
-        imagecopyresampled($dst, $src, 0, 0, 0, 0, $newwidth, $newheight, $width, $height);
 
-        imagejpeg($dst, $file, 100);
-        imagedestroy($dst);
-        return 1;
-    } 
-    function png2jpg($originalFile, $outputFile, $quality) {
-        $image = imagecreatefrompng($originalFile);
-        imagejpeg($image, $outputFile, $quality);
-        imagedestroy($image);
-    }
 
     function work_show($id, $act = '') {
         $rdf = new rdf;

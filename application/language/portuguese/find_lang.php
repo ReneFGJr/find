@@ -5,6 +5,7 @@ $lang['isPublisher'] = 'Editora / Publicador';
 $lang['dateOfPublication'] = 'Data da publicação'; 
 $lang['isFormOfCarrier'] = 'Suporte da publicação'; 
 $lang['hasISBN'] = 'Número do ISBN'; 
+$lang['hasWeight'] = 'Peso';
 $lang['hasClassificationCDU'] = 'Classificação CDU'; 
 $lang['hasClassificationCDD'] = 'Classificação CDD'; 
 $lang['hasCover'] = 'Imagem da Capa'; 
@@ -231,14 +232,6 @@ $lang['menu_bibliometric_cited'] = 'menu_bibliometric_cited';
 $lang['sign_up'] = 'Cadastrar-se';
 $lang['Signup_user'] = 'Cadastro de usuário';
 
-$lang['situacao_exemplar_0'] = '<span style="color: green"><b>Disponível</b></span>';
-$lang['situacao_exemplar_1'] = 'Disponível';
-$lang['situacao_exemplar_2'] = '<span style="color: orange"><b>Emprestado</b></span>';
-$lang['situacao_exemplar_3'] = 'Disponível';
-$lang['situacao_exemplar_4'] = 'Disponível';
-$lang['situacao_exemplar_5'] = 'Disponível';
-$lang['situacao_exemplar_6'] = 'Disponível';
-$lang['situacao_exemplar_9'] = '<span style="color: red"><b>Em preparo</b></span>';
 $lang['status'] = 'Situação';
 
 $lang['loan_module'] = 'Módulo de empréstimo';
@@ -276,11 +269,25 @@ $lang['hasPagePre'] = 'Páginas pré-textuais';
 $lang['hasSubject'] = 'Assunto';
 $lang['without_isbn'] = 'Obra sem ISBN registrado';
 
-$lang['item_status_0'] = 'Em preparo';
-$lang['item_status_1'] = 'Em processamento II';
-$lang['item_status_5'] = 'Disponível';
+$lang['item_status_0'] = 'Buscando metadados';
+$lang['item_status_1'] = 'Representação temática';
+$lang['item_status_2'] = 'Preparo físico';
+$lang['item_status_5'] = 'Aguardado metadados';
 $lang['item_status_6'] = 'Emprestado';
+$lang['item_status_7'] = 'Disponível';
 $lang['item_status_9'] = 'Baixado';
 
 $lang['item_aquisicao_1'] = 'Incorporado';
+$lang['m'] = 'Manifestação';
+$lang['v'] = 'Conceito';
+$lang['preparation'] = 'Preparo técnico';
+$lang['acquisition'] = 'Aquisição';
+$lang['acquisition_in'] = 'Incorporação de Acervo';
+$lang['tombo'] = 'Item do Acervo';
+$lang['itens'] = 'Itens';
+$lang['preparation_itens'] = 'Itens em preparo';
+$lang['preparation_itens_action'] = 'Clique no item para continuar a catalogação.';
+$lang['admin'] = 'Administrador';
+$lang['view'] = 'Detalhes';
 ?>
+

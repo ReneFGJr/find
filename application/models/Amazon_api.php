@@ -16,7 +16,7 @@ class Amazon_api extends CI_model
 		$w['title'] = nbr_author($title,18);
 
 		/************************* Editora */
-		$f = '<b>Editora:</b>';
+		$f = '<br/><br>Editora:</b>';
 		if (strpos($t,$f) > 0)
 		{
 			$s = substr($t,strpos($t,$f)+strlen($f),strlen($t));
@@ -56,7 +56,7 @@ class Amazon_api extends CI_model
 		}
 
 		/************************* Idioma */
-		$f = '<b>Idioma:</b>';
+		$f = '<br/><br>Idioma:</b>';
 		$s = substr($t,strpos($t,$f)+strlen($f),strlen($t));
 		$s = substr($s,0,strpos($s,'</li>'));
 		$w['expressao'] = array('genere'=>'books','idioma'=>$s);

@@ -9,6 +9,31 @@
  class Main extends CI_controller {
     var $lib = 10010000000;
 
+    function zera()
+    {
+        $sql = "TRUNCATE find_authors;
+        TRUNCATE find_expression;
+        TRUNCATE find_manifestation;
+        TRUNCATE find_manifestation_url;
+        TRUNCATE find_work;
+        TRUNCATE find_work_authors;
+        TRUNCATE rdf_concept;
+        TRUNCATE rdf_data;
+        TRUNCATE rdf_name;
+        TRUNCATE find_item;
+        TRUNCATE find_classification_item;
+        TRUNCATE find_classification;";
+        $ln = splitx(';',$sql);
+        for ($r=0;$r < count($ln);$r++)
+            {
+                $sql = $ln[$r];
+                echo '<tt>'.$sql.'</tt><br/>';
+                $this->db->query($sql);
+            }
+        
+        redirect(base_url(PATH));
+    }     
+
     function __construct() {
         parent::__construct();
 
@@ -40,9 +65,11 @@
     {
         $this->load->model("book_preparations");
         $this->cab();
-        $sx = $this->book_preparations->main($path,$id);
+        $sx = breadcrumb();
+        $sx .= $this->book_preparations->main($path,$id);
         $data['content'] = $sx;
         $this -> load -> view('content', $data);        
+
     }
 
     private function cab($navbar = 1) {
@@ -61,6 +88,19 @@
     {
         switch($path)
         {
+            /**************** Cover Link *******/
+            case 'cover_link':
+            $this->load->model('covers');
+            $url = get("url");
+            $this->covers->ajax_update($id,$url);
+            break;
+
+            case 'cover_upload':
+            $this->load->model('covers');
+            $this->covers->ajax_cover_upload($id);
+            break;            
+
+
             case 'viaf_autocomplete':
             $term = get("term");
             $ak = array('label' => 'Alaska');
@@ -73,7 +113,6 @@
             $arr[2] = $ar;
             $arr[3] = $az;
 
-# echo the json data back to the html web page
             echo json_encode($arr);
             break;
 
@@ -111,24 +150,23 @@
 
     public function index() {
         $this -> cab();
+
         $this->load->model("books");
         $this->load->model("covers");
         $rdf = new rdf;
 
         $data['logo'] = LOGO;
-        $this -> load -> view('welcome_brapci', $data);
-        $this -> load -> view('find/search/search_simple', $data);
+        $tela = '';
+        $tela .= breadcrumb();
+        $tela .= $this -> load -> view('welcome_brapci', $data,true);        
+        $tela .= $this -> load -> view('find/search/search_simple', $data,true);
 
         /*************************** find */
-        $gets = array_merge($_POST, $_GET);
-        $tela = $rdf -> search($gets);
+        $gets = array_merge($_POST, $_GET);        
+        $tela .= $rdf -> search($gets);
         //$tela .= $this->frbr->bookcase();
 
         $tela .= $this->books->vitrine();
-
-        if (get("action") == '') {
-            $tela .= $this -> libraries -> highlights('sc');
-        }
 
         $data['content'] = $tela;
         $this -> load -> view('content', $data);
@@ -150,6 +188,16 @@
         $this -> load -> view("show", $data);
         $this -> foot();
     }
+
+    function admin($path, $id = '', $act = '') {
+        $this -> cab();
+        $this -> load -> model("admin");
+        $data['content'] = $this -> admin -> index($path, $id, $act);
+        $data['title'] = msg('Admin');
+        $this -> load -> view("show", $data);
+        $this -> foot();
+    }
+
     function tools($act='')
     {
         $this -> cab();
@@ -179,21 +227,20 @@
         /*** load module ********/
         $this -> load -> model($mod);
         $cmd = '$tela = $this->' . $mod . '->' . $act . "('$id','$id2','$id3');";
-        //echo $cmd;
         eval($cmd);
 
         $data['content'] = '<h1>' . $title . '</h1>' . $tela;
         $this -> load -> view('content', $data);
     }    
-    public function config($tools = '', $ac = '', $id='') {
-        $rdf = new rdf;
+    public function setup($tools = '', $ac = '', $id='') {
+        $this->load->model("setups");
         $this -> cab();
 
         if (!perfil("#ADM")) {
             redirect(base_url(PATH));
         }
 
-        $tela = $rdf->config($tools,$ac,$id); 
+        $tela = $this->setups->main($tools,$ac,$id); 
         $data['content'] = $tela;
         $this -> load -> view('content', $data);
         $this -> foot();
@@ -203,24 +250,13 @@
     {
         $this -> load -> model('libraries');
         $this -> cab();
-        $data['content'] = $this -> libraries->about();     
+        $data['content'] = '<br/><br/>'.$this -> libraries->about();  
+        $data['content'] .= $this -> libraries->about_places();     
         $data['title'] = msg('About');
         $this -> load -> view('content', $data);
 
         $this -> foot();        
-    }
-
-    function contact()
-    {
-        $this -> load -> model('libraries');
-        $tela = '';
-        $this -> cab();
-        $data['content'] = $this -> libraries->about();     
-        $data['title'] = msg('About');
-        $this -> load -> view('content', $data);
-
-        $this -> foot();        
-    }    
+    }  
 
     function bookshelf($id = '') {
         $this -> load -> model('libraries');
@@ -285,9 +321,12 @@
         $this->load->model("books");
         $this->load->model("isbn");
         $this->load->model("authors");
+        $this->load->model("classifications");
         $dt = $this->books->le_m($id);
         $this->cab();
-        $sx = $this->books->show($dt,1);
+        $sx = breadcrumb();
+        $sx .= $this->books->show($dt,1);
+
         $data['content'] = $sx;
         $this -> load -> view('content', $data);
 

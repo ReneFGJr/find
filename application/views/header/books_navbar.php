@@ -29,9 +29,16 @@ if (!isset($logo))
 				<a class="nav-link" href="<?php echo base_url(PATH.'bookshelf'); ?>"><?php echo msg("bookshelf");?></span></a>
 			</li>
 
-			<li class="nav-item">
-				<a class="nav-link" href="<?php echo base_url(PATH.'about'); ?>">Sobre</a>
-			</li>
+			<?php
+			if (perfil("#ADM") > 0)
+			{ 
+				echo '
+				<li class="nav-item">
+				<a class="nav-link" href="'.base_url(PATH.'setup').'">Configurações</a>
+				</li>';
+			}
+			?>
+
 			<?php
 			if (perfil("#ADM#PPT") > 0)
 			{ 
@@ -43,10 +50,10 @@ if (!isset($logo))
 			?>
 
 			<li class="nav-item">
-				<a class="nav-link" href="<?php echo base_url(PATH.'contact'); ?>">Contato</a>
-			</li>
+				<a class="nav-link" href="<?php echo base_url(PATH.'about'); ?>">Sobre</a>
+			</li>			
 
-			<li class="nav-item">
+			<li class="nav-item ml-auto">
 				<?php echo $this->socials->menu_user();?>
 			</li>           
 

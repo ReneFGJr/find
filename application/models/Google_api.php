@@ -7,20 +7,22 @@ class google_api extends CI_model
 		$type = 'GOOGL';
 		$t = $this->isbn->get($isbn,$type);
 		$w = (array)json_decode($t);
-		$w['serie'] = '';
-		$w['subject']= array();
+		$rsp['serie'] = '';
+		$rsp['cover'] = '';
+		$rsp['editora'] = '';
+		$rsp['subject']= array();
 		/*******************************************************************************/
 
 		if ($w['totalItems'] > 0) {
 			$rsp['expressao']['genere'] = $w['kind'];
 			$w = (array)$w['items'][0];
 			$w = (array)$w['volumeInfo'];
-			$rsp['titulo'] = trim((string)$w['title']);
+			$rsp['title'] = trim((string)$w['title']);
 			if (isset($w['subtitle'])) {
-				$rsp['titulo'] .= ': ' . trim($w['subtitle']);
+				$rsp['title'] .= ': ' . trim($w['subtitle']);
 			}
-			$rsp['titulo'] = troca($rsp['titulo'], ' - ',': ');
-			$rsp['titulo'] = nbr_author($rsp['titulo'],18);
+			$rsp['title'] = troca($rsp['title'], ' - ',': ');
+			$rsp['title'] = nbr_author($rsp['title'],18);
 			/********** Autores ****************************/
 			$rsp['authors'] = $w['authors'];
 			for ($q=0;$q < count($rsp['authors']);$q++)
