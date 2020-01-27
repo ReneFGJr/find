@@ -10,8 +10,10 @@ class admin extends CI_model
     function index($a='',$action='',$id='')
     {                
         $this->load->model('libraries');
-        $sx = breadcrumb();
-        $sx .= '<div class="row">';
+        $sx = '';
+        $sx .= breadcrumb();
+
+        $sx .= '<div class="row">';        
 
         if (!perfil("#ADMIN"))
         {
@@ -29,11 +31,22 @@ class admin extends CI_model
             }
             break;
             default:
-            $sx .= $this->row($a);
+            $sx .= $this->menu();
             break;
         }
         $sx .= '</div>';
         return($sx);                
-    }      
+    } 
+    function menu()
+        {
+            $sx = '<div class="row">';
+            $sx .= '<div class="col-12">';
+            $sx .= '<ul>';
+            $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/classification').'">'.msg("Classification").'</a>';
+            $sx .= '</ul>';
+            $sx .= '</div>';
+            $sx .= '</div>';
+            return($sx);
+        }     
 }
 ?>    

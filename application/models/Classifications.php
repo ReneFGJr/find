@@ -32,9 +32,8 @@ class Classifications extends CI_model
 		$rlt = $rlt->result_array();
 
 		$sx = '';
-		$sx .= '<div class="row">';
 		$sx .= '<form method="post">';
-		$sx .= '<div class="col-12">';		
+
 		$sx .= '<select class="form_control" style="width: 100%;" name="classification" id="classification" size=10>';
 		for ($r=0;$r < count($rlt);$r++)
 		{
@@ -45,17 +44,12 @@ class Classifications extends CI_model
 			$sx .= '</option>';
 		}
 		$sx .= '</select>';
-		$sx .= '</div>';
 
-		$sx .= '<div class="col-2">';
 		$sx .= '<input type="submit" class="btn btn-outline-primary" value="'.msg('Classification').'>>">';
-		$sx .= '</div>';
 		$sx .= '</form>';
 
-		$sx .= '<div class="col-12">';
+		$sx .= '<hr>';
 		$sx .= $this->classification_item_show($id);
-		$sx .= '</div>';
-		$sx .= '</div>';
 
 		return($sx);
 	}
@@ -65,7 +59,7 @@ class Classifications extends CI_model
 	{
 		$ok = 1;
 		$sql = "select * from find_classification_item 
-						where ci_item = $id ";
+		where ci_item = $id ";
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
 		$ord = 0;
@@ -248,12 +242,44 @@ class Classifications extends CI_model
 			break;
 
 			default:
-			echo $act.'=='.$id;
+			$sx = $this->classes();
+			break;
 			break;
 		}
 		$sx .= '</div>';
 		return($sx);
+	}
 
+	function classes()
+	{
+		$sql = "select * from find_classification_type 
+		where ct_active = 1
+		order by ct_name";
+		$rlt = $this->db->query($sql);
+		$rlt = $rlt->result_array();
+		$sx = '<table class="table">';
+		$sx .= '<tr>';
+		$sx .= '<th >Classificação</th>';
+		$sx .= '<th >Link</th>';
+		$sx .= '</tr>';
+		for ($r=0;$r < count($rlt);$r++)
+		{
+			$line = $rlt[$r];
+			$sx .= '<tr>';
+			$link = '<a href="'.base_url(PATH.'admin/classification/view/'.$line['id_ct']).'">';
+			$linka = '</a>';
+			$sx .= '<td>'.$link.$line['ct_name'].$linka.'</td>';
+			$thesa = $line['ct_rdf_url'];
+			if (strlen($thesa) > 0)
+			{
+				$link = '<a href="'.$thesa.'" target="_new">'.msg("link").'</a>';
+			} else {
+				$link = '';
+			}
+			$sx .= '<td>'.$link.'</td>';			
+		}						
+		$sx .= '</table>';
+		return($sx);
 	}
 	function row_type($path='',$id=0)
 	{

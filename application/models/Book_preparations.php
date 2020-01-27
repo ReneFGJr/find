@@ -5,7 +5,18 @@ class book_preparations extends CI_model
 	{
 		$this->load->model('isbn');
 		$this->load->model('books');
-		$sx = '';
+		$this->load->model("covers");
+		$this->load->model("languages");		
+		$this->load->model("generes");		
+		$this->load->model("authors");
+		$this->load->model("google_api");		
+		$this->load->model("amazon_api");		
+		$this->load->model("oclc_api");		
+		$this->load->model("marc_api");
+		$this->load->model("catalog");
+
+
+		$sx = '<div class="container"><div class="row">';
 		switch($path)
 		{
 			case 'acquisition':
@@ -13,7 +24,10 @@ class book_preparations extends CI_model
 			break;
 
 			case 'tombo':
-			$sx .= $this->tombo_editar($id);
+			$dt = $this->le_tombo($id);
+			$sx .= $this->book_header($dt);
+
+			$sx .= $this->tombo_editar($dt);			
 			break;			
 
 			case 'acquisition_in':
@@ -25,33 +39,47 @@ class book_preparations extends CI_model
 			$sx = $this->preparation_itens($id);
 			break;
 
+
+			/********************************* MENU **/
 			default:
 			/******************************************/
 			$itens = $this->in_status(1);
-			$sx .= '<div class="row">';
+			//$sx .= '<div class="row">';
 			$sx .= $this->preparation_menu('Preparo Técnico','','preparation/acquisition',0);
 
-			if ($itens > 0)
-			{
-				$txt = '<div style="margin-top: 40px;">total de</div>
-				<span style="font-size: 500%; font-weight: bold;">'.$itens.'</span>';
-				$sx .= $this->preparation_menu('Representação temática',$txt,'preparation/itens/1',1);
-			}
-
-			/******************************************/			
-			$sta = array(0,5);
+			/******************* Items para Catalogação ****/
+			$sta = array(0);
 			$itens = $this->in_status($sta);			
 			if ($itens > 0)
 			{
 				$txt = '<div style="margin-top: 40px;">total de</div>
 				<span style="font-size: 500%; font-weight: bold;">'.$itens.'</span>';
-				$sx .= $this->preparation_menu('Processamento físico',$txt,'preparation/itens/0',1);
+				$sx .= $this->preparation_menu('Catalogação '.$itens.' item(ns)',$txt,'preparation/itens/0',1);
+			}
+			$sta = 5;
+			$itens = $this->in_status($sta);			
+			if ($itens > 0)
+			{
+				$txt = '<div style="margin-top: 40px;">total de</div>
+				<span style="font-size: 500%; font-weight: bold;">'.$itens.'</span>';
+				$sx .= $this->preparation_menu('Catalogação Manual'.$itens.' item(ns)',$txt,'preparation/itens/5',1);
 			}
 
-			$sx .= '</div>';
+			/******************* Items para Catalogação ****/
+			$sta = 1;
+			$itens = $this->in_status($sta);
+			if ($itens > 0)
+			{
+				$txt = '<div style="margin-top: 40px;">total de</div>
+				<span style="font-size: 500%; font-weight: bold;">'.$itens.'</span>';
+				$sx .= $this->preparation_menu('Classificação '.$itens.' item(ns)',$txt,'preparation/itens/1',1);
+			}			
+
+			//$sx .= '</div>';
 
 			break;			
 		}
+		$sx .= '</div></div>';
 		return($sx);
 	}
 
@@ -78,10 +106,13 @@ class book_preparations extends CI_model
 	function preparation_itens($sta)
 	{
 		$itens = $this->in_status($sta);
-		$sx = '';
+		$sx = '<div class="container"><div class="row">';
+		$sx.= '<div class="col-12">';
 		$sx .= '<h1>'.$itens.' '.msg('preparation_itens').'</h1>';
 		$sx .= '<p>'.msg('preparation_itens_action').'</p>';
 		$sx .= $this->tombo_list($sta);
+		$sx .= '</div>';
+		$sx .= '</div></div>';
 
 		return($sx);
 	}
@@ -102,7 +133,7 @@ class book_preparations extends CI_model
 
 		$sql = "select count(*) as total 
 		from find_item 
-		where $wh ";		
+		where ($wh) and i_library = '".LIBRARY."' ";		
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
 		$line = $rlt[0];
@@ -126,61 +157,52 @@ class book_preparations extends CI_model
 		}
 	}
 
-	function tombo_editar($id)
+	function tombo_editar($dt)
 	{		
-		$this->load->model("covers");
-		$this->load->model("books");		
-		$this->load->model("isbn");		
-		$this->load->model("languages");		
-		$this->load->model("generes");		
-		$this->load->model("authors");
-		$this->load->model("google_api");		
-		$this->load->model("amazon_api");		
-		$this->load->model("oclc_api");		
-		$this->load->model("marc_api");
-		$this->load->model("catalog");
-
-		$dt = $this->le_tombo($id);
-		$sx = $this->show($dt,2);
 		$isbn = trim($dt['i_identifier']);
 		$status = $dt['i_status'];
 		$view = 1;
 
+		$sx = '<div class="row">';
+		$sx .= '<div class="col-10">';
 		switch($status)
 		{
-			case '5':
+			/************************* COLETA METADADOS ***/
+			case '0':
+			$view = 2;
+			$sx .= $this->books->locate($isbn);
+			$sx .= $this->link_book($id,$isbn);	
+			//redirect(base_url(PATH.'preparation/tombo/'.$id));
+			echo "Checar";
+			exit;
+
+			case '1':
 			$sx .= $this->marc_api->form();
+			$view = 2;
 			$marc = get("dd2");
 			if (strlen($marc) > 0)
 			{
 				$sx .= $this->books->marc_import($marc);
 			}					
-			break;		
+			break;			
 
-			/************************************************/
-			case '0':
-			$sx .= $this->books->locate($isbn);
-			$sx .= $this->link_book($id,$isbn);	
-			redirect(base_url(PATH.'preparation/tombo/'.$id));
-			exit;
-
-			/************************************************/
-			case '1':
+			/************************** CLASSIFICACAO - 1 ***/
+			case '2':
+			$view = 3;
 			$this->load->model("classifications");
-			$sx .= '<h2>Classification</h2>';
-			$sx .= $this->classifications->classification_item($id);
-			$view = 2;
+			$sx .= $this->classifications->classification_item($dt['id_i']);
+			
 			break;
+
+	
 		}
 
-		/******************************** Mostra dados **********/
-		if (isset($dt['i_manitestation']))
-		{
-			$dt = $this->books->le_m($dt['i_manitestation']);
-			$ss = $sx;
-			$sx = $this->books->show($dt,$view);		
-			$sx = troca($sx,'$[BODY]',$ss);
-		}
+		$sx .= '</div>'.cr();
+		/**************** WORKFLOW *****************************/
+		$sx .= '<div class="col-2">';
+		$dt = array('pos'=>$view);
+		$sx .= $this->load->view('tools/workflow',$dt,true);
+		$sx .= '</div>';
 
 		return($sx);
 	}
@@ -269,7 +291,7 @@ class book_preparations extends CI_model
 
 	}
 
-	function tombo_list($status = 0, $limit = 10)
+	function tombo_list($status = 0)
 	{
 		if (is_array($status))
 		{
@@ -286,13 +308,13 @@ class book_preparations extends CI_model
 		$sql = "select * from find_item 
 		INNER JOIN library_place on i_library_place = id_lp
 		where $wh and i_library = ".LIBRARY."
-		order by id_i desc
-		limit ".$limit;
+		order by id_i desc";
 
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
 
-		$sx = '<table class="table">'.cr();
+		$sx = cr().cr().'<!--- Lista --->'.cr().cr();
+		$sx .= '<table class="table">'.cr();
 		$sx .= '<tr>';
 		$sx .= '<th>Tombo</th>';
 		$sx .= '<th>ISBN/ID</th>';
@@ -300,7 +322,7 @@ class book_preparations extends CI_model
 		$sx .= '<th>Situação</th>';
 		$sx .= '<th>Tipo</th>';
 		$sx .= '<th>Local</th>';
-		$sx .= '</tr>';
+		$sx .= '</tr>'.cr();
 
 		for ($r=0;$r < count($rlt);$r++)
 		{
@@ -314,9 +336,9 @@ class book_preparations extends CI_model
 			$sx .= '<td>'.$link.msg('item_status_'.$line['i_status']).$linka.'</td>';
 			$sx .= '<td>'.$link.msg('item_aquisicao_'.$line['i_aquisicao']).$linka.'</td>';
 			$sx .= '<td>'.$link.$line['lp_name'].'</td>';
-			$sx .= '</tr>';
+			$sx .= '</tr>'.cr();
 		}
-		$sx .= '</table>';
+		$sx .= '</table>'.cr();
 		return($sx);
 	}
 
@@ -358,6 +380,34 @@ class book_preparations extends CI_model
 		return($tombo);
 	}
 
+	function book_header($dt)
+		{
+			print_r($dt);
+			$img = $this->covers->img($dt['id_m']);
+			$sx = '';
+			//$sx = '<div class="row">';
+
+			$sx .= '<div class="col-1">';
+			$sx .= '<img src="'.$img.'" class="img-fluid">';
+			$sx .= '</div>';
+
+			$sx .= '<div class="col-3">';
+			$sx .= '<span>ISBN:'.$dt['i_identifier'].'</span></br>';
+			$sx .= '<span>'.msg('item_status_'.$dt['i_status']).'</span>';
+			$sx .= '</div>';			
+
+			$sx .= '<div class="col-7">';
+			$sx .= '<span class="find_title">'.$dt['w_title'].'</span>';
+			$sx .= '</div>';
+ 
+			$sx .= '<div class="col-1 text-right">';
+			$sx .= '<span><sup>TOMBO</sup> '.$dt['i_tombo'].'</span>';
+			$sx .= '</div>';
+
+			$sx .= '</div>';
+			return($sx);
+		}
+
 	function show($dt,$tp=1)
 	{
 		switch($tp)
@@ -396,7 +446,10 @@ class book_preparations extends CI_model
 	function le_tombo($id)
 	{
 		$sql = "select * from find_item 
-		where 	i_library = '".LIBRARY."' and id_i = ".$id;
+					LEFT JOIN find_manifestation ON i_manitestation = id_m
+					LEFT JOIN find_expression ON m_expression = id_e
+					LEFT JOIN find_work ON e_work = id_w
+					where i_library = '".LIBRARY."' and id_i = ".$id;
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
 		if (count($rlt) > 0)

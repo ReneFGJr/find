@@ -527,7 +527,7 @@ class books extends CI_model
 
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
-		$sx = '<div class="row">';
+		$sx = '<div class="container"><div class="row">';
 		for ($r=0;$r < count($rlt);$r++)
 		{
 			$line = $rlt[$r];
@@ -557,7 +557,7 @@ class books extends CI_model
 			$sx .= $title;
 			$sx .= '</div>';
 		}
-		$sx .= '</div>';
+		$sx .= '</div></div>';
 		return($sx);
 	}
 

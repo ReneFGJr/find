@@ -189,7 +189,7 @@
         $this -> foot();
     }
 
-    function admin($path, $id = '', $act = '') {
+    function admin($path='', $id = '', $act = '') {
         $this -> cab();
         $this -> load -> model("admin");
         $data['content'] = $this -> admin -> index($path, $id, $act);
@@ -334,3 +334,20 @@
     }
 }
 ?>
+<style>
+    div
+        {
+            border: 1px solid #000000;
+        }
+    .container
+        {
+            background-color: #d0ffd0;
+            border: 3px solid #00ff00;
+        }
+    .row
+        {
+            background-color: #d0d0ff;
+            border: 3px solid #0000ff;
+        }
+
+</style>        

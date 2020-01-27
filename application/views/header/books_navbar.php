@@ -51,12 +51,14 @@ if (!isset($logo))
 
 			<li class="nav-item">
 				<a class="nav-link" href="<?php echo base_url(PATH.'about'); ?>">Sobre</a>
-			</li>			
-
+			</li>
+		</ul>
+	</div>
+	<div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+		<ul class="navbar-nav ml-auto">
 			<li class="nav-item ml-auto">
 				<?php echo $this->socials->menu_user();?>
-			</li>           
-
+			</li> 
 		</ul>
 	</div>
 </nav>

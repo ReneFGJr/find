@@ -421,7 +421,7 @@ CREATE TABLE `cutter` (
   `id_cutter` bigint(20) UNSIGNED NOT NULL,
   `cutter_code` varchar(5) NOT NULL,
   `cutter_abrev` varchar(25) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `cutter`
@@ -12776,7 +12776,7 @@ CREATE TABLE `find_authors` (
   `a_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `a_use` int(11) NOT NULL DEFAULT '0',
   `a_rdf` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -12792,7 +12792,7 @@ CREATE TABLE `find_classification` (
   `cl_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `cl_rdf` char(20) NOT NULL,
   `cl_image` char(150) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -12805,7 +12805,7 @@ CREATE TABLE `find_classification_item` (
   `ci_item` int(11) NOT NULL,
   `ci_classification` int(11) NOT NULL,
   `ci_order` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -12819,7 +12819,7 @@ CREATE TABLE `find_classification_type` (
   `ct_description` text COLLATE utf8_bin NOT NULL,
   `ct_active` int(11) NOT NULL DEFAULT '1',
   `ct_rdf_url` char(150) COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `find_classification_type`
@@ -12842,7 +12842,7 @@ CREATE TABLE `find_expression` (
   `e_type` char(5) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `e_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `e_id` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -12869,7 +12869,7 @@ CREATE TABLE `find_item` (
   `i_dt_emprestimo` date NOT NULL,
   `i_dt_prev` int(11) NOT NULL,
   `i_dt_renovavao` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -12884,7 +12884,7 @@ CREATE TABLE `find_manifestation` (
   `m_edition` int(11) NOT NULL DEFAULT '0',
   `m_year` int(11) NOT NULL DEFAULT '0',
   `m_id` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -12897,7 +12897,7 @@ CREATE TABLE `find_manifestation_url` (
   `mu_url` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `mu_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `mu_m` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -12910,7 +12910,7 @@ CREATE TABLE `find_work` (
   `w_title` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `w_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `w_id` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -12924,7 +12924,7 @@ CREATE TABLE `find_work_authors` (
   `wa_author` int(11) NOT NULL,
   `wa_order` int(11) NOT NULL DEFAULT '99',
   `wa_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -12939,7 +12939,7 @@ CREATE TABLE `library` (
   `l_id` int(11) NOT NULL,
   `l_logo` char(80) NOT NULL,
   `l_about` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `library`
@@ -12971,7 +12971,7 @@ CREATE TABLE `library_place` (
   `lp_site` char(100) COLLATE utf8_bin NOT NULL,
   `lp_obs` text COLLATE utf8_bin NOT NULL,
   `lp_active` int(11) NOT NULL DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `library_place`
@@ -12998,7 +12998,7 @@ CREATE TABLE `library_place_bookshelf` (
   `bs_image` char(100) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `bs_bs` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `bs_LIBRARY` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `library_place_bookshelf`
@@ -13030,7 +13030,7 @@ CREATE TABLE `mensagem_own` (
   `smtp_protocol` char(5) NOT NULL,
   `smtp_port` char(3) NOT NULL,
   `mailtype` char(5) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `mensagem_own`
@@ -13052,7 +13052,7 @@ CREATE TABLE `msg` (
   `msg_language` char(5) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'pt_BR',
   `msg_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `msg_updated` int(11) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `msg`
@@ -13521,7 +13521,7 @@ CREATE TABLE `rdf_class` (
   `c_justify` int(11) NOT NULL DEFAULT '0',
   `c_url` char(100) NOT NULL,
   `c_url_update` date NOT NULL DEFAULT '0000-00-00'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `rdf_class`
@@ -13734,7 +13734,7 @@ CREATE TABLE `rdf_prefix` (
   `prefix_ref` char(30) NOT NULL,
   `prefix_url` char(250) NOT NULL,
   `prefix_ativo` int(11) NOT NULL DEFAULT '1'
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `rdf_prefix`
@@ -13788,7 +13788,7 @@ CREATE TABLE `users` (
   `us_password` char(40) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `us_perfil_check` char(20) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `us_institution` char(40) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `users`
