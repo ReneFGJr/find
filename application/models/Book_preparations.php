@@ -329,7 +329,8 @@ class book_preparations extends CI_model
 		/************************************** SEM ISBN */
 		if (get("dd3") == 1)
 		{
-			$isbn = LIBRARY.strzero(get("dd1"),8);
+			$tb = get("dd1");
+			$isbn = LIBRARY.strzero($tb,8);
 			$isbn .= genchksum13($isbn);
 			$status = 5;
 		}
@@ -365,7 +366,12 @@ class book_preparations extends CI_model
 					$msgs = $rs[1];
 				}
 			} else {
-				$msgs = 'ISBN Inválido';
+				$msgs = message('ISBN Inválido '.$isbn,2);
+			}
+		} else {
+			if (strlen($isbn) > 0)
+			{
+				$msgs = message('ISBN Inválido '.$isbn,2);
 			}
 		}
 

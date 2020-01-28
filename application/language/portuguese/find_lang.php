@@ -281,7 +281,7 @@ $lang['item_status_7'] = 'Disponível';
 $lang['item_status_9'] = 'Baixado';
 */
 
-$lang['item_aquisicao_1'] = 'Incorporado';
+$lang['item_aquisicao_1'] = 'Tombado';
 $lang['m'] = 'Manifestação';
 $lang['v'] = 'Conceito';
 $lang['preparation'] = 'Preparo técnico';
