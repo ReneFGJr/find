@@ -14,6 +14,8 @@ class book_preparations extends CI_model
 		$this->load->model("oclc_api");		
 		$this->load->model("marc_api");
 		$this->load->model("catalog");
+		$this->load->model("sourcers");
+		$this->load->model("labels");
 
 
 		$sx = '<div class="container"><div class="row">';
@@ -33,7 +35,7 @@ class book_preparations extends CI_model
 			$sx .= $this->book_header($dt);
 
 			$sx .= $this->tombo_editar($dt);			
-			break;			
+			break;				
 
 			case 'acquisition_in':
 			$sx = $this->acquisition_in();
@@ -86,7 +88,22 @@ class book_preparations extends CI_model
 				$txt = '<div style="margin-top: 40px;">total de</div>
 				<span style="font-size: 500%; font-weight: bold;">'.$itens.'</span>';
 				$sx .= $this->preparation_menu('Classificação '.$itens.' item(ns)',$txt,'preparation/itens/2',1);
-			}					
+			}
+
+			/******************* Items para Classificação ****/
+			$sta = 4;
+			$itens = $this->in_status($sta);
+			if ($itens > 0)
+			{
+				$txt = '<div style="margin-top: 40px;">total de</div>
+				<span style="font-size: 500%; font-weight: bold;">'.$itens.'</span>';
+				$sx .= $this->preparation_menu('Preparação Fisica '.$itens.' item(ns)',$txt,'preparation/itens/4',1);
+			}
+
+			/******************* Items para Classificação ****/
+			$txt = '<div style="margin-top: 40px;">total de</div>
+			<span style="font-size: 500%; font-weight: bold;">'.$itens.'</span>';
+			$sx .= $this->preparation_menu('Etiquetas',$txt,'label',1);
 
 			//$sx .= '</div>';
 
@@ -153,22 +170,21 @@ class book_preparations extends CI_model
 		return($line['total']);
 	}
 
-	function link_book($id,$isbn)
+	function link_book()
 	{
-		$sql = "select * from find_manifestation where m_isbn13 = '$isbn' ";
+		$sql = "SELECT * 
+		FROM find_item 
+		INNER JOIN find_manifestation ON i_identifier = m_isbn13 
+		where i_manitestation = 0";
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
-		if (count($rlt) > 0)
+		for ($r=0;$r < count($rlt);$r++)
 		{
-			$line = $rlt[0];
-			$manifestation = $line['id_m'];
-			$sql = "update find_item 
-			set i_manitestation = $manifestation
-			where id_i = ".$id;
-			$rlt = $this->db->query($sql);
-
-			/* Altera Status */
-			$this->item_status($id,2);
+			$line = $rlt[$r];
+			$sql = "update find_item
+			set i_manitestation = ".$line['id_m']."
+			where id_i = ".$line['id_i'];
+			$xrlt = $this->db->query($sql);
 		}
 	}
 
@@ -192,18 +208,19 @@ class book_preparations extends CI_model
 		$sx .= '<div class="col-10">';
 		switch($status)
 		{
+
 			/************************* COLETA METADADOS ***/
 			case '1':
 			$view = 2;
 			$sx .= $this->books->locate($isbn);
 			$sx .= $this->link_book($id,$isbn);	
 			$dt = $this->le_tombo($id);
-			if ($dt['i_status'] != 0)
+			if ($dt['i_status'] != 1)
 			{
 				redirect(base_url(PATH.'preparation/tombo/'.$id));	
 			} else {
 				/* Envia para catalogação manual / MARC21 */
-				$this->item_status($id,1);
+				$this->item_status($id,5);
 				redirect(base_url(PATH.'preparation/tombo/'.$id));	
 			}
 			exit;
@@ -211,11 +228,19 @@ class book_preparations extends CI_model
 
 			case '5':
 			$sx .= $this->	marc_api->form();
+			$sx .= $this->sourcers->fontes();
 			$view = 2;
 			$marc = get("dd2");
 			if (strlen($marc) > 0)
 			{
 				$sx .= $this->books->marc_import($marc);
+				$this->link_book();
+				$dt = $this->le_tombo($id);				
+				if (strlen($dt['i_manitestation'] > 0))
+				{
+					$this->item_status($id,2);					
+				}
+				redirect(base_url(PATH.'preparation/tombo/'.$id));
 			}					
 			break;			
 
@@ -234,9 +259,15 @@ class book_preparations extends CI_model
 			$view = 4;
 			$this->load->model("indexing");
 			$sx .= $this->indexing->indexing_item($dt['id_i']);
-			$sx .= $this->indexing->classified_item($dt['id_i']);
+			$sx .= $this->indexing->indexed_item($dt['id_i']);
 			$sx .= $this->actions(4,$dt['id_i']);			
 			break;
+
+			/*************************** Preparo físico *****************/
+			case '4':
+			$view = 5;
+			$sx .= $this->actions(8,$dt['id_i']);			
+			break;			
 
 		}
 
@@ -251,21 +282,21 @@ class book_preparations extends CI_model
 	}
 
 	function actions($op,$id)
+	{
+		if (is_array($op))
 		{
-			if (is_array($op))
-			{
 
-			} else {
-				$op = array($op);
-			}
-			$sx = '';
-			for ($r=0;$r < count($op);$r++)
-			{
-				$sx .= '<a href="'.base_url(PATH.'preparation/tombo_status/'.$id.'/'.$op[$r]).'" class="btn btn-outline-primary">';
-				$sx .= 'Enviar para '.msg('item_status_'.$op[$r]).'</a>';
-			}
-			return($sx);
+		} else {
+			$op = array($op);
 		}
+		$sx = '';
+		for ($r=0;$r < count($op);$r++)
+		{
+			$sx .= '<a href="'.base_url(PATH.'preparation/tombo_status/'.$id.'/'.$op[$r]).'" class="btn btn-outline-primary">';
+			$sx .= 'Enviar para '.msg('item_status_'.$op[$r]).'</a>';
+		}
+		return($sx);
+	}
 
 	function acquisition_in()
 	{	
@@ -319,7 +350,7 @@ class book_preparations extends CI_model
 				$manifestation = $this->books->isbn_exists($isbn_o);
 				if (strlen($manifestation) > 0)
 				{
-					$ex = $this->books->exemplar($manifestation);
+					$ex = $this->books->exemplar($isbn_o);
 					$exemplar = $ex + 1;
 					$status = 1;
 				} else {
@@ -547,6 +578,6 @@ class book_preparations extends CI_model
 		<li><a href="'.base_url(PATH.'preparation/acquisition_in/').'">Incorporação no acervo</a></li>
 		</ul>';
 		return($sx);
-	}            
+	} 
 }
 ?>

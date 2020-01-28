@@ -39,6 +39,7 @@
 
         $this -> lang -> load("app", "portuguese");
         $this -> lang -> load("find", "portuguese");
+
         $this -> load -> database();
         $this -> load -> helper('form');
         $this -> load -> helper('form_sisdoc');
@@ -60,6 +61,12 @@
         $_SESSION['user'] = 'FINDS';
         redirect(base_url('index.php/biblio'));
     }
+
+    function label()
+        {
+            $this->load->model("labels");
+            $this->labels->label_pdf();
+        }
 
     function preparation($path='',$id='',$sta='')
     {
@@ -343,20 +350,3 @@
         }
 }
 ?>
-<style>
-    div
-        {
-            border: 1px solid #000000;
-        }
-    .container
-        {
-            background-color: #d0ffd0;
-            border: 3px solid #00ff00;
-        }
-    .row
-        {
-            background-color: #d0d0ff;
-            border: 3px solid #0000ff;
-        }
-
-</style>        

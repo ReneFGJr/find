@@ -52,6 +52,7 @@ class books extends CI_model
 	{
 		$dt = $this->marc_api->book($t);
 		$isbn = $dt['isbn']['isbn13'];
+
 		$this->process_register($isbn,$dt,'MARC2');
 		$sx = 'Marc 21 imported<br>';
 
@@ -66,7 +67,6 @@ class books extends CI_model
 		/* Google */
 		$google = $this->google_api->book($isbn);
 		$amazon = $this->amazon_api->book($isbn);
-
 
 		/************************************** Processar Google ************/
 		if ($google['totalItems'] > 0)
@@ -115,7 +115,15 @@ class books extends CI_model
 		/* MANIFESTATION */
 		$idn = $rdf->rdf_name('M'.strzero($dt['manifestation'],9));
 		$iddm = $rdf->rdf_concept($idn,'Manifestation');
-		$this->update_id($dt['manifestation'],$iddm,'m');	
+		$this->update_id($dt['manifestation'],$iddm,'m');
+
+		/************ Atualiza Item ******************************/
+		$sql = "update find_item 
+		set i_manitestation = ".$iddm."
+		where i_identifier = '$isbn'
+		and i_status = 5";
+		//$this->db->query($sql);
+
 
 		/* Manifestation - Pages *********************************************/	
 		$pags = sonumero($dt['pages']);
@@ -198,11 +206,6 @@ class books extends CI_model
 				$rdf->set_propriety($iddm,'hasSubject',$idc);	
 			}
 		}
-
-
-		/* Mostra Item */
-		$d = $this->le_m($dt['manifestation']);
-		$sx .= $this->show($d,1);
 		return($sx);
 	}
 
@@ -561,23 +564,6 @@ class books extends CI_model
 		return($sx);
 	}
 
-	function exemplar($manifestation)
-	{
-		$sql = "select max(i_exemplar) as i_exemplar
-		from find_item
-		where i_manitestation = $manifestation
-		and i_library = '".LIBRARY."'";
-		$rlt = $this->db->query($sql);
-		$rlt = $rlt->result_array();
-		if (count($rlt) > 0)
-		{
-			$line = $rlt[0];
-			return($line['i_exemplar']);
-		} else {
-			return(0);
-		}
-	}
-
 	function isbn_exists($isbn)
 	{
 		$sql = "select * from find_manifestation where m_isbn13 = '$isbn'";
@@ -617,7 +603,7 @@ class books extends CI_model
 				$sx .= '</div>';
 				$xp = $p;
 			}
-
+			
 			$sx .= '<div class="line">';
 			$sx .= '<span class="item_status item_status_'.$line['i_status'].'">';
 			$sx .= msg('item_status_'.$line['i_status']).' ('.$line['total'].') ';
@@ -627,6 +613,23 @@ class books extends CI_model
 		$sx .= '</div>';
 		return($sx);
 	}
+	function exemplar($isbn)
+	{
+		$sql = "select max(i_exemplar) as i_exemplar
+		from find_item
+		where i_identifier = '$isbn'
+		and i_library = '".LIBRARY."'";
+
+		$rlt = $this->db->query($sql);
+		$rlt = $rlt->result_array();
+		if (count($rlt) > 0)
+		{
+			$line = $rlt[0];
+			return($line['i_exemplar']);
+		} else {
+			return(0);
+		}
+	}		
 }
 
 ?>

@@ -294,4 +294,3 @@ $lang['preparation_itens_action'] = 'Clique no item para continuar a catalogaÃ§Ã
 $lang['admin'] = 'Administrador';
 $lang['view'] = 'Detalhes';
 ?>
-
