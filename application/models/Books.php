@@ -561,55 +561,72 @@ class books extends CI_model
 		return($sx);
 	}
 
-	function isbn_exists($isbn)
+	function exemplar($manifestation)
+	{
+		$sql = "select max(i_exemplar) as i_exemplar
+		from find_item
+		where i_manitestation = $manifestation
+		and i_library = '".LIBRARY."'";
+		$rlt = $this->db->query($sql);
+		$rlt = $rlt->result_array();
+		if (count($rlt) > 0)
 		{
-			$sql = "select * from find_manifestation where m_isbn13 = '$isbn'";
-			$rlt = $this->db->query($sql);
-			$rlt = $rlt->result_array();
-			if (count($rlt) > 0)
-				{
-					return($rlt[0]['id_m']);
-				} else {
-					return(0);
-				}
+			$line = $rlt[0];
+			return($line['i_exemplar']);
+		} else {
+			return(0);
 		}
+	}
+
+	function isbn_exists($isbn)
+	{
+		$sql = "select * from find_manifestation where m_isbn13 = '$isbn'";
+		$rlt = $this->db->query($sql);
+		$rlt = $rlt->result_array();
+		if (count($rlt) > 0)
+		{
+			return($rlt[0]['id_m']);
+		} else {
+			return(0);
+		}
+	}
 
 	function itens($id)
-		{
-			$sx = '';
-			$wh = '(i_library = '.LIBRARY.') and ';
-			$sql = "select count(*) as total, lp_name, i_status 
-					FROM find_manifestation 
-					INNER JOIN find_item ON id_m = i_manitestation
-					INNER JOIN library_place ON i_library_place = id_lp
-					where $wh (id_m = ".$id.")
-					group by lp_name, i_status
-					order by lp_name, i_status desc ";
+	{
+		$sx = '';
+		$wh = '(i_library = '.LIBRARY.') and ';
+		$sql = "select count(*) as total, lp_name, i_status 
+		FROM find_manifestation 
+		INNER JOIN find_item ON id_m = i_manitestation
+		INNER JOIN library_place ON i_library_place = id_lp
+		where $wh (id_m = ".$id.")
+		group by lp_name, i_status
+		order by lp_name, i_status desc ";
 
-			$rlt = $this->db->query($sql);
-			$rlt = $rlt->result_array();
-			$xp = '<div class="row">';
-			for ($r=0;$r < count($rlt);$r++)
+		$rlt = $this->db->query($sql);
+		$rlt = $rlt->result_array();
+		$xp = '<div class="row">';
+		for ($r=0;$r < count($rlt);$r++)
+		{
+			$line = $rlt[$r];
+			$p = $line['lp_name'];
+			if ($xp != $p)
 			{
-				$line = $rlt[$r];
-				$p = $line['lp_name'];
-				if ($xp != $p)
-				{
-					$sx .= '<div class="col-12">';
-					$sx .= $line['lp_name'];
-					$sx .= '</div>';
-					$xp = $p;
-				}
-				
-				$sx .= '<div class="line">';
-				$sx .= '<span class="item_status item_status_'.$line['i_status'].'">';
-				$sx .= msg('item_status_'.$line['i_status']).' ('.$line['total'].') ';
-				$sx .= '</span>';
+				$sx .= '<div class="col-12">';
+				$sx .= $line['lp_name'];
 				$sx .= '</div>';
+				$xp = $p;
 			}
+
+			$sx .= '<div class="line">';
+			$sx .= '<span class="item_status item_status_'.$line['i_status'].'">';
+			$sx .= msg('item_status_'.$line['i_status']).' ('.$line['total'].') ';
+			$sx .= '</span>';
 			$sx .= '</div>';
-			return($sx);
 		}
+		$sx .= '</div>';
+		return($sx);
+	}
 }
 
 ?>

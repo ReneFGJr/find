@@ -9,44 +9,48 @@ class admin extends CI_model
 
     function index($a='',$action='',$id='')
     {                
-        $this->load->model('libraries');
-        $sx = '';
-        $sx .= breadcrumb();
-
-        $sx .= '<div class="row">';        
+        $this->load->model('libraries');     
 
         if (!perfil("#ADMIN"))
         {
             redirect(base_url(PATH));
         }
 
-        switch($a)  
+        $sx = '<div class="container">';
+
+        /**************************** MENU PRINCIPAL *****************/
+        switch($a)
         {
             case 'classification':
             $this->load->model("classifications");
             $sx .= $this->classifications->action($action,$id);
-            if (perfil("#ADM") > 0)
-            {
-                $sx .= '<a href="'.base_url(PATH.'admin/classification/thesa/'.$id).'" class="btn btn-outline-primary">Import from Thesa</a>';
-            }
             break;
+
+            case 'indexing':
+            $this->load->model("indexing");
+            $sx .= $this->indexing->action($action,$id);
+            break;            
+
+            /************************ MENU ***********/
             default:
             $sx .= $this->menu();
             break;
         }
-        $sx .= '</div>';
+        $sx .= '</div>'; /* Container */
         return($sx);                
     } 
     function menu()
-        {
-            $sx = '<div class="row">';
-            $sx .= '<div class="col-12">';
-            $sx .= '<ul>';
-            $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/classification').'">'.msg("Classification").'</a>';
-            $sx .= '</ul>';
-            $sx .= '</div>';
-            $sx .= '</div>';
-            return($sx);
-        }     
+    {
+        $sx = '<div class="row">';
+        $sx .= '<div class="col-12">';
+        $sx .= '<h1>Menu de administração</h1>';
+        $sx .= '<ul>';
+        $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/classification').'">'.msg("Classification").'</a></li>';
+        $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/indexing').'">'.msg("Vocabulary").'</a></li>';        
+        $sx .= '</ul>';
+        $sx .= '</div>';
+        $sx .= '</div>'; /* Row */
+        return($sx);
+    }     
 }
 ?>    

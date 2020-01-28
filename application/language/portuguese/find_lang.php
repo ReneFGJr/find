@@ -215,8 +215,6 @@ $lang['last_buy'] = 'Últimas aquisições';
 $lang['acquisitions'] = 'Aquisições'; 
 $lang['see_others_editions'] = 'see_others_editions'; 
 $lang['serie'] = 'serie'; 
-$lang['status_1'] = 'status_1'; 
-$lang['status_9'] = 'status_9'; 
 $lang['menu_class'] = 'Classes e propriedades'; 
 $lang['hasAcquisitionBy'] = 'hasAcquisitionBy'; 
 $lang['hasISSN'] = 'hasISSN'; 
@@ -269,13 +267,19 @@ $lang['hasPagePre'] = 'Páginas pré-textuais';
 $lang['hasSubject'] = 'Assunto';
 $lang['without_isbn'] = 'Obra sem ISBN registrado';
 
+
 $lang['item_status_0'] = 'Buscando metadados';
-$lang['item_status_1'] = 'Representação temática';
-$lang['item_status_2'] = 'Preparo físico';
+$lang['item_status_1'] = 'Catalogação';
+$lang['item_status_2'] = 'Classificação';
+$lang['item_status_3'] = 'Indexação';
+$lang['item_status_4'] = 'Preparo físico';
+/*
+
 $lang['item_status_5'] = 'Aguardado metadados';
 $lang['item_status_6'] = 'Emprestado';
 $lang['item_status_7'] = 'Disponível';
 $lang['item_status_9'] = 'Baixado';
+*/
 
 $lang['item_aquisicao_1'] = 'Incorporado';
 $lang['m'] = 'Manifestação';

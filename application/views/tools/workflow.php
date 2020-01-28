@@ -1,5 +1,5 @@
 <?php
-$st = array('none','none','none','none','none');
+$st = array('none','none','none','none','none','none');
 if ($pos < 1) { $pos = 1; }
 if ($pos > count($st)) { $pos = (count($st)+1); }
 //is-done, none, current
@@ -13,8 +13,9 @@ $st[$pos-1] = 'current';
     <li class="StepProgress-item <?php echo $st[0];?>">Aquisição</li>
     <li class="StepProgress-item <?php echo $st[1];?>">Catalogação</li>
     <li class="StepProgress-item <?php echo $st[2];?>">Classificação</li>
-    <li class="StepProgress-item <?php echo $st[3];?>">Preparo físico</li>
-    <li class="StepProgress-item <?php echo $st[4];?>">Fim do processo</li>
+    <li class="StepProgress-item <?php echo $st[3];?>">Indexação</li>
+    <li class="StepProgress-item <?php echo $st[4];?>">Preparo físico</li>
+    <li class="StepProgress-item <?php echo $st[5];?>">Fim do processo</li>
   </ul>
 
 <style>

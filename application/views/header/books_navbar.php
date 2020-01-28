@@ -56,6 +56,12 @@ if (!isset($logo))
 	</div>
 	<div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
 		<ul class="navbar-nav ml-auto">
+			<?php if (perfil("#ADM") > 0) { ?>
+				<li class="nav-item ml-auto">
+					<a class="nav-link" href="<?php echo base_url(PATH.'admin'); ?>">Admin</a>
+				</li>
+			<?php } ?>
+
 			<li class="nav-item ml-auto">
 				<?php echo $this->socials->menu_user();?>
 			</li> 

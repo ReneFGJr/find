@@ -47,3 +47,4 @@ Temporary Items
 .apdisk
 *.pdf
 application/config/config.php
+__cached/100/.htaccess

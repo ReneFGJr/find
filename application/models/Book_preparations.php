@@ -1,7 +1,7 @@
 <?php
 class book_preparations extends CI_model
 {
-	function main($path,$id)
+	function main($path,$id,$sta)
 	{
 		$this->load->model('isbn');
 		$this->load->model('books');
@@ -21,6 +21,11 @@ class book_preparations extends CI_model
 		{
 			case 'acquisition':
 			$sx .= $this->acquisition();
+			break;
+
+			case 'tombo_status':
+			$this->item_status($id,$sta);
+			redirect(base_url(PATH.'preparation/tombo/'.$id));			
 			break;
 
 			case 'tombo':
@@ -43,9 +48,7 @@ class book_preparations extends CI_model
 			/********************************* MENU **/
 			default:
 			/******************************************/
-			$itens = $this->in_status(1);
-			//$sx .= '<div class="row">';
-			$sx .= $this->preparation_menu('Preparo Técnico','','preparation/acquisition',0);
+			$sx .= $this->preparation_menu('Aquisição','','preparation/acquisition',0);
 
 			/******************* Items para Catalogação ****/
 			$sta = array(0);
@@ -73,7 +76,17 @@ class book_preparations extends CI_model
 				$txt = '<div style="margin-top: 40px;">total de</div>
 				<span style="font-size: 500%; font-weight: bold;">'.$itens.'</span>';
 				$sx .= $this->preparation_menu('Classificação '.$itens.' item(ns)',$txt,'preparation/itens/1',1);
-			}			
+			}	
+
+			/******************* Items para Classificação ****/
+			$sta = 2;
+			$itens = $this->in_status($sta);
+			if ($itens > 0)
+			{
+				$txt = '<div style="margin-top: 40px;">total de</div>
+				<span style="font-size: 500%; font-weight: bold;">'.$itens.'</span>';
+				$sx .= $this->preparation_menu('Classificação '.$itens.' item(ns)',$txt,'preparation/itens/2',1);
+			}					
 
 			//$sx .= '</div>';
 
@@ -150,15 +163,27 @@ class book_preparations extends CI_model
 			$line = $rlt[0];
 			$manifestation = $line['id_m'];
 			$sql = "update find_item 
-			set i_manitestation = $manifestation,
-			i_status = 1
+			set i_manitestation = $manifestation
 			where id_i = ".$id;
 			$rlt = $this->db->query($sql);
+
+			/* Altera Status */
+			$this->item_status($id,2);
 		}
+	}
+
+	function item_status($id,$status)
+	{
+		$sql = "update find_item set i_status = $status where id_i = ".round($id);
+		$rlt = $this->db->query($sql);
+
+		/* Inserir Histórico */
+		return(1);
 	}
 
 	function tombo_editar($dt)
 	{		
+		$id = $dt['id_i'];
 		$isbn = trim($dt['i_identifier']);
 		$status = $dt['i_status'];
 		$view = 1;
@@ -168,16 +193,24 @@ class book_preparations extends CI_model
 		switch($status)
 		{
 			/************************* COLETA METADADOS ***/
-			case '0':
+			case '1':
 			$view = 2;
 			$sx .= $this->books->locate($isbn);
 			$sx .= $this->link_book($id,$isbn);	
-			//redirect(base_url(PATH.'preparation/tombo/'.$id));
-			echo "Checar";
+			$dt = $this->le_tombo($id);
+			if ($dt['i_status'] != 0)
+			{
+				redirect(base_url(PATH.'preparation/tombo/'.$id));	
+			} else {
+				/* Envia para catalogação manual / MARC21 */
+				$this->item_status($id,1);
+				redirect(base_url(PATH.'preparation/tombo/'.$id));	
+			}
 			exit;
+			break;
 
-			case '1':
-			$sx .= $this->marc_api->form();
+			case '5':
+			$sx .= $this->	marc_api->form();
 			$view = 2;
 			$marc = get("dd2");
 			if (strlen($marc) > 0)
@@ -191,10 +224,20 @@ class book_preparations extends CI_model
 			$view = 3;
 			$this->load->model("classifications");
 			$sx .= $this->classifications->classification_item($dt['id_i']);
-			
+			$sx .= $this->classifications->classified_item($dt['id_i']);
+			$sx .= $this->actions(3,$dt['id_i']);
+
+			//$sx .= $this->classification_item_show($id);
 			break;
 
-	
+			case '3':
+			$view = 4;
+			$this->load->model("indexing");
+			$sx .= $this->indexing->indexing_item($dt['id_i']);
+			$sx .= $this->indexing->classified_item($dt['id_i']);
+			$sx .= $this->actions(4,$dt['id_i']);			
+			break;
+
 		}
 
 		$sx .= '</div>'.cr();
@@ -206,6 +249,23 @@ class book_preparations extends CI_model
 
 		return($sx);
 	}
+
+	function actions($op,$id)
+		{
+			if (is_array($op))
+			{
+
+			} else {
+				$op = array($op);
+			}
+			$sx = '';
+			for ($r=0;$r < count($op);$r++)
+			{
+				$sx .= '<a href="'.base_url(PATH.'preparation/tombo_status/'.$id.'/'.$op[$r]).'" class="btn btn-outline-primary">';
+				$sx .= 'Enviar para '.msg('item_status_'.$op[$r]).'</a>';
+			}
+			return($sx);
+		}
 
 	function acquisition_in()
 	{	
@@ -257,12 +317,16 @@ class book_preparations extends CI_model
 			{
 				/* Verifica se já existe na base */
 				$manifestation = $this->books->isbn_exists($isbn_o);
-				if ($manifestation > 0)
+				if (strlen($manifestation) > 0)
 				{
+					$ex = $this->books->exemplar($manifestation);
+					$exemplar = $ex + 1;
 					$status = 1;
+				} else {
+					$exemplar = 1;
 				}
 				$msgs = "OK";
-				$rs = $this->tombo_insert($tombo,$isbn_o,1,$status,$place,$manifestation);
+				$rs = $this->tombo_insert($tombo,$isbn_o,1,$status,$place,$manifestation,$exemplar);
 				if ($rs[0] == 1)
 				{
 					redirect(base_url(PATH.'preparation/acquisition_in'));
@@ -283,9 +347,13 @@ class book_preparations extends CI_model
 		$sql = "select * from library_place where lp_LIBRARY = ".LIBRARY."";
 		array_push($cp,array('$Q id_lp:lp_name:'.$sql,'',msg('library_place'),true,true));
 		array_push($cp,array('$M','',$msgs,false,false));
-		$sx = $form->editar($cp,'');
+		$sx = '<div class="container"><div class="row">';
+		$sx .= '<div class="col-12">';
+		$sx .= $form->editar($cp,'');
 		$sx .= $this->tombo_list(array(0,1,5));
-
+		$sx .= '</div>';
+		$sx .= '</div>'; /* Row */
+		$sx .= '</div>'; /* Container */
 		$sx .= '<script> $("#dd2").focus(); </script>'.cr();
 		return($sx);
 
@@ -308,25 +376,33 @@ class book_preparations extends CI_model
 		$sql = "select * from find_item 
 		INNER JOIN library_place on i_library_place = id_lp
 		where $wh and i_library = ".LIBRARY."
-		order by id_i desc";
+		order by lp_name, id_i desc";
 
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
 
 		$sx = cr().cr().'<!--- Lista --->'.cr().cr();
 		$sx .= '<table class="table">'.cr();
-		$sx .= '<tr>';
-		$sx .= '<th>Tombo</th>';
-		$sx .= '<th>ISBN/ID</th>';
-		$sx .= '<th>Dt. Criação</th>';
-		$sx .= '<th>Situação</th>';
-		$sx .= '<th>Tipo</th>';
-		$sx .= '<th>Local</th>';
-		$sx .= '</tr>'.cr();
+		$sh = '<tr>';
+		$sh .= '<th>Tombo</th>';
+		$sh .= '<th>ISBN/ID</th>';
+		$sh .= '<th>Dt. Criação</th>';
+		$sh .= '<th>Situação</th>';
+		$sh .= '<th>Tipo</th>';
+		$sh .= '<th>Exemplar</th>';
+		$sh .= '</tr>'.cr();
 
+		$xplace = '';
 		for ($r=0;$r < count($rlt);$r++)
 		{
 			$line = $rlt[$r];
+			$place = $line['lp_name'];
+			if ($xplace != $place)
+			{
+				$sx .= '<tr><td colspan=10 class="big">'.$place.'</td></tr>'.cr();
+				$sx .= $sh;
+				$xplace = $place;
+			}
 			$link = '<a href="'.base_url(PATH.'preparation/tombo/'.$line['id_i']).'">';
 			$linka = '</a>';
 			$sx .= '<tr>';
@@ -335,14 +411,14 @@ class book_preparations extends CI_model
 			$sx .= '<td>'.$link.stodbr($line['i_created']).$linka.'</td>';
 			$sx .= '<td>'.$link.msg('item_status_'.$line['i_status']).$linka.'</td>';
 			$sx .= '<td>'.$link.msg('item_aquisicao_'.$line['i_aquisicao']).$linka.'</td>';
-			$sx .= '<td>'.$link.$line['lp_name'].'</td>';
+			$sx .= '<td>'.$link.$line['i_exemplar'].'</td>';
 			$sx .= '</tr>'.cr();
 		}
 		$sx .= '</table>'.cr();
 		return($sx);
 	}
 
-	function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0)
+	function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,$exemplar=1)
 	{
 		$sql = "select * from find_item 
 		where i_tombo = $tombo 
@@ -356,11 +432,11 @@ class book_preparations extends CI_model
 			$sql = "insert into find_item
 			(i_tombo,i_manitestation, i_identifier, 
 			i_library, i_ip, i_aquisicao, i_status, 
-			i_library_place)
+			i_library_place, i_exemplar)
 			values
 			('$tombo',$manifestation, '$isbn', 
 			'".LIBRARY."','".ip()."',$tipo,
-			$status,$place)";
+			$status,$place,$exemplar)";
 			$rlt = $this->db->query($sql);					
 			return(array(1,'OK! Item inserido com sucesso!'));
 		} else {
@@ -381,32 +457,31 @@ class book_preparations extends CI_model
 	}
 
 	function book_header($dt)
-		{
-			print_r($dt);
-			$img = $this->covers->img($dt['id_m']);
-			$sx = '';
+	{
+		$img = $this->covers->img($dt['id_m']);
+		$sx = '';
 			//$sx = '<div class="row">';
 
-			$sx .= '<div class="col-1">';
-			$sx .= '<img src="'.$img.'" class="img-fluid">';
-			$sx .= '</div>';
+		$sx .= '<div class="col-1">';
+		$sx .= '<img src="'.$img.'" class="img-fluid">';
+		$sx .= '</div>';
 
-			$sx .= '<div class="col-3">';
-			$sx .= '<span>ISBN:'.$dt['i_identifier'].'</span></br>';
-			$sx .= '<span>'.msg('item_status_'.$dt['i_status']).'</span>';
-			$sx .= '</div>';			
+		$sx .= '<div class="col-3">';
+		$sx .= '<span>ISBN:'.$dt['i_identifier'].'</span></br>';
+		$sx .= '<span>'.msg('item_status_'.$dt['i_status']).'</span>';
+		$sx .= '</div>';			
 
-			$sx .= '<div class="col-7">';
-			$sx .= '<span class="find_title">'.$dt['w_title'].'</span>';
-			$sx .= '</div>';
- 
-			$sx .= '<div class="col-1 text-right">';
-			$sx .= '<span><sup>TOMBO</sup> '.$dt['i_tombo'].'</span>';
-			$sx .= '</div>';
+		$sx .= '<div class="col-7">';
+		$sx .= '<span class="find_title">'.$dt['w_title'].'</span>';
+		$sx .= '</div>';
 
-			$sx .= '</div>';
-			return($sx);
-		}
+		$sx .= '<div class="col-1 text-right">';
+		$sx .= '<span class="small">TOMBO</span><br/><span class="big">'.$dt['i_tombo'].'</span>';
+		$sx .= '</div>';
+
+		$sx .= '</div>';
+		return($sx);
+	}
 
 	function show($dt,$tp=1)
 	{
@@ -446,10 +521,10 @@ class book_preparations extends CI_model
 	function le_tombo($id)
 	{
 		$sql = "select * from find_item 
-					LEFT JOIN find_manifestation ON i_manitestation = id_m
-					LEFT JOIN find_expression ON m_expression = id_e
-					LEFT JOIN find_work ON e_work = id_w
-					where i_library = '".LIBRARY."' and id_i = ".$id;
+		LEFT JOIN find_manifestation ON i_manitestation = id_m
+		LEFT JOIN find_expression ON m_expression = id_e
+		LEFT JOIN find_work ON e_work = id_w
+		where i_library = '".LIBRARY."' and id_i = ".$id;
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
 		if (count($rlt) > 0)

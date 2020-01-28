@@ -7,6 +7,7 @@ if (isset($bg))
 				$style = ' background-color: '.$bg.';';
 			}
 	}
+/*	
 if (isset($content)) {
 	echo '<!--- content--->' . cr();
 	if (isset($fluid)) {
@@ -14,8 +15,8 @@ if (isset($content)) {
 	} else {
 		echo '<div class="container" style="'.$style.'">', cr();
 	}
-
+*/
 	echo $content;
-	echo '</div>' . cr();
-}
+	echo cr();
+
 ?>

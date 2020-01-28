@@ -1,9 +1,9 @@
 <?php
-class Classifications extends CI_model
+class Indexing extends CI_model
 {
-	var $table_type = 'find_classification_type';
-	var $table = 'find_classification';
-	var $html_type = 'admin/classification/';
+	var $table_type = 'find_indexing_type';
+	var $table = 'find_indexing';
+	var $html_type = 'admin/indexing/';
 
 	function cpr($id=0)
 	{
@@ -16,36 +16,36 @@ class Classifications extends CI_model
 		return($cp);
 	}
 
-	function classification_item($id)
+	function indexing_item($id)
 	{
 		/************************************** SAVE ********/
-		$idc = get("classification_add");
+		$idc = get("indexing_add");
 		if (strlen($idc) > 0)
 		{
-			$this->classification_item_insert($id,$idc);
+			$this->indexing_item_insert($id,$idc);
 		}
 
-		$sql = "select * from find_classification 
-		where cl_type = 1
-		order by cl_class, cl_description";
+		$sql = "select * from find_indexing 
+		where il_type = 1
+		order by il_concept";
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
 
 		$sx = '';
 		$sx .= '<form method="post">';
 
-		$sx .= '<select class="form_control" style="width: 100%;" name="classification_add" id="classification" size=10>';
+		$sx .= '<select class="form_control" style="width: 100%;" name="indexing_add" id="indexing" size=10>';
 		for ($r=0;$r < count($rlt);$r++)
 		{
 			$line = $rlt[$r];					
-			$op = $line['cl_class'] . ' - '.$line['cl_description'];
-			$sx .= '<option value="'.$line['id_cl'].'">';
+			$op = $line['il_concept'];
+			$sx .= '<option value="'.$line['id_il'].'">';
 			$sx .= $op;
 			$sx .= '</option>';
 		}
 		$sx .= '</select>';
 
-		$sx .= '<input type="submit" class="btn btn-outline-primary" value="'.msg('Classification_include').'>>">';
+		$sx .= '<input type="submit" class="btn btn-outline-primary" value="'.msg('indexing_include').'>>">';
 		$sx .= '</form>';
 
 		$sx .= '<hr>';
@@ -56,50 +56,50 @@ class Classifications extends CI_model
 	function classified_item($id)
 		{
 		/************************************** SAVE ********/
-		$idc = get("classification_remove");
+		$idc = get("indexing_remove");
 		if (strlen($idc) > 0)
 		{
-			$this->classification_item_remove($id,$idc);
+			$this->indexing_item_remove($id,$idc);
 		}			
-		$sql = "select * from find_classification_item
-					INNER JOIN find_classification ON ci_classification = id_cl
-					where ci_item = $id
-					order by ci_order";
+		$sql = "select * from find_indexing_item
+					INNER JOIN find_indexing ON ii_indexing = id_il
+					where ii_item = $id
+					order by ii_order";
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
 
 		$sx = '';
 		$sx .= '<form method="post">';
 
-		$sx .= '<select class="form_control" style="width: 100%;" name="classification_remove" id="classification" size=10>';
+		$sx .= '<select class="form_control" style="width: 100%;" name="indexing_remove" id="indexing" size=10>';
 		for ($r=0;$r < count($rlt);$r++)
 		{
 			$line = $rlt[$r];					
-			$op = $line['cl_class'] . ' - '.$line['cl_description'];
-			$sx .= '<option value="'.$line['id_cl'].'">';
+			$op = $line['il_concept'];
+			$sx .= '<option value="'.$line['id_il'].'">';
 			$sx .= $op;
 			$sx .= '</option>';
 		}
 		$sx .= '</select>';
 
-		$sx .= '<input type="submit" class="btn btn-outline-primary" value="'.msg('Classification_remove').'>>">';
+		$sx .= '<input type="submit" class="btn btn-outline-primary" value="'.msg('indexing_remove').'>>">';
 		$sx .= '</form>';
 		return($sx);		
 		}
 
-	function classification_item_remove($id,$idc)
+	function indexing_item_remove($id,$idc)
 		{
-			$sql = "delete from find_classification_item 
-					where ci_item = $id and ci_classification = $idc";
+			$sql = "delete from find_indexing_item 
+					where ii_item = $id and ii_indexing = $idc";
 			$rlt = $this->db->query($sql);
 			return(1);
 		}
 
-	function classification_item_insert($id,$idc)
+	function indexing_item_insert($id,$idc)
 	{
 		$ok = 1;
-		$sql = "select * from find_classification_item 
-		where ci_item = $id ";
+		$sql = "select * from find_indexing_item 
+		where ii_item = $id ";
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
 		$ord = 0;
@@ -107,31 +107,31 @@ class Classifications extends CI_model
 		for ($r=0;$r < count($rlt);$r++)
 		{
 			$line = $rlt[$r];
-			if ($line['ci_order'] >= $ord)
+			if ($line['ii_order'] >= $ord)
 			{
-				$ord = ($line['ci_order']+1);
+				$ord = ($line['ii_order']+1);
 			}
 			/* Verifica se ja existe classificação cadastrada *************/
-			if ($line['ci_classification'] == $idc) 
+			if ($line['ii_indexing'] == $idc) 
 				{ $ok = 0; }
 		}
 
 		if ($ok == 1)
 		{
-			$sql = "insert into find_classification_item
-			(ci_item, ci_classification, ci_order)
+			$sql = "insert into find_indexing_item
+			(ii_item, ii_indexing, ii_order)
 			values
 			($id, $idc, $ord)";
 			$rlt = $this->db->query($sql);
 		}
 
 	}
-	function classification_item_show($id)
+	function indexing_item_show($id)
 	{
-		$sql = "select * from find_classification_item
-		INNER JOIN find_classification ON ci_classification  = id_cl
-		where ci_item = $id
-		order by ci_order";
+		$sql = "select * from find_indexing_item
+				INNER JOIN find_indexing ON il_indexing  = id_il
+		where ii_item = $id
+		order by ii_order";
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
 
@@ -139,33 +139,32 @@ class Classifications extends CI_model
 		for ($r=0;$r < count($rlt);$r++)
 		{
 			$line = $rlt[$r];
-			$cod = $line['cl_class'];
-			$des = $line['cl_description'];
-			$sx .= '<span class="item_status item_status_7">'.$cod.' - '.$des.'</span>';	
+			$des = $line['il_concept'];
+			$sx .= '<span class="item_status item_status_7">'.$des.'</span>';	
 			$sx .= ' ';
 		}		
 		return($sx);
 	}
 
-	function classification_list($id)
+	function indexing_list($id)
 	{
 		$sql = "select * from ".$this->table." 
-		where cl_type  = $id
-		order by cl_class ";
+		where il_type  = $id
+		order by il_concept ";
+
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
 		$sx = '<table class="table">';
 		$sx .= '<tr>';
-		$sx .= '<th width="20%">Notação</th>';
-		$sx .= '<th>Descrição</th>';
+		$sx .= '<th width="80%">Notação</th>';
+		$sx .= '<th>LinkedData</th>';
 		$sx .= '</tr>';
 		for ($r=0;$r < count($rlt);$r++)
 		{
 			$line = $rlt[$r];
 			$sx .= '<tr>';
-			$sx .= '<td>'.$line['cl_class'].'</td>';
-			$sx .= '<td>'.$line['cl_description'].'</td>';
-			$thesa = $line['cl_rdf'];
+			$sx .= '<td>'.$line['il_concept'].'</td>';
+			$thesa = $line['il_rdf'];
 			if (strlen($thesa) > 0)
 			{
 				$link = troca($thesa,'thesa:c','https://www.ufrgs.br/tesauros/index.php/thesa/c/');
@@ -183,6 +182,10 @@ class Classifications extends CI_model
 
 	function thesa_import($id)
 	{
+		if (round($id) == 0)
+			{
+				return("ERRO");
+			}
 		$sx = '<ul>';
 		$dt = $this->le($id);
 		if (strlen(trim($dt['ct_rdf_url'])) > 0)
@@ -190,23 +193,17 @@ class Classifications extends CI_model
 			$url = trim($dt['ct_rdf_url']);
 			$url = troca($url,'/terms/','/terms_from_to/').'/xml';
 			$t = file_get_contents($url);
+
 			$xml = simplexml_load_string($t);
 			foreach ($xml as $key => $value) {
-				$termo = (string)$value->name;
-				if (strpos($termo,'-') > 0)
-				{
-					$descrition = trim(substr($termo,strpos($termo,'- ')+1,strlen($termo)));
-				} else {
-					$descrition = '';
-				}
-				$term = trim(substr($termo,0,strpos($termo,'- ')-1));
+				$term = (string)$value->name;
 				$sigla = (string)$value->sigla;
 				$rdf = (string)$value->id;
 				$img = (string)$value->image;
-				$sx .= '<li><tt>'.$term.'</tt> - '.$descrition;
-				if ((strlen($descrition) > 0) and (strpos($termo,'-') > 0))
+				$sx .= '<li><tt>'.$term.'</tt>';
+				if (strlen($term) > 0)
 				{
-					$sx .= $this->insert_classification_term($id,$term,$descrition,$rdf,$img);
+					$sx .= $this->insert_indexing_term($id,$term,'',$rdf,$img);
 				} else {
 					$sx .= '<span class="item_status item_status_0">'.msg('ignored').'</span>';
 				}
@@ -216,33 +213,32 @@ class Classifications extends CI_model
 		return($sx);
 	}
 
-	function insert_classification_term($id,$term,$descrition,$rdf,$image='')
+	function insert_indexing_term($id,$term,$descrition,$rdf,$image='')
 	{
 		if (strlen($rdf) > 0)
 		{
-			$sql = "select * from find_classification
-			where cl_rdf = '$rdf'
-			and cl_type  = $id";
+			$sql = "select * from find_indexing
+			where il_rdf = '$rdf'
+			and il_type  = $id";
 
 			$rlt = $this->db->query($sql);
 			$rlt = $rlt->result_array();
 			if (count($rlt) == 0)
 			{
-				$sql = "insert into find_classification
-				(cl_type, cl_class, cl_description,
-				cl_rdf, cl_image ) 
+				$sql = "insert into find_indexing
+				(il_type, il_concept,
+				il_rdf, il_image ) 
 				values 
-				($id,'$term','$descrition',
+				($id,'$term',
 				'$rdf','$image')	";
 				$xrlt = $this->db->query($sql);
 				return('<span class="item_status item_status_7">'.msg('new').'</span>');
 			} else {
-				$sql = "update find_classification
+				$sql = "update find_indexing
 				set 
-				cl_class = '$term', 
-				cl_description = '$descrition',
-				cl_image = '$image'
-				where id_cl = ".$rlt[0]['id_cl'];
+				il_concept = '$term', 
+				il_image = '$image'
+				where id_il = ".$rlt[0]['id_il'];
 				$xrlt = $this->db->query($sql);
 				return('<span class="item_status item_status_8">'.msg('update').'</span>');
 			}		
@@ -254,8 +250,9 @@ class Classifications extends CI_model
 
 	function le($id)
 	{
+		$id = round($id);
 		$sql = "select * from ".$this->table_type." 
-		where id_ct = ".$id;
+		where id_it = ".$id;
 
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
@@ -263,13 +260,14 @@ class Classifications extends CI_model
 		{
 			return($rlt[0])	;
 		} else {
-			result(array());
+			return(array());
 		}
 	}
 
 	function show($dt)
 		{
-			$id = $dt['id_ct'];
+			if (!isset($dt['id_it'])) { return(""); }
+			$id = $dt['id_it'];
 			$sx = '';
 			$sx .= '<div class="col-8 big" style="padding: 10px;">';
 			$sx .= $dt['ct_name'];
@@ -278,7 +276,7 @@ class Classifications extends CI_model
 			$sx .= '<div class="col-4 text-right">';
 			if ((perfil("#ADM") > 0) and (strpos($dt['ct_rdf_url'],'ufrgs.br/tesauros') > 0))
 			{
-				$sx .= '<a href="'.base_url(PATH.'admin/classification/thesa/'.$id).'" class="btn btn-light">
+				$sx .= '<a href="'.base_url(PATH.'admin/indexing/thesa/'.$id).'" class="btn btn-light">
 				<img src="'.base_url('img/logo/logo_thesa.png').'" height="20">
 				Import from Thesa</a>';
 			}			
@@ -300,12 +298,12 @@ class Classifications extends CI_model
 			case 'view':
 			$dt = $this->le($id);
 			$sx .= $this->show($dt);
-			$sx .= $this->classification_list($id);
+			$sx .= $this->indexing_list($id);
 			break;
 
 			default:
 			$sx .= '<div class="col-12">';
-			$sx .= '<div class="big" style="padding: 5px;">'.msg('Classification_list').'</div>';
+			$sx .= '<div class="big" style="padding: 5px;">'.msg('indexing_list').'</div>';
 			$sx .= $this->classes();
 			$sx .= '</div>';
 			break;
@@ -316,7 +314,7 @@ class Classifications extends CI_model
 
 	function classes()
 	{
-		$sql = "select * from find_classification_type 
+		$sql = "select * from find_indexing_type 
 		where ct_active = 1
 		order by ct_name";
 		$rlt = $this->db->query($sql);
@@ -330,7 +328,7 @@ class Classifications extends CI_model
 		{
 			$line = $rlt[$r];
 			$sx .= '<tr>';
-			$link = '<a href="'.base_url(PATH.'admin/classification/view/'.$line['id_ct']).'">';
+			$link = '<a href="'.base_url(PATH.'admin/indexing/view/'.$line['id_it']).'">';
 			$linka = '</a>';
 			$sx .= '<td>'.$link.$line['ct_name'].$linka.'</td>';
 			$thesa = $line['ct_rdf_url'];

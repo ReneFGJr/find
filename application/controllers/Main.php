@@ -61,12 +61,12 @@
         redirect(base_url('index.php/biblio'));
     }
 
-    function preparation($path='',$id='')
+    function preparation($path='',$id='',$sta='')
     {
         $this->load->model("book_preparations");
         $this->cab();
-        $sx = breadcrumb();
-        $sx .= $this->book_preparations->main($path,$id);
+        $sx = $this->breadcrumb();
+        $sx .= $this->book_preparations->main($path,$id,$sta);
         $data['content'] = $sx;
         $this -> load -> view('content', $data);        
 
@@ -157,7 +157,7 @@
 
         $data['logo'] = LOGO;
         $tela = '';
-        $tela .= breadcrumb();
+        $tela .= $this->breadcrumb();
         $tela .= $this -> load -> view('welcome_brapci', $data,true);        
         $tela .= $this -> load -> view('find/search/search_simple', $data,true);
 
@@ -184,17 +184,19 @@
         $this -> cab();
         $this -> load -> model("superadmin");
         $data['content'] = $this -> superadmin -> index($id, $act);
-        $data['title'] = msg('libraries_row');
-        $this -> load -> view("show", $data);
+        $this -> load -> view("content", $data);
         $this -> foot();
     }
 
     function admin($path='', $id = '', $act = '') {
-        $this -> cab();
         $this -> load -> model("admin");
-        $data['content'] = $this -> admin -> index($path, $id, $act);
-        $data['title'] = msg('Admin');
-        $this -> load -> view("show", $data);
+
+        $this -> cab();
+        $sx = $this->breadcrumb();
+        $sx .= $this -> admin -> index($path, $id, $act);
+        
+        $data['content'] = $sx;
+        $this -> load -> view("content", $data);
         $this -> foot();
     }
 
@@ -324,7 +326,7 @@
         $this->load->model("classifications");
         $dt = $this->books->le_m($id);
         $this->cab();
-        $sx = breadcrumb();
+        $sx = $this->breadcrumb();
         $sx .= $this->books->show($dt,1);
 
         $data['content'] = $sx;
@@ -332,6 +334,13 @@
 
         $this->foot();
     }
+    function breadcrumb()
+        {
+            $sx = '<div class="container">';
+            $sx .= breadcrumb();
+            $sx .= '</div>';
+            return($sx);
+        }
 }
 ?>
 <style>

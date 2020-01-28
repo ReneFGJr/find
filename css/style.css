@@ -53,11 +53,17 @@ a, a:hover
   color: #333333;
 }
 
-.book_small
+.small
 {
   font-size: 70%;
   line-height: 100%;
 }
+.big
+{
+  font-size: 130%;
+  line-height: 100%;
+}
+
 .book_image
 {
   box-shadow: 5px 5px 8px #888888; 
