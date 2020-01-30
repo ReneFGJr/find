@@ -132,6 +132,17 @@
         }
     }
 
+    function rdf($id='')
+        {
+        $data['nocab'] = true;
+        $this -> cab($data);
+        $rdf = new rdf;
+        $sx = $rdf->ajax();
+        
+        $data['content'] = $sx;
+        $this -> load -> view("content", $data);
+        }
+
     function library($id = '') {        
         $this -> load -> model('libraries');
         $data = array();
@@ -350,46 +361,38 @@
         $this->foot();
     }
 
-    function class($t='',$id=0,$act='')
-    {
-        $this->cab();
-        $rdf = new rdf;  
-        $sx = $rdf->class_view($id); 
-        $data['content'] = $sx;
-        $data['title'] = 'Form';
-        $this->load->view('content',$data);            
-    }
     function config($ac='',$id='',$chk='',$chk2='',$chk3='') {
         /* cab */
         $nocab = get("nocab");
         $data  = array();
-        if (strlen($nocab) > 0) { $data['nocab'] = True; }   
-        $this -> cab($data);      
-        $tela = '';
+        if (strlen($nocab) > 0) { $data['nocab'] = True; }  
+        if (count($data) > 0)
+            {
+                $this -> cab($data);
+            } else {
+                $this -> cab();
+            }
+        
+        $sx = '<div class="container"><div class="row">';
         switch($ac)
         {
             case 'class':
             /* Classes */
             $rdf = new rdf;
-            $tela = $rdf->config($ac,$id,$chk,$chk2,$chk3);
+            $sx .= $rdf->config($ac,$id,$chk,$chk2,$chk3);
             break;                
 
             default:
             $rdf = new rdf;
-            $tela .= $ac.'?????';
+            $sx .= $ac.'?????';
         }
+        $sx .= '</div></div>';        
 
-        
-        
 
         $data['title'] = '';
-        $data['content'] = $tela;
+        $data['content'] = $sx;
         $this->load->view('content',$data);
 
-        /* Footer */
-        if (strlen($nocab)== 0) {
-            $this -> foot();
-        }
     }        
 
     function a($id=0,$act='')

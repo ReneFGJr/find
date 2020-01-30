@@ -47,6 +47,7 @@ class admin extends CI_model
         $sx .= '<ul>';
         $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/classification').'">'.msg("Classification").'</a></li>';
         $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/indexing').'">'.msg("Vocabulary").'</a></li>';        
+        $sx .= '<li>'.'<a href="'.base_url(PATH.'config/class').'">'.msg("RDF Classes").'</a></li>';        
         $sx .= '</ul>';
         $sx .= '</div>';
         $sx .= '</div>'; /* Row */
