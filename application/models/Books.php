@@ -375,12 +375,15 @@ class books extends CI_model
 		$rdf = new rdf;
 		$line['rdf'] = $rdf->le_data($line['m_id']);
 		$line['links'] = $this->recover_urls($id);
+		
+
 		return($line);
 	}
 
 	function show($dt,$type)
 	{
-		$sx = '';	
+		$sx = '';
+		$sx .= '<div class="container">';	
 		if (count($dt) == 0)
 		{
 			return("Sem informações");
@@ -465,8 +468,23 @@ class books extends CI_model
 
 
 			/************* Itens ***********************/
-			$sx .= '<div>'.$this->books->itens($dt['id_m']).'</div>';		
+			$exemplares = $this->books->itens($dt['id_m']);
+			$sx .= '<h4>'.msg('Exemplares').'</h4>';
+			$sx .= '<div>'.$exemplares.'</div>';
+			
+			/************ Classificação ****************/
+			$ed = '<a href="'.base_url(PATH.'preparation/tombo/'.$dt['id_m'].'/2').'"> <sup>[ed]</sup></a>';
+			$classifications = $this->classifications->itens_classification($dt['id_m']);
+			$sx .= '<h4>'.msg('Classification').$ed.'</h4>';
+			$sx .= '<div>'.$classifications.'</div>';
 
+			/************* Assuntos ********************/
+			$ed = '<a href="'.base_url(PATH.'preparation/tombo/'.$dt['id_m'].'/3').'"> <sup>[ed]</sup></a>';
+			$subjects = $this->subjects->itens_subjects($dt['id_m']);
+			$sx .= '<h4>'.msg('Subjects').$ed.'</h4>';
+			$sx .= '<div>'.$subjects.'</div>';
+
+			$sx .= '</div>';
 			$sx .= '</div>';
 			$sx .= '</div>';
 
@@ -577,9 +595,10 @@ class books extends CI_model
 		}
 	}
 
+
+
 	function itens($id)
-	{
-		$sx = '';
+	{		
 		$wh = '(i_library = '.LIBRARY.') and ';
 		$sql = "select count(*) as total, lp_name, i_status 
 		FROM find_manifestation 
@@ -591,26 +610,25 @@ class books extends CI_model
 
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
-		$xp = '<div class="row">';
+
+		$sx = '<ul class="libraries">';
+		$xp = '';
 		for ($r=0;$r < count($rlt);$r++)
 		{
 			$line = $rlt[$r];
 			$p = $line['lp_name'];
 			if ($xp != $p)
 			{
-				$sx .= '<div class="col-12">';
+				$sx .= '<li>';
 				$sx .= $line['lp_name'];
-				$sx .= '</div>';
-				$xp = $p;
+				$sx .= '</li>';
 			}
 			
-			$sx .= '<div class="line">';
-			$sx .= '<span class="item_status item_status_'.$line['i_status'].'">';
+			$sx .= '<ul class="libraries_item_status"><li>';
 			$sx .= msg('item_status_'.$line['i_status']).' ('.$line['total'].') ';
-			$sx .= '</span>';
-			$sx .= '</div>';
+			$sx .= '</li></ul>';
 		}
-		$sx .= '</div>';
+		$sx .= '</ul>';
 		return($sx);
 	}
 	function exemplar($isbn)

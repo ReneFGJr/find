@@ -27,8 +27,8 @@ class admin extends CI_model
             break;
 
             case 'indexing':
-            $this->load->model("indexing");
-            $sx .= $this->indexing->action($action,$id);
+            $this->load->model("subjects");
+            $sx .= $this->subjects->action($action,$id);
             break;            
 
             /************************ MENU ***********/

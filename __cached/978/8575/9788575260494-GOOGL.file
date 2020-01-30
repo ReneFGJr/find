@@ -1,0 +1,68 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "RCNPAAAACAAJ",
+   "etag": "NXNXOkacwhU",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/RCNPAAAACAAJ",
+   "volumeInfo": {
+    "title": "Biblioteca escolar",
+    "subtitle": "temas para uma prática pedagógica",
+    "authors": [
+     "Bernadete Santos Campello"
+    ],
+    "publishedDate": "2003",
+    "description": "A escola não pode mais contentar-se em ser apenas transmissora de conhecimentos que, provavelmente, estarão defasados antes mesmo que o aluno termine sua educação formal; tem de promover oportunidades de aprendizagem que dêem ao estudante condições de aprender a aprender, permitindo-lhe educar-se durante a vida inteira. A biblioteca está presente nesse processo. Trabalhando em conjunto, professores e bibliotecários planejarão situações de aprendizagem que desafiem e motivem os alunos, acompanhando os seus progressos, orientando-os e guiando-os no desenvolvimento de competências informacionais cada vez mais sofisticadas.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "8575260499"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9788575260494"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": false
+    },
+    "pageCount": 62,
+    "printType": "BOOK",
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "preview-1.0.0",
+    "language": "pt",
+    "previewLink": "http://books.google.com.br/books?id=RCNPAAAACAAJ&dq=isbn:9788575260494&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=RCNPAAAACAAJ&dq=isbn:9788575260494&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Biblioteca_escolar.html?hl=&id=RCNPAAAACAAJ"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "NO_PAGES",
+    "embeddable": false,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=RCNPAAAACAAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "NONE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "“A escola não pode mais contentar-se em ser apenas transmissora de conhecimentos que, provavelmente, estarão defasados antes mesmo que o aluno termine sua educação formal; tem de promover oportunidades de aprendizagem que dêem ao ..."
+   }
+  }
+ ]
+}

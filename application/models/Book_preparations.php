@@ -17,7 +17,6 @@ class book_preparations extends CI_model
 		$this->load->model("sourcers");
 		$this->load->model("labels");
 
-
 		$sx = '<div class="container"><div class="row">';
 		switch($path)
 		{
@@ -33,8 +32,7 @@ class book_preparations extends CI_model
 			case 'tombo':
 			$dt = $this->le_tombo($id);
 			$sx .= $this->book_header($dt);
-
-			$sx .= $this->tombo_editar($dt);			
+			$sx .= $this->tombo_editar($dt,$sta);			
 			break;				
 
 			case 'acquisition_in':
@@ -197,26 +195,35 @@ class book_preparations extends CI_model
 		return(1);
 	}
 
-	function tombo_editar($dt)
+	function tombo_editar($dt,$sta='')
 	{		
 		$id = $dt['id_i'];
 		$isbn = trim($dt['i_identifier']);
 		$status = $dt['i_status'];
 		$view = 1;
+		$actions = '';
+
+		/* Mode edição */
+		if (strlen($sta) > 0)
+		{
+			$status = $sta;
+		}
 
 		$sx = '<div class="row">';
 		$sx .= '<div class="col-10">';
+
 		switch($status)
 		{
-
 			/************************* COLETA METADADOS ***/
 			case '1':
 			$view = 2;
 			$sx .= $this->books->locate($isbn);
 			$sx .= $this->link_book($id,$isbn);	
 			$dt = $this->le_tombo($id);
-			if ($dt['i_status'] != 1)
+
+			if (strlen($dt['w_title']) > 0)
 			{
+				$this->item_status($id,2);
 				redirect(base_url(PATH.'preparation/tombo/'.$id));	
 			} else {
 				/* Envia para catalogação manual / MARC21 */
@@ -250,32 +257,44 @@ class book_preparations extends CI_model
 			$this->load->model("classifications");
 			$sx .= $this->classifications->classification_item($dt['id_i']);
 			$sx .= $this->classifications->classified_item($dt['id_i']);
-			$sx .= $this->actions(3,$dt['id_i']);
+			$actions = $this->actions(3,$dt['id_i']);
 
 			//$sx .= $this->classification_item_show($id);
 			break;
 
 			case '3':
 			$view = 4;
-			$this->load->model("indexing");
-			$sx .= $this->indexing->indexing_item($dt['id_i']);
-			$sx .= $this->indexing->indexed_item($dt['id_i']);
-			$sx .= $this->actions(4,$dt['id_i']);			
+			$this->load->model("subjects");
+			$sx .= $this->subjects->indexing_item($dt['id_i']);
+			$sx .= $this->subjects->indexed_item($dt['id_i']);
+			$actions = $this->actions(4,$dt['id_i']);			
 			break;
 
 			/*************************** Preparo físico *****************/
 			case '4':
 			$view = 5;
-			$sx .= $this->actions(8,$dt['id_i']);			
+			$actions = $this->actions(8,$dt['id_i']);			
 			break;			
 
 		}
 
+		if (strlen($sta) > 0)
+		{
+			$sx .= '<a href="'.base_url(PATH.'m/'.$id).'" class="btn btn-outline-primary">';
+			$sx .= msg("return");
+			$sx .= '</a>';
+		} else {
+			$sx .= $actions;
+		}
 		$sx .= '</div>'.cr();
+
 		/**************** WORKFLOW *****************************/
 		$sx .= '<div class="col-2">';
 		$dt = array('pos'=>$view);
+
+		/************ Habilita botão do Workflow ***************/		
 		$sx .= $this->load->view('tools/workflow',$dt,true);
+		
 		$sx .= '</div>';
 
 		return($sx);

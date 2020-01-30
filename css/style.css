@@ -116,7 +116,6 @@ a, a:hover
 {
   margin: 10px 5px;
   border: 12px solid #909090;
-  opacity: 1;
 }    
 
 
@@ -179,14 +178,6 @@ input:focus {
   text-decoration: none;
 }
 
-a
-{
-  opacity: 0.7;
-}
-a:hover
-{
-  opacity: 1;
-}
 .line
 {
   display: inline;

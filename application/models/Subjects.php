@@ -1,5 +1,5 @@
 <?php
-class Indexing extends CI_model
+class Subjects extends CI_model
 {
 	var $table_type = 'find_indexing_type';
 	var $table = 'find_indexing';
@@ -15,6 +15,33 @@ class Indexing extends CI_model
 		array_push($cp,array('$S100',"ct_rdf_url","ct_rdf_url",false,True,false));  
 		return($cp);
 	}
+
+	function itens_subjects($id)
+		{
+			$wh = " and (i_library = '".LIBRARY."')";
+			$sql = "select * from find_indexing_item
+						INNER JOIN find_indexing ON ii_indexing = id_il
+						INNER JOIN find_item ON id_i = ii_item
+						INNER JOIN find_manifestation ON id_m = i_manitestation
+						where id_m = ".$id." $wh ";
+			$rlt = $this->db->query($sql);
+			$rlt = $rlt->result_array();
+
+			$sx = '<ul class="itens_subject">';
+			for ($r=0;$r < count($rlt);$r++)
+			{
+				$line = $rlt[$r];
+				/*
+				$ds = trim($line['cl_class']);
+				if (strlen($ds) > 0) { $ds .= ' - '; }
+				*/
+				$ds = $line['il_concept'];
+
+				$sx .= '<li>'.$ds.'</li>';
+			}
+			$sx .= '</ul>';
+			return($sx);
+		}	
 
 	function indexing_item($id)
 	{
@@ -53,7 +80,7 @@ class Indexing extends CI_model
 		return($sx);
 	}
 
-	function classified_item($id)
+	function indexed_item($id)
 		{
 		/************************************** SAVE ********/
 		$idc = get("indexing_remove");

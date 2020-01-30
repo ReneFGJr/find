@@ -324,13 +324,18 @@
 
         $this -> foot();
     }    
-    function m($id)
+    function m($id='')
     {
+        if (strlen($id) == 0)
+        {
+            redirect(base_url(PATH));
+        }
         $this->load->model("covers");
         $this->load->model("books");
         $this->load->model("isbn");
         $this->load->model("authors");
         $this->load->model("classifications");
+        $this->load->model("subjects");
         $dt = $this->books->le_m($id);
         $this->cab();
         $sx = $this->breadcrumb();

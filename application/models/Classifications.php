@@ -16,6 +16,31 @@ class Classifications extends CI_model
 		return($cp);
 	}
 
+	function itens_classification($id)
+		{
+			$wh = " and (i_library = '".LIBRARY."')";
+			$sql = "select * from find_classification_item
+						INNER JOIN find_classification ON ci_classification = id_cl
+						INNER JOIN find_item ON id_i = ci_item
+						INNER JOIN find_manifestation ON id_m = i_manitestation
+						where id_m = ".$id." $wh ";
+			$rlt = $this->db->query($sql);
+			$rlt = $rlt->result_array();
+
+			$sx = '<ul class="itens_classification">';
+			for ($r=0;$r < count($rlt);$r++)
+			{
+				$line = $rlt[$r];
+				$ds = trim($line['cl_class']);
+				if (strlen($ds) > 0) { $ds .= ' - '; }
+				$ds .= $line['cl_description'];
+
+				$sx .= '<li>'.$ds.'</li>';
+			}
+			$sx .= '</ul>';
+			return($sx);
+		}	
+
 	function classification_item($id)
 	{
 		/************************************** SAVE ********/
