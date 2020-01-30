@@ -10,12 +10,12 @@ for ($r=1;$r <= $pos;$r++)
 $st[$pos-1] = 'current';
 ?>
   <ul class="StepProgress">
-    <li class="StepProgress-item <?php echo $st[0];?>">Aquisição</li>
-    <li class="StepProgress-item <?php echo $st[1];?>">Catalogação</li>
-    <li class="StepProgress-item <?php echo $st[2];?>">Classificação</li>
-    <li class="StepProgress-item <?php echo $st[3];?>">Indexação</li>
-    <li class="StepProgress-item <?php echo $st[4];?>">Preparo físico</li>
-    <li class="StepProgress-item <?php echo $st[5];?>">Fim do processo</li>
+    <li class="StepProgress-item <?php echo $st[0];?>"><a href="#">Aquisição</a></li>
+    <li class="StepProgress-item <?php echo $st[1];?>"><a href="#">Catalogação</a></li>
+    <li class="StepProgress-item <?php echo $st[2];?>"><a href="#">Classificação</a></li>
+    <li class="StepProgress-item <?php echo $st[3];?>"><a href="#">Indexação</a></li>
+    <li class="StepProgress-item <?php echo $st[4];?>"><a href="#">Preparo físico</a></li>
+    <li class="StepProgress-item <?php echo $st[5];?>"><a href="#">Fim do processo</a></li>
   </ul>
 
 <style>

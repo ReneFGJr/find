@@ -233,7 +233,10 @@ class book_preparations extends CI_model
 			exit;
 			break;
 
-			case '5':
+			/************************** Catalogação Manual ******************/
+			case '5':			
+			$sx .= $this->books->catalog_edit($id);
+
 			$sx .= $this->	marc_api->form();
 			$sx .= $this->sourcers->fontes();
 			$view = 2;
@@ -589,7 +592,6 @@ class book_preparations extends CI_model
 		} else {
 			$line = array();
 		}
-
 		return($line);
 	}
 

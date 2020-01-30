@@ -117,14 +117,6 @@ class books extends CI_model
 		$iddm = $rdf->rdf_concept($idn,'Manifestation');
 		$this->update_id($dt['manifestation'],$iddm,'m');
 
-		/************ Atualiza Item ******************************/
-		$sql = "update find_item 
-		set i_manitestation = ".$iddm."
-		where i_identifier = '$isbn'
-		and i_status = 5";
-		//$this->db->query($sql);
-
-
 		/* Manifestation - Pages *********************************************/	
 		$pags = sonumero($dt['pages']);
 		if ($pags > 0)
@@ -206,6 +198,10 @@ class books extends CI_model
 				$rdf->set_propriety($iddm,'hasSubject',$idc);	
 			}
 		}
+
+		/************ Atualiza Item ******************************/
+		$this->book_preparations->link_book();
+
 		return($sx);
 	}
 
@@ -367,15 +363,19 @@ class books extends CI_model
 		where id_m = $id";
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
-		$line = $rlt[0];
-		$line['isbn'] = $this->isbn->isbns($line['m_isbn13']);
-		$line['img'] = $this->covers->img($id);
-		$line['authors'] = $this->authors->le_authors($line['id_w']);
+		if (count($rlt) > 0)
+		{
+			$line = $rlt[0];
+			$line['isbn'] = $this->isbn->isbns($line['m_isbn13']);
+			$line['img'] = $this->covers->img($id);
+			$line['authors'] = $this->authors->le_authors($line['id_w']);
 
-		$rdf = new rdf;
-		$line['rdf'] = $rdf->le_data($line['m_id']);
-		$line['links'] = $this->recover_urls($id);
-		
+			$rdf = new rdf;
+			$line['rdf'] = $rdf->le_data($line['m_id']);
+			$line['links'] = $this->recover_urls($id);
+		} else {
+			$line = array();
+		}
 
 		return($line);
 	}
@@ -389,6 +389,8 @@ class books extends CI_model
 			return("Sem informações");
 		}		
 		$class = 'img_cover';
+		$ed = '<a href="'.base_url(PATH.'preparation/tombo/'.$dt['id_m'].'/5').'"><sup>[ed]</sup></a>';
+
 
 		switch($type)
 		{
@@ -397,7 +399,7 @@ class books extends CI_model
 			$sx .= '<div class="row">';
 			$sx .= '<div class="col-md-1">'.$img.'</div>';
 			$sx .= '<div class="col-md-11">';
-			$sx .= '<div class="s1_title">'.$dt['w_title'].'</div>';
+			$sx .= '<div class="s1_title">'.$dt['w_title'].$ed.'</div>';
 			$sx .= '$[BODY]';
 			$sx .= '</div>';
 			$sx .= '</div>';
@@ -419,7 +421,7 @@ class books extends CI_model
 			$sx .= '<div class="row">';
 			$sx .= '<div class="col-md-3">'.$img.$compl.'</div>';
 			$sx .= '<div class="col-md-9">';
-			$sx .= '<div class="s1_title">'.$dt['w_title'].'</div>';
+			$sx .= '<div class="s1_title">'.$dt['w_title'].$ed.'</div>';
 
 			/* Authors */
 			$sx .= '<div class="s1_authors"><i>';
@@ -647,7 +649,74 @@ class books extends CI_model
 		} else {
 			return(0);
 		}
-	}		
+	}	
+
+	function le_item($id)
+	{
+		$sql = "select * from find_item where id_i = ".round($id);
+		$rlt = $this->db->query($sql);
+		$rlt = $rlt->result_array();
+		if (count($rlt) > 0)
+		{
+			return($rlt[0]);	
+		} else {
+			return(array());
+		}
+
+	}
+
+
+	function catalog_edit($id)
+	{
+		$action = get("acao");
+
+		$form = new form;
+		$dt = $this->le_m($id);
+		if (strlen($action) == 0)
+		{			
+			if (count($dt) == 0)
+			{
+				$dti = $this->le_item($id);
+				$isbn = $dti['i_identifier'];				
+				$dt['expressao'] = array('idioma'=>'pt','genere'=>'books');
+				$dt['title'] = 'no title - ISBN '.$isbn;
+				$dt['data'] = '';
+				$dt['url'] = '';
+				$dt['authors'] = array();
+				$dt['cover'] = '';
+				$dt['editora'] = '';
+				$dt['descricao'] = '';
+				$dt['pages'] = '';
+				$this->process_register($isbn,$dt,'MANUA');	
+				$dt = $this->le_m($id);
+			}
+			$_GET['dd1'] = $dt['w_title'];
+		}
+
+		/****************************** SALVAR REGISTROS **************/
+		if (strlen($action) > 0)
+		{
+			$title = get("dd1");
+			if (strlen($title) > 0)
+			{
+				$usql = "update find_work set w_title = '".$title."' where id_w = ".$dt['id_w'];
+				$xxx = $this->db->query($usql);
+				$_POST['dd1'] = $title;
+			}
+		}
+
+		$cp = array();
+		array_push($cp,array('$H8','id_w','',false,false));
+		array_push($cp,array('$T80:3','',msg('w_title'),true,true));
+		array_push($cp,array('$AJAX:','',msg('w_authors'),true,true));
+		$sx = $form->editar($cp,'');
+
+		$rdf = new rdf;
+		$dtf = $rdf->le($dt['m_id']);
+		$sx .= $rdf->form($dt['m_id'],$dtf);
+
+		return($sx);
+	}
 }
 
 ?>

@@ -6,6 +6,7 @@
  define('LIBRARY_NAME', 'Rede de Leitura');
  define('LIBRARY_LEMA', 'Incentivando a Leitura');
  */
+ define("SYSTEM_ID", 1);
  class Main extends CI_controller {
     var $lib = 10010000000;
 
@@ -22,14 +23,16 @@
         TRUNCATE rdf_name;
         TRUNCATE find_item;
         TRUNCATE find_classification_item;
-        TRUNCATE find_classification;";
+        TRUNCATE find_classification;
+        TRUNCATE find_indexing_item;
+        TRUNCATE find_indexing;";
         $ln = splitx(';',$sql);
         for ($r=0;$r < count($ln);$r++)
-            {
-                $sql = $ln[$r];
-                echo '<tt>'.$sql.'</tt><br/>';
-                $this->db->query($sql);
-            }
+        {
+            $sql = $ln[$r];
+            echo '<tt>'.$sql.'</tt><br/>';
+            $this->db->query($sql);
+        }
         
         redirect(base_url(PATH));
     }     
@@ -63,10 +66,10 @@
     }
 
     function label()
-        {
-            $this->load->model("labels");
-            $this->labels->label_pdf();
-        }
+    {
+        $this->load->model("labels");
+        $this->labels->label_pdf();
+    }
 
     function preparation($path='',$id='',$sta='')
     {
@@ -346,12 +349,80 @@
 
         $this->foot();
     }
-    function breadcrumb()
+
+    function class($t='',$id=0,$act='')
+    {
+        $this->cab();
+        $rdf = new rdf;  
+        $sx = $rdf->class_view($id); 
+        $data['content'] = $sx;
+        $data['title'] = 'Form';
+        $this->load->view('content',$data);            
+    }
+    function config($ac='',$id='',$chk='',$chk2='',$chk3='') {
+        /* cab */
+        $nocab = get("nocab");
+        $data  = array();
+        if (strlen($nocab) > 0) { $data['nocab'] = True; }   
+        $this -> cab($data);      
+        $tela = '';
+        switch($ac)
         {
-            $sx = '<div class="container">';
-            $sx .= breadcrumb();
-            $sx .= '</div>';
-            return($sx);
+            case 'class':
+            /* Classes */
+            $rdf = new rdf;
+            $tela = $rdf->config($ac,$id,$chk,$chk2,$chk3);
+            break;                
+
+            default:
+            $rdf = new rdf;
+            $tela .= $ac.'?????';
         }
+
+        
+        
+
+        $data['title'] = '';
+        $data['content'] = $tela;
+        $this->load->view('content',$data);
+
+        /* Footer */
+        if (strlen($nocab)== 0) {
+            $this -> foot();
+        }
+    }        
+
+    function a($id=0,$act='')
+    {
+        $this->cab();
+        if (perfil("#ADM"))
+        {
+            $rdf = new rdf;
+            $data = $rdf->le($id);
+            $data['action'] = $act;
+            $class = $data['c_class'];
+            switch($class)
+            {
+                default:
+                $sx = $rdf->form($id,$data);
+                break;
+            }
+            $sx = '<div class="container"><div class="row"><div class="col-12">'.$sx.'</div></div></div>';
+            $data['content'] = $sx;
+            $data['title'] = 'Form';
+            $this->load->view('content',$data);        
+
+        } else {
+            redirect(base_url(PATH));
+        }
+    }
+
+    function breadcrumb()
+    {
+        $sx = '<div class="container">';
+        $sx .= breadcrumb();
+        $sx .= '</div>';
+        return($sx);
+    }
 }
 ?>
