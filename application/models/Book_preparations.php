@@ -218,7 +218,7 @@ class book_preparations extends CI_model
 			case '1':
 			$view = 2;
 			$sx .= $this->books->locate($isbn);
-			$sx .= $this->link_book($id,$isbn);	
+			$sx .= $this->link_book();	
 			$dt = $this->le_tombo($id);
 
 			if (strlen($dt['w_title']) > 0)
@@ -517,7 +517,14 @@ class book_preparations extends CI_model
 
 	function book_header($dt)
 	{
-		$img = $this->covers->img($dt['id_m']);
+		if (count($dt) == 0)
+		{
+			echo "OPS - Item não pertence a essa biblioteca";
+			refresh(10,base_url(PATH));
+			exit;
+		}
+
+		$img = $this->covers->img($dt['m_isbn13']);
 		$sx = '';
 			//$sx = '<div class="row">';
 
@@ -583,7 +590,7 @@ class book_preparations extends CI_model
 		LEFT JOIN find_manifestation ON i_manitestation = id_m
 		LEFT JOIN find_expression ON m_expression = id_e
 		LEFT JOIN find_work ON e_work = id_w
-		where i_library = '".LIBRARY."' and id_i = ".$id;
+		where id_i = ".$id;		
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
 		if (count($rlt) > 0)

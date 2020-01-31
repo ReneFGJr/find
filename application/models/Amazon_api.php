@@ -3,6 +3,7 @@ class Amazon_api extends CI_model
 {
 	function book($isbn) {
 		$type = 'AMAZO';
+		return(array());
 		$t = $this->isbn->get($isbn,$type);
 
 		$w = array();

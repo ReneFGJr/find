@@ -93,13 +93,15 @@ class books extends CI_model
 		$dt['isbn13'] = $isbn;
 		$idioma = trim($dt['expressao']['idioma']);
 		$genere = trim($dt['expressao']['genere']);
+		$dt['title'] = troca($dt['title'],'"',"´");
+		$dt['title'] = troca($dt['title'],"'","´");
 
 		$dt['work'] = $this->work($dt['title'],$idioma);
 		$dt['expression'] = $this->expression($dt['work'],$idioma,$genere);
 		$dt['manifestation'] = $this->manifestation($dt['expression'],$dt);
 		$this->save_urls($dt['manifestation'],$dt['url']);
 		$this->authors->authors_save($dt);
-		$this->covers->save($dt['cover'],$dt['manifestation']);		
+		$this->covers->save($dt['cover'],$isbn);		
 
 		/* WORK */
 		$rdf = new rdf;
@@ -367,7 +369,7 @@ class books extends CI_model
 		{
 			$line = $rlt[0];
 			$line['isbn'] = $this->isbn->isbns($line['m_isbn13']);
-			$line['img'] = $this->covers->img($id);
+			$line['img'] = $this->covers->img($line['m_isbn13']);
 			$line['authors'] = $this->authors->le_authors($line['id_w']);
 
 			$rdf = new rdf;
@@ -546,7 +548,9 @@ class books extends CI_model
 		$sx = '<h1>Vitrine</h1>';
 		$sql = "select * from find_manifestation
 		INNER JOIN find_expression ON m_expression = id_e
-		INNER JOIN find_work ON e_work = id_w";
+		INNER JOIN find_work ON e_work = id_w
+		INNER join find_item ON id_m = i_manitestation
+		where i_library = '".LIBRARY."' ";
 
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
@@ -555,7 +559,8 @@ class books extends CI_model
 		{
 			$line = $rlt[$r];
 			$id = $line['id_m'];
-			$img = $this->covers->img($id);
+			$isbn = $line['m_isbn13'];
+			$img = $this->covers->img($isbn);
 			$link = '<a href="'.base_url(PATH.'m/'.$id).'">';
 			$linka = '</a>';
 			$sx .= '<div class="col-3 col-lg-2 col-md-2">';
@@ -672,6 +677,7 @@ class books extends CI_model
 
 		$form = new form;
 		$dt = $this->le_m($id);
+
 		if (strlen($action) == 0)
 		{			
 			if (count($dt) == 0)
@@ -705,14 +711,17 @@ class books extends CI_model
 			}
 		}
 
+		$this->book_preparations->link_book();
+
 		$cp = array();
 		array_push($cp,array('$H8','id_w','',false,false));
 		array_push($cp,array('$T80:3','',msg('w_title'),true,true));
 		array_push($cp,array('$AJAX:','',msg('w_authors'),true,true));
 		$sx = $form->editar($cp,'');
 
-		$rdf = new rdf;
+		$rdf = new rdf;	
 		$dtf = $rdf->le($dt['m_id']);
+
 		$sx .= $rdf->form($dt['m_id'],$dtf);
 
 		return($sx);

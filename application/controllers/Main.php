@@ -132,12 +132,12 @@
         }
     }
 
-    function rdf($id='')
+    function rdf($id='',$id2='',$id3='',$id4='')
         {
         $data['nocab'] = true;
         $this -> cab($data);
         $rdf = new rdf;
-        $sx = $rdf->ajax();
+        $sx = $rdf->ajax($id,$id2,$id3,$id4);
         
         $data['content'] = $sx;
         $this -> load -> view("content", $data);

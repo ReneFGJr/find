@@ -81,6 +81,7 @@ class covers extends CI_model
 		</div>
 		<div class="modal-body" id="ajax_body">
 		';
+		$sx .= '<h4>ISBN: '.$isbn.'</h4>';
 		$sx .= $this->cover_link_html();
 		$sx .= '</div>
 		<div class="modal-footer">
@@ -109,7 +110,7 @@ class covers extends CI_model
 				type: "POST",
 				dataType: "html",
 				data: {"url" : x },
-				url: "'.base_url(PATH.'/ajax/cover_link/'.$isbn).'",
+				url: "'.base_url(PATH.'ajax/cover_link/'.$isbn).'",
 				crossDomain: true,
 				success: function( html ) 
 				{
@@ -122,9 +123,9 @@ class covers extends CI_model
 		return($sx);
 	}
 
-	function img($i)
+	function img($isbn)
 	{
-		$file = $this->img_name($i);
+		$file = $this->img_name($isbn);
 		if (file_exists($file))
 		{
 			$img = base_url($file);
@@ -133,13 +134,13 @@ class covers extends CI_model
 		}
 		return($img);
 	}
-	function img_name($i)
+	function img_name($isbn)
 	{
 		$file = '_covers';
 		check_dir($file);
 		$file .= '/image';
 		check_dir($file);
-		$file .= '/'.strzero($i,8).'-'.substr(md5($i),4,8).'.jpg';
+		$file .= '/'.trim($isbn).'.jpg';
 		return($file);
 	}
 
@@ -161,28 +162,23 @@ class covers extends CI_model
 	function ajax_cover_upload($isbn)
 	{
 		$this->load->model("books");
-		echo '<pre>';
-		print_r($_FILES);
-		echo '</pre>';
 
-		$idm = -1;
+		$ok = -1;
 		if (isset($_FILES['file']))
 		{
 			$url = $_FILES['file']['tmp_name'];
 			if (file_exists($url))
 			{
-				$idm = $this->books->recover_id_for_isbn($isbn);		
+				$ok  = 1;
 			}
 		} else {
 			echo $this->cover_upload_html();
 			echo message("ERRO: Arquivo inválido ou não localizado na base",3);			
-			$idm = -1;
 		}
 		
-		if ($idm > 0)
+		if ($ok == 1)
 		{			
-			$this->save($url,$idm);
-			exit;
+			$this->save($url,$isbn);
 			echo refresh();
 		} else {
 			if ($idm == 0)
@@ -203,7 +199,7 @@ class covers extends CI_model
 			$idm = $this->books->recover_id_for_isbn($isbn);
 			if ($idm > 0)
 			{			
-				$this->save($url,$idm);
+				$this->save($url,$isbn);
 				echo refresh();
 			} else {
 				echo $this->cover_link_html();
@@ -216,9 +212,15 @@ class covers extends CI_model
 		}
 	}
 
-	function save($url,$m)
+	function save($url,$isbn)
 	{
-		$img = $this->img_name($m);
+		if (strlen($isbn) < 10)
+		{
+			echo 'ERRO NO NOME';
+			echo 'RST '.$isbn;
+			exit;
+		}
+		$img = $this->img_name($isbn);
 		if (strlen($url) > 0)
 		{
 			$t = read_link($url);
