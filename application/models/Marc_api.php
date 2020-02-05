@@ -10,6 +10,7 @@ class Marc_api extends CI_model
 		$ln = splitx(';',$t);
 		$w = array();
 		$w['authors'] = array();
+		$w['agents'] = array();
 		$w['cover'] = '';
 		$w['subject']= array();
 		$w['descricao'] = '';
@@ -51,9 +52,37 @@ class Marc_api extends CI_model
 				array_push($w['authors'],$sr);
 				break;
 
+				case '110':
+				$sr = $this->extract($l,'a');
+				$sr = nbr_author($sr,8);
+				array_push($w['agents'],$sr);
+				break;				
+
+				case '710':
+				$sr = $this->extract($l,'a');
+				$sr = nbr_author($sr,8);
+				array_push($w['agents'],$sr);
+				break;				
+
+				/* CDD */
+				case '082':
+				$sr = $this->extract($l,'a');
+				$w['cdd'] =$sr;
+				break;				
+
+
+				/* CDU */
+				case '080':
+				$sr = $this->extract($l,'a');
+				$w['cdd'] =$sr;
+				break;		
+
 				/***************** Título ***********/
 				case '245':
 				$sr = $this->extract($l,'a');
+				$sb = $this->extract($l,'b');
+				if (strlen($sb) > 0)
+					{ $sr = trim($sr).': '.trim($sb); }
 				$title = $sr;
 				$w['title'] = $sr;
 				break;
@@ -62,6 +91,9 @@ class Marc_api extends CI_model
 				case '260':
 				$sr = $this->extract($l,'b');
 				$w['editora'] = $sr;
+
+				$sr = $this->extract($l,'a');
+				$w['place'] = $sr;				
 
 				$sr = $this->extract($l,'c');
 				$w['data'] = $sr;
@@ -90,7 +122,11 @@ class Marc_api extends CI_model
 				$sr = $this->extract($l,'v');
 				$sr = troca($sr,'(','');
 				$sr = troca($sr,')','');
-				$w['volume'] = 'v. '.$sr;
+				if (strlen($sr) > 0)
+				{
+					$w['volume'] = 'v. '.$sr;
+				}
+
 				break;	
 
 				/***************** Assuntos ***********/
@@ -188,15 +224,12 @@ class Marc_api extends CI_model
 		$sx .= '</div>';
 
 		$sx .= '<div id="marc_form" style="display: none">';
-		$form = new form;
-		$cp = array();
-		array_push($cp,array('$H8','','',false,false));
-		array_push($cp,array('$H8','','',false,false));
-		array_push($cp,array('$T80:10','',msg('marc_code_import'),true,true));
-		array_push($cp,array('$B8','',msg('import'),false,false));
-		$tela = $form->editar($cp,'');
-		$sx .= $tela;
+		$sx .= '<form method="post">';
 		$sx .= msg('marc_insert_text');
+
+		$sx .= '<textarea name="marc21" class="form-control form_textarea" rows=8 >'.get("marc21")."</textarea>'";
+		$sx .= '<input type="submit" value="Importar MARC21">';
+		$sx .= '</form>';
 		$sx .= '</div>';
 
 

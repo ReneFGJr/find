@@ -48,11 +48,11 @@ class books extends CI_model
 		return($rlt);
 	}
 
-	function marc_import($t)
+	function marc_import($t,$isbn)
 	{
 		$dt = $this->marc_api->book($t);
+		$dt['isbn'] = $this->isbn->isbns($isbn);
 		$isbn = $dt['isbn']['isbn13'];
-
 		$this->process_register($isbn,$dt,'MARC2');
 		$sx = 'Marc 21 imported<br>';
 
@@ -61,17 +61,18 @@ class books extends CI_model
 		return($sx);
 	}
 
-	function locate($isbn)
+	function locate($isbn,$id)
 	{
 		$sx = '';
 		/* Google */
-		$google = $this->google_api->book($isbn);
-		$amazon = $this->amazon_api->book($isbn);
+		$google = $this->google_api->book($isbn,$id);
+		$amazon = $this->amazon_api->book($isbn,$id);
 
 		/************************************** Processar Google ************/
 		if ($google['totalItems'] > 0)
 		{
 			$dt = $google;	
+			$dt['item'] = $id;
 			$this->process_register($isbn,$dt,'GOOGL');
 			$sx .= 'Google Book imported<br>';	
 		}
@@ -80,6 +81,7 @@ class books extends CI_model
 		{				
 			$dt = $amazon;
 			$sx .= 'Amazon Book imported<br>';
+			$dt['item'] = $id;
 			$this->process_register($isbn,$dt,'AMAZO');
 		}
 		return($sx);
@@ -96,28 +98,32 @@ class books extends CI_model
 		$dt['title'] = troca($dt['title'],'"',"´");
 		$dt['title'] = troca($dt['title'],"'","´");
 
-		$dt['work'] = $this->work($dt['title'],$idioma);
-		$dt['expression'] = $this->expression($dt['work'],$idioma,$genere);
-		$dt['manifestation'] = $this->manifestation($dt['expression'],$dt);
-		$this->save_urls($dt['manifestation'],$dt['url']);
-		$this->authors->authors_save($dt);
-		$this->covers->save($dt['cover'],$isbn);		
+		$rdf = new rdf;
 
 		/* WORK */
-		$rdf = new rdf;
-		$idn = $rdf->rdf_name('W'.$isbn);
-		$iddw = $rdf->rdf_concept($idn,'Work');
-		$this->update_id($dt['work'],$iddw,'w');
+		$idw = $this->work($dt['title']);
+		$this->authors->authors_save($dt,$idw);			
 
 		/* EXPRESSION */
-		$idn = $rdf->rdf_name('E'.strzero($dt['expression'],9));
-		$idde = $rdf->rdf_concept($idn,'Expression');
-		$this->update_id($dt['expression'],$idde,'e');
+		$language = $dt['expressao']['idioma'];
+		$type = $dt['expressao']['genere'];
+		$ide = $this->expression($language,$type);
+		$rdf->set_propriety($idw,'isAppellationOfExpression',$ide);
 
 		/* MANIFESTATION */
-		$idn = $rdf->rdf_name('M'.strzero($dt['manifestation'],9));
-		$iddm = $rdf->rdf_concept($idn,'Manifestation');
-		$this->update_id($dt['manifestation'],$iddm,'m');
+		$idm = $this->manifestation($dt['isbn13']);
+		$rdf->set_propriety($ide,'isAppellationOfManifestation',$idm);
+
+
+		/* Registro do Work ************************************/
+		$this->save_urls($idm,$dt['url']);
+		$this->covers->save($dt['cover'],$isbn);
+
+		print_r($dt);
+
+		/* ASSOCIA ITEM COM A MANIFESTACAO ****************************/
+		$sql = "update find_item set i_manitestation = $idm where id_i = ".$dt['item'];
+		$this->db->query($sql);
 
 		/* Manifestation - Pages *********************************************/	
 		$pags = sonumero($dt['pages']);
@@ -135,7 +141,7 @@ class books extends CI_model
 				}
 
 				$idc = $rdf->rdf_concept_create('Pages', $pags, '', $idioma);
-				$rdf->set_propriety($iddm,'hasPage',$idc);				
+				$rdf->set_propriety($idm,'hasPage',$idc);				
 			}
 		}			
 
@@ -148,15 +154,30 @@ class books extends CI_model
 				$editora = substr($editora,0,strpos($editora,';'));
 			}
 			$idc = $rdf->rdf_concept_create('Editora', $editora, '', $idioma);
-			$rdf->set_propriety($iddm,'isPublisher',$idc);
+			$rdf->set_propriety($idm,'isPublisher',$idc);
 		}
+
+		/* Manifestation - Editora */	
+		if (isset($dt['place']))
+		{
+			$place = $dt['place'];
+			if (strlen($place) > 0)
+			{
+				if (strpos($place,';') > 0)
+				{
+					$place = substr($place,0,strpos($place,';'));
+				}
+				$idc = $rdf->rdf_concept_create('Place', $place, '', $idioma);
+				$rdf->set_propriety($idm,'isPlaceOfPublication',$idc);
+			}
+		}		
 
 		/* Manifestation - Descriptions */	
 		$txt = trim(troca($dt['descricao'],"'","´"));
 		if (strlen($txt) > 0)
 		{
 			$idn = $rdf->rdf_name($txt);
-			$rdf->set_propriety($iddm,'dc:description',0,$idn);
+			$rdf->set_propriety($idm,'dc:description',0,$idn);
 		}
 
 		/* Manifestatiion - Peso */
@@ -167,7 +188,7 @@ class books extends CI_model
 			if (strlen($txt) > 0)
 			{
 				$idc = $rdf->rdf_concept_create('Weight', $txt, '', $idioma);
-				$rdf->set_propriety($iddm,'hasWeight',$idc);
+				$rdf->set_propriety($idm,'hasWeight',$idc);
 			}
 		}			
 
@@ -178,7 +199,7 @@ class books extends CI_model
 			if (strlen($txt) > 0)
 			{
 				$idc = $rdf->rdf_concept_create('SerieName', $txt, '', $idioma);
-				$rdf->set_propriety($iddm,'hasSerieName',$idc);
+				$rdf->set_propriety($idm,'hasSerieName',$idc);
 			}
 		}	
 
@@ -186,7 +207,7 @@ class books extends CI_model
 		{
 			$txt = $dt['volume'];
 			$idc = $rdf->rdf_concept_create('Number', $txt, '', $idioma);
-			$rdf->set_propriety($iddm,'hasVolumeNumber',$idc);
+			$rdf->set_propriety($idm,'hasVolumeNumber',$idc);
 
 		}
 
@@ -197,14 +218,14 @@ class books extends CI_model
 			{
 				$txt = Nbr_author($dt['subject'][$r],18);
 				$idc = $rdf->rdf_concept_create('Subject', $txt, '', $idioma);
-				$rdf->set_propriety($iddm,'hasSubject',$idc);	
+				$rdf->set_propriety($idm,'hasSubject',$idc);	
 			}
 		}
 
 		/************ Atualiza Item ******************************/
-		$this->book_preparations->link_book();
-
-		return($sx);
+		$this->book_preparations->link_book($idm,$dt['item']);
+		$this->books_item->item_status($dt['item'],1);
+		return($idm);
 	}
 
 
@@ -215,11 +236,6 @@ class books extends CI_model
 		{
 			case 'w':
 			$sql = "update find_work set w_id = $iddw where id_w = $idw";
-			$this->db->query($sql);
-			break;
-
-			case 'e':
-			$sql = "update find_expression set e_id = $iddw where id_e = $idw";
 			$this->db->query($sql);
 			break;
 
@@ -238,7 +254,7 @@ class books extends CI_model
 	}
 
 	/*************************************************************************** WORK ***/
-	function work($title,$language)
+	function work($title)
 	{
 		/* Limpa titulo */
 		while (strpos('_'.$title,'  ') > 0)
@@ -247,32 +263,17 @@ class books extends CI_model
 		}
 		$title = troca($title,"'","´");
 
-		$sql = "select * from find_work where w_title = '".$title."'";
-		$rlt = $this->db->query($sql);
-		$rlt = $rlt->result_array();
-		if (count($rlt) == 0)
-		{
-			$xsql = "insert into find_work
-			(w_title)
-			values
-			('$title')";
-			$xrlt = $this->db->query($xsql);					
-			sleep(1);
-			$rlt = $this->db->query($sql);
-			$rlt = $rlt->result_array();
-		}
-
-		if (count($rlt) == 0)
-		{
-			echo "OPS - ERRO DE GRAVAÇÃO";
-		}
-		$id = $rlt[0]['id_w'];
-		return($id);
+		/******************************* SALVA EXPRESSAO ************/
+		$rdf = new rdf;
+		$idt = $rdf->frbr_name($title);
+		$idw = $rdf->rdf_concept($idt, 'Work');
+		$rdf->set_propriety($idw,'prefLabel',0,$idt);
+		return($idw);		
 	}
 
 
 	/***************************************************************************** EXPRESSION ***********/
-	function expression($w,$language,$type)
+	function expression($language,$type)
 	{
 
 		$lang = $this->languages->code($language);
@@ -290,66 +291,22 @@ class books extends CI_model
 			exit;
 		}
 
-		$sql = "select * from find_expression where e_work = '".$w."' and e_language = '$lang' and e_type = '$gen' ";
-		$rlt = $this->db->query($sql);
-		$rlt = $rlt->result_array();
-		if (count($rlt) == 0)
-		{
-			$xsql = "insert into find_expression
-			(e_work, e_language, e_type)
-			values
-			('$w','$lang','$gen')";
-
-			$xrlt = $this->db->query($xsql);					
-			sleep(1);
-			$rlt = $this->db->query($sql);
-			$rlt = $rlt->result_array();			
-		}
-
-		if (count($rlt) == 0)
-		{
-			echo "OPS - ERRO DE GRAVAÇÃO";
-		}
-		$id = $rlt[0]['id_e'];
-		return($id);
+		/******************************* SALVA EXPRESSAO ************/
+		$rdf = new rdf;
+		$term = $gen.':'.$lang;
+		$idt = $rdf->frbr_name($term);
+		$ide = $rdf->rdf_concept($idt, 'Expression');
+		return($ide);
 	}
 
 	/********************************************** manifestation ***********/
-	function manifestation($e,$d)	
+	function manifestation($isbn13)	
 	{
-		$isbn13 = $d['isbn13'];
-		$data = $d['data'];
-
-		/********************** WHERE *********/
-		$wh = '';
-		if ($data > 1900)
-		{
-			$wh = "and (m_year = '$data')";	
-		}
-
-		/********************** CONSULTA ************/
-		$sql = "select * from find_manifestation where m_isbn13 = '$isbn13' $wh";
-		$rlt = $this->db->query($sql);
-		$rlt = $rlt->result_array();
-		if (count($rlt) == 0)
-		{
-			$xsql = "insert into find_manifestation
-			(m_isbn13, m_expression, m_year)
-			values
-			('$isbn13','$e','$data')";
-
-			$xrlt = $this->db->query($xsql);					
-			sleep(1);
-			$rlt = $this->db->query($sql);
-			$rlt = $rlt->result_array();			
-		}
-
-		if (count($rlt) == 0)
-		{
-			echo "OPS - ERRO DE GRAVAÇÃO";
-		}
-		$id = $rlt[0]['id_m'];
-		return($id);
+		$rdf = new rdf;
+		$term = 'ISBN:'.$isbn13;
+		$idt = $rdf->frbr_name($term);
+		$idm = $rdf->rdf_concept($idt, 'Manifestation');
+		return($idm);
 	}
 
 	function le_m($id)
@@ -360,8 +317,6 @@ class books extends CI_model
 			return($dt);
 		}
 		$sql = "select * from find_manifestation
-		INNER JOIN find_expression ON m_expression = id_e
-		INNER JOIN find_work ON e_work = id_w 
 		where id_m = $id";
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
@@ -391,8 +346,7 @@ class books extends CI_model
 			return("Sem informações");
 		}		
 		$class = 'img_cover';
-		$ed = '<a href="'.base_url(PATH.'preparation/tombo/'.$dt['id_m'].'/5').'"><sup>[ed]</sup></a>';
-
+		$ed = '<a href="'.base_url(PATH.'preparation/edit/'.$dt['id_m'].'/5').'"><sup>[ed]</sup></a>';
 
 		switch($type)
 		{
@@ -547,8 +501,6 @@ class books extends CI_model
 	{
 		$sx = '<h1>Vitrine</h1>';
 		$sql = "select * from find_manifestation
-		INNER JOIN find_expression ON m_expression = id_e
-		INNER JOIN find_work ON e_work = id_w
 		INNER join find_item ON id_m = i_manitestation
 		where i_library = '".LIBRARY."' ";
 
@@ -671,61 +623,89 @@ class books extends CI_model
 	}
 
 
-	function catalog_edit($id)
+
+	function i($id)
 	{
-		$action = get("acao");
-
-		$form = new form;
-		$dt = $this->le_m($id);
-
-		if (strlen($action) == 0)
-		{			
-			if (count($dt) == 0)
-			{
-				$dti = $this->le_item($id);
-				$isbn = $dti['i_identifier'];				
-				$dt['expressao'] = array('idioma'=>'pt','genere'=>'books');
-				$dt['title'] = 'no title - ISBN '.$isbn;
-				$dt['data'] = '';
-				$dt['url'] = '';
-				$dt['authors'] = array();
-				$dt['cover'] = '';
-				$dt['editora'] = '';
-				$dt['descricao'] = '';
-				$dt['pages'] = '';
-				$this->process_register($isbn,$dt,'MANUA');	
-				$dt = $this->le_m($id);
-			}
-			$_GET['dd1'] = $dt['w_title'];
+		$dt = $this->le_item($id);
+		$sx = '';
+		$sx .= '<div class="container"><div class="row"><div class="col-12">';
+		$sx .= '<table class="table">';
+		foreach ($dt as $key => $value) {
+			$sx .= '<tr>';
+			$sx .= '<td width="25%" align="right">'.$key;
+			$sx .= '<td>'.'<b>'.$value.'</b>';
+			$sx .= '</tr>';
 		}
-
-		/****************************** SALVAR REGISTROS **************/
-		if (strlen($action) > 0)
-		{
-			$title = get("dd1");
-			if (strlen($title) > 0)
-			{
-				$usql = "update find_work set w_title = '".$title."' where id_w = ".$dt['id_w'];
-				$xxx = $this->db->query($usql);
-				$_POST['dd1'] = $title;
-			}
-		}
-
-		$this->book_preparations->link_book();
-
-		$cp = array();
-		array_push($cp,array('$H8','id_w','',false,false));
-		array_push($cp,array('$T80:3','',msg('w_title'),true,true));
-		array_push($cp,array('$AJAX:','',msg('w_authors'),true,true));
-		$sx = $form->editar($cp,'');
-
-		$rdf = new rdf;	
-		$dtf = $rdf->le($dt['m_id']);
-
-		$sx .= $rdf->form($dt['m_id'],$dtf);
-
+		$sx .= '</table>';
+		$sx .= '</div></div></div>';
 		return($sx);
+		print_r($dt);
 	}
-}
 
-?>
+	function manual_api($id)
+	{
+		$title = get("q");
+		if (strlen($title) > 0)
+		{
+			$title = nbr_author($title,18);
+			$dti = $this->le_item($id);
+			$isbn = $dti['i_identifier'];				
+			$dt['expressao'] = array('idioma'=>'pt','genere'=>'books');
+			$dt['title'] = $title;
+			$dt['data'] = '';
+			$dt['url'] = '';
+			$dt['authors'] = array();
+			$dt['cover'] = '';
+			$dt['editora'] = '';
+			$dt['descricao'] = '';
+			$dt['pages'] = '';
+			$dt['w_title'] = $title;
+			$dt['item'] = $id;
+			$this->process_register($isbn,$dt,'MANUA');
+			$dt = $this->le_item($id);
+			redirect(base_url(PATH.'v/'.$dt['i_manitestation']));
+		} 	
+	}
+
+	function manual_form($id)
+	{
+		/* Grava dados */
+		$this->manual_api($id);
+
+		/* Formulário */
+		$sx = '';
+		$sx .= '<button class="btn btn-outline-primary" id="cat_manual">';
+		$sx .= msg('cat_manual');
+		$sx .= '</button>';
+
+		$sx .= '<div class="" style="display: none;" id="cat_manual_form">';
+		$sx .= '<span class="small">'.msg('title').'</span>';
+		$sx .= '<textarea id="manual_title" class="form-control" rows=2>';
+		$sx .= get("manual_title");
+		$sx .= '</textarea>';
+		$sx .= '<button id="manual_submit">'.msg("submit").'</button>';
+		$sx .= '</div>';
+
+		$sx .= '
+		<script> 
+		$("#cat_manual").click(function()
+		{ 
+			$("#cat_manual_form").toggle("slow"); 
+		}
+		);
+		$("#manual_submit").click(function()
+		{ 
+			var title = $("#manual_title").val();
+			if (title.length != 0)
+			{
+				window.location.href ="?q="+title; 
+				} else {
+					alert("ERRO");
+				}
+			}
+			); 
+			</script>'.cr();			
+			return($sx);
+		}
+	}
+	?>

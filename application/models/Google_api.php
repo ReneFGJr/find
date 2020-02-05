@@ -1,7 +1,7 @@
 <?php
 class google_api extends CI_model
 {
-	function book($isbn) {
+	function book($isbn,$id) {
 		$rsp = array('count' => 0);
 
 		$type = 'GOOGL';
@@ -11,6 +11,7 @@ class google_api extends CI_model
 		$rsp['cover'] = '';
 		$rsp['editora'] = '';
 		$rsp['subject']= array();
+		$rsp['item'] = $id;
 		/*******************************************************************************/
 
 		if ($w['totalItems'] > 0) {

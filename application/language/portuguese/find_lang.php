@@ -293,4 +293,7 @@ $lang['preparation_itens'] = 'Itens em preparo';
 $lang['preparation_itens_action'] = 'Clique no item para continuar a catalogação.';
 $lang['admin'] = 'Administrador';
 $lang['view'] = 'Detalhes';
+
+$lang['w_title'] = 'Título da obra';
+$lang['w_authors'] = 'Autores';
 ?>

@@ -13,7 +13,6 @@
     function zera()
     {
         $sql = "TRUNCATE find_authors;
-        TRUNCATE find_expression;
         TRUNCATE find_manifestation;
         TRUNCATE find_manifestation_url;
         TRUNCATE find_work;
@@ -73,7 +72,10 @@
 
     function preparation($path='',$id='',$sta='')
     {
+        $this->load->model("books");
         $this->load->model("book_preparations");
+        $this->load->model("marc_api");
+        $this->load->model("sourcers");
         $this->cab();
         $sx = $this->breadcrumb();
         $sx .= $this->book_preparations->main($path,$id,$sta);
@@ -132,16 +134,20 @@
         }
     }
 
-    function rdf($id='',$id2='',$id3='',$id4='')
-        {
-        $data['nocab'] = true;
-        $this -> cab($data);
+    function rdf($path='',$id='',$form='',$idx=0)
+    {
         $rdf = new rdf;
-        $sx = $rdf->ajax($id,$id2,$id3,$id4);
-        
-        $data['content'] = $sx;
-        $this -> load -> view("content", $data);
+        $sx = $rdf->index($path,$id,$form,$idx);
+
+        if (strlen($sx) > 0)
+        {
+            $data['nocab'] = true;
+            $this -> cab($data);
+
+            $data['content'] = $sx;
+            $this -> load -> view("content", $data);
         }
+    }
 
     function library($id = '') {        
         $this -> load -> model('libraries');
@@ -196,11 +202,22 @@
 
     public function v($id) {
         $this -> cab();
-        $tela = $this -> libraries -> v($id);
+        $rdf = new rdf;
+        $tela = $rdf->show_data($id);
         $data['content'] = $tela;
         $this -> load -> view('content', $data);
         $this -> foot();
-    }    
+    } 
+
+    public function i($id) {
+        $this->load->model("books");
+        $this -> cab();
+        $tela = $this -> books -> i($id);
+        $data['content'] = $tela;
+        $this -> load -> view('content', $data);
+        $this -> foot();
+    }
+
     function superadmin($id = '', $act = '') {
         $this -> cab();
         $this -> load -> model("superadmin");
@@ -367,11 +384,11 @@
         $data  = array();
         if (strlen($nocab) > 0) { $data['nocab'] = True; }  
         if (count($data) > 0)
-            {
-                $this -> cab($data);
-            } else {
-                $this -> cab();
-            }
+        {
+            $this -> cab($data);
+        } else {
+            $this -> cab();
+        }
         
         $sx = '<div class="container"><div class="row">';
         switch($ac)
@@ -379,7 +396,7 @@
             case 'class':
             /* Classes */
             $rdf = new rdf;
-            $sx .= $rdf->config($ac,$id,$chk,$chk2,$chk3);
+            $sx .= $rdf->index($ac,$id,$chk,$chk2,$chk3);
             break;                
 
             default:
@@ -393,9 +410,64 @@
         $data['content'] = $sx;
         $this->load->view('content',$data);
 
-    }        
+    } 
 
-    function a($id=0,$act='')
+   function a($id = '') {
+        $rdf = new rdf;
+        $data = $rdf -> le($id);
+
+        $this -> cab();
+
+        //$tela = $this -> frbr -> show($id);
+        $tela = '';
+        $linkc = '<a href="' . base_url(PATH . 'v/' . $id) . '" class="middle">';
+        $linkca = '</a>';
+
+        if (strlen($data['n_name']) > 0) {
+            $tela .= '<h2>' . $linkc . $data['n_name'] . $linkca . '</h2>';
+        }
+        $linkc = '<a href="' . base_url(PATH . 'v/' . $id) . '" class="btn btn-secondary">';
+        $linkca = '</a>';
+
+        $linkd = '<a href="' . base_url(PATH . 'd/' . $id) . '" class="btn btn-danger">';
+        $linkda = '</a>';
+
+        $tela .= '
+        <div class="row">
+        <div class="col-md-8">
+        <h5>' . msg('class') . ': ' . $data['c_class'] . '</h5>
+        </div>
+        <div class="col-md-4 text-right">';
+        if ((perfil("#ADM") > 0)) {
+            $tela .= $linkd . msg('delete') . $linkda . ' ';
+        }
+        $tela .= $linkc . msg('return') . $linkca;
+
+        $tela .= '</div></div>';
+        $tela .= $rdf -> form($id, $data);
+
+        switch($data['c_class']) {
+            case 'Person' :
+            $tela .= $this -> frbr -> show($id);
+            break;
+            case 'Family' :
+            $tela .= $this -> frbr -> show($id);
+            break;
+            case 'Corporate Body' :
+            $tela .= $this -> frbr -> show($id);
+            break;
+            default :
+            break;
+        }
+
+        $data['title'] = '';
+        $data['content'] = $tela;
+
+        $this -> load -> view('content', $data);
+        $this -> foot();
+    }           
+
+    function a1($id=0,$act='')
     {
         $this->cab();
         if (perfil("#ADM"))
