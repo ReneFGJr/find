@@ -1,0 +1,81 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "eOBQwAEACAAJ",
+   "etag": "pxDlO2ZjY9o",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/eOBQwAEACAAJ",
+   "volumeInfo": {
+    "title": "Practices and Patterns in Research Information Management",
+    "subtitle": "Findings from a Global Survey",
+    "authors": [
+     "Rebecca Bryant",
+     "Anna Clements",
+     "Pablo de Castro"
+    ],
+    "publishedDate": "2019-06-11",
+    "description": "OCLC Research and euroCRIS, the international organization for research information, partnered to develop a survey and synthesize the results to examine how research institutions worldwide are applying research information management (RIM) practices.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "1556530730"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9781556530739"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": false
+    },
+    "pageCount": 94,
+    "printType": "BOOK",
+    "categories": [
+     "Libraries and scholars"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "preview-1.0.0",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=eOBQwAEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=eOBQwAEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+    },
+    "language": "en",
+    "previewLink": "http://books.google.com.br/books?id=eOBQwAEACAAJ&dq=isbn:9781556530739&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=eOBQwAEACAAJ&dq=isbn:9781556530739&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Practices_and_Patterns_in_Research_Infor.html?hl=&id=eOBQwAEACAAJ"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "NO_PAGES",
+    "embeddable": false,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=eOBQwAEACAAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "NONE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "OCLC Research and euroCRIS, the international organization for research information, partnered to develop a survey and synthesize the results to examine how research institutions worldwide are applying research information management (RIM) ..."
+   }
+  }
+ ]
+}

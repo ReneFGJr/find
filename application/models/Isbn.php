@@ -6,6 +6,10 @@ class isbn extends CI_model
 	{
 		switch($type)
 		{
+			case 'FINDS':
+			$url = 'http://192.168.0.115/sisdoc/find/index.php/main/x/' . $isbn;
+			break;
+
 			case 'GOOGL':
 			$url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' . $isbn;
 			break;
@@ -30,6 +34,13 @@ class isbn extends CI_model
 		/***** File Cached not found ***************************************/
 		switch($type)
 		{
+			/**************************************** GOOGLE *******************/
+			case 'FINDS':
+			$url = $this->urls($isbn,$type);
+			$t = read_link($url);
+			$this->vurl = $url;
+			break;
+
 			/**************************************** GOOGLE *******************/
 			case 'GOOGL':
 			$url = $this->urls($isbn,$type);

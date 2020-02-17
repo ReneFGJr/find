@@ -75,6 +75,11 @@ a, a:hover
   padding: 0px 10px;
 }
 
+.manifestation_descrition
+  {
+    margin-top: 10px;
+    color: #404040;
+  }
 .work_title
 {
   font-size: 250%;
@@ -213,3 +218,10 @@ input:focus {
 {
   font-size: 24px;
 }
+
+.hasAuthor:a, .hasAuthor
+  {
+    font-size: 14px;    
+    text-decoration: underline;
+    color: blue;
+  }

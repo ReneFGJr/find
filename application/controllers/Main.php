@@ -10,6 +10,27 @@
  class Main extends CI_controller {
     var $lib = 10010000000;
 
+    function import()
+    {
+        $this->load->model('find_rdf');
+        $this->load->model('isbn');
+        $this->load->model("covers");
+        $this->load->model("books");
+        $this->load->model("authors");
+        $this->load->model("classifications");
+        $this->load->model("subjects");
+        $this->load->model("languages");
+        $this->load->model("generes");
+        $this->load->model("book_preparations");
+        $this->load->model("books_item");
+        
+        
+        $sx = $this->find_rdf->import('1000');
+        $this->cab();
+        $data['content'] = $sx;
+        $this->load->view('content',$data);
+    }
+
     function zera()
     {
         $sql = "TRUNCATE find_authors;
@@ -134,10 +155,11 @@
         }
     }
 
-    function rdf($path='',$id='',$form='',$idx=0)
+    function rdf($path='',$id='',$form='',$idx=0,$idy='')
     {
+        $this->load->model("socials");
         $rdf = new rdf;
-        $sx = $rdf->index($path,$id,$form,$idx);
+        $sx = $rdf->index($path,$id,$form,$idx,$idy);
 
         if (strlen($sx) > 0)
         {
@@ -201,9 +223,13 @@
     }
 
     public function v($id) {
+        $this->load->model("books");
+        $this->load->model("covers");
+        $this->load->model("isbn");
         $this -> cab();
         $rdf = new rdf;
         $tela = $rdf->show_data($id);
+        $tela .= $rdf->view_data($id);
         $data['content'] = $tela;
         $this -> load -> view('content', $data);
         $this -> foot();
@@ -412,7 +438,7 @@
 
     } 
 
-   function a($id = '') {
+    function a($id = '') {
         $rdf = new rdf;
         $data = $rdf -> le($id);
 

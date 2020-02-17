@@ -14,6 +14,24 @@ class books extends CI_model
 		return($sx);
 	}
 
+	function place($p)
+		{
+			$p = trim($p);
+			$sql = "select * from library_place where lp_name = '$p'";
+			$rlt = $this->db->query($sql);
+			$rlt = $rlt->result_array();
+			if (count($rlt) == 0)
+			{
+				print_r($rlt);
+				echo "<hr>OPS, Library not found - ".$p;
+				echo '<hr>';
+				exit;
+			}
+
+			$id = $rlt[0]['id_lp'];
+			return($id);
+		}
+
 	function save_urls($m,$url)
 	{
 		if (strlen($url) > 0)
@@ -91,6 +109,7 @@ class books extends CI_model
 	function process_register($isbn,$dt,$type)
 	{
 		$sx = '';
+		$debug = 1;
 		/********************************** F.R.B.R. */
 		$dt['isbn13'] = $isbn;
 		$idioma = trim($dt['expressao']['idioma']);
@@ -103,23 +122,24 @@ class books extends CI_model
 		/* WORK */
 		$idw = $this->work($dt['title']);
 		$this->authors->authors_save($dt,$idw);			
+		if ($debug) { echo '<br>Work'; }
 
 		/* EXPRESSION */
 		$language = $dt['expressao']['idioma'];
 		$type = $dt['expressao']['genere'];
 		$ide = $this->expression($language,$type);
 		$rdf->set_propriety($idw,'isAppellationOfExpression',$ide);
+		if ($debug) { echo '<br>EXPRESSION'; }
 
 		/* MANIFESTATION */
 		$idm = $this->manifestation($dt['isbn13']);
 		$rdf->set_propriety($ide,'isAppellationOfManifestation',$idm);
-
+		if ($debug) { echo '<br>MANIFESTATION'; }
 
 		/* Registro do Work ************************************/
 		$this->save_urls($idm,$dt['url']);
 		$this->covers->save($dt['cover'],$isbn);
-
-		print_r($dt);
+		if ($debug) { echo '<br>URL'; }		
 
 		/* ASSOCIA ITEM COM A MANIFESTACAO ****************************/
 		$sql = "update find_item set i_manitestation = $idm where id_i = ".$dt['item'];
@@ -139,10 +159,9 @@ class books extends CI_model
 				{
 					$pags = strtolower(trim($ppags)).', '.$pags;
 				}
-
-				$idc = $rdf->rdf_concept_create('Pages', $pags, '', $idioma);
-				$rdf->set_propriety($idm,'hasPage',$idc);				
 			}
+			$idc = $rdf->rdf_concept_create('Pages', $pags, '', $idioma);
+			$rdf->set_propriety($idm,'hasPage',$idc);				
 		}			
 
 		/* Manifestation - Editora */	
@@ -210,6 +229,20 @@ class books extends CI_model
 			$rdf->set_propriety($idm,'hasVolumeNumber',$idc);
 
 		}
+
+		if (isset($dt['data']))
+		{
+			$txt = $dt['data'];
+			$ori = '';
+			if (strpos($txt,'%') > 0)
+			{
+				$ori = substr($txt,strpos($txt,'%')+1,strlen($txt));
+				$txt = substr($txt,0,strpos($txt,'%'));				
+			}
+			$idc = $rdf->rdf_concept_create('Number', $txt, $ori, $idioma);
+			$rdf->set_propriety($idm,'dateOfPublication',$idc);
+
+		}		
 
 		/* Manifestation - Subject */	
 		if (isset($dt['subject']) and (count($dt['subject']) > 0))
@@ -707,5 +740,125 @@ class books extends CI_model
 			</script>'.cr();			
 			return($sx);
 		}
+	}
+
+	/* RDF SHOW */
+	function rdf_show_Work($dt)
+	{
+		$rdf = new rdf;
+		$CI = &get_instance();
+		$d = array();
+		$d['title'] = $dt['n_name'];
+		$d['authors'] = '';
+
+		$authors = '';
+		$au = 0;
+		$expression = array();
+		$manif = array();
+
+		$dts = $rdf->le_data($dt['id_cc']);
+		/******************************************* WORKS ********************/
+		for ($r=0;$r < count($dts);$r++)
+		{
+			$line = $dts[$r];
+			$prop = $line['c_class'];
+			$vlr = $line['n_name'];
+			$lng = $line['n_lang'];
+			$idr1 = $line['d_r1'];
+			$idr2 = $line['d_r2'];
+
+			/* Links */
+			$link = '<a href="'.base_url(PATH.'v/'.$idr2).'" class="'.$prop.'">';
+			$linka = '</a>';
+
+			switch($prop)
+			{
+				case 'hasAuthor':
+				if ($au > 0) { $authors .= '; '; }
+				$authors .= $link.$vlr.$linka;
+				$au++;
+				break;
+
+				case 'isAppellationOfExpression':
+				array_push($expression, $idr2);
+				break;
+			}
+		}
+
+		/********************************** Autores **************/
+		if ($au > 0) 
+		{ 
+			$d['authors'] = $authors;
+		}
+
+
+		/********************************** Expressoes ***********/
+		if (count($expression) > 0)
+		{
+			$ide = $expression[0];
+			$dt = $rdf->le_data($ide);
+			$manif = $rdf->extract_id($dt,'isAppellationOfManifestation');
+		}
+
+		if (count($manif) > 0)
+		{
+			$idm = $manif[0];				
+			$sx = manifestation($idm,$d);
+		}
+
+		return($sx);
+	}
+
+	function manifestation($id,$d)
+	{
+		$CI = &get_instance();
+		$sx = '';
+		$desc = '';
+		$pags = '';
+		$date = '';
+		$rdf = new rdf;
+		$dd = $rdf->le($id);				
+		$isbn = $dd['n_name'];
+		$img = $CI->covers->img(sonumero($isbn));
+
+
+		$dt = $rdf->le_data($id);
+		for ($r=0;$r < count($dt);$r++)
+		{
+			$prop = $dt[$r]['c_class'];
+			$vlr = $dt[$r]['n_name'];
+			switch($prop)
+			{
+				case 'description':
+				$desc = $vlr;
+				break;
+
+				case 'hasPage':
+				$pags = msg('Pages').': '.$vlr;
+				break;
+
+				case 'dateOfPublication':
+				$date = msg('Year').': '.$vlr;
+				break;				
+			}
+		}
+		$sx .= '<div class="col-2">';
+		$sx .= '<img src="'.$img.'" class="img-fluid">';
+		$sx .= '</div>';
+		$sx .= '<div class="col-10">';
+		/* Title */
+		echo '<pre>';
+		print_r($dt);
+		echo '</pre>';
+		$sx .= '<div class="work_title">'.$d['title'].'</div>';
+		$sx .= '<div class="work_author">'.$d['authors'].'</div>';
+		$isbn = $CI->isbn->isbns(sonumero($isbn));
+		$sx .= '<div class="manifestation_date">'.$date.'</div>';
+		$sx .= '<div class="manifestation_isbn">ISBN10: '.$isbn['isbn10f'].'</div>';
+		$sx .= '<div class="manifestation_isbn">ISBN13: '.$isbn['isbn13f'].'</div>';
+		$sx .= '<div class="manifestation_pags">'.$pags.'</div>';
+		$sx .= '<div class="manifestation_descrition">'.msg('description').': '.$desc.'</div>'.cr();
+		$sx .= '</div>';
+		return($sx);
 	}
 	?>

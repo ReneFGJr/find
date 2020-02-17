@@ -73,11 +73,23 @@ class Books_item extends CI_model
 
 	function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,$exemplar=1)
 	{
+		if (is_array($tipo))
+		{
+			$acq = 4;
+			$lib = $tipo['library'];
+		} else {
+			$acq = $tipo;
+			$lib = LIBRARY;
+		}
+
 		$sql = "select * from find_item 
 		where i_tombo = $tombo 
 		and i_identifier = '$isbn' 
 		and i_library_place = $place
-		and i_library = ".LIBRARY;
+		and i_library = ".$lib;
+
+		echo $sql;
+		
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
 		if (count($rlt) == 0)
@@ -91,7 +103,7 @@ class Books_item extends CI_model
 			values
 			(
 			'$tombo',$manifestation, '$isbn', 
-			'".LIBRARY."','".ip()."',$tipo,
+			'".$lib."','".ip()."',$acq,
 			$status,$place,$exemplar
 			)";
 			$rlt = $this->db->query($sql);					
