@@ -216,29 +216,28 @@ class Marc_api extends CI_model
 		}
 		return($t);
 	}
+
+	function save_marc($isbn,$txt)
+		{
+			$type = 'MARC2';
+			$file = $this->isbn->file_locate($isbn,$type);
+			file_put_contents($file, $txt);
+			return(1);
+		}
+
 	function form()
 	{
 		$sx = '';
-		$sx .= '<div>';
-		$sx .= '<span class="btn btn-outline-primary" onclick="marc_show();">Marc21</span">';
-		$sx .= '</div>';
 
-		$sx .= '<div id="marc_form" style="display: none">';
+		$sx .= '<div id="marc_form">';
 		$sx .= '<form method="post">';
 		$sx .= msg('marc_insert_text');
 
-		$sx .= '<textarea name="marc21" class="form-control form_textarea" rows=8 >'.get("marc21")."</textarea>'";
-		$sx .= '<input type="submit" value="Importar MARC21">';
+		$sx .= '<textarea name="marc21" class="form-control form_textarea" rows=15 >'.get("marc21")."</textarea>'";
+		$sx .= '<input type="submit" class="btn btn-outline-primary" value="Importar MARC21">';
 		$sx .= '</form>';
 		$sx .= '</div>';
 
-
-
-		$sx .= '<script>';
-		$sx .= ' function marc_show() { ';
-		$sx .= '	$("#marc_form").toggle("slow");';
-		$sx .= ' } ; ';
-		$sx .= '</script>'.cr();
 		return($sx);
 	}
 }

@@ -34,18 +34,11 @@
     function zera()
     {
         $sql = "TRUNCATE find_authors;
-        TRUNCATE find_manifestation;
         TRUNCATE find_manifestation_url;
-        TRUNCATE find_work;
-        TRUNCATE find_work_authors;
         TRUNCATE rdf_concept;
         TRUNCATE rdf_data;
         TRUNCATE rdf_name;
-        TRUNCATE find_item;
-        TRUNCATE find_classification_item;
-        TRUNCATE find_classification;
-        TRUNCATE find_indexing_item;
-        TRUNCATE find_indexing;";
+        TRUNCATE find_item;";
         $ln = splitx(';',$sql);
         for ($r=0;$r < count($ln);$r++)
         {
@@ -157,9 +150,10 @@
 
     function rdf($path='',$id='',$form='',$idx=0,$idy='')
     {
+        $link = 'x';
         $this->load->model("socials");
         $rdf = new rdf;
-        $sx = $rdf->index($path,$id,$form,$idx,$idy);
+        $sx = $rdf->index($link,$path,$id,$form,$idx,$idy);
 
         if (strlen($sx) > 0)
         {
@@ -188,9 +182,9 @@
 
     }
 
-    function social($act = '') {
+    function social($act = '',$id='',$chk='') {
         $this -> cab();
-        $this->socials->social($act);
+        $this->socials->social($act,$id,$chk);
     }
 
     private function foot() {
@@ -444,7 +438,6 @@
 
         $this -> cab();
 
-        //$tela = $this -> frbr -> show($id);
         $tela = '';
         $linkc = '<a href="' . base_url(PATH . 'v/' . $id) . '" class="middle">';
         $linkca = '</a>';
@@ -459,10 +452,12 @@
         $linkda = '</a>';
 
         $tela .= '
+        <div class="container">
         <div class="row">
         <div class="col-md-8">
         <h5>' . msg('class') . ': ' . $data['c_class'] . '</h5>
         </div>
+
         <div class="col-md-4 text-right">';
         if ((perfil("#ADM") > 0)) {
             $tela .= $linkd . msg('delete') . $linkda . ' ';
@@ -485,7 +480,7 @@
             default :
             break;
         }
-
+        $tela .= '</div>';
         $data['title'] = '';
         $data['content'] = $tela;
 

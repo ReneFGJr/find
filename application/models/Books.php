@@ -15,22 +15,22 @@ class books extends CI_model
 	}
 
 	function place($p)
+	{
+		$p = trim($p);
+		$sql = "select * from library_place where lp_name = '$p'";
+		$rlt = $this->db->query($sql);
+		$rlt = $rlt->result_array();
+		if (count($rlt) == 0)
 		{
-			$p = trim($p);
-			$sql = "select * from library_place where lp_name = '$p'";
-			$rlt = $this->db->query($sql);
-			$rlt = $rlt->result_array();
-			if (count($rlt) == 0)
-			{
-				print_r($rlt);
-				echo "<hr>OPS, Library not found - ".$p;
-				echo '<hr>';
-				exit;
-			}
-
-			$id = $rlt[0]['id_lp'];
-			return($id);
+			print_r($rlt);
+			echo "<hr>OPS, Library not found - ".$p;
+			echo '<hr>';
+			exit;
 		}
+
+		$id = $rlt[0]['id_lp'];
+		return($id);
+	}
 
 	function save_urls($m,$url)
 	{
@@ -45,19 +45,6 @@ class books extends CI_model
 		return(1);
 	}
 
-	function recover_id_for_isbn($isbn)
-	{
-		$sql = "select * from find_manifestation where m_isbn13 = '$isbn'";
-		$rlt = $this->db->query($sql);
-		$rlt = $rlt->result_array();
-		if (count($rlt) > 0)
-		{
-			$id = $rlt[0]['id_m'];
-		} else {
-			$id = 0;
-		}
-		return($id);
-	}
 	function recover_urls($m)
 	{
 		$sql = "select * from find_manifestation_url where mu_m = $m";
@@ -66,33 +53,38 @@ class books extends CI_model
 		return($rlt);
 	}
 
-	function marc_import($t,$isbn)
-	{
-		$dt = $this->marc_api->book($t);
-		$dt['isbn'] = $this->isbn->isbns($isbn);
-		$isbn = $dt['isbn']['isbn13'];
-		$this->process_register($isbn,$dt,'MARC2');
-		$sx = 'Marc 21 imported<br>';
-
-		$this->locate($isbn);
-
-		return($sx);
-	}
-
 	function locate($isbn,$id)
 	{
-		$sx = '';
+		$sx = '<div style="margin-top: 20px">';
+		$sx .= '<h2>Importação de dados</h2>';
+		$sx .= '<ul>';
 		/* Google */
 		$google = $this->google_api->book($isbn,$id);
 		$amazon = $this->amazon_api->book($isbn,$id);
+		$find = $this->find_rdf->book($isbn,$id);
+		$total = 0;
 
+		/************************************** Processar Google ************/
+		if ($find['totalItems'] > 0)
+		{
+			$dt = $find;	
+			$dt['item'] = $id;
+			$this->process_register($isbn,$dt,'FIND');
+			$sx .= '<li style="color: green">Find Book '.msg('imported').'</li>';				
+			$total++;
+		} else {
+			$sx .= '<li  style="color: grey">Find Book '.msg('not_locate').'</li>';	
+		}
 		/************************************** Processar Google ************/
 		if ($google['totalItems'] > 0)
 		{
 			$dt = $google;	
 			$dt['item'] = $id;
 			$this->process_register($isbn,$dt,'GOOGL');
-			$sx .= 'Google Book imported<br>';	
+			$sx .= '<li style="color: green">Google Book '.msg('imported').'</li>';	
+			$total++;
+		} else {
+			$sx .= '<li  style="color: grey">Google Book '.msg('not_locate').'</li>';	
 		}
 		/************************************** Processar Amazon ***********/
 		if ($amazon['totalItems'] > 0)	
@@ -101,21 +93,55 @@ class books extends CI_model
 			$sx .= 'Amazon Book imported<br>';
 			$dt['item'] = $id;
 			$this->process_register($isbn,$dt,'AMAZO');
+			$sx .= '<li style="color: green">Amazon Book '.msg('imported').'</li>';	
+			$total++;
+		} else {
+			$sx .= '<li style="color: grey">Amazon Book '.msg('not_locate').'</li>';	
 		}
+		$sx .= '</ul>';
+		if ($total == 0)
+		{
+			$m = 'Nenhum metadado localizado. ';
+			$m .= 'Clique aqui para catalogação manual.';
+			$sx .= message($m,4);
+
+			$sx .= '<ul>';
+			$sx .= '<li><a href="'.base_url(PATH.'preparation/tombo/'.$id.'/marc').'">Importar MARC</a></li>';
+			$sx .= '</ul>';
+
+			$this->load->model('sourcers');
+			$sx .= $this->sourcers->show($isbn);
+		}
+		$sx .= '</div>';
 		return($sx);
+	}
+
+	function update_item_title($isbn,$dt)
+	{
+		$dt['title'] = troca($dt['title'],'"',"´");
+		$dt['title'] = troca($dt['title'],"'","´");
+		$title = $dt['title'];
+
+		$sql = "update find_item set
+		i_titulo = '$title'
+		where i_identifier = '$isbn'
+		and i_library = '".LIBRARY."'";
+		$rlt = $this->db->query($sql);
+		return($sql);
 	}
 
 
 	function process_register($isbn,$dt,$type)
 	{
 		$sx = '';
-		$debug = 1;
+		$debug = 0;
 		/********************************** F.R.B.R. */
 		$dt['isbn13'] = $isbn;
 		$idioma = trim($dt['expressao']['idioma']);
 		$genere = trim($dt['expressao']['genere']);
 		$dt['title'] = troca($dt['title'],'"',"´");
 		$dt['title'] = troca($dt['title'],"'","´");
+		$title = $dt['title'];
 
 		$rdf = new rdf;
 
@@ -127,7 +153,7 @@ class books extends CI_model
 		/* EXPRESSION */
 		$language = $dt['expressao']['idioma'];
 		$type = $dt['expressao']['genere'];
-		$ide = $this->expression($language,$type);
+		$ide = $this->expression($dt['isbn13'],$language,$type);		
 		$rdf->set_propriety($idw,'isAppellationOfExpression',$ide);
 		if ($debug) { echo '<br>EXPRESSION'; }
 
@@ -142,7 +168,10 @@ class books extends CI_model
 		if ($debug) { echo '<br>URL'; }		
 
 		/* ASSOCIA ITEM COM A MANIFESTACAO ****************************/
-		$sql = "update find_item set i_manitestation = $idm where id_i = ".$dt['item'];
+		$sql = "update find_item set 
+					i_manitestation = $idm,
+					i_titulo = '$title' 
+					where id_i = ".$dt['item'];
 		$this->db->query($sql);
 
 		/* Manifestation - Pages *********************************************/	
@@ -180,6 +209,8 @@ class books extends CI_model
 		if (isset($dt['place']))
 		{
 			$place = $dt['place'];
+			$place = troca($place,'[','');
+			$place = troca($place,']','');
 			if (strlen($place) > 0)
 			{
 				if (strpos($place,';') > 0)
@@ -239,7 +270,7 @@ class books extends CI_model
 				$ori = substr($txt,strpos($txt,'%')+1,strlen($txt));
 				$txt = substr($txt,0,strpos($txt,'%'));				
 			}
-			$idc = $rdf->rdf_concept_create('Number', $txt, $ori, $idioma);
+			$idc = $rdf->rdf_concept_create('Date', $txt, $ori, $idioma);
 			$rdf->set_propriety($idm,'dateOfPublication',$idc);
 
 		}		
@@ -259,31 +290,6 @@ class books extends CI_model
 		$this->book_preparations->link_book($idm,$dt['item']);
 		$this->books_item->item_status($dt['item'],1);
 		return($idm);
-	}
-
-
-	/*************************************************************************** WORK ***/
-	function update_id($idw,$iddw,$t)
-	{
-		switch($t)
-		{
-			case 'w':
-			$sql = "update find_work set w_id = $iddw where id_w = $idw";
-			$this->db->query($sql);
-			break;
-
-			case 'm':
-			$sql = "update find_manifestation set m_id = $iddw where id_m = $idw";
-			$this->db->query($sql);
-			break;
-
-			default:
-			echo "OPS. Update_id Error";
-			exit;
-			break;
-		}				
-
-		return(1);
 	}
 
 	/*************************************************************************** WORK ***/
@@ -306,9 +312,8 @@ class books extends CI_model
 
 
 	/***************************************************************************** EXPRESSION ***********/
-	function expression($language,$type)
+	function expression($isbn,$language,$type)
 	{
-
 		$lang = $this->languages->code($language);
 		if (strlen($lang) == 0)
 		{
@@ -324,11 +329,22 @@ class books extends CI_model
 			exit;
 		}
 
+		$term = 'ISBN:'.$isbn.':'.$gen.':'.$lang;
+
 		/******************************* SALVA EXPRESSAO ************/
 		$rdf = new rdf;
-		$term = $gen.':'.$lang;
 		$idt = $rdf->frbr_name($term);
 		$ide = $rdf->rdf_concept($idt, 'Expression');
+
+		/************************************************************/
+		$idgen = $rdf->frbr_name($gen);
+		$idg = $rdf->rdf_concept($idt, 'FormExpression');
+		$rdf->set_propriety($ide,'hasFormExpression',$idg);
+
+		$idlan = $rdf->frbr_name($lang);
+		$idl = $rdf->rdf_concept($idlan, 'Linguage');
+		$rdf->set_propriety($ide,'hasFormExpression',$idl);
+
 		return($ide);
 	}
 
@@ -342,35 +358,7 @@ class books extends CI_model
 		return($idm);
 	}
 
-	function le_m($id)
-	{
-		if ($id == 0)
-		{
-			$dt = array();
-			return($dt);
-		}
-		$sql = "select * from find_manifestation
-		where id_m = $id";
-		$rlt = $this->db->query($sql);
-		$rlt = $rlt->result_array();
-		if (count($rlt) > 0)
-		{
-			$line = $rlt[0];
-			$line['isbn'] = $this->isbn->isbns($line['m_isbn13']);
-			$line['img'] = $this->covers->img($line['m_isbn13']);
-			$line['authors'] = $this->authors->le_authors($line['id_w']);
-
-			$rdf = new rdf;
-			$line['rdf'] = $rdf->le_data($line['m_id']);
-			$line['links'] = $this->recover_urls($id);
-		} else {
-			$line = array();
-		}
-
-		return($line);
-	}
-
-	function show($dt,$type)
+	function showx($dt,$type)
 	{
 		$sx = '';
 		$sx .= '<div class="container">';	
@@ -533,9 +521,10 @@ class books extends CI_model
 	function vitrine()
 	{
 		$sx = '<h1>Vitrine</h1>';
-		$sql = "select * from find_manifestation
-		INNER join find_item ON id_m = i_manitestation
-		where i_library = '".LIBRARY."' ";
+		$sql = "select i_manitestation, i_identifier, i_titulo 
+		from find_item 
+		where i_library = '".LIBRARY."' 
+		group by i_manitestation, i_identifier, i_titulo ";
 
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
@@ -543,10 +532,10 @@ class books extends CI_model
 		for ($r=0;$r < count($rlt);$r++)
 		{
 			$line = $rlt[$r];
-			$id = $line['id_m'];
-			$isbn = $line['m_isbn13'];
+			$id = $line['i_manitestation'];
+			$isbn = $line['i_identifier'];
 			$img = $this->covers->img($isbn);
-			$link = '<a href="'.base_url(PATH.'m/'.$id).'">';
+			$link = '<a href="'.base_url(PATH.'v/'.$id).'">';
 			$linka = '</a>';
 			$sx .= '<div class="col-3 col-lg-2 col-md-2">';
 			$sx .= $link;
@@ -555,7 +544,7 @@ class books extends CI_model
 				{ $class = ''; }
 			$sx .= '<img src="'.$img.'" class="img-fluid '.$class.'" style="margin: 20px 10px 10px 10px;">';
 			$sx .= $linka;
-			$title = trim($line['w_title']);
+			$title = trim($line['i_titulo']);
 			if (strlen($title) > 60)
 			{
 				$title = substr($title,0,60);
@@ -574,73 +563,6 @@ class books extends CI_model
 		return($sx);
 	}
 
-	function isbn_exists($isbn)
-	{
-		$sql = "select * from find_manifestation where m_isbn13 = '$isbn'";
-		$rlt = $this->db->query($sql);
-		$rlt = $rlt->result_array();
-		if (count($rlt) > 0)
-		{
-			return($rlt[0]['id_m']);
-		} else {
-			return(0);
-		}
-	}
-
-
-
-	function itens($id)
-	{		
-		$wh = '(i_library = '.LIBRARY.') and ';
-		$sql = "select count(*) as total, lp_name, i_status 
-		FROM find_manifestation 
-		INNER JOIN find_item ON id_m = i_manitestation
-		INNER JOIN library_place ON i_library_place = id_lp
-		where $wh (id_m = ".$id.")
-		group by lp_name, i_status
-		order by lp_name, i_status desc ";
-
-		$rlt = $this->db->query($sql);
-		$rlt = $rlt->result_array();
-
-		$sx = '<ul class="libraries">';
-		$xp = '';
-		for ($r=0;$r < count($rlt);$r++)
-		{
-			$line = $rlt[$r];
-			$p = $line['lp_name'];
-			if ($xp != $p)
-			{
-				$sx .= '<li>';
-				$sx .= $line['lp_name'];
-				$sx .= '</li>';
-			}
-			
-			$sx .= '<ul class="libraries_item_status"><li>';
-			$sx .= msg('item_status_'.$line['i_status']).' ('.$line['total'].') ';
-			$sx .= '</li></ul>';
-		}
-		$sx .= '</ul>';
-		return($sx);
-	}
-	function exemplar($isbn)
-	{
-		$sql = "select max(i_exemplar) as i_exemplar
-		from find_item
-		where i_identifier = '$isbn'
-		and i_library = '".LIBRARY."'";
-
-		$rlt = $this->db->query($sql);
-		$rlt = $rlt->result_array();
-		if (count($rlt) > 0)
-		{
-			$line = $rlt[0];
-			return($line['i_exemplar']);
-		} else {
-			return(0);
-		}
-	}	
-
 	function le_item($id)
 	{
 		$sql = "select * from find_item where id_i = ".round($id);
@@ -654,8 +576,6 @@ class books extends CI_model
 		}
 
 	}
-
-
 
 	function i($id)
 	{
@@ -672,7 +592,6 @@ class books extends CI_model
 		$sx .= '</table>';
 		$sx .= '</div></div></div>';
 		return($sx);
-		print_r($dt);
 	}
 
 	function manual_api($id)
@@ -699,6 +618,24 @@ class books extends CI_model
 			redirect(base_url(PATH.'v/'.$dt['i_manitestation']));
 		} 	
 	}
+
+	function exemplar($isbn)
+	{
+		$sql = "select max(i_exemplar) as i_exemplar
+		from find_item
+		where i_identifier = '$isbn'
+		and i_library = '".LIBRARY."'";
+
+		$rlt = $this->db->query($sql);
+		$rlt = $rlt->result_array();
+		if (count($rlt) > 0)
+		{
+			$line = $rlt[0];
+			return($line['i_exemplar']);
+		} else {
+			return(0);
+		}
+	}	
 
 	function manual_form($id)
 	{
@@ -745,18 +682,89 @@ class books extends CI_model
 	/* RDF SHOW */
 	function rdf_show_Work($dt)
 	{
+		$CI = &get_instance();
+		$CI->load->model("books_item");
+
+		$rdf = new rdf;		
+		$manif = array();
+		$idc = $dt['id_cc'];
+		$dt = works($idc);
+		$sx = '';
+
+		/********************************** Expressoes ***********/
+		if (count($dt['expression']) > 0)
+		{
+			$ide = $dt['expression'][0];
+			$dte = $rdf->le_data($ide);
+			$manif = $rdf->extract_id($dte,'isAppellationOfManifestation');
+		}
+		if (count($manif) > 0)
+		{
+			for ($r=0;$r < count($manif);$r++)
+			{
+				$idm = $manif[$r];
+				$sx = manifestation($idm,$dt);
+				$sx .= $CI->books_item->mainfestation_item($idm);
+			}
+		}
+
+		return($sx);
+	}
+
+	function rdf_show_Date($dt)
+		{
+			$sx = '';
+			$sx .= '<h1>'.$dt['n_name'].'</h1>';
+			return($sx);
+		}
+
+	function rdf_show_Manifestation($dt)
+	{
+		$CI = &get_instance();
+		$CI->load->model("books_item");
+
+		$sx = 'Nothing';
 		$rdf = new rdf;
 		$CI = &get_instance();
-		$d = array();
-		$d['title'] = $dt['n_name'];
-		$d['authors'] = '';
-
-		$authors = '';
-		$au = 0;
 		$expression = array();
-		$manif = array();
+		$work = array();
+		$idcc = $dt['id_cc'];
 
 		$dts = $rdf->le_data($dt['id_cc']);
+		/********************************** Expressoes ***********/		
+		$expression = $rdf->extract_id($dts,'isAppellationOfManifestation',$idcc);
+
+		if (count($expression) > 0)
+		{
+			$ide = $expression[0];
+			$dt = $rdf->le_data($ide);
+			$work = $rdf->extract_id($dt,'isAppellationOfExpression',$ide);
+		}
+
+		if (count($work) > 0)
+		{
+			$idw = $work[0];
+			$dtw = works($idw);
+			$sx = manifestation($idcc,$dtw);
+		}
+
+		$sx .= $CI->books_item->mainfestation_item($idcc);
+
+		return($sx);
+	}
+
+	function works($id)
+	{
+		$CI = &get_instance();
+		$au = 0;
+		$d = array();
+		$d['title'] = '';
+		$d['authors'] = '';
+		$expression = array();
+
+		$authors = '';
+		$rdf = new rdf;
+		$dts = $rdf->le_data($id);
 		/******************************************* WORKS ********************/
 		for ($r=0;$r < count($dts);$r++)
 		{
@@ -771,8 +779,15 @@ class books extends CI_model
 			$link = '<a href="'.base_url(PATH.'v/'.$idr2).'" class="'.$prop.'">';
 			$linka = '</a>';
 
+			$rlink = '<a href="'.base_url(PATH.'v/'.$idr1).'" class="'.$prop.'">';
+			$rlinka = '</a>';
+
 			switch($prop)
 			{
+				case 'prefLabel':
+				$d['title'] = $rlink.$vlr.$rlinka;
+				break;
+
 				case 'hasAuthor':
 				if ($au > 0) { $authors .= '; '; }
 				$authors .= $link.$vlr.$linka;
@@ -790,23 +805,8 @@ class books extends CI_model
 		{ 
 			$d['authors'] = $authors;
 		}
-
-
-		/********************************** Expressoes ***********/
-		if (count($expression) > 0)
-		{
-			$ide = $expression[0];
-			$dt = $rdf->le_data($ide);
-			$manif = $rdf->extract_id($dt,'isAppellationOfManifestation');
-		}
-
-		if (count($manif) > 0)
-		{
-			$idm = $manif[0];				
-			$sx = manifestation($idm,$d);
-		}
-
-		return($sx);
+		$d['expression'] = $expression;
+		return($d);		
 	}
 
 	function manifestation($id,$d)
@@ -844,12 +844,12 @@ class books extends CI_model
 		}
 		$sx .= '<div class="col-2">';
 		$sx .= '<img src="'.$img.'" class="img-fluid">';
+		$sx .= $CI->covers->btn_seek_cover($isbn);
+		$sx .= ' | ';
+		$sx .= $CI->covers->btn_upload($isbn);
 		$sx .= '</div>';
 		$sx .= '<div class="col-10">';
 		/* Title */
-		echo '<pre>';
-		print_r($dt);
-		echo '</pre>';
 		$sx .= '<div class="work_title">'.$d['title'].'</div>';
 		$sx .= '<div class="work_author">'.$d['authors'].'</div>';
 		$isbn = $CI->isbn->isbns(sonumero($isbn));

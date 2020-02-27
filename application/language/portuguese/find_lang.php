@@ -296,4 +296,6 @@ $lang['view'] = 'Detalhes';
 
 $lang['w_title'] = 'Título da obra';
 $lang['w_authors'] = 'Autores';
+
+$lang['not_locate'] = 'não localizado';
 ?>

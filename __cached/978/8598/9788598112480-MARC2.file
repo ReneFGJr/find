@@ -1,0 +1,28 @@
+000	01600cam a22003494a 4500
+001	15743426
+005	20090918150550.0
+008	090519s2007    bl       b    101 0 por c
+906	__	 |a 7 |b cbc |c pccadap |d 2 |e ncip |f 20 |g y-gencatlg
+925	0_	 |a acquire |b 1 shelf copy |x policy default
+955	__	 |a wr11 2009-05-19 z-processor |c wr11 2009-05-19 |a be00 2009-07-14 |d be07 2009-07-15 |e be07 2009-07-15 to BCCD |a Barcode 00149710048 returned from bindery 2009-09-18
+010	__	 |a  2009342477
+020	__	 |a 9788598112480
+020	__	 |a 8598112488
+035	__	 |a (OCoLC)ocn212883687
+040	__	 |a COO |c COO |d UBA |d DLC
+042	__	 |a pcc |a lcode
+050	00	 |a BF378.S65 |b S45 2007
+111	2_	 |a Seminário Internacional Memória e Cultura: a Importância da Memória na Formação Cultural |d (2006 : |c São Paulo, Brazil)
+245	10	 |a Memória e cultura : |b a importância da memória na formação cultural humana / |c organização, Danilo Santos de Miranda.
+260	__	 |a São Paulo, Brasil : |b Edições SESC SP, |c 2007.
+300	__	 |a 303 p. ; |c 23 cm.
+500	__	 |a Papers presented at the ´Seminário Internacional Memória e Cultura: a Importância da Memória na Formação Cultural´, held Sept. 2006 at SESC SP, Vila Mariana.
+504	__	 |a Includes bibliographical references and index.
+650	_0	 |a Memory |x Social aspects.
+650	_0	 |a Culture |x Historiography.
+650	_0	 |a Oral history.
+650	_7	 |a Memória (aspectos sociais) |2 larpcal
+650	_7	 |a Cultura (historiografia) |2 larpcal
+650	_7	 |a História oral. |2 larpcal
+700	1_	 |a Miranda, Danilo Santos de.
+985	__	 |e ODE-rj

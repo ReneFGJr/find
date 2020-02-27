@@ -1,0 +1,72 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "ZvI8AAAAYAAJ",
+   "etag": "PXyKhAFXPfI",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/ZvI8AAAAYAAJ",
+   "volumeInfo": {
+    "title": "História da biblioteconomia brasileira",
+    "authors": [
+     "César Augusto Castro"
+    ],
+    "publishedDate": "2000",
+    "description": "Esta obra reúne dados e informações sobre a evolução da Biblioteconomia no Brasil e apresenta testemunhos e análises originais.",
+    "industryIdentifiers": [
+     {
+      "type": "OTHER",
+      "identifier": "UTEXAS:059173012157296"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": false
+    },
+    "pageCount": 288,
+    "printType": "BOOK",
+    "categories": [
+     "Library education"
+    ],
+    "averageRating": 4.0,
+    "ratingsCount": 1,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "0.0.1.0.preview.0",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=ZvI8AAAAYAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=ZvI8AAAAYAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+    },
+    "language": "pt",
+    "previewLink": "http://books.google.com.br/books?id=ZvI8AAAAYAAJ&dq=isbn:9788570622396&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=ZvI8AAAAYAAJ&dq=isbn:9788570622396&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Hist%C3%B3ria_da_biblioteconomia_brasileira.html?hl=&id=ZvI8AAAAYAAJ"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "NO_PAGES",
+    "embeddable": false,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=ZvI8AAAAYAAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "NONE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Esta obra reúne dados e informações sobre a evolução da Biblioteconomia no Brasil e apresenta testemunhos e análises originais."
+   }
+  }
+ ]
+}

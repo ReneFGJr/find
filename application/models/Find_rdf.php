@@ -56,6 +56,7 @@ class find_rdf extends CI_model
 		$t = file_get_contents($url);
 		$ida = 0;
 		$idt = 0;
+		return($dt);
 		
 		$dt['serie'] = '';
 		$dt['cover'] = '';

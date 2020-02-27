@@ -8,15 +8,13 @@ for ($r=1;$r <= $pos;$r++)
   $st[$r-1] = 'is-done';
 }
 $st[$pos-1] = 'current';
-$link = base_url(PATH.'preparation/tombo/2/');
+$link = '#';
 ?>
   <ul class="StepProgress">
-    <li class="StepProgress-item <?php echo $st[0];?>"><a href="<?php echo $link.'0';?>">Aquisição</a></li>
-    <li class="StepProgress-item <?php echo $st[1];?>"><a href="<?php echo $link.'1';?>">Catalogação</a></li>
-    <li class="StepProgress-item <?php echo $st[2];?>"><a href="<?php echo $link.'2';?>">Classificação</a></li>
-    <li class="StepProgress-item <?php echo $st[3];?>"><a href="<?php echo $link.'3';?>">Indexação</a></li>
-    <li class="StepProgress-item <?php echo $st[4];?>"><a href="<?php echo $link.'4';?>">Preparo físico</a></li>
-    <li class="StepProgress-item <?php echo $st[5];?>"><a href="<?php echo $link.'5';?>">Fim do processo</a></li>
+    <li class="StepProgress-item <?php echo $st[0];?>">Aquisição</li>
+    <li class="StepProgress-item <?php echo $st[1];?>">Catalogação</li>
+    <li class="StepProgress-item <?php echo $st[4];?>">Preparo físico</li>
+    <li class="StepProgress-item <?php echo $st[5];?>">Fim do processo</li>
   </ul>
 
 <style>

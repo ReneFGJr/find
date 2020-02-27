@@ -12,6 +12,7 @@ class book_preparations extends CI_model
 		$this->load->model("authors");
 		$this->load->model("google_api");		
 		$this->load->model("amazon_api");		
+		$this->load->model("find_rdf");
 		$this->load->model("oclc_api");		
 		$this->load->model("marc_api");
 		$this->load->model("catalog");
@@ -32,7 +33,6 @@ class book_preparations extends CI_model
 
 			case 'tombo':
 			$dt = $this->books_item->le_tombo($id);
-			$sx .= $this->books_item->header($dt);
 			$sx .= $this->books_item->editar($dt,$sta);			
 			break;				
 
@@ -171,7 +171,7 @@ class book_preparations extends CI_model
 
 	function link_book($i1,$i2)
 	{
-			echo '===>'.$i1.'=='.$i2;
+			//echo '===>'.$i1.'=='.$i2;
 	}
 
 
@@ -275,12 +275,6 @@ class book_preparations extends CI_model
 		return($sx);
 	}
 
-
-
-
-
-
-
 	function book_header($dt)
 	{
 		if (count($dt) == 0)
@@ -289,10 +283,7 @@ class book_preparations extends CI_model
 			refresh(10,base_url(PATH));
 			exit;
 		}
-		echo '<pre>';
-		print_r($dt);
-		echo '</pre>';
-
+		
 		$img = $this->covers->img($dt['m_isbn13']);
 		$sx = '';
 

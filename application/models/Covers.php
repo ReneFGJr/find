@@ -178,6 +178,7 @@ class covers extends CI_model
 		
 		if ($ok == 1)
 		{			
+			$isbn = sonumero($isbn);
 			$this->save($url,$isbn);
 			echo refresh();
 		} else {
