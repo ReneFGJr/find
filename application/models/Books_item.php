@@ -85,11 +85,15 @@ class Books_item extends CI_model
 			$line = $rlt[$r];
 			$cor = 'background-color: #D0FFD0;';
 			$st = trim($line['i_status']);
+			$link = '';
+			$linka = '';
 			switch($st)
 			{
 				case '1':
 				$sta = msg('in_prepare');
 				$cor = 'background-color: #F0F0D0;';
+				$link = '<a href="'.base_url(PATH.'preparation/tombo/'.$line['id_i']).'">';
+				$linka = '';
 				break; 
 
 				default:
@@ -100,17 +104,25 @@ class Books_item extends CI_model
 			$sx .= '<div class="col-2">';			
 			$sx .= '<div class="book_label" style="'.$cor.'">';
 			$lb = $line['i_localization'];
+
+
 			if (strlen($lb) == 0)
 			{
 				$sx .= $sta;
+				$sx .= '<br/>';
+				$sx .= '<br/>';
 			} 
 			else
 			{
+				print_r($line);
 				$sx .= '<br>'.$line['i_ln1'];
 				$sx .= '<br>'.$line['i_ln2'];
 				$sx .= '<br>'.$line['i_ln3'];
 				$sx .= '<br>'.$line['i_ln4'];
 			}
+			$sx .= $link;
+			$sx .= '<br/>ex:'.strzero($line['i_tombo'],7);
+			$sx .= $linka;
 			$sx .= '</div>';
 			$sx .= '</div>';
 		}
@@ -243,7 +255,14 @@ function tombo_list($status = 0)
 	return($sx);
 }	
 
-
+function le_item($id)
+	{
+		$sql = "select * from find_item where id_i = ".$id;
+		$rlt = $this->db->query($sql);
+		$rlt = $rlt->result_array();
+		$line = $rlt[0];
+		return($line);
+	}
 /**************************************** EDITAR ***************************/
 function editar($dt,$sta='')
 {		
@@ -252,9 +271,7 @@ function editar($dt,$sta='')
 	$status = $dt['i_status'];
 	$view = 1;
 
-
 	$actions = '';
-
 	/****************************** Modo edição */
 	if (strlen($sta) > 0)
 	{
@@ -285,6 +302,18 @@ function editar($dt,$sta='')
 		if ($idm > 0)
 		{
 			$rdf = new rdf;
+			//$dtw = $book->work_by_manifestion($idm);
+			$dt = $rdf->le_data($idm);
+			$expression = $rdf->extract_id($dt,'isAppellationOfManifestation',$idm);
+			$dt = $rdf->le_data($expression[0]);
+			$work = $rdf->extract_id($dt,'isAppellationOfExpression',$expression[0]);
+
+
+			$dta = $rdf -> le($work[0]);
+			$sx .= '<h1>WORK</h1>';
+			$sx .= $rdf -> form($work[0], $dta);
+
+			$sx .= '<h1>MANIFESTATION</h1>';
 			$dta = $rdf -> le($idm);
 			$sx .= $rdf -> form($idm, $dta);
 		}
@@ -310,6 +339,14 @@ function editar($dt,$sta='')
 
 		$sx .= $sr;
 		break;
+
+		/************************************* EDITAR MARC ****/
+		case 'manual':
+		$sx .= $this->books_item->header($dt);
+		$dt = $this->le_tombo($id);
+		$sr = $this->marc_api->manual($id);	
+		$sx .= $sr;
+		break;		
 
 		case 'X3':
 		$view = 4;

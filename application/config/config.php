@@ -23,7 +23,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = '';
+$config['base_url'] = 'http://localhost/find/';
 /********* METHODO READ FILE 
  * file - read file with file_get_contents 
  * curl - read file with CURL

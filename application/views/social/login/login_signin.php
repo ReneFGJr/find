@@ -15,10 +15,9 @@
 		<div class="col-md-2 col-lg-3 col-sm-1"></div>
 		<div class="col-md-8 col-lg-6 col-sm-10 box100">
 			<form method="post" action="<?php echo base_url(PATH.'social/login_local');?>">
-				<span class="form_title"> BRAPCI <sup>2.0</sup> </span>
+				<span class="form_title"> <?php echo LIBRARY_NAME;?> </span>
 				<br/>
-				<span class="login100-form-title p-b-48"> <i class="zmdi zmdi-font">information science database</i> </span>
-				<br/>
+
 				<br/>
 				<center>
                 <h2><?php echo msg('SignIn');?></h2>

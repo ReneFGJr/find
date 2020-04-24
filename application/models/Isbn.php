@@ -17,6 +17,10 @@ class isbn extends CI_model
 			case 'AMAZO':
 			$url = 'https://www.amazon.com.br/dp/'.$isbn;
 			break;
+
+			case 'MERCA':
+			$url = $this->mercadoeditorial_api->url.'?isbn='.$isbn;
+			break;			
 		}
 		return($url);
 	}
@@ -34,6 +38,13 @@ class isbn extends CI_model
 		/***** File Cached not found ***************************************/
 		switch($type)
 		{
+			/**************************************** GOOGLE *******************/
+			case 'MERCA':
+			$url = $this->urls($isbn,$type);
+			$t = read_link($url);
+			$this->vurl = $url;
+			break;
+
 			/**************************************** GOOGLE *******************/
 			case 'FINDS':
 			$url = $this->urls($isbn,$type);

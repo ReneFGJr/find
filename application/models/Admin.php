@@ -21,15 +21,10 @@ class admin extends CI_model
         /**************************** MENU PRINCIPAL *****************/
         switch($a)
         {
-            case 'classification':
-            $this->load->model("classifications");
-            $sx .= $this->classifications->action($action,$id);
+            case 'mercadoeditorial_editoras':
+            $this->load->model("Mercadoeditorial_api");
+            $sx .= $this->Mercadoeditorial_api->lista_editoras();
             break;
-
-            case 'indexing':
-            $this->load->model("subjects");
-            $sx .= $this->subjects->action($action,$id);
-            break;            
 
             /************************ MENU ***********/
             default:
@@ -45,8 +40,7 @@ class admin extends CI_model
         $sx .= '<div class="col-12">';
         $sx .= '<h1>Menu de administração</h1>';
         $sx .= '<ul>';
-        $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/classification').'">'.msg("Classification").'</a></li>';
-        $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/indexing').'">'.msg("Vocabulary").'</a></li>';        
+        $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/mercadoeditorial_editoras').'">'.msg("mercadoeditorial_editoras").'</a></li>';
         $sx .= '<li>'.'<a href="'.base_url(PATH.'config/class').'">'.msg("RDF Classes").'</a></li>';        
         $sx .= '</ul>';
         $sx .= '</div>';

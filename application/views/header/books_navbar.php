@@ -52,19 +52,25 @@ if (!isset($logo))
 			<li class="nav-item">
 				<a class="nav-link" href="<?php echo base_url(PATH.'about'); ?>">Sobre</a>
 			</li>
+				<?php if (perfil("#ADM") > 0) { ?>
+				<li class="nav-item">
+					<a class="nav-link" href="<?php echo base_url(PATH.'admin'); ?>">Admin</a>
+				</li>
+				<?php } ?>
 		</ul>
 	</div>
 	<div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
 		<ul class="navbar-nav ml-auto">
-			<?php if (perfil("#ADM") > 0) { ?>
-				<li class="nav-item ml-auto">
-					<a class="nav-link" href="<?php echo base_url(PATH.'admin'); ?>">Admin</a>
-				</li>
-			<?php } ?>
+			
 
-			<li class="nav-item ml-auto">
-				<?php echo $this->socials->menu_user();?>
-			</li> 
+			
+
+            <li class="nav-item navbar-toggler-right">
+                <?php 
+                $socials = new socials;
+                echo $socials -> menu_user(); 
+                ?>
+            </li> 
 		</ul>
 	</div>
 </nav>

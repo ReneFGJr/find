@@ -33,6 +33,8 @@
 
     function zera()
     {
+        $this->cab();
+
         $sql = "TRUNCATE find_authors;
         TRUNCATE find_manifestation_url;
         TRUNCATE rdf_concept;
@@ -40,10 +42,11 @@
         TRUNCATE rdf_name;
         TRUNCATE find_item;";
         $ln = splitx(';',$sql);
+        $sx = '';
         for ($r=0;$r < count($ln);$r++)
         {
             $sql = $ln[$r];
-            echo '<tt>'.$sql.'</tt><br/>';
+            $sx .= '<tt>'.$sql.'</tt><br/>';
             $this->db->query($sql);
         }
         
@@ -64,6 +67,7 @@
         $this -> load -> library('session');
         $this -> load -> helper('cookie');
         $this -> load -> helper('rdf');
+        $this -> load -> helper('socials');
 
         $this -> load -> model('libraries');
 
@@ -94,13 +98,12 @@
         $sx = $this->breadcrumb();
         $sx .= $this->book_preparations->main($path,$id,$sta);
         $data['content'] = $sx;
-        $this -> load -> view('content', $data);        
-
+        $this -> load -> view('content', $data);  
+        $this->foot();  
     }
 
     private function cab($navbar = 1) {
 
-        $this -> load -> model("socials");
         $data['title'] = LIBRARY_NAME;
         $data['logo'] = LOGO;
         $data['url'] = PATH;
@@ -184,7 +187,8 @@
 
     function social($act = '',$id='',$chk='') {
         $this -> cab();
-        $this->socials->social($act,$id,$chk);
+        $socials = new socials;
+        $socials->social($act,$id,$chk);
     }
 
     private function foot() {
@@ -200,8 +204,8 @@
 
         $data['logo'] = LOGO;
         $tela = '';
-        $tela .= $this->breadcrumb();
-        $tela .= $this -> load -> view('welcome_brapci', $data,true);        
+        $tela .= $this -> load -> view('welcome', $data,true);
+        $tela .= $this -> load -> view('welcome_brapci', $data,true);
         $tela .= $this -> load -> view('find/search/search_simple', $data,true);
 
         /*************************** find */

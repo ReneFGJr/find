@@ -61,52 +61,69 @@ class books extends CI_model
 		/* Google */
 		$google = $this->google_api->book($isbn,$id);
 		$amazon = $this->amazon_api->book($isbn,$id);
+		$mercado = $this->mercadoeditorial_api->book($isbn,$id);
 		$find = $this->find_rdf->book($isbn,$id);
 		$total = 0;
 
-		/************************************** Processar Google ************/
-		if ($find['totalItems'] > 0)
-		{
-			$dt = $find;	
-			$dt['item'] = $id;
-			$this->process_register($isbn,$dt,'FIND');
-			$sx .= '<li style="color: green">Find Book '.msg('imported').'</li>';				
-			$total++;
-		} else {
-			$sx .= '<li  style="color: grey">Find Book '.msg('not_locate').'</li>';	
-		}
-		/************************************** Processar Google ************/
-		if ($google['totalItems'] > 0)
-		{
-			$dt = $google;	
-			$dt['item'] = $id;
-			$this->process_register($isbn,$dt,'GOOGL');
-			$sx .= '<li style="color: green">Google Book '.msg('imported').'</li>';	
-			$total++;
-		} else {
-			$sx .= '<li  style="color: grey">Google Book '.msg('not_locate').'</li>';	
-		}
+
 		/************************************** Processar Amazon ***********/
-		if ($amazon['totalItems'] > 0)	
+		if ($mercado['totalItems'] > 0)	
 		{				
-			$dt = $amazon;
-			$sx .= 'Amazon Book imported<br>';
+			$dt = $mercado;
+			$sx .= 'Mercado Editorial imported<br>';
 			$dt['item'] = $id;
-			$this->process_register($isbn,$dt,'AMAZO');
-			$sx .= '<li style="color: green">Amazon Book '.msg('imported').'</li>';	
+			$this->process_register($isbn,$dt,'MERCE');
+			$sx .= '<li style="color: green">Mercado Editorial '.msg('imported').'</li>';	
 			$total++;
 		} else {
-			$sx .= '<li style="color: grey">Amazon Book '.msg('not_locate').'</li>';	
+			$sx .= '<li style="color: grey">Mercado Editorial '.msg('not_locate').'</li>';	
+
+			/************************************** Processar Google ************/
+			if ($find['totalItems'] > 0)
+			{
+				$dt = $find;	
+				$dt['item'] = $id;
+				$this->process_register($isbn,$dt,'FIND');
+				$sx .= '<li style="color: green">Find Book '.msg('imported').'</li>';				
+				$total++;
+			} else {
+				$sx .= '<li  style="color: grey">Find Book '.msg('not_locate').'</li>';	
+			}
+			/************************************** Processar Google ************/
+			if ($google['totalItems'] > 0)
+			{
+				$dt = $google;	
+				$dt['item'] = $id;
+				$this->process_register($isbn,$dt,'GOOGL');
+				$sx .= '<li style="color: green">Google Book '.msg('imported').'</li>';	
+				$total++;
+			} else {
+				$sx .= '<li  style="color: grey">Google Book '.msg('not_locate').'</li>';	
+
+				/************************************** Processar Amazon ***********/
+				if ($amazon['totalItems'] > 0)	
+				{				
+					$dt = $amazon;
+					$sx .= 'Amazon Book imported<br>';
+					$dt['item'] = $id;
+					$this->process_register($isbn,$dt,'AMAZO');
+					$sx .= '<li style="color: green">Amazon Book '.msg('imported').'</li>';	
+					$total++;
+				} else {
+					$sx .= '<li style="color: grey">Amazon Book '.msg('not_locate').'</li>';	
+				}		
+			}
 		}
 		$sx .= '</ul>';
 		if ($total == 0)
 		{
 			$m = 'Nenhum metadado localizado. ';
-			$m .= 'Clique aqui para catalogação manual.';
+			$m .= 'Selecione abaixo o tipo de catalogação manual.';
 			$sx .= message($m,4);
 
 			$sx .= '<ul>';
 			$sx .= '<li><a href="'.base_url(PATH.'preparation/tombo/'.$id.'/marc').'">Importar MARC</a></li>';
+			$sx .= '<li><a href="'.base_url(PATH.'preparation/tombo/'.$id.'/manual').'">Manual Formulário</a></li>';
 			$sx .= '</ul>';
 
 			$this->load->model('sourcers');
@@ -169,9 +186,9 @@ class books extends CI_model
 
 		/* ASSOCIA ITEM COM A MANIFESTACAO ****************************/
 		$sql = "update find_item set 
-					i_manitestation = $idm,
-					i_titulo = '$title' 
-					where id_i = ".$dt['item'];
+		i_manitestation = $idm,
+		i_titulo = '$title' 
+		where id_i = ".$dt['item'];
 		$this->db->query($sql);
 
 		/* Manifestation - Pages *********************************************/	
@@ -325,7 +342,7 @@ class books extends CI_model
 		$gen = $this->generes->code($type);
 		if (strlen($gen) == 0)
 		{
-			echo "OPS NOT GENERE ".$gen;
+			echo "OPS NOT GENERE [".$gen."]";
 			exit;
 		}
 
@@ -523,7 +540,7 @@ class books extends CI_model
 		$sx = '<h1>Vitrine</h1>';
 		$sql = "select i_manitestation, i_identifier, i_titulo 
 		from find_item 
-		where i_library = '".LIBRARY."' 
+		where i_library = '".LIBRARY."' and i_manitestation <> 0
 		group by i_manitestation, i_identifier, i_titulo ";
 
 		$rlt = $this->db->query($sql);
@@ -621,7 +638,7 @@ class books extends CI_model
 
 	function exemplar($isbn)
 	{
-		$sql = "select max(i_exemplar) as i_exemplar
+		$sql = "select max(i_exemplar) as i_exemplar, max(i_manitestation) as i_manitestation
 		from find_item
 		where i_identifier = '$isbn'
 		and i_library = '".LIBRARY."'";
@@ -631,7 +648,7 @@ class books extends CI_model
 		if (count($rlt) > 0)
 		{
 			$line = $rlt[0];
-			return($line['i_exemplar']);
+			return(array($line['i_exemplar'],$line['i_manitestation']));
 		} else {
 			return(0);
 		}
@@ -712,11 +729,11 @@ class books extends CI_model
 	}
 
 	function rdf_show_Date($dt)
-		{
-			$sx = '';
-			$sx .= '<h1>'.$dt['n_name'].'</h1>';
-			return($sx);
-		}
+	{
+		$sx = '';
+		$sx .= '<h1>'.$dt['n_name'].'</h1>';
+		return($sx);
+	}
 
 	function rdf_show_Manifestation($dt)
 	{
@@ -819,27 +836,50 @@ class books extends CI_model
 		$rdf = new rdf;
 		$dd = $rdf->le($id);				
 		$isbn = $dd['n_name'];
+		$editora = '';
 		$img = $CI->covers->img(sonumero($isbn));
 
 
 		$dt = $rdf->le_data($id);
+		$subsj = '';		
 		for ($r=0;$r < count($dt);$r++)
 		{
-			$prop = $dt[$r]['c_class'];
+			$prop = trim($dt[$r]['c_class']);
 			$vlr = $dt[$r]['n_name'];
+			$idx = $dt[$r]['d_r2'];
+			if ($idx == $id)
+			{
+				$idx = $dt[$r]['d_r1'];
+			}
+			$link = '<a href="'.base_url(PATH.'v/'.$idx).'">';
+			$linka = '</a>';
 			switch($prop)
 			{
+
+				case 'hasSubject':
+				if (strlen($subsj) > 0)
+					{
+						$subsj .= '. ';
+					}
+				$subsj .= $link. '<span class="btn-outline-primary">'.$vlr.'</span>'.$linka.'';
+				break;
+
 				case 'description':
 				$desc = $vlr;
 				break;
 
+				case 'isPublisher':
+				$editora = msg('Editora').': '.$link.$vlr.$linka;
+				break;
+
 				case 'hasPage':
 				$pags = msg('Pages').': '.$vlr;
-				break;
+				break;				
 
 				case 'dateOfPublication':
 				$date = msg('Year').': '.$vlr;
-				break;				
+				break;	
+
 			}
 		}
 		$sx .= '<div class="col-2">';
@@ -854,10 +894,16 @@ class books extends CI_model
 		$sx .= '<div class="work_author">'.$d['authors'].'</div>';
 		$isbn = $CI->isbn->isbns(sonumero($isbn));
 		$sx .= '<div class="manifestation_date">'.$date.'</div>';
+		$sx .= '<div class="manifestation_editora">'.$editora.'</div>';
 		$sx .= '<div class="manifestation_isbn">ISBN10: '.$isbn['isbn10f'].'</div>';
 		$sx .= '<div class="manifestation_isbn">ISBN13: '.$isbn['isbn13f'].'</div>';
 		$sx .= '<div class="manifestation_pags">'.$pags.'</div>';
+		if (strlen($subsj) > 0)
+		{
+			$sx .= '<div class="manifestation_subject" style="margin-top: 20px;">Assuntos: '.$subsj.'.</div>';
+		}
 		$sx .= '<div class="manifestation_descrition">'.msg('description').': '.$desc.'</div>'.cr();
+
 		$sx .= '</div>';
 		return($sx);
 	}

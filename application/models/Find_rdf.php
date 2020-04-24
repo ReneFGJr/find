@@ -3,7 +3,7 @@ class find_rdf extends CI_model
 {
 	function import($lib)
 	{
-		$http = 'http://192.168.0.115/sisdoc/find/index.php/main/m/'.$lib;
+		$http = 'http://www.ufrgs.br/find/index.php/main/m/'.$lib;
 		$sx = file_get_contents($http);
 		$dt = json_decode($sx);
 		$dd = $dt->works;
@@ -49,6 +49,8 @@ class find_rdf extends CI_model
 
 	function book($isbn)
 	{
+		$find['totalItems'] = 0;
+		return($find);
 		$type = 'FINDS';
 		$dt = array();
 		$dt['totalItems'] = 0;

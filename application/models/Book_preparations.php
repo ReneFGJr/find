@@ -11,7 +11,8 @@ class book_preparations extends CI_model
 		$this->load->model("generes");		
 		$this->load->model("authors");
 		$this->load->model("google_api");		
-		$this->load->model("amazon_api");		
+		$this->load->model("amazon_api");
+		$this->load->model("mercadoeditorial_api");
 		$this->load->model("find_rdf");
 		$this->load->model("oclc_api");		
 		$this->load->model("marc_api");
@@ -246,12 +247,21 @@ class book_preparations extends CI_model
 			if ($isbn_dv == $isbn_or)
 			{
 				/* Verifica Exemplares */
-				$ex = $this->books->exemplar($isbn_o);
+				$exes = $this->books->exemplar($isbn_o);
+				$ex = $exes[0];
+				$mn = $exes[1];				
+				if ($mn > 0)
+				{
+					$status = 5;
+				} else {
+					$mn = 0;
+					$status = 0;
+				}
 				$exemplar = $ex + 1;
-				$status = 1;
 
 				$msgs = "OK";
-				$rs = $this->books_item->tombo_insert($tombo,$isbn_o,1,0,$place,0,$exemplar);
+				$tipo = 1;
+				$rs = $this->books_item->tombo_insert($tombo,$isbn_o,$tipo,$status,$place,$mn,$exemplar);
 				if ($rs[0] == 1)
 				{
 					redirect(base_url(PATH.'preparation/acquisition_in'));

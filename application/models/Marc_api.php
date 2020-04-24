@@ -1,6 +1,31 @@
 <?php
 class Marc_api extends CI_model
 {
+	function manual($id)
+	{
+		$form = new form;
+		$cp = array();
+		array_push($cp,array('$H8','','',false,false));
+		array_push($cp,array('$T80:4','',msg('title'),true,true));
+		$lang = $this->languages->form();
+		array_push($cp,array('$O '.$lang,'',msg('language'),true,true));
+		$sx = $form->editar($cp,'');
+		if ($form->saved > 0)
+		{
+			$item = $this->books_item->le_item($id);
+			$isbn = $item['i_identifier'];
+			if (strlen($isbn) == 13)
+			{
+				$marc = '245 $a '.get("dd1");
+				$dt = $this->marc_api->book($marc);
+				$dt['item'] = $id;
+				$this->marc_api->save_marc($isbn,$marc);
+				$d = $this->books->process_register($isbn,$dt,'MARC2');
+				redirect(base_url(PATH.'v/'.$d));
+			}
+		}
+		return($sx);
+	}
 	function book($t)
 	{
 		$type = "MARC2";
@@ -14,6 +39,8 @@ class Marc_api extends CI_model
 		$w['cover'] = '';
 		$w['subject']= array();
 		$w['descricao'] = '';
+		$w['editora'] = '';
+		$w['pages'] = '';
 		$w['expressao'] = array('genere'=>'books','idioma'=>'pt');
 		$s = '';
 		for ($r=0;$r < count($ln);$r++)
@@ -218,12 +245,12 @@ class Marc_api extends CI_model
 	}
 
 	function save_marc($isbn,$txt)
-		{
-			$type = 'MARC2';
-			$file = $this->isbn->file_locate($isbn,$type);
-			file_put_contents($file, $txt);
-			return(1);
-		}
+	{
+		$type = 'MARC2';
+		$file = $this->isbn->file_locate($isbn,$type);
+		file_put_contents($file, $txt);
+		return(1);
+	}
 
 	function form()
 	{
