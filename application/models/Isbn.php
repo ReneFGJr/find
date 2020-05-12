@@ -29,10 +29,14 @@ class isbn extends CI_model
 	function get($isbn,$type)
 	{
 		$file = $this->file_locate($isbn,$type);
+
 		if (file_exists($file))
 		{
 			$t = file_get_contents($file);
-			return($t);
+			if (strlen($t) > 0)
+				{
+					return($t);
+				}
 		}
 
 		/***** File Cached not found ***************************************/

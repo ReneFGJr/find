@@ -22,8 +22,7 @@
         $this->load->model("languages");
         $this->load->model("generes");
         $this->load->model("book_preparations");
-        $this->load->model("books_item");
-        
+        $this->load->model("books_item");        
         
         $sx = $this->find_rdf->import('1000');
         $this->cab();

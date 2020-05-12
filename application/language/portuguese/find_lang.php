@@ -305,4 +305,5 @@ $lang['edit'] = 'Editar';
 $lang['new_place'] = 'Nova localização';
 $lang['library_places'] = 'Bibliotecas e Departamentos';
 $lang['row_type'] = 'Sistemas de classificação disponíveis';
+$lang['rdf_exclude_confirm'] = 'Confirma exclusão?';
 ?>
