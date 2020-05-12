@@ -1,0 +1,71 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "w9YlvgAACAAJ",
+   "etag": "lbbontuHztg",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/w9YlvgAACAAJ",
+   "volumeInfo": {
+    "title": "WITCHER, THE - A TORRE DA ANDORINHA - CAPA DO GAME",
+    "authors": [
+     "ANDRZEJ SAPKOWSKI",
+     "OLGA BAGINSKA-SHINZATO"
+    ],
+    "description": "O bruxo segue em direção ao sul, convencido de que Ciri vai se casar em breve com o imperador de Nilfgaard. Os assassinos impiedosos de Nilfgaard já estão seguindo os rastros de Ciri, que, gravemente ferida, se recupera no casebre do eremita Vysogota, perdido no meio de um pantanal. Será que o bruxo conseguirá achar Ciri? Qual será o papel da lendária Torre da Andorinha?",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "8546900973"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9788546900978"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": false
+    },
+    "pageCount": 456,
+    "printType": "BOOK",
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "preview-1.0.0",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "language": "pt",
+    "previewLink": "http://books.google.com.br/books?id=w9YlvgAACAAJ&dq=isbn:9788546900978&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=w9YlvgAACAAJ&dq=isbn:9788546900978&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/WITCHER_THE_A_TORRE_DA_ANDORINHA_CAPA_DO.html?hl=&id=w9YlvgAACAAJ"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "NO_PAGES",
+    "embeddable": false,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=w9YlvgAACAAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "NONE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "O bruxo segue em direção ao sul, convencido de que Ciri vai se casar em breve com o imperador de Nilfgaard."
+   }
+  }
+ ]
+}

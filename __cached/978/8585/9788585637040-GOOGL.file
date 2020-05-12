@@ -1,0 +1,67 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "jwQGfAEACAAJ",
+   "etag": "QU7PeKgUskI",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/jwQGfAEACAAJ",
+   "volumeInfo": {
+    "title": "A prática do serviço de referência",
+    "authors": [
+     "Denis Grogan"
+    ],
+    "publishedDate": "1995",
+    "description": "Servico de referencia; A questao da referencia; Processo da referencia; A entrevista da referencia; A busca; A resposta; Livros sobre o servico de referencia; Indice.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "8585637048"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9788585637040"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": false
+    },
+    "pageCount": 196,
+    "printType": "BOOK",
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "preview-1.0.0",
+    "language": "pt",
+    "previewLink": "http://books.google.com.br/books?id=jwQGfAEACAAJ&dq=isbn:9788585637040&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=jwQGfAEACAAJ&dq=isbn:9788585637040&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/A_pr%C3%A1tica_do_servi%C3%A7o_de_refer%C3%AAncia.html?hl=&id=jwQGfAEACAAJ"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "NO_PAGES",
+    "embeddable": false,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=jwQGfAEACAAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "NONE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Servico de referencia; A questao da referencia; Processo da referencia; A entrevista da referencia; A busca; A resposta; Livros sobre o servico de referencia; Indice."
+   }
+  }
+ ]
+}

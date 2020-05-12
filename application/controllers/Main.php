@@ -90,6 +90,8 @@
 
     function preparation($path='',$id='',$sta='')
     {
+        if (perfil("#ADM#CAT#GER"))
+        {
         $this->load->model("books");
         $this->load->model("book_preparations");
         $this->load->model("marc_api");
@@ -100,6 +102,9 @@
         $data['content'] = $sx;
         $this -> load -> view('content', $data);  
         $this->foot();  
+        } else {
+            redirect(base_url(PATH));
+        }
     }
 
     private function cab($navbar = 1) {
@@ -154,7 +159,6 @@
     function rdf($path='',$id='',$form='',$idx=0,$idy='')
     {
         $link = 'x';
-        $this->load->model("socials");
         $rdf = new rdf;
         $sx = $rdf->index($link,$path,$id,$form,$idx,$idy);
 
@@ -225,9 +229,12 @@
         $this->load->model("covers");
         $this->load->model("isbn");
         $this -> cab();
+        $tela = $this -> load -> view('welcome', null,true);
+
         $rdf = new rdf;
-        $tela = $rdf->show_data($id);
-        $tela .= $rdf->view_data($id);
+        $tela .= $rdf->show_data($id);
+        /* complemento das informações */
+        //$tela .= $rdf->view_data($id);
         $data['content'] = $tela;
         $this -> load -> view('content', $data);
         $this -> foot();
@@ -326,7 +333,9 @@
         $this -> load -> model('libraries');
         $tela = '';
         $this -> cab();
-        $data['content'] = $this -> libraries->highlights('bookself');     
+        $tela .= $this -> load -> view('welcome', null, true);
+        $tela .= $this -> libraries->highlights('bookself');     
+        $data['content'] = $tela;
         $data['title'] = msg('Bookshelf');
         $this -> load -> view('content', $data);
 
@@ -441,6 +450,7 @@
         $data = $rdf -> le($id);
 
         $this -> cab();
+        $this->load->view('welcome');
 
         $tela = '';
         $linkc = '<a href="' . base_url(PATH . 'v/' . $id) . '" class="middle">';

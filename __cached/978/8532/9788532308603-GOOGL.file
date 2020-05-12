@@ -1,0 +1,75 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "FsYMTDn0-w4C",
+   "etag": "Q9ri+R+hSX8",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/FsYMTDn0-w4C",
+   "volumeInfo": {
+    "title": "O brasil pode ser um país de leitores?",
+    "authors": [
+     "Felipe Lindoso"
+    ],
+    "publisher": "Summus Editorial",
+    "publishedDate": "2004",
+    "description": "Apresenta um histórico da indústria editorial no Brasil e analisa o conjunto de ações que fazem do livro um produto de consumo, porém, diferenciado pelos resultados que proporcionam para os indivíduos e para o País.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "8532308600"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9788532308603"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": true
+    },
+    "pageCount": 222,
+    "printType": "BOOK",
+    "categories": [
+     "Book industries and trade"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "1.1.1.0.preview.1",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=FsYMTDn0-w4C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=FsYMTDn0-w4C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "pt",
+    "previewLink": "http://books.google.com.br/books?id=FsYMTDn0-w4C&printsec=frontcover&dq=isbn:9788532308603&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=FsYMTDn0-w4C&dq=isbn:9788532308603&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/O_brasil_pode_ser_um_pa%C3%ADs_de_leitores.html?hl=&id=FsYMTDn0-w4C"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=FsYMTDn0-w4C&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Apresenta um histórico da indústria editorial no Brasil e analisa o conjunto de ações que fazem do livro um produto de consumo, porém, diferenciado pelos resultados que proporcionam para os indivíduos e para o País."
+   }
+  }
+ ]
+}

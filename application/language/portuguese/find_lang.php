@@ -298,4 +298,11 @@ $lang['w_title'] = 'Título da obra';
 $lang['w_authors'] = 'Autores';
 
 $lang['not_locate'] = 'não localizado';
+$lang['send_file'] = 'Enviar arquivo';
+$lang['close'] = 'Fechar';
+$lang['Upload Cover'] = 'Enviar Capa';
+$lang['edit'] = 'Editar';
+$lang['new_place'] = 'Nova localização';
+$lang['library_places'] = 'Bibliotecas e Departamentos';
+$lang['row_type'] = 'Sistemas de classificação disponíveis';
 ?>

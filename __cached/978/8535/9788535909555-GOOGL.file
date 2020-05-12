@@ -1,0 +1,74 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "9Ow2PwAACAAJ",
+   "etag": "JE9jIEed/Nc",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/9Ow2PwAACAAJ",
+   "volumeInfo": {
+    "title": "A revolução dos bichos",
+    "subtitle": "um conto de fadas",
+    "authors": [
+     "George Orwell",
+     "Heitor Aquino Ferreira"
+    ],
+    "publishedDate": "2007",
+    "description": "'A revolução dos bichos' é uma fábula sobre o poder que se propõe a narrar a insurreição dos animais de uma granja contra seus donos. Progressivamente, porém, a revolução degenera numa tirania ainda mais opressiva que a dos humanos.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "8535909559"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9788535909555"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": false
+    },
+    "pageCount": 147,
+    "printType": "BOOK",
+    "categories": [
+     "Allegories"
+    ],
+    "averageRating": 4.5,
+    "ratingsCount": 2,
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "preview-1.0.0",
+    "language": "pt",
+    "previewLink": "http://books.google.com.br/books?id=9Ow2PwAACAAJ&dq=isbn:9788535909555&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=9Ow2PwAACAAJ&dq=isbn:9788535909555&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/A_revolu%C3%A7%C3%A3o_dos_bichos.html?hl=&id=9Ow2PwAACAAJ"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "NO_PAGES",
+    "embeddable": false,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=9Ow2PwAACAAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "NONE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Verdadeiro clássico moderno, concebido por um dos mais influentes escritores do século XX, A revolução dos bichos é uma fábula sobre o poder."
+   }
+  }
+ ]
+}

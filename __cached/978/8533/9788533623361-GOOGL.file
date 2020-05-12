@@ -1,0 +1,68 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "-3zMQwAACAAJ",
+   "etag": "lWA2aXS7JKg",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/-3zMQwAACAAJ",
+   "volumeInfo": {
+    "title": "Cultura geral",
+    "subtitle": "tudo o que se deve saber",
+    "authors": [
+     "Dietrich Schwanitz"
+    ],
+    "publishedDate": "2007",
+    "description": "'Cultura geral' aborda episódios centrais da Bíblia; a emergência dos Estados e a epopéia da modernização, revoluções e democracia; a evolução da literatura, da arte e da música por meio de suas grandes obras; o desenvolvimento da ciência e da filosofia, o campo de batalha das ideologias, das cosmogonias e das teorias, aborda também a educação dada pelos livros, colégios e universidades, pelos jornais e foros de opiniões. A obra também inclui um quadro cronológico, uma breve relação dos livros que transformaram o mundo e conselhos de leitura.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "8533623364"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9788533623361"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": false
+    },
+    "pageCount": 516,
+    "printType": "BOOK",
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "preview-1.0.0",
+    "language": "pt",
+    "previewLink": "http://books.google.com.br/books?id=-3zMQwAACAAJ&dq=isbn:9788533623361&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=-3zMQwAACAAJ&dq=isbn:9788533623361&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Cultura_geral.html?hl=&id=-3zMQwAACAAJ"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "NO_PAGES",
+    "embeddable": false,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=-3zMQwAACAAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "NONE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "&#39;Cultura geral&#39; aborda episódios centrais da Bíblia; a emergência dos Estados e a epopéia da modernização, revoluções e democracia; a evolução da literatura, da arte e da música por meio de suas grandes obras; o desenvolvimento ..."
+   }
+  }
+ ]
+}

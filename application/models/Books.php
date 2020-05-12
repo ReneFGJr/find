@@ -10,10 +10,10 @@ class books extends CI_model
 		array_push($cp,array('$S50','','ISBN',true,true));
 		array_push($cp,array('$B8','',msg('search'),false,true));
 		$sx = $form->editar($cp,'');
-
+		
 		return($sx);
 	}
-
+	
 	function place($p)
 	{
 		$p = trim($p);
@@ -27,11 +27,11 @@ class books extends CI_model
 			echo '<hr>';
 			exit;
 		}
-
+		
 		$id = $rlt[0]['id_lp'];
 		return($id);
 	}
-
+	
 	function save_urls($m,$url)
 	{
 		if (strlen($url) > 0)
@@ -44,7 +44,7 @@ class books extends CI_model
 		}
 		return(1);
 	}
-
+	
 	function recover_urls($m)
 	{
 		$sql = "select * from find_manifestation_url where mu_m = $m";
@@ -52,7 +52,7 @@ class books extends CI_model
 		$rlt = $rlt->result_array();
 		return($rlt);
 	}
-
+	
 	function locate($isbn,$id)
 	{
 		$sx = '<div style="margin-top: 20px">';
@@ -64,8 +64,8 @@ class books extends CI_model
 		$mercado = $this->mercadoeditorial_api->book($isbn,$id);
 		$find = $this->find_rdf->book($isbn,$id);
 		$total = 0;
-
-
+		
+		
 		/************************************** Processar Amazon ***********/
 		if ($mercado['totalItems'] > 0)	
 		{				
@@ -77,7 +77,7 @@ class books extends CI_model
 			$total++;
 		} else {
 			$sx .= '<li style="color: grey">Mercado Editorial '.msg('not_locate').'</li>';	
-
+			
 			/************************************** Processar Google ************/
 			if ($find['totalItems'] > 0)
 			{
@@ -99,7 +99,7 @@ class books extends CI_model
 				$total++;
 			} else {
 				$sx .= '<li  style="color: grey">Google Book '.msg('not_locate').'</li>';	
-
+				
 				/************************************** Processar Amazon ***********/
 				if ($amazon['totalItems'] > 0)	
 				{				
@@ -120,25 +120,25 @@ class books extends CI_model
 			$m = 'Nenhum metadado localizado. ';
 			$m .= 'Selecione abaixo o tipo de catalogação manual.';
 			$sx .= message($m,4);
-
+			
 			$sx .= '<ul>';
 			$sx .= '<li><a href="'.base_url(PATH.'preparation/tombo/'.$id.'/marc').'">Importar MARC</a></li>';
 			$sx .= '<li><a href="'.base_url(PATH.'preparation/tombo/'.$id.'/manual').'">Manual Formulário</a></li>';
 			$sx .= '</ul>';
-
+			
 			$this->load->model('sourcers');
 			$sx .= $this->sourcers->show($isbn);
 		}
 		$sx .= '</div>';
 		return($sx);
 	}
-
+	
 	function update_item_title($isbn,$dt)
 	{
 		$dt['title'] = troca($dt['title'],'"',"´");
 		$dt['title'] = troca($dt['title'],"'","´");
 		$title = $dt['title'];
-
+		
 		$sql = "update find_item set
 		i_titulo = '$title'
 		where i_identifier = '$isbn'
@@ -146,8 +146,8 @@ class books extends CI_model
 		$rlt = $this->db->query($sql);
 		return($sql);
 	}
-
-
+	
+	
 	function process_register($isbn,$dt,$type)
 	{
 		$sx = '';
@@ -159,44 +159,44 @@ class books extends CI_model
 		$dt['title'] = troca($dt['title'],'"',"´");
 		$dt['title'] = troca($dt['title'],"'","´");
 		$title = $dt['title'];
-
+		
 		$rdf = new rdf;
-
+		
 		/* WORK */
 		$idw = $this->work($dt['title']);
 		$this->authors->authors_save($dt,$idw);			
 		if ($debug) { echo '<br>Work'; }
-
+		
 		/* EXPRESSION */
 		$language = $dt['expressao']['idioma'];
 		$type = $dt['expressao']['genere'];
 		$ide = $this->expression($dt['isbn13'],$language,$type);		
 		$rdf->set_propriety($idw,'isAppellationOfExpression',$ide);
 		if ($debug) { echo '<br>EXPRESSION'; }
-
+		
 		/* MANIFESTATION */
 		$idm = $this->manifestation($dt['isbn13']);
 		$rdf->set_propriety($ide,'isAppellationOfManifestation',$idm);
 		if ($debug) { echo '<br>MANIFESTATION'; }
-
+		
 		/* Registro do Work ************************************/
 		$this->save_urls($idm,$dt['url']);
 		$this->covers->save($dt['cover'],$isbn);
 		if ($debug) { echo '<br>URL'; }		
-
+		
 		/* ASSOCIA ITEM COM A MANIFESTACAO ****************************/
 		$sql = "update find_item set 
 		i_manitestation = $idm,
 		i_titulo = '$title' 
 		where id_i = ".$dt['item'];
 		$this->db->query($sql);
-
+		
 		/* Manifestation - Pages *********************************************/	
 		$pags = sonumero($dt['pages']);
 		if ($pags > 0)
 		{
 			$pags .= ' p.';
-
+			
 			/* Manifestation - PrePages ******************************/	
 			if (isset($dt['pages_pre']))
 			{
@@ -209,7 +209,7 @@ class books extends CI_model
 			$idc = $rdf->rdf_concept_create('Pages', $pags, '', $idioma);
 			$rdf->set_propriety($idm,'hasPage',$idc);				
 		}			
-
+		
 		/* Manifestation - Editora */	
 		$editora = $dt['editora'];
 		if (strlen($editora) > 0)
@@ -221,7 +221,7 @@ class books extends CI_model
 			$idc = $rdf->rdf_concept_create('Editora', $editora, '', $idioma);
 			$rdf->set_propriety($idm,'isPublisher',$idc);
 		}
-
+		
 		/* Manifestation - Editora */	
 		if (isset($dt['place']))
 		{
@@ -238,7 +238,7 @@ class books extends CI_model
 				$rdf->set_propriety($idm,'isPlaceOfPublication',$idc);
 			}
 		}		
-
+		
 		/* Manifestation - Descriptions */	
 		$txt = trim(troca($dt['descricao'],"'","´"));
 		if (strlen($txt) > 0)
@@ -246,9 +246,9 @@ class books extends CI_model
 			$idn = $rdf->rdf_name($txt);
 			$rdf->set_propriety($idm,'dc:description',0,$idn);
 		}
-
+		
 		/* Manifestatiion - Peso */
-
+		
 		if (isset($dt['weight']))
 		{
 			$txt = trim($dt['weight']);
@@ -258,7 +258,7 @@ class books extends CI_model
 				$rdf->set_propriety($idm,'hasWeight',$idc);
 			}
 		}			
-
+		
 		/* Manifestation - Serie e Volume */	
 		if (isset($dt['serie']))
 		{
@@ -269,15 +269,15 @@ class books extends CI_model
 				$rdf->set_propriety($idm,'hasSerieName',$idc);
 			}
 		}	
-
+		
 		if (isset($dt['volume']))
 		{
 			$txt = $dt['volume'];
 			$idc = $rdf->rdf_concept_create('Number', $txt, '', $idioma);
 			$rdf->set_propriety($idm,'hasVolumeNumber',$idc);
-
+			
 		}
-
+		
 		if (isset($dt['data']))
 		{
 			$txt = $dt['data'];
@@ -289,9 +289,9 @@ class books extends CI_model
 			}
 			$idc = $rdf->rdf_concept_create('Date', $txt, $ori, $idioma);
 			$rdf->set_propriety($idm,'dateOfPublication',$idc);
-
+			
 		}		
-
+		
 		/* Manifestation - Subject */	
 		if (isset($dt['subject']) and (count($dt['subject']) > 0))
 		{
@@ -302,13 +302,13 @@ class books extends CI_model
 				$rdf->set_propriety($idm,'hasSubject',$idc);	
 			}
 		}
-
+		
 		/************ Atualiza Item ******************************/
 		$this->book_preparations->link_book($idm,$dt['item']);
 		$this->books_item->item_status($dt['item'],1);
 		return($idm);
 	}
-
+	
 	/*************************************************************************** WORK ***/
 	function work($title)
 	{
@@ -318,7 +318,7 @@ class books extends CI_model
 			$title = troca($title,'  ',' ');
 		}
 		$title = troca($title,"'","´");
-
+		
 		/******************************* SALVA EXPRESSAO ************/
 		$rdf = new rdf;
 		$idt = $rdf->frbr_name($title);
@@ -326,8 +326,8 @@ class books extends CI_model
 		$rdf->set_propriety($idw,'prefLabel',0,$idt);
 		return($idw);		
 	}
-
-
+	
+	
 	/***************************************************************************** EXPRESSION ***********/
 	function expression($isbn,$language,$type)
 	{
@@ -338,33 +338,33 @@ class books extends CI_model
 			$lang = 'pt';
 			/* exit; */
 		}
-
+		
 		$gen = $this->generes->code($type);
 		if (strlen($gen) == 0)
 		{
 			echo "OPS NOT GENERE [".$gen."]";
 			exit;
 		}
-
+		
 		$term = 'ISBN:'.$isbn.':'.$gen.':'.$lang;
-
+		
 		/******************************* SALVA EXPRESSAO ************/
 		$rdf = new rdf;
 		$idt = $rdf->frbr_name($term);
 		$ide = $rdf->rdf_concept($idt, 'Expression');
-
+		
 		/************************************************************/
 		$idgen = $rdf->frbr_name($gen);
 		$idg = $rdf->rdf_concept($idt, 'FormExpression');
 		$rdf->set_propriety($ide,'hasFormExpression',$idg);
-
+		
 		$idlan = $rdf->frbr_name($lang);
 		$idl = $rdf->rdf_concept($idlan, 'Linguage');
 		$rdf->set_propriety($ide,'hasFormExpression',$idl);
-
+		
 		return($ide);
 	}
-
+	
 	/********************************************** manifestation ***********/
 	function manifestation($isbn13)	
 	{
@@ -374,7 +374,7 @@ class books extends CI_model
 		$idm = $rdf->rdf_concept($idt, 'Manifestation');
 		return($idm);
 	}
-
+	
 	function showx($dt,$type)
 	{
 		$sx = '';
@@ -385,20 +385,20 @@ class books extends CI_model
 		}		
 		$class = 'img_cover';
 		$ed = '<a href="'.base_url(PATH.'preparation/edit/'.$dt['id_m'].'/5').'"><sup>[ed]</sup></a>';
-
+		
 		switch($type)
 		{
 			case '2':
-			$img = '<img src="'.$dt['img'].'" class="img-fluid '.$class.'">';
-			$sx .= '<div class="row">';
-			$sx .= '<div class="col-md-1">'.$img.'</div>';
-			$sx .= '<div class="col-md-11">';
-			$sx .= '<div class="s1_title">'.$dt['w_title'].$ed.'</div>';
-			$sx .= '$[BODY]';
-			$sx .= '</div>';
-			$sx .= '</div>';
+				$img = '<img src="'.$dt['img'].'" class="img-fluid '.$class.'">';
+				$sx .= '<div class="row">';
+				$sx .= '<div class="col-md-1">'.$img.'</div>';
+				$sx .= '<div class="col-md-11">';
+				$sx .= '<div class="s1_title">'.$dt['w_title'].$ed.'</div>';
+				$sx .= '$[BODY]';
+				$sx .= '</div>';
+				$sx .= '</div>';
 			break;
-
+			
 			/******************************** Default *******************/
 			default:				
 			if (strpos($dt['img'],'no_cover') or (perfil("#ADM")))
@@ -416,7 +416,7 @@ class books extends CI_model
 			$sx .= '<div class="col-md-3">'.$img.$compl.'</div>';
 			$sx .= '<div class="col-md-9">';
 			$sx .= '<div class="s1_title">'.$dt['w_title'].$ed.'</div>';
-
+			
 			/* Authors */
 			$sx .= '<div class="s1_authors"><i>';
 			for ($r=0;$r < count($dt['authors']);$r++)
@@ -425,20 +425,20 @@ class books extends CI_model
 				$sx .= $dt['authors'][$r]['a_name'];
 			}
 			$sx .= '</i></div>';
-
+			
 			$sx .= '<div class="s1_isbn13">';
 			$sx .= 'ISBN13: <b>'.$dt['isbn']['isbn13f'].'</b>';
 			$sx .= '</div>';
 			$sx .= '<div class="s1_isbn10">';
 			$sx .= 'ISBN10: <b>'.$dt['isbn']['isbn10f'].'</b>';
 			$sx .= '</div>';
-
+			
 			$sx .= '<div class="s1_year">';
 			$year = $dt['m_year'];
 			if ($year == 0) { $year = '&nbsp;-&nbsp;'; }
 			$sx .= 'Edição: <b>'.$year.'</b>';
 			$sx .= '</div>';
-
+			
 			$dts = $dt['rdf'];
 			for ($r=0;$r < count($dts);$r++)
 			{
@@ -449,7 +449,7 @@ class books extends CI_model
 				$sx .= $dts[$r]['n_name'];
 				$sx .= '</div>';
 			}
-
+			
 			/* Links */
 			$sx .= '<div class="s1_links"><i>';
 			for ($r=0;$r < count($dt['links']);$r++)
@@ -461,8 +461,8 @@ class books extends CI_model
 				$sx .= '</a>'.cr();
 			}				
 			$sx .= '</div>';
-
-
+			
+			
 			/************* Itens ***********************/
 			$exemplares = $this->books->itens($dt['id_m']);
 			$sx .= '<h4>'.msg('Exemplares').'</h4>';
@@ -473,438 +473,441 @@ class books extends CI_model
 			$classifications = $this->classifications->itens_classification($dt['id_m']);
 			$sx .= '<h4>'.msg('Classification').$ed.'</h4>';
 			$sx .= '<div>'.$classifications.'</div>';
-
+			
 			/************* Assuntos ********************/
 			$ed = '<a href="'.base_url(PATH.'preparation/tombo/'.$dt['id_m'].'/3').'"> <sup>[ed]</sup></a>';
 			$subjects = $this->subjects->itens_subjects($dt['id_m']);
 			$sx .= '<h4>'.msg('Subjects').$ed.'</h4>';
 			$sx .= '<div>'.$subjects.'</div>';
-
+			
 			$sx .= '</div>';
 			$sx .= '</div>';
 			$sx .= '</div>';
-
-			break;
-		}
-
-		return($sx);
+			
+		break;
 	}
+	
+	return($sx);
+}
 
-	function export($id)
+function export($id)
+{
+	$dt = $this->le_m($id);
+	$img = '<img src="'.$dt['img'].'" class="img-fluid">';
+	$sx .= '<div class="row">';
+	$sx .= '<div class="col-md-3">'.$img.'</div>';
+	$sx .= '<div class="col-md-9">';
+	$sx .= '<div class="s1_title">'.$dt['w_title'].'</div>';
+	
+	/* Authors */
+	$sx .= '<div class="s1_authors"><i>';
+	for ($r=0;$r < count($dt['authors']);$r++)
 	{
-		$dt = $this->le_m($id);
-		$img = '<img src="'.$dt['img'].'" class="img-fluid">';
-		$sx .= '<div class="row">';
-		$sx .= '<div class="col-md-3">'.$img.'</div>';
-		$sx .= '<div class="col-md-9">';
-		$sx .= '<div class="s1_title">'.$dt['w_title'].'</div>';
-
-		/* Authors */
-		$sx .= '<div class="s1_authors"><i>';
-		for ($r=0;$r < count($dt['authors']);$r++)
-		{
-			if ($r > 0) { $sx .= '; ';}
-			$sx .= $dt['authors'][$r]['a_name'];
-		}
-		$sx .= '</i></div>';
-
-		$sx .= '<div class="s1_isbn13">';
-		$sx .= 'ISBN13: <b>'.$dt['isbn']['isbn13f'].'</b>';
-		$sx .= '</div>';
-		$sx .= '<div class="s1_isbn10">';
-		$sx .= 'ISBN10: <b>'.$dt['isbn']['isbn10f'].'</b>';
-		$sx .= '</div>';
-
-		$sx .= '<div class="s1_isbn10">';
-		$year = $dt['m_year'];
-		if ($year == 0) { $year = '&nbsp;-&nbsp;'; }
-		$sx .= 'Edição: <b>'.$year.'</b>';
-		$sx .= '</div>';
-
-		$dts = $dt['rdf'];
-		for ($r=0;$r < count($dts);$r++)
-		{
-			$class = $dts[$r]['c_class'];
-			$sx .= '<div class="'.$class.'">';
-			$sx .= msg($class);
-			$sx .= ': ';
-			$sx .= $dts[$r]['n_name'];
-			$sx .= '</div>';
-		}
-		$sx .= '</div>';
+		if ($r > 0) { $sx .= '; ';}
+		$sx .= $dt['authors'][$r]['a_name'];
+	}
+	$sx .= '</i></div>';
+	
+	$sx .= '<div class="s1_isbn13">';
+	$sx .= 'ISBN13: <b>'.$dt['isbn']['isbn13f'].'</b>';
+	$sx .= '</div>';
+	$sx .= '<div class="s1_isbn10">';
+	$sx .= 'ISBN10: <b>'.$dt['isbn']['isbn10f'].'</b>';
+	$sx .= '</div>';
+	
+	$sx .= '<div class="s1_isbn10">';
+	$year = $dt['m_year'];
+	if ($year == 0) { $year = '&nbsp;-&nbsp;'; }
+	$sx .= 'Edição: <b>'.$year.'</b>';
+	$sx .= '</div>';
+	
+	$dts = $dt['rdf'];
+	for ($r=0;$r < count($dts);$r++)
+	{
+		$class = $dts[$r]['c_class'];
+		$sx .= '<div class="'.$class.'">';
+		$sx .= msg($class);
+		$sx .= ': ';
+		$sx .= $dts[$r]['n_name'];
 		$sx .= '</div>';
 	}
+	$sx .= '</div>';
+	$sx .= '</div>';
+}
 
-	function vitrine()
+function vitrine()
+{
+	$sx = '<h1>Vitrine</h1>';
+	$sql = "select i_manitestation, i_identifier, i_titulo 
+	from find_item 
+	where i_library = '".LIBRARY."' and i_manitestation <> 0
+	group by i_manitestation, i_identifier, i_titulo ";
+	
+	$rlt = $this->db->query($sql);
+	$rlt = $rlt->result_array();
+	$sx = '<div class="container"><div class="row">';
+	for ($r=0;$r < count($rlt);$r++)
 	{
-		$sx = '<h1>Vitrine</h1>';
-		$sql = "select i_manitestation, i_identifier, i_titulo 
-		from find_item 
-		where i_library = '".LIBRARY."' and i_manitestation <> 0
-		group by i_manitestation, i_identifier, i_titulo ";
-
-		$rlt = $this->db->query($sql);
-		$rlt = $rlt->result_array();
-		$sx = '<div class="container"><div class="row">';
-		for ($r=0;$r < count($rlt);$r++)
+		$line = $rlt[$r];
+		$id = $line['i_manitestation'];
+		$isbn = $line['i_identifier'];
+		$img = $this->covers->img($isbn);
+		$link = '<a href="'.base_url(PATH.'v/'.$id).'">';
+		$linka = '</a>';
+		$sx .= '<div class="col-3 col-lg-2 col-md-2">';
+		$sx .= $link;
+		$class = ' img_cover ';
+		if (strpos($img,'no_cover.png'))
+		{ $class = ''; }
+		$sx .= '<img src="'.$img.'" class="img-fluid '.$class.'" style="margin: 20px 10px 10px 10px;">';
+		$sx .= $linka;
+		$title = trim($line['i_titulo']);
+		if (strlen($title) > 60)
 		{
-			$line = $rlt[$r];
-			$id = $line['i_manitestation'];
-			$isbn = $line['i_identifier'];
-			$img = $this->covers->img($isbn);
-			$link = '<a href="'.base_url(PATH.'v/'.$id).'">';
-			$linka = '</a>';
-			$sx .= '<div class="col-3 col-lg-2 col-md-2">';
-			$sx .= $link;
-			$class = ' img_cover ';
-			if (strpos($img,'no_cover.png'))
-				{ $class = ''; }
-			$sx .= '<img src="'.$img.'" class="img-fluid '.$class.'" style="margin: 20px 10px 10px 10px;">';
-			$sx .= $linka;
-			$title = trim($line['i_titulo']);
-			if (strlen($title) > 60)
+			$title = substr($title,0,60);
+			$ch = substr($title,strlen($title)-1,1);
+			while (($ch != ' ') and (strlen($title) > 2))
 			{
-				$title = substr($title,0,60);
+				$title = substr($title,0,strlen($title)-1);
 				$ch = substr($title,strlen($title)-1,1);
-				while (($ch != ' ') and (strlen($title) > 2))
-				{
-					$title = substr($title,0,strlen($title)-1);
-					$ch = substr($title,strlen($title)-1,1);
-				}
-				$title .= ' ...';
 			}
-			$sx .= $title;
-			$sx .= '</div>';
+			$title .= ' ...';
 		}
-		$sx .= '</div></div>';
-		return($sx);
-	}
-
-	function le_item($id)
-	{
-		$sql = "select * from find_item where id_i = ".round($id);
-		$rlt = $this->db->query($sql);
-		$rlt = $rlt->result_array();
-		if (count($rlt) > 0)
-		{
-			return($rlt[0]);	
-		} else {
-			return(array());
-		}
-
-	}
-
-	function i($id)
-	{
-		$dt = $this->le_item($id);
-		$sx = '';
-		$sx .= '<div class="container"><div class="row"><div class="col-12">';
-		$sx .= '<table class="table">';
-		foreach ($dt as $key => $value) {
-			$sx .= '<tr>';
-			$sx .= '<td width="25%" align="right">'.$key;
-			$sx .= '<td>'.'<b>'.$value.'</b>';
-			$sx .= '</tr>';
-		}
-		$sx .= '</table>';
-		$sx .= '</div></div></div>';
-		return($sx);
-	}
-
-	function manual_api($id)
-	{
-		$title = get("q");
-		if (strlen($title) > 0)
-		{
-			$title = nbr_author($title,18);
-			$dti = $this->le_item($id);
-			$isbn = $dti['i_identifier'];				
-			$dt['expressao'] = array('idioma'=>'pt','genere'=>'books');
-			$dt['title'] = $title;
-			$dt['data'] = '';
-			$dt['url'] = '';
-			$dt['authors'] = array();
-			$dt['cover'] = '';
-			$dt['editora'] = '';
-			$dt['descricao'] = '';
-			$dt['pages'] = '';
-			$dt['w_title'] = $title;
-			$dt['item'] = $id;
-			$this->process_register($isbn,$dt,'MANUA');
-			$dt = $this->le_item($id);
-			redirect(base_url(PATH.'v/'.$dt['i_manitestation']));
-		} 	
-	}
-
-	function exemplar($isbn)
-	{
-		$sql = "select max(i_exemplar) as i_exemplar, max(i_manitestation) as i_manitestation
-		from find_item
-		where i_identifier = '$isbn'
-		and i_library = '".LIBRARY."'";
-
-		$rlt = $this->db->query($sql);
-		$rlt = $rlt->result_array();
-		if (count($rlt) > 0)
-		{
-			$line = $rlt[0];
-			return(array($line['i_exemplar'],$line['i_manitestation']));
-		} else {
-			return(0);
-		}
-	}	
-
-	function manual_form($id)
-	{
-		/* Grava dados */
-		$this->manual_api($id);
-
-		/* Formulário */
-		$sx = '';
-		$sx .= '<button class="btn btn-outline-primary" id="cat_manual">';
-		$sx .= msg('cat_manual');
-		$sx .= '</button>';
-
-		$sx .= '<div class="" style="display: none;" id="cat_manual_form">';
-		$sx .= '<span class="small">'.msg('title').'</span>';
-		$sx .= '<textarea id="manual_title" class="form-control" rows=2>';
-		$sx .= get("manual_title");
-		$sx .= '</textarea>';
-		$sx .= '<button id="manual_submit">'.msg("submit").'</button>';
+		$sx .= $title;
 		$sx .= '</div>';
+	}
+	$sx .= '</div></div>';
+	return($sx);
+}
 
-		$sx .= '
-		<script> 
-		$("#cat_manual").click(function()
-		{ 
-			$("#cat_manual_form").toggle("slow"); 
-		}
-		);
-		$("#manual_submit").click(function()
-		{ 
-			var title = $("#manual_title").val();
-			if (title.length != 0)
-			{
-				window.location.href ="?q="+title; 
-				} else {
-					alert("ERRO");
-				}
-			}
-			); 
-			</script>'.cr();			
-			return($sx);
+function le_item($id)
+{
+	$sql = "select * from find_item where id_i = ".round($id);
+	$rlt = $this->db->query($sql);
+	$rlt = $rlt->result_array();
+	if (count($rlt) > 0)
+	{
+		return($rlt[0]);	
+	} else {
+		return(array());
+	}
+	
+}
+
+function i($id)
+{
+	$dt = $this->le_item($id);
+	$sx = '';
+	$sx .= '<div class="container"><div class="row"><div class="col-12">';
+	$sx .= '<table class="table">';
+	foreach ($dt as $key => $value) {
+		$sx .= '<tr>';
+		$sx .= '<td width="25%" align="right">'.$key;
+		$sx .= '<td>'.'<b>'.$value.'</b>';
+		$sx .= '</tr>';
+	}
+	$sx .= '</table>';
+	$sx .= '</div></div></div>';
+	return($sx);
+}
+
+function manual_api($id)
+{
+	$title = get("q");
+	if (strlen($title) > 0)
+	{
+		$title = nbr_author($title,18);
+		$dti = $this->le_item($id);
+		$isbn = $dti['i_identifier'];				
+		$dt['expressao'] = array('idioma'=>'pt','genere'=>'books');
+		$dt['title'] = $title;
+		$dt['data'] = '';
+		$dt['url'] = '';
+		$dt['authors'] = array();
+		$dt['cover'] = '';
+		$dt['editora'] = '';
+		$dt['descricao'] = '';
+		$dt['pages'] = '';
+		$dt['w_title'] = $title;
+		$dt['item'] = $id;
+		$this->process_register($isbn,$dt,'MANUA');
+		$dt = $this->le_item($id);
+		redirect(base_url(PATH.'v/'.$dt['i_manitestation']));
+	} 	
+}
+
+function exemplar($isbn)
+{
+	$sql = "select max(i_exemplar) as i_exemplar, max(i_manitestation) as i_manitestation
+	from find_item
+	where i_identifier = '$isbn'
+	and i_library = '".LIBRARY."'";
+	
+	$rlt = $this->db->query($sql);
+	$rlt = $rlt->result_array();
+	if (count($rlt) > 0)
+	{
+		$line = $rlt[0];
+		return(array($line['i_exemplar'],$line['i_manitestation']));
+	} else {
+		return(0);
+	}
+}	
+
+function manual_form($id)
+{
+	/* Grava dados */
+	$this->manual_api($id);
+	
+	/* Formulário */
+	$sx = '';
+	$sx .= '<button class="btn btn-outline-primary" id="cat_manual">';
+	$sx .= msg('cat_manual');
+	$sx .= '</button>';
+	
+	$sx .= '<div class="" style="display: none;" id="cat_manual_form">';
+	$sx .= '<span class="small">'.msg('title').'</span>';
+	$sx .= '<textarea id="manual_title" class="form-control" rows=2>';
+	$sx .= get("manual_title");
+	$sx .= '</textarea>';
+	$sx .= '<button id="manual_submit">'.msg("submit").'</button>';
+	$sx .= '</div>';
+	
+	$sx .= '
+	<script> 
+	$("#cat_manual").click(function()
+	{ 
+		$("#cat_manual_form").toggle("slow"); 
+	}
+);
+$("#manual_submit").click(function()
+{ 
+	var title = $("#manual_title").val();
+	if (title.length != 0)
+	{
+		window.location.href ="?q="+title; 
+	} else {
+		alert("ERRO");
+	}
+}
+); 
+</script>'.cr();			
+return($sx);
+}
+}
+
+/* RDF SHOW */
+function rdf_show_Work($dt)
+{
+	$CI = &get_instance();
+	$CI->load->model("books_item");
+	
+	$rdf = new rdf;		
+	$manif = array();
+	$idc = $dt['id_cc'];
+	$dt = works($idc);
+	$sx = '';
+	
+	/********************************** Expressoes ***********/
+	if (count($dt['expression']) > 0)
+	{
+		$ide = $dt['expression'][0];
+		$dte = $rdf->le_data($ide);
+		$manif = $rdf->extract_id($dte,'isAppellationOfManifestation');
+	}
+	if (count($manif) > 0)
+	{
+		for ($r=0;$r < count($manif);$r++)
+		{
+			$idm = $manif[$r];
+			$sx = manifestation($idm,$dt);
+			$sx .= $CI->books_item->mainfestation_item($idm);
 		}
 	}
+	
+	return($sx);
+}
 
-	/* RDF SHOW */
-	function rdf_show_Work($dt)
+function rdf_show_Date($dt)
+{
+	$sx = '';
+	$sx .= '<h1>'.$dt['n_name'].'</h1>';
+	return($sx);
+}
+
+function rdf_show_Manifestation($dt)
+{
+	$CI = &get_instance();
+	$CI->load->model("books_item");
+	
+	$sx = 'Nothing';
+	$rdf = new rdf;
+	$CI = &get_instance();
+	$expression = array();
+	$work = array();
+	$idcc = $dt['id_cc'];
+	
+	$dts = $rdf->le_data($dt['id_cc']);
+	/********************************** Expressoes ***********/		
+	$expression = $rdf->extract_id($dts,'isAppellationOfManifestation',$idcc);
+	
+	if (count($expression) > 0)
 	{
-		$CI = &get_instance();
-		$CI->load->model("books_item");
-
-		$rdf = new rdf;		
-		$manif = array();
-		$idc = $dt['id_cc'];
-		$dt = works($idc);
-		$sx = '';
-
-		/********************************** Expressoes ***********/
-		if (count($dt['expression']) > 0)
-		{
-			$ide = $dt['expression'][0];
-			$dte = $rdf->le_data($ide);
-			$manif = $rdf->extract_id($dte,'isAppellationOfManifestation');
-		}
-		if (count($manif) > 0)
-		{
-			for ($r=0;$r < count($manif);$r++)
-			{
-				$idm = $manif[$r];
-				$sx = manifestation($idm,$dt);
-				$sx .= $CI->books_item->mainfestation_item($idm);
-			}
-		}
-
-		return($sx);
+		$ide = $expression[0];
+		$dt = $rdf->le_data($ide);
+		$work = $rdf->extract_id($dt,'isAppellationOfExpression',$ide);
 	}
-
-	function rdf_show_Date($dt)
+	
+	if (count($work) > 0)
 	{
-		$sx = '';
-		$sx .= '<h1>'.$dt['n_name'].'</h1>';
-		return($sx);
+		$idw = $work[0];
+		$dtw = works($idw);
+		$sx = manifestation($idcc,$dtw);
 	}
+	
+	$sx .= $CI->books_item->mainfestation_item($idcc);
+	
+	return($sx);
+}
 
-	function rdf_show_Manifestation($dt)
+function works($id)
+{
+	$CI = &get_instance();
+	$au = 0;
+	$d = array();
+	$d['title'] = '';
+	$d['authors'] = '';
+	$expression = array();
+	
+	$authors = '';
+	$rdf = new rdf;
+	$dts = $rdf->le_data($id);
+	/******************************************* WORKS ********************/
+	for ($r=0;$r < count($dts);$r++)
 	{
-		$CI = &get_instance();
-		$CI->load->model("books_item");
-
-		$sx = 'Nothing';
-		$rdf = new rdf;
-		$CI = &get_instance();
-		$expression = array();
-		$work = array();
-		$idcc = $dt['id_cc'];
-
-		$dts = $rdf->le_data($dt['id_cc']);
-		/********************************** Expressoes ***********/		
-		$expression = $rdf->extract_id($dts,'isAppellationOfManifestation',$idcc);
-
-		if (count($expression) > 0)
+		$line = $dts[$r];
+		$prop = $line['c_class'];
+		$vlr = $line['n_name'];
+		$lng = $line['n_lang'];
+		$idr1 = $line['d_r1'];
+		$idr2 = $line['d_r2'];
+		
+		/* Links */
+		$link = '<a href="'.base_url(PATH.'v/'.$idr2).'" class="'.$prop.'">';
+		$linka = '</a>';
+		
+		$rlink = '<a href="'.base_url(PATH.'v/'.$idr1).'" class="'.$prop.'">';
+		$rlinka = '</a>';
+		
+		switch($prop)
 		{
-			$ide = $expression[0];
-			$dt = $rdf->le_data($ide);
-			$work = $rdf->extract_id($dt,'isAppellationOfExpression',$ide);
-		}
-
-		if (count($work) > 0)
-		{
-			$idw = $work[0];
-			$dtw = works($idw);
-			$sx = manifestation($idcc,$dtw);
-		}
-
-		$sx .= $CI->books_item->mainfestation_item($idcc);
-
-		return($sx);
-	}
-
-	function works($id)
-	{
-		$CI = &get_instance();
-		$au = 0;
-		$d = array();
-		$d['title'] = '';
-		$d['authors'] = '';
-		$expression = array();
-
-		$authors = '';
-		$rdf = new rdf;
-		$dts = $rdf->le_data($id);
-		/******************************************* WORKS ********************/
-		for ($r=0;$r < count($dts);$r++)
-		{
-			$line = $dts[$r];
-			$prop = $line['c_class'];
-			$vlr = $line['n_name'];
-			$lng = $line['n_lang'];
-			$idr1 = $line['d_r1'];
-			$idr2 = $line['d_r2'];
-
-			/* Links */
-			$link = '<a href="'.base_url(PATH.'v/'.$idr2).'" class="'.$prop.'">';
-			$linka = '</a>';
-
-			$rlink = '<a href="'.base_url(PATH.'v/'.$idr1).'" class="'.$prop.'">';
-			$rlinka = '</a>';
-
-			switch($prop)
-			{
-				case 'prefLabel':
+			case 'prefLabel':
 				$d['title'] = $rlink.$vlr.$rlinka;
-				break;
-
-				case 'hasAuthor':
+			break;
+			
+			case 'hasAuthor':
 				if ($au > 0) { $authors .= '; '; }
 				$authors .= $link.$vlr.$linka;
 				$au++;
-				break;
-
-				case 'isAppellationOfExpression':
+			break;
+			
+			case 'isAppellationOfExpression':
 				array_push($expression, $idr2);
-				break;
-			}
+			break;
 		}
-
-		/********************************** Autores **************/
-		if ($au > 0) 
-		{ 
-			$d['authors'] = $authors;
-		}
-		$d['expression'] = $expression;
-		return($d);		
 	}
+	
+	/********************************** Autores **************/
+	if ($au > 0) 
+	{ 
+		$d['authors'] = $authors;
+	}
+	$d['expression'] = $expression;
+	return($d);		
+}
 
-	function manifestation($id,$d)
+function manifestation($id,$d)
+{
+	$CI = &get_instance();
+	$sx = '';
+	$desc = '';
+	$pags = '';
+	$date = '';
+	$rdf = new rdf;
+	$dd = $rdf->le($id);				
+	$isbn = $dd['n_name'];
+	$editora = '';
+	$img = $CI->covers->img(sonumero($isbn));
+	
+	
+	$dt = $rdf->le_data($id);
+	$subsj = '';		
+	for ($r=0;$r < count($dt);$r++)
 	{
-		$CI = &get_instance();
-		$sx = '';
-		$desc = '';
-		$pags = '';
-		$date = '';
-		$rdf = new rdf;
-		$dd = $rdf->le($id);				
-		$isbn = $dd['n_name'];
-		$editora = '';
-		$img = $CI->covers->img(sonumero($isbn));
-
-
-		$dt = $rdf->le_data($id);
-		$subsj = '';		
-		for ($r=0;$r < count($dt);$r++)
+		$prop = trim($dt[$r]['c_class']);
+		$vlr = $dt[$r]['n_name'];
+		$idx = $dt[$r]['d_r2'];
+		if ($idx == $id)
 		{
-			$prop = trim($dt[$r]['c_class']);
-			$vlr = $dt[$r]['n_name'];
-			$idx = $dt[$r]['d_r2'];
-			if ($idx == $id)
-			{
-				$idx = $dt[$r]['d_r1'];
-			}
-			$link = '<a href="'.base_url(PATH.'v/'.$idx).'">';
-			$linka = '</a>';
-			switch($prop)
-			{
-
-				case 'hasSubject':
-				if (strlen($subsj) > 0)
-					{
-						$subsj .= '. ';
-					}
-				$subsj .= $link. '<span class="btn-outline-primary">'.$vlr.'</span>'.$linka.'';
-				break;
-
-				case 'description':
-				$desc = $vlr;
-				break;
-
-				case 'isPublisher':
-				$editora = msg('Editora').': '.$link.$vlr.$linka;
-				break;
-
-				case 'hasPage':
-				$pags = msg('Pages').': '.$vlr;
-				break;				
-
-				case 'dateOfPublication':
-				$date = msg('Year').': '.$vlr;
-				break;	
-
-			}
+			$idx = $dt[$r]['d_r1'];
 		}
-		$sx .= '<div class="col-2">';
-		$sx .= '<img src="'.$img.'" class="img-fluid">';
+		$link = '<a href="'.base_url(PATH.'v/'.$idx).'">';
+		$linka = '</a>';
+		switch($prop)
+		{
+			
+			case 'hasSubject':
+				if (strlen($subsj) > 0)
+				{
+					$subsj .= '. ';
+				}
+				$subsj .= $link. '<span class="btn-outline-primary">'.$vlr.'</span>'.$linka.'';
+			break;
+			
+			case 'description':
+				$desc = $vlr;
+			break;
+			
+			case 'isPublisher':
+				$editora = msg('Editora').': '.$link.$vlr.$linka;
+			break;
+			
+			case 'hasPage':
+				$pags = msg('Pages').': '.$vlr;
+			break;				
+			
+			case 'dateOfPublication':
+				$date = msg('Year').': '.$vlr;
+			break;	
+			
+		}
+	}
+	$sx .= '<div class="col-2">';
+	$sx .= '<img src="'.$img.'" class="img-fluid">';
+	if (perfil("#ADM"))
+	{
 		$sx .= $CI->covers->btn_seek_cover($isbn);
 		$sx .= ' | ';
 		$sx .= $CI->covers->btn_upload($isbn);
-		$sx .= '</div>';
-		$sx .= '<div class="col-10">';
-		/* Title */
-		$sx .= '<div class="work_title">'.$d['title'].'</div>';
-		$sx .= '<div class="work_author">'.$d['authors'].'</div>';
-		$isbn = $CI->isbn->isbns(sonumero($isbn));
-		$sx .= '<div class="manifestation_date">'.$date.'</div>';
-		$sx .= '<div class="manifestation_editora">'.$editora.'</div>';
-		$sx .= '<div class="manifestation_isbn">ISBN10: '.$isbn['isbn10f'].'</div>';
-		$sx .= '<div class="manifestation_isbn">ISBN13: '.$isbn['isbn13f'].'</div>';
-		$sx .= '<div class="manifestation_pags">'.$pags.'</div>';
-		if (strlen($subsj) > 0)
-		{
-			$sx .= '<div class="manifestation_subject" style="margin-top: 20px;">Assuntos: '.$subsj.'.</div>';
-		}
-		$sx .= '<div class="manifestation_descrition">'.msg('description').': '.$desc.'</div>'.cr();
-
-		$sx .= '</div>';
-		return($sx);
 	}
-	?>
+	$sx .= '</div>';
+	$sx .= '<div class="col-10">';
+	/* Title */
+	$sx .= '<div class="work_title">'.$d['title'].'</div>';
+	$sx .= '<div class="work_author">'.$d['authors'].'</div>';
+	$isbn = $CI->isbn->isbns(sonumero($isbn));
+	$sx .= '<div class="manifestation_date">'.$date.'</div>';
+	$sx .= '<div class="manifestation_editora">'.$editora.'</div>';
+	$sx .= '<div class="manifestation_isbn">ISBN10: '.$isbn['isbn10f'].'</div>';
+	$sx .= '<div class="manifestation_isbn">ISBN13: '.$isbn['isbn13f'].'</div>';
+	$sx .= '<div class="manifestation_pags">'.$pags.'</div>';
+	if (strlen($subsj) > 0)
+	{
+		$sx .= '<div class="manifestation_subject" style="margin-top: 20px;">Assuntos: '.$subsj.'.</div>';
+	}
+	$sx .= '<div class="manifestation_descrition">'.msg('description').': '.$desc.'</div>'.cr();
+	
+	$sx .= '</div>';
+	return($sx);
+}
+?>

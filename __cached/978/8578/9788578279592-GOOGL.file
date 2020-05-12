@@ -1,0 +1,72 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "Ig8gvgAACAAJ",
+   "etag": "KMBoaXDq7ck",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/Ig8gvgAACAAJ",
+   "volumeInfo": {
+    "title": "WITCHER, THE V.3 - O SANGUE DOS ELFOS (CAPA",
+    "subtitle": "DO GAME)",
+    "authors": [
+     "ANDRZEJ SAPKOWSKI",
+     "TOMASCZ BARCINSKI"
+    ],
+    "description": "Geralt de Rívia é um bruxo sagaz e habilidoso. Um assassino impiedoso e de sangue-frio treinado, desde a infância, para caçar e eliminar monstros. Seu único objetivo: destruir as criaturas do mal que assolam o mundo. Um mundo fantástico criado por Sapkowski com claras influências da mitologia eslava. Um mundo em que nem todos os que parecem monstros são maus e nem todos os que parecem anjos são bons.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "857827959X"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9788578279592"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": false
+    },
+    "pageCount": 336,
+    "printType": "BOOK",
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "preview-1.0.0",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "language": "pt",
+    "previewLink": "http://books.google.com.br/books?id=Ig8gvgAACAAJ&dq=isbn:9788578279592&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=Ig8gvgAACAAJ&dq=isbn:9788578279592&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/WITCHER_THE_V_3_O_SANGUE_DOS_ELFOS_CAPA.html?hl=&id=Ig8gvgAACAAJ"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "NO_PAGES",
+    "embeddable": false,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=Ig8gvgAACAAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "NONE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Seu único objetivo: destruir as criaturas do mal que assolam o mundo. Um mundo fantástico criado por Sapkowski com claras influências da mitologia eslava."
+   }
+  }
+ ]
+}

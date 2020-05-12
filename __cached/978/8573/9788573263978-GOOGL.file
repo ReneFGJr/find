@@ -1,0 +1,72 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "zIqq5RokvM0C",
+   "etag": "Rld45AdTC8c",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/zIqq5RokvM0C",
+   "volumeInfo": {
+    "title": "jovens e a leitura, Os",
+    "authors": [
+     "Michèle Petit"
+    ],
+    "publisher": "Editora 34",
+    "publishedDate": "2008",
+    "description": "Partindo de dezenas de entrevistas com leitores da zona rural e jovens de bairros marginalizados na periferia das grandes cidades francesas, bem como do testemunho de escritores e suas obras, a autora demonstra a importância das bibliotecas públicas e de bibliotecários, mediadores de leitura e educadores de modo geral na luta contra os processos de exclusão e segregação.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "8573263970"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9788573263978"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": true
+    },
+    "pageCount": 189,
+    "printType": "BOOK",
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "0.0.1.0.preview.1",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=zIqq5RokvM0C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=zIqq5RokvM0C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "pt",
+    "previewLink": "http://books.google.com.br/books?id=zIqq5RokvM0C&printsec=frontcover&dq=isbn:9788573263978&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=zIqq5RokvM0C&dq=isbn:9788573263978&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/jovens_e_a_leitura_Os.html?hl=&id=zIqq5RokvM0C"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=zIqq5RokvM0C&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Partindo de entrevistas com leitores de bairros marginalizados das grandes cidades francesas, bem como do testemunho de escritores e suas obras, a antropóloga Michèle Petit ilumina por vários ângulos as relações entre os jovens e o ..."
+   }
+  }
+ ]
+}

@@ -3,7 +3,6 @@ class libraries extends CI_model {
     var $table = 'library';
     var $table_place = 'library_place';
     function __construct() {
-
         if (!isset($_SESSION['library']) or (round($_SESSION['library']) == 0)) {
             $ck = $_COOKIE;
             foreach ($ck as $key => $value) {
@@ -253,41 +252,42 @@ class libraries extends CI_model {
             $force = 1;
         }
         $lib = $_SESSION['library'];
-        dircheck('_temp');
-        dircheck('_temp/view');
-        $file = '_temp/view/highlight_'.$tp.'_'.$lib.'.php';
-        if ((file_exists($file)) and ($force == 0))
-        {
-            $tela = file_get_contents($file);
-        } else {
-            $data['li'] = $this ->  show_works();
-            switch($tp)
+        $sql = "select i_identifier, min(i_manitestation) as i_manitestation, i_ln1, i_ln2
+                    from find_item 
+                    where i_library = '".LIBRARY."' 
+                    group by i_manitestation, i_identifier, i_ln1, i_ln2
+                    order by i_ln1, i_ln2";
+        $rlt = $this->db->query($sql);
+        $rlt = $rlt->result_array();
+        $sx = '';
+        $sx .= '<div class="container">';
+        $sx .= '<div class="row">';
+        
+        for ($r=0;$r < count($rlt);$r++)
             {
-                case 'bookself':
-                $tela = $this ->  show_bookshelf();
-                break;                 
-                case 'sc':
-                $data['li'] = $this ->  show_works();
-                $data['title_rs'] = msg('showcase');
-                $data['title_cp'] = msg('highlights');
-                $data['id'] = $tp;
-                $tela = $this -> load -> view('find/bookself/bookself_h', $data, true);
-                break;                        
-                default:
-                $data['li'] = $this ->  show_works();
-                $data['title_rs'] = msg('acquisitions');
-                $data['title_cp'] = msg('last_buy');
-                $data['id'] = $tp;
-                $tela = $this -> load -> view('find/bookself/bookself_h', $data, true);
-                break;
-            }
-
-            $rlt = fopen($file,'w+');
-            fwrite($rlt,$tela);
-            fclose($rlt);                
-        }            
-        return($tela);
+                $line = $rlt[$r];
+                $link = '<a href="'.base_url(PATH.'v/'.$line['i_manitestation']).'">';
+                $sx .= '<div class="col-md-2" style="margin-bottom: 20px";>';
+                $sx .= $link;
+                $sx .= '<img src="'.$this->image($line['i_identifier']).'" class="img-fluid">';
+                $sx .= '</a>';
+                $sx .= '</div>';
+            } 
+        $sx .= '</div></div>';
+        return($sx);
     }
+
+    function image($isbn)
+        {
+            $img = '_covers/image/'.$isbn.'.jpg';
+            if (file_exists($img))
+                {
+                    $img = base_url($img);
+                } else {
+                    $img = 'xx';
+                }
+            return($img);
+        }
     function image_check()
     {
         $dir    = '_repositorio/Image/';
