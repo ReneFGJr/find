@@ -1,0 +1,82 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "kmnrjieFX08C",
+   "etag": "QoZSRGtVlcw",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/kmnrjieFX08C",
+   "volumeInfo": {
+    "title": "RS negro",
+    "subtitle": "cartografias sobre a produção do conhecimento",
+    "authors": [
+     "Gilberto Ferreira da Silva",
+     "José António dos Santos",
+     "Luiz Carlos da Cunha Carneiro"
+    ],
+    "publisher": "EDIPUCRS",
+    "publishedDate": "2008",
+    "description": "A obra 'RS Negro' é fruto do esforço institucional da secretaria da justiça e do desenvolvimento social do RS em divulgar o pensamento gaúcho, com ênfase nas diversidades. Nele, os leitores poderão encontrar reflexões sobre as experiências dos afrodescendentes em solo sul-riograndense, sob vários prismas. 'RS Negro' é também uma homenagem aos 20 anos do codene - conselho de participação e desenvolvimento da comunidade negra e à criação da coordenadoria das políticas de igualdade racial - copir, do departamento de direitos humanos da secretaria.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "8574307424"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9788574307428"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": true
+    },
+    "pageCount": 352,
+    "printType": "BOOK",
+    "categories": [
+     "Blacks"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "0.0.2.0.preview.1",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=kmnrjieFX08C&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=kmnrjieFX08C&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+    },
+    "language": "pt",
+    "previewLink": "http://books.google.com.br/books?id=kmnrjieFX08C&printsec=frontcover&dq=isbn:9788574307428&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=kmnrjieFX08C&dq=isbn:9788574307428&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/RS_negro.html?hl=&id=kmnrjieFX08C"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "PARTIAL",
+    "embeddable": true,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=kmnrjieFX08C&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "SAMPLE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "A obra &#39;RS Negro&#39; é fruto do esforço institucional da secretaria da justiça e do desenvolvimento social do RS em divulgar o pensamento gaúcho, com ênfase nas diversidades."
+   }
+  }
+ ]
+}

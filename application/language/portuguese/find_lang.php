@@ -306,4 +306,7 @@ $lang['new_place'] = 'Nova localização';
 $lang['library_places'] = 'Bibliotecas e Departamentos';
 $lang['row_type'] = 'Sistemas de classificação disponíveis';
 $lang['rdf_exclude_confirm'] = 'Confirma exclusão?';
+
+$lang['setup_library'] = 'Configurações da biblioteca';
+$lnag['isbn_list'] = 'Lista de ISBN';
 ?>

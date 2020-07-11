@@ -183,12 +183,16 @@ input:focus {
 
 .menu_setup li,
 .menu_setup li a {
-    font-size: 20px;
     margin-left: 0px;
-    line-height: 200%;
+    font-size: 12px;
+    line-height: 150%;
     list-style: none;
     color: #808080;
     text-decoration: none;
+}
+
+.menu_setup li a:hover {
+    color: #333;
 }
 
 .line {

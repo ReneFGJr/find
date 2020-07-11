@@ -1,0 +1,72 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "aeFPYgEACAAJ",
+   "etag": "HRAuOumgiPA",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/aeFPYgEACAAJ",
+   "volumeInfo": {
+    "title": "Vocabulário Yorùbá",
+    "subtitle": "para entender a linguagem dos orixás",
+    "authors": [
+     "Eduardo Napoleão"
+    ],
+    "publisher": "Pallas Editora E Distribuidora",
+    "publishedDate": "2010-01-01",
+    "description": "Neste livro, Eduardo Napoleão oferece noções de grafia e pronúncia de termos yourùbá, além de um resumo gramatical que analisa os fonemas, substantivos, pronomes e tons do idioma, em uma linguagem destinada a facilitar a compreensão dos cânticos, rezas e encantações que fazem parte da religião dos orixás.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "8534704376"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9788534704373"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": false
+    },
+    "pageCount": 220,
+    "printType": "BOOK",
+    "categories": [
+     "Yoruba language"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "preview-1.0.0",
+    "language": "pt",
+    "previewLink": "http://books.google.com.br/books?id=aeFPYgEACAAJ&dq=isbn:9788534704373&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=aeFPYgEACAAJ&dq=isbn:9788534704373&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Vocabul%C3%A1rio_Yor%C3%B9b%C3%A1.html?hl=&id=aeFPYgEACAAJ"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "NO_PAGES",
+    "embeddable": false,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=aeFPYgEACAAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "NONE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Neste livro, Eduardo Napoleão oferece noções de grafia e pronúncia de termos yourùbá, além de um resumo gramatical que analisa os fonemas, substantivos, pronomes e tons do idioma, em uma linguagem destinada a facilitar a compreensão ..."
+   }
+  }
+ ]
+}

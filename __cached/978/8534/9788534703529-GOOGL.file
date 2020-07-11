@@ -1,0 +1,71 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "BUZZAAAAMAAJ",
+   "etag": "6vh5tuKT8RA",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/BUZZAAAAMAAJ",
+   "volumeInfo": {
+    "title": "Na minha casa",
+    "subtitle": "preces aos orixás e ancestrais",
+    "authors": [
+     "José Flávio Pessoa de Barros"
+    ],
+    "publishedDate": "2003",
+    "description": "Descrevendo o ritual de oração do Candomblé, o Professor José Flavio Pessoa de Barros desvenda sua origem na importância simbólica da palavra para a religião ioruba, que não concebe o silêncio como forma de contato com os deuses. Neste sentido, a prece, no Candomblé, é um acompanhamento de todas as atividades sagradas. O autor apresenta os vários tipos de orações de acordo com suas finalidades. Da louvação aos orixás às preces fúnebres, as varias modalidades de rezas são discretas e comentadas de modo claro e objetivo, propiciando uma visão ampla do modo como essa pratica se insere no conjunto do ritual do Candomblé.",
+    "industryIdentifiers": [
+     {
+      "type": "OTHER",
+      "identifier": "UTEXAS:059173013748200"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": false
+    },
+    "pageCount": 149,
+    "printType": "BOOK",
+    "categories": [
+     "Candomblé (Religion)"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "0.1.3.0.preview.0",
+    "panelizationSummary": {
+     "containsEpubBubbles": false,
+     "containsImageBubbles": false
+    },
+    "language": "pt",
+    "previewLink": "http://books.google.com.br/books?id=BUZZAAAAMAAJ&dq=isbn:9788534703529&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=BUZZAAAAMAAJ&dq=isbn:9788534703529&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Na_minha_casa.html?hl=&id=BUZZAAAAMAAJ"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "NO_PAGES",
+    "embeddable": false,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=BUZZAAAAMAAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "NONE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Neste sentido, a prece, no Candomblé, é um acompanhamento de todas as atividades sagradas. O autor apresenta os vários tipos de orações de acordo com suas finalidades."
+   }
+  }
+ ]
+}

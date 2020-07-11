@@ -12,10 +12,6 @@ class setups extends CI_model
 		$sx .= '<div class="col-9">';
 		switch($path)
 		{
-			case 'library':
-			$sx .= $this->library();
-			break;
-
 			case 'library_edit':
 			$sx .= $this->library_edit();
 			break;
@@ -40,7 +36,7 @@ class setups extends CI_model
 
 			/******************** Default ****************************/
 			default:
-			$sx .= 'Hello World!';
+			$sx .= $this->library();
 			break;
 		}
 		$sx .= '</div>';
@@ -50,17 +46,17 @@ class setups extends CI_model
 	function menu()
 	{
 		$m = array();
-		$m['library'] = 'setup/library';
-		$m['library_place'] = 'setup/library_place';
-		$m['classifications'] = 'setup/classifications';
-		$m['loan_parameters'] = 'setup/loan';
+		$m['setup_library'] = 'setup/library_edit';
+		$m['setup_library_place'] = 'setup/library_place';
+		$m['setup_classifications'] = 'setup/classifications';
+		$m['setup_loan_parameters'] = 'setup/loan';
 		$sx = '';
-		$sx .= '<h1>'.msg('setup').'</h1>';
+		$sx .= '<h3>'.msg('menu_setup').'</h3>';
 		$sx .= '<ul class="menu_setup">';
 		foreach ($m as $key => $value) {
 			$sx .= '<li>';
-			$sx .= '<a href="'.base_url(PATH.$value).'">';
-			$sx .= UpperCase(msg($key));
+			$sx .= '<a href="'.base_url(PATH.$value).'" class="setup_link">';
+			$sx .= msg($key);
 			$sx .= '</a>';
 			$sx .= '</li>';
 		}

@@ -3,7 +3,7 @@ class google_api extends CI_model
 {
 	function book($isbn,$id) {
 		$rsp = array('count' => 0);
-
+		
 		$type = 'GOOGL';
 		$t = $this->isbn->get($isbn,$type);
 		$w = (array)json_decode($t);
@@ -13,7 +13,7 @@ class google_api extends CI_model
 		$rsp['subject']= array();
 		$rsp['item'] = $id;
 		/*******************************************************************************/
-
+		
 		if ($w['totalItems'] > 0) {
 			$rsp['expressao']['genere'] = $w['kind'];
 			$w = (array)$w['items'][0];
@@ -25,27 +25,31 @@ class google_api extends CI_model
 			$rsp['title'] = troca($rsp['title'], ' - ',': ');
 			$rsp['title'] = nbr_author($rsp['title'],18);
 			/********** Autores ****************************/
-			$rsp['authors'] = $w['authors'];
-			for ($q=0;$q < count($rsp['authors']);$q++)
+			if (isset($w['authors']))
 			{
-				$rsp['authors'][$q] = nbr_author($rsp['authors'][$q],7);
-			}
-
-
+				$rsp['authors'] = $w['authors'];
+				for ($q=0;$q < count($rsp['authors']);$q++)
+				{
+					$rsp['authors'][$q] = nbr_author($rsp['authors'][$q],7);
+				} 
+			} else {
+				$rsp['authors'] = array();
+			}				
+			
 			/********** Data ****************************/
 			if (isset($w['publishedDate'])) {
 				$rsp['data'] = $w['publishedDate'];
 			} else {
 				$rsp['data'] = '';
 			}
-
+			
 			/********** Descricao ****************************/
 			if (isset($w['description'])) {
 				$rsp['descricao'] = $w['description'];
 			} else {
 				$rsp['descricao'] = '';
 			}
-
+			
 			/********** Páginas ****************************/
 			if (isset($w['pageCount'])) {
 				$rsp['pages'] = $w['pageCount'];
@@ -72,6 +76,6 @@ class google_api extends CI_model
 		}
 		return ($rsp);
 	}
-
+	
 }
 ?>

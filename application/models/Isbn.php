@@ -109,6 +109,14 @@ class isbn extends CI_model
 		}
 		$isbn = troca($isbn,'-','');
 		$isbn = troca($isbn,'.','');
+		if (substr($isbn,0,3) == '978')
+			{
+				$isbn = substr($isbn,0,13);
+			}
+		if (substr($isbn,0,2) == '85')
+			{
+				$isbn = substr($isbn,0,10);
+			}
 		$rsp = array();
 
 		if (strlen($isbn) == 13) {

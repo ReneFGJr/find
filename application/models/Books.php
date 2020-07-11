@@ -52,66 +52,106 @@ class books extends CI_model
 		$rlt = $rlt->result_array();
 		return($rlt);
 	}
+
+	function join_content($field,$dt)
+		{
+			
+			if ($marc['totalItems'] > 0)
+				{
+					if (strlen($marc['descricao'] == 0)) { $marc['descricao'] = $vlr; }
+				}
+		}
 	
 	function locate($isbn,$id)
 	{
+		//https://isbndb.com/apidocs/v2/book/9788585637354
+		//https://openlibrary.org/api/books?bibkeys=ISBN:9788585637354&callback=mycallback
+		//https://openlibrary.org/api/books?bibkeys=ISBN:9788585637354&format=json
 		$sx = '<div style="margin-top: 20px">';
 		$sx .= '<h2>Importação de dados</h2>';
 		$sx .= '<ul>';
 		/* Google */
+		$marc = $this->marc_api->book($isbn,$id);
 		$google = $this->google_api->book($isbn,$id);
-		$amazon = $this->amazon_api->book($isbn,$id);
+		$amazon = $this->amazon_api->book($isbn,$id);		
 		$mercado = $this->mercadoeditorial_api->book($isbn,$id);
 		$find = $this->find_rdf->book($isbn,$id);
 		$total = 0;
-		
-		
-		/************************************** Processar Amazon ***********/
-		if ($mercado['totalItems'] > 0)	
+
+		print_r($google);
+		exit;
+		if (isset($google['descricao']) and (strlen($google['descricao']) > 0))
+			{
+
+			}
+
+		/********************************
+		 * Capa do mercado editorial 
+		 * */
+		if ((isset($mercado['cover'])) and (strlen($mercado['cover']) > 0))
+			{
+				$marc['cover'] = $mercado['cover'];
+				$google['cover'] = $mercado['cover'];
+				$find['cover'] = $mercado['cover'];
+			}
+
+		if ($marc['totalItems'] > 0)	
 		{				
-			$dt = $mercado;
-			$sx .= 'Mercado Editorial imported<br>';
+			$dt = $marc;
+			$sx .= 'Marc21 imported<br>';
 			$dt['item'] = $id;
-			$this->process_register($isbn,$dt,'MERCE');
-			$sx .= '<li style="color: green">Mercado Editorial '.msg('imported').'</li>';	
+			$this->process_register($isbn,$dt,'MARC2');
+			$sx .= '<li style="color: green">Marc21 Metadata '.msg('imported').'</li>';	
 			$total++;
 		} else {
-			$sx .= '<li style="color: grey">Mercado Editorial '.msg('not_locate').'</li>';	
-			
-			/************************************** Processar Google ************/
-			if ($find['totalItems'] > 0)
-			{
-				$dt = $find;	
+			$sx .= '<li style="color: grey">Marc21 '.msg('not_locate').'</li>';	
+			/************************************** Processar Mercado Editorial ***********/
+			if ($mercado['totalItems'] > 0)	
+			{				
+				$dt = $mercado;
+				$sx .= 'Mercado Editorial imported<br>';
 				$dt['item'] = $id;
-				$this->process_register($isbn,$dt,'FIND');
-				$sx .= '<li style="color: green">Find Book '.msg('imported').'</li>';				
+				$this->process_register($isbn,$dt,'MERCE');
+				$sx .= '<li style="color: green">Mercado Editorial '.msg('imported').'</li>';	
 				$total++;
 			} else {
-				$sx .= '<li  style="color: grey">Find Book '.msg('not_locate').'</li>';	
-			}
-			/************************************** Processar Google ************/
-			if ($google['totalItems'] > 0)
-			{
-				$dt = $google;	
-				$dt['item'] = $id;
-				$this->process_register($isbn,$dt,'GOOGL');
-				$sx .= '<li style="color: green">Google Book '.msg('imported').'</li>';	
-				$total++;
-			} else {
-				$sx .= '<li  style="color: grey">Google Book '.msg('not_locate').'</li>';	
+				$sx .= '<li style="color: grey">Mercado Editorial '.msg('not_locate').'</li>';	
 				
-				/************************************** Processar Amazon ***********/
-				if ($amazon['totalItems'] > 0)	
-				{				
-					$dt = $amazon;
-					$sx .= 'Amazon Book imported<br>';
+				/************************************** Processar Google ************/
+				if ($find['totalItems'] > 0)
+				{
+					$dt = $find;	
 					$dt['item'] = $id;
-					$this->process_register($isbn,$dt,'AMAZO');
-					$sx .= '<li style="color: green">Amazon Book '.msg('imported').'</li>';	
+					$this->process_register($isbn,$dt,'FIND');
+					$sx .= '<li style="color: green">Find Book '.msg('imported').'</li>';				
 					$total++;
 				} else {
-					$sx .= '<li style="color: grey">Amazon Book '.msg('not_locate').'</li>';	
-				}		
+					$sx .= '<li  style="color: grey">Find Book '.msg('not_locate').'</li>';	
+				}
+				/************************************** Processar Google ************/
+				if ($google['totalItems'] > 0)
+				{
+					$dt = $google;	
+					$dt['item'] = $id;
+					$this->process_register($isbn,$dt,'GOOGL');
+					$sx .= '<li style="color: green">Google Book '.msg('imported').'</li>';	
+					$total++;
+				} else {
+					$sx .= '<li  style="color: grey">Google Book '.msg('not_locate').'</li>';	
+					
+					/************************************** Processar Amazon ***********/
+					if ($amazon['totalItems'] > 0)	
+					{				
+						$dt = $amazon;
+						$sx .= 'Amazon Book imported<br>';
+						$dt['item'] = $id;
+						$this->process_register($isbn,$dt,'AMAZO');
+						$sx .= '<li style="color: green">Amazon Book '.msg('imported').'</li>';	
+						$total++;
+					} else {
+						$sx .= '<li style="color: grey">Amazon Book '.msg('not_locate').'</li>';	
+					}		
+				}
 			}
 		}
 		$sx .= '</ul>';

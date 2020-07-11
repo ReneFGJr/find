@@ -1,0 +1,71 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "44YqPwAACAAJ",
+   "etag": "OCzRlXf4td0",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/44YqPwAACAAJ",
+   "volumeInfo": {
+    "title": "Berimbau mandou te chamar",
+    "authors": [
+     "Bia Hetzel",
+     "Mariana Massarani"
+    ],
+    "publishedDate": "2008",
+    "description": "Este álbum ilustrado, próprio para estimular a curiosidade e a leitura autônoma da criança em fase de alfabetização, traz vários versos de cantigas de capoeira e, no final, apresenta a história do surgimento e da difusão da luta afro-brasileira. No ritmo da poesia popular e no traço de Mariana Massarani, vibram as cores, a energia da luta e o toque mágico dos berimbaus.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "8586218421"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9788586218422"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": false
+    },
+    "pageCount": 27,
+    "printType": "BOOK",
+    "categories": [
+     "Capoeira (Dance)"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "preview-1.0.0",
+    "language": "pt",
+    "previewLink": "http://books.google.com.br/books?id=44YqPwAACAAJ&dq=isbn:9788586218422&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=44YqPwAACAAJ&dq=isbn:9788586218422&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Berimbau_mandou_te_chamar.html?hl=&id=44YqPwAACAAJ"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "NO_PAGES",
+    "embeddable": false,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=44YqPwAACAAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "NONE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Este álbum ilustrado, próprio para estimular a curiosidade e a leitura autônoma da criança em fase de alfabetização, traz vários versos de cantigas de capoeira e, no final, apresenta a história do surgimento e da difusão da luta ..."
+   }
+  }
+ ]
+}

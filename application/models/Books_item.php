@@ -185,7 +185,7 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 			$cp = array();
 			array_push($cp,array('$H8','','',false,false));
 			array_push($cp,array('$S40','',msg('nr_tombo'),true,true));
-			array_push($cp,array('$S40','',msg('isbn'),true,true));
+			array_push($cp,array('$T80:5','',msg('isbn_list'),true,true));
 			array_push($cp,array('$C','',msg('without_isbn'),false,true));
 			$sql = "select * from library_place where lp_LIBRARY = ".LIBRARY."";
 			array_push($cp,array('$Q id_lp:lp_name:'.$sql,'',msg('library_place'),true,true));

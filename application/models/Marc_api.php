@@ -29,6 +29,22 @@ class Marc_api extends CI_model
 	function book($t)
 	{
 		$type = "MARC2";
+		if (strlen($t)==13)
+		{
+			$isbn = $t;
+			$file = $this->isbn->file_locate($isbn,$type);
+			if (file_exists($file))
+			{
+				$size = filesize($file);
+				if ($size > 0)
+				{
+					$t = file_get_contents($file);
+				} else {
+					return("OPS - erro de arquivo");
+				}
+			}		
+		}
+		$title = '';
 		$t = troca($t,';','.,');
 		$t = troca($t,chr(13),';');
 		$t = troca($t,chr(10),';');
@@ -46,227 +62,227 @@ class Marc_api extends CI_model
 		for ($r=0;$r < count($ln);$r++)
 		{
 			$l = $ln[$r];
-
+			
 			$field = substr($l,0,3);
 			switch ($field) 
 			{
 				/***************** ISBN ***********/
 				case '020':
-				$sr = $this->extract($l,'a');
-				if (strpos($sr,'(')) 
-				{
-					$sr = trim(substr($sr,0,strpos($sr,'(')));
-				}
-				$w['isbn'] = $this->isbn->isbns($sr);
+					$sr = $this->extract($l,'a');
+					if (strpos($sr,'(')) 
+					{
+						$sr = trim(substr($sr,0,strpos($sr,'(')));
+					}
+					$w['isbn'] = $this->isbn->isbns($sr);
 				break;
-
+				
 				/************************* Idioma */
 				case '041':
-				$sr = $this->extract($l,'a');
-				$w['expressao'] = array('genere'=>'books','idioma'=>$sr);
+					$sr = $this->extract($l,'a');
+					$w['expressao'] = array('genere'=>'books','idioma'=>$sr);
 				break;				
-
+				
 				/***************** AUTORES ***********/
 				case '100':
-				$sr = $this->extract($l,'a');
-				$sr = nbr_author($sr,8);
-				array_push($w['authors'],$sr);
+					$sr = $this->extract($l,'a');
+					$sr = nbr_author($sr,8);
+					array_push($w['authors'],$sr);
 				break;
-
+				
 				case '700':
-				$sr = $this->extract($l,'a');
-				$sr = nbr_author($sr,8);
-				array_push($w['authors'],$sr);
+					$sr = $this->extract($l,'a');
+					$sr = nbr_author($sr,8);
+					array_push($w['authors'],$sr);
 				break;
-
+				
 				case '110':
-				$sr = $this->extract($l,'a');
-				$sr = nbr_author($sr,8);
-				array_push($w['agents'],$sr);
+					$sr = $this->extract($l,'a');
+					$sr = nbr_author($sr,8);
+					array_push($w['agents'],$sr);
 				break;				
-
+				
 				case '710':
-				$sr = $this->extract($l,'a');
-				$sr = nbr_author($sr,8);
-				array_push($w['agents'],$sr);
+					$sr = $this->extract($l,'a');
+					$sr = nbr_author($sr,8);
+					array_push($w['agents'],$sr);
 				break;				
-
+				
 				/* CDD */
 				case '082':
-				$sr = $this->extract($l,'a');
-				$w['cdd'] =$sr;
+					$sr = $this->extract($l,'a');
+					$w['cdd'] =$sr;
 				break;				
-
-
+				
+				
 				/* CDU */
 				case '080':
-				$sr = $this->extract($l,'a');
-				$w['cdd'] =$sr;
+					$sr = $this->extract($l,'a');
+					$w['cdd'] =$sr;
 				break;		
-
+				
 				/***************** Título ***********/
 				case '245':
-				$sr = $this->extract($l,'a');
-				$sb = $this->extract($l,'b');
-				if (strlen($sb) > 0)
+					$sr = $this->extract($l,'a');
+					$sb = $this->extract($l,'b');
+					if (strlen($sb) > 0)
 					{ $sr = trim($sr).': '.trim($sb); }
-				$title = $sr;
-				$w['title'] = $sr;
+					$title = $sr;
+					$w['title'] = $sr;
 				break;
-
+				
 				/***************** Editora ***********/
 				case '260':
-				$sr = $this->extract($l,'b');
-				$w['editora'] = $sr;
-
-				$sr = $this->extract($l,'a');
-				$w['place'] = $sr;				
-
-				$sr = $this->extract($l,'c');
-				$w['data'] = $sr;
-
+					$sr = $this->extract($l,'b');
+					$w['editora'] = $sr;
+					
+					$sr = $this->extract($l,'a');
+					$w['place'] = $sr;				
+					
+					$sr = $this->extract($l,'c');
+					$w['data'] = $sr;
+					
 				break;					
-
+				
 				/***************** Pages ***********/
 				case '300':
-				$sr = $this->extract($l,'a');
-				$sr = troca($sr, 'p.','');
-				if (strpos($sr,',') > 0)
-				{
-					$w['pages_pre'] = substr($sr,0,strpos($sr,','));
-				}
-				$w['pages'] = sonumero($sr);
+					$sr = $this->extract($l,'a');
+					$sr = troca($sr, 'p.','');
+					if (strpos($sr,',') > 0)
+					{
+						$w['pages_pre'] = substr($sr,0,strpos($sr,','));
+					}
+					$w['pages'] = sonumero($sr);
 				break;				
-
+				
 				/***************** SERIE ***********/
 				case '490':
-				$sr = $this->extract($l,'a');
-				$sr = troca($sr,'(','');
-				$sr = troca($sr,')','');
-				$sr = nbr_author($sr,8);
-				$w['serie'] = $sr;
-
-				$sr = $this->extract($l,'v');
-				$sr = troca($sr,'(','');
-				$sr = troca($sr,')','');
-				if (strlen($sr) > 0)
-				{
-					$w['volume'] = 'v. '.$sr;
-				}
-
+					$sr = $this->extract($l,'a');
+					$sr = troca($sr,'(','');
+					$sr = troca($sr,')','');
+					$sr = nbr_author($sr,8);
+					$w['serie'] = $sr;
+					
+					$sr = $this->extract($l,'v');
+					$sr = troca($sr,'(','');
+					$sr = troca($sr,')','');
+					if (strlen($sr) > 0)
+					{
+						$w['volume'] = 'v. '.$sr;
+					}
+					
 				break;	
-
+				
 				/***************** Assuntos ***********/
 				case '650':
-				$sr = $this->extract($l,'a');
-				$srx = $this->extract($l,'x');
-				if (strlen($srx) > 0)
+					$sr = $this->extract($l,'a');
+					$srx = $this->extract($l,'x');
+					if (strlen($srx) > 0)
 					{ $sr .= ' - '.$srx; }
-				array_push($w['subject'],$sr);
+					array_push($w['subject'],$sr);
 				break;							
-
+				
 				default:
-							# code...
-				break;
-			}
-
-			$s .= ($r+1).'. ';
-			$s .= $ln[$r];
-			$s .= cr();
+				# code...
+			break;
 		}
-
+		
+		$s .= ($r+1).'. ';
+		$s .= $ln[$r];
+		$s .= cr();
+	}
+	
+	$w['error'] = 0;
+	$w['type'] = $type;
+	
+	if (strlen($title) > 0)
+	{
+		$w['error_msg'] = 'ISBN_inported';
+		$w['totalItems'] = 1;
 		$w['error'] = 0;
-		$w['type'] = $type;
-
-		if (strlen($title) > 0)
-		{
-			$w['error_msg'] = 'ISBN_inported';
-			$w['totalItems'] = 1;
-			$w['error'] = 0;
-			$w['url'] = $this->isbn->vurl;
-		} else {
-			$w['error'] = 1;
-			$w['error_msg'] = 'ISBN_not_found';
-			$w['totalItems'] = 0;
-			$w['url'] = '';
-		}	
-		return($w);
-	}
-	function extract($t,$sub)
+		$w['url'] = $this->isbn->vurl;
+	} else {
+		$w['error'] = 1;
+		$w['error_msg'] = 'ISBN_not_found';
+		$w['totalItems'] = 0;
+		$w['url'] = '';
+	}	
+	return($w);
+}
+function extract($t,$sub)
+{
+	$t = troca($t,'|','$');
+	if (strpos($t,'$'.$sub) > 0)
 	{
-		$t = troca($t,'|','$');
-		if (strpos($t,'$'.$sub) > 0)
+		$t = trim(substr($t,strpos($t,'$'.$sub)+2,strlen($t)));
+		if (strpos($t,'$') > 0)
 		{
-			$t = trim(substr($t,strpos($t,'$'.$sub)+2,strlen($t)));
-			if (strpos($t,'$') > 0)
-			{
-				$t = trim(substr($t,0,strpos($t,'$')));
-			}
-
-
-			$cut = 1;
-			while ($cut == 1)
-			{
-				$last = substr($t,strlen($t)-1,1);			
-				switch($last)
-				{
-					case '/':
-					$cut = 1;
-					break;
-
-					case ',':
-					$cut = 1;
-					break;
-
-					case '-':
-					$cut = 1;
-					break;	
-
-					case ':':
-					$cut = 1;
-					break;	
-
-					case '.':
-					$cut = 1;
-					break;
-
-					default:
-					$cut = 0;										
-				}
-				if ($cut == 1)
-				{
-					$t = trim(substr($t,0,strlen($t)-1));
-				}
-			}			
-		} else {
-			$t = '';
+			$t = trim(substr($t,0,strpos($t,'$')));
 		}
-		return($t);
+		
+		
+		$cut = 1;
+		while ($cut == 1)
+		{
+			$last = substr($t,strlen($t)-1,1);			
+			switch($last)
+			{
+				case '/':
+					$cut = 1;
+				break;
+				
+				case ',':
+					$cut = 1;
+				break;
+				
+				case '-':
+					$cut = 1;
+				break;	
+				
+				case ':':
+					$cut = 1;
+				break;	
+				
+				case '.':
+					$cut = 1;
+				break;
+				
+				default:
+				$cut = 0;										
+			}
+			if ($cut == 1)
+			{
+				$t = trim(substr($t,0,strlen($t)-1));
+			}
+		}			
+	} else {
+		$t = '';
 	}
+	return($t);
+}
 
-	function save_marc($isbn,$txt)
-	{
-		$type = 'MARC2';
-		$file = $this->isbn->file_locate($isbn,$type);
-		file_put_contents($file, $txt);
-		return(1);
-	}
+function save_marc($isbn,$txt)
+{
+	$type = 'MARC2';
+	$file = $this->isbn->file_locate($isbn,$type);
+	file_put_contents($file, $txt);
+	return(1);
+}
 
-	function form()
-	{
-		$sx = '';
-
-		$sx .= '<div id="marc_form">';
-		$sx .= '<form method="post">';
-		$sx .= msg('marc_insert_text');
-
-		$sx .= '<textarea name="marc21" class="form-control form_textarea" rows=15 >'.get("marc21")."</textarea>'";
-		$sx .= '<input type="submit" class="btn btn-outline-primary" value="Importar MARC21">';
-		$sx .= '</form>';
-		$sx .= '</div>';
-
-		return($sx);
-	}
+function form()
+{
+	$sx = '';
+	
+	$sx .= '<div id="marc_form">';
+	$sx .= '<form method="post">';
+	$sx .= msg('marc_insert_text');
+	
+	$sx .= '<textarea name="marc21" class="form-control form_textarea" rows=15 >'.get("marc21")."</textarea>'";
+	$sx .= '<input type="submit" class="btn btn-outline-primary" value="Importar MARC21">';
+	$sx .= '</form>';
+	$sx .= '</div>';
+	
+	return($sx);
+}
 }
 /*
 000 01026cam a22003137  4500

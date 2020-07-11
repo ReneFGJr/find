@@ -1,0 +1,73 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "xn8YAAAAYAAJ",
+   "etag": "td6tKv60WEw",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/xn8YAAAAYAAJ",
+   "volumeInfo": {
+    "title": "Afro-brasileiros",
+    "subtitle": "história e realidade",
+    "authors": [
+     "Luiz Carlos Amaro",
+     "Mário José Maestri Filho",
+     "Carmem de Souza"
+    ],
+    "publishedDate": "2005",
+    "description": "É o resultado de mais uma iniciativa no campo da ciência histórica do GT Negros, História, Cultura e Sociedade, Grupo de Estudos a Pesquisas vinculado à Associação Nacional de História, Núcleo Afro RS, que busca ultrapassar o delimitador, imaginário, em que o fazer história pressupõe estar circunscrito ao espaço acadêmico. Transpõem-se essa noção ao realizarem no ano de 2002, no Memorial do Rio Grande do Sul, o Ciclo de Palestras 'História e Realidade', evento no qual um historiador apresentou um tema histórico sobre o negro, a um leigo, militante do movimento negro, fez o contraponto apresentando um tema atual sobre a realidade da comunidade negra. Aos textos do 'Ciclo de Palestras' somam-se as pesquisas apresentadas em eventos como 'Perfis da África', realizado na FFCH PUCRS a 'Encontro de Pesquisadores Negros', acontecido na Universidade de São Carlos, entre outros, nos quais participaram Integrantes do GT Negro ANPUH/RS.",
+    "industryIdentifiers": [
+     {
+      "type": "OTHER",
+      "identifier": "UVA:X030196934"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": false
+    },
+    "pageCount": 143,
+    "printType": "BOOK",
+    "categories": [
+     "History"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "0.1.1.0.preview.0",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=xn8YAAAAYAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=xn8YAAAAYAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+    },
+    "language": "pt",
+    "previewLink": "http://books.google.com.br/books?id=xn8YAAAAYAAJ&dq=isbn:9788575170885&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=xn8YAAAAYAAJ&dq=isbn:9788575170885&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Afro_brasileiros.html?hl=&id=xn8YAAAAYAAJ"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "NO_PAGES",
+    "embeddable": false,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=xn8YAAAAYAAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "NONE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "É o resultado de mais uma iniciativa no campo da ciência histórica do GT Negros, História, Cultura e Sociedade, Grupo de Estudos a Pesquisas vinculado à Associação Nacional de História, Núcleo Afro RS, que busca ultrapassar o ..."
+   }
+  }
+ ]
+}

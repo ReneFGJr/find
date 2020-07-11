@@ -1,0 +1,72 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "CR1PAQAAIAAJ",
+   "etag": "IOnFODYi5Dk",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/CR1PAQAAIAAJ",
+   "volumeInfo": {
+    "title": "Iansã",
+    "subtitle": "rainha dos ventos e das tempestades",
+    "authors": [
+     "Helena Theodoro"
+    ],
+    "publisher": "Pallas Editora E Distribuidora",
+    "publishedDate": "2010-01-01",
+    "description": "Em 'Iansã, Rainha dos Ventos e Tempestades', a pesquisadora Helena Theodoro relaciona o poder dessa orixá com a luta e as conquistas das mulheres negras no Brasil.",
+    "industryIdentifiers": [
+     {
+      "type": "OTHER",
+      "identifier": "STANFORD:36105133349865"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": false
+    },
+    "pageCount": 163,
+    "printType": "BOOK",
+    "categories": [
+     "Afro-Brazilian cults"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "preview-1.0.0",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=CR1PAQAAIAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=CR1PAQAAIAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+    },
+    "language": "pt",
+    "previewLink": "http://books.google.com.br/books?id=CR1PAQAAIAAJ&dq=isbn:9788534704076&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=CR1PAQAAIAAJ&dq=isbn:9788534704076&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Ians%C3%A3.html?hl=&id=CR1PAQAAIAAJ"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "NO_PAGES",
+    "embeddable": false,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=CR1PAQAAIAAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "NONE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Conhecida no Brasil como Iansã, essa orixá tem papel importante junto aos cultos dos mortos e nos funerais tradicionais, sendo sempre reconhecida por quem partilha segredos de vida e morte."
+   }
+  }
+ ]
+}

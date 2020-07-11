@@ -162,7 +162,6 @@ class covers extends CI_model
 	function ajax_cover_upload($isbn)
 	{
 		$this->load->model("books");
-
 		$ok = -1;
 		if (isset($_FILES['file']))
 		{
@@ -175,7 +174,6 @@ class covers extends CI_model
 			echo $this->cover_upload_html();
 			echo message("ERRO: Arquivo inválido ou não localizado na base",3);			
 		}
-		
 		if ($ok == 1)
 		{			
 			$isbn = sonumero($isbn);
@@ -224,7 +222,7 @@ class covers extends CI_model
 		$img = $this->img_name($isbn);
 		if (strlen($url) > 0)
 		{
-			$t = read_link($url);
+			$t = file_get_contents($url);
 			if (strlen($t) > 0)
 			{
 				file_put_contents($img, $t);

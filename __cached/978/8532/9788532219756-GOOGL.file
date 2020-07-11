@@ -1,0 +1,68 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "-13ZHAAACAAJ",
+   "etag": "2emmdh4D880",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/-13ZHAAACAAJ",
+   "volumeInfo": {
+    "title": "Escravidão no Brasil",
+    "subtitle": "trabalho e resistência",
+    "authors": [
+     "Júlio Quevedo"
+    ],
+    "publishedDate": "1996",
+    "description": "Este livro faz parte da coleção 'Para Conhecer Melhor', que tem por objetivo aprofundar os conhecimentos de temas históricos importantes, porém não tão trabalhados nas escolas. A obra fornece uma fonte de pesquisa acessível e atraente sobre assuntos representativos da História do Brasil e do Mundo.",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "8532219756"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9788532219756"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": false
+    },
+    "pageCount": 48,
+    "printType": "BOOK",
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "preview-1.0.0",
+    "language": "pt",
+    "previewLink": "http://books.google.com.br/books?id=-13ZHAAACAAJ&dq=isbn:9788532219756&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=-13ZHAAACAAJ&dq=isbn:9788532219756&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Escravid%C3%A3o_no_Brasil.html?hl=&id=-13ZHAAACAAJ"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "NO_PAGES",
+    "embeddable": false,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=-13ZHAAACAAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "NONE",
+    "quoteSharingAllowed": false
+   },
+   "searchInfo": {
+    "textSnippet": "Este livro faz parte da coleção &#39;Para Conhecer Melhor&#39;, que tem por objetivo aprofundar os conhecimentos de temas históricos importantes, porém não tão trabalhados nas escolas."
+   }
+  }
+ ]
+}

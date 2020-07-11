@@ -1,0 +1,70 @@
+{
+ "kind": "books#volumes",
+ "totalItems": 1,
+ "items": [
+  {
+   "kind": "books#volume",
+   "id": "4bZfAAAAMAAJ",
+   "etag": "/xEPKTVXMTk",
+   "selfLink": "https://www.googleapis.com/books/v1/volumes/4bZfAAAAMAAJ",
+   "volumeInfo": {
+    "title": "Ponciá vicêncio",
+    "authors": [
+     "Conceição Evaristo"
+    ],
+    "publishedDate": "2003",
+    "industryIdentifiers": [
+     {
+      "type": "ISBN_10",
+      "identifier": "8571602611"
+     },
+     {
+      "type": "ISBN_13",
+      "identifier": "9788571602618"
+     }
+    ],
+    "readingModes": {
+     "text": false,
+     "image": false
+    },
+    "pageCount": 132,
+    "printType": "BOOK",
+    "categories": [
+     "Brazilian fiction"
+    ],
+    "maturityRating": "NOT_MATURE",
+    "allowAnonLogging": false,
+    "contentVersion": "0.0.1.0.preview.0",
+    "imageLinks": {
+     "smallThumbnail": "http://books.google.com/books/content?id=4bZfAAAAMAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api",
+     "thumbnail": "http://books.google.com/books/content?id=4bZfAAAAMAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+    },
+    "language": "pt",
+    "previewLink": "http://books.google.com.br/books?id=4bZfAAAAMAAJ&dq=isbn:9788571602618&hl=&cd=1&source=gbs_api",
+    "infoLink": "http://books.google.com.br/books?id=4bZfAAAAMAAJ&dq=isbn:9788571602618&hl=&source=gbs_api",
+    "canonicalVolumeLink": "https://books.google.com/books/about/Ponci%C3%A1_vic%C3%AAncio.html?hl=&id=4bZfAAAAMAAJ"
+   },
+   "saleInfo": {
+    "country": "BR",
+    "saleability": "NOT_FOR_SALE",
+    "isEbook": false
+   },
+   "accessInfo": {
+    "country": "BR",
+    "viewability": "NO_PAGES",
+    "embeddable": false,
+    "publicDomain": false,
+    "textToSpeechPermission": "ALLOWED",
+    "epub": {
+     "isAvailable": false
+    },
+    "pdf": {
+     "isAvailable": false
+    },
+    "webReaderLink": "http://play.google.com/books/reader?id=4bZfAAAAMAAJ&hl=&printsec=frontcover&source=gbs_api",
+    "accessViewStatus": "NONE",
+    "quoteSharingAllowed": false
+   }
+  }
+ ]
+}
