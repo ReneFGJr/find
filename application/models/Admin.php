@@ -43,6 +43,11 @@ class admin extends CI_model
         $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/mercadoeditorial_editoras').'">'.msg("mercadoeditorial_editoras").'</a></li>';
         $sx .= '<li>'.'<a href="'.base_url(PATH.'config/class').'">'.msg("RDF Classes").'</a></li>';        
         $sx .= '</ul>';
+        $sx .= '<h1>Menu das Bibliotecas</h1>';
+        $sx .= '<ul>';
+        $sx .= '<li>'.'<a href="'.base_url(PATH.'library/list').'">'.msg("library_list").'</a></li>';
+        $sx .= '<li>'.'<a href="'.base_url(PATH.'library/admin').'">'.msg("library_row").'</a></li>';
+        $sx .= '</ul>';
         $sx .= '</div>';
         $sx .= '</div>'; /* Row */
         return($sx);

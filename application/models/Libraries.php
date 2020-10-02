@@ -171,11 +171,12 @@ class libraries extends CI_model {
         $sql = "select * from library order by l_name";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
-        $sx = '<div class="row">';
+        $sx = '<div class="container">';
+        $sx .= '<div class="row">';
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
             $link = '<a href="' . base_url(PATH . 'library/' . $line['id_l']) . '" border=0>';
-            $sx .= '<div class="col-md-4 col-lg-3 text-center" style="border: 2px solid #00000; margin-bottom: 50px;">';
+            $sx .= '<div class="col-2 text-center" style="border: 2px solid #00000; margin-bottom: 50px;">';
             $sx .= $link;
             $sx .= '<img src="' . base_url($line['l_logo']) . '" class="img-fluid">';
             $sx .= '<br>';
@@ -186,6 +187,7 @@ class libraries extends CI_model {
             $sx .= '</div>';
         }
         $sx .= '</div>';
+        $sx .= '</div>';
         return ($sx);
     }
 
@@ -194,7 +196,7 @@ class libraries extends CI_model {
 
         $form -> fd = array('id_l', 'l_name', 'l_code', 'l_id', 'l_logo');
         $form -> lb = array('id_l', msg('l_name'), msg('l_code'), msg('l_id'), msg('l_logo'));
-        $form -> mk = array('', 'L', 'L', 'A');
+        $form -> mk = array('', 'L', 'L','L','L');
 
         $form -> tabela = $this -> table;
         $form -> see = True;
@@ -208,12 +210,12 @@ class libraries extends CI_model {
         return (row($form, $id));
     }
 
-    function edit($id = '') {
+    function edit($s='',$id = '') {
         $cp = array();
         array_push($cp, array('$H8', 'id_l', '', false, true));
         array_push($cp, array('$S100', 'l_name', msg('library_name'), true, true));
-        array_push($cp, array('$S30', 'l_code', msg('library_code'), false, false));
-        array_push($cp, array('$H8', 'l_id', msg('library_id'), false, true));
+        array_push($cp, array('$S10', 'l_code', msg('library_code'), true, true));
+        array_push($cp, array('$S10', 'l_id', msg('library_id'), true, true));
         array_push($cp, array('$S100', 'l_logo', msg('library_logo'), false, true));
         array_push($cp, array('$T80:5', 'l_about', msg('library_about'), false, true));
         $form = new form;

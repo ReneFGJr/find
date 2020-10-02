@@ -22,7 +22,7 @@ class superadmin extends CI_model
                         $sx = $rs[0];
                         if ($rs[1]->saved > 0)
                             {
-                                redirect(base_url(PATH.'superadmin/own'));   
+                                redirect(base_url(PATH.'library/admin'));   
                             }
                         break;
                     default:
@@ -32,4 +32,3 @@ class superadmin extends CI_model
                 return($sx);                
             }      
     }
-?>    

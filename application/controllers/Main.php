@@ -177,15 +177,19 @@ class Main extends CI_controller {
         $data['title'] = ':: ' . msg('Libraries');
         $this -> load -> view('header/header', $data);
         
-        if ((strlen($id) > 0) and (round($id) > 0)) {
-            $this -> libraries -> select($id);
-            redirect(base_url('index.php/main/'));
-        }
-        
-        $sx = '<h1>'.msg('Libraries').'</h1><hr>';
-        $data['content'] = $sx . $this -> libraries -> list_libraries($id);
+        if ($id == 'admin')
+        {
+            $this->cab();
+            $data['content'] = '<div class="container">'.$this -> libraries -> row($id).'</div>';
+        } else {
+            if ((strlen($id) > 0) and (round($id) > 0)) {
+                $this -> libraries -> select($id);
+                redirect(base_url('index.php/main/'));
+            }            
+            $sx = '<h1>'.msg('Libraries').'</h1><hr>';
+            $data['content'] = $sx . $this -> libraries -> list_libraries($id);
+        } 
         $this -> load -> view('content', $data);
-        
     }
     
     function social($act = '',$id='',$chk='') {
@@ -525,7 +529,7 @@ function a1($id=0,$act='')
     redirect(base_url(PATH));
 }
 }
-    
+
 
 function breadcrumb()
 {

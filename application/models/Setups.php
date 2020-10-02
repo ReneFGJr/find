@@ -13,7 +13,7 @@ class setups extends CI_model
 		switch($path)
 		{
 			case 'library_edit':
-			$sx .= $this->library_edit();
+			$sx .= $this->library_edit($id);
 			break;
 
 			/******************** Library Place **********************/
@@ -29,6 +29,11 @@ class setups extends CI_model
 			case 'classifications':
 			$sx .= $this->classification();
 			break;
+
+			/******************** Library Place **********************/
+			case 'subject':
+			$sx .= $this->subject_skos();
+			break;			
 
 			case 'library_place_edit':
 			$sx .= $this->library_place_edit($id);
@@ -49,6 +54,7 @@ class setups extends CI_model
 		$m['setup_library'] = 'setup/library_edit';
 		$m['setup_library_place'] = 'setup/library_place';
 		$m['setup_classifications'] = 'setup/classifications';
+		$m['setup_subject'] = 'setup/subject';
 		$m['setup_loan_parameters'] = 'setup/loan';
 		$sx = '';
 		$sx .= '<h3>'.msg('menu_setup').'</h3>';
@@ -72,6 +78,13 @@ class setups extends CI_model
 			return($sx);
 		}
 
+	function subject_skos()
+		{
+			$this->load->model("skos");
+			$sx = $this->skos->row_type();
+			return($sx);			
+		}
+
 
 	/****************** Library **********************************/
 	function library()
@@ -86,7 +99,7 @@ class setups extends CI_model
 		$this->load->model("libraries");
 		$dt = $this->libraries->le_id(LIBRARY);
 		$id = $dt['id_l'];
-		$rsp = $this->libraries->edit($dt['id_l']);
+		$rsp = $this->libraries->edit('setup',$id);
 		$sx = $rsp[0];
 		$form = $rsp[1];
 		if ($form->saved > 0)
@@ -121,4 +134,3 @@ class setups extends CI_model
 		return($sx);
 	}			
 }
-?>	
