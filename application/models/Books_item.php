@@ -214,7 +214,7 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 			}
 			$sql = "select * from find_item 
 			INNER JOIN library_place on i_library_place = id_lp
-			where $wh and i_library = ".LIBRARY."
+			where ($wh) and i_library = ".LIBRARY."
 			order by lp_name, id_i desc";
 			
 			$rlt = $this->db->query($sql);

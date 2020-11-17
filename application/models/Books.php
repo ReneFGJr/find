@@ -78,8 +78,6 @@ class books extends CI_model
 		$find = $this->find_rdf->book($isbn,$id);
 		$total = 0;
 
-		print_r($google);
-		exit;
 		if (isset($google['descricao']) and (strlen($google['descricao']) > 0))
 			{
 

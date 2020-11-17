@@ -34,7 +34,7 @@ class book_preparations extends CI_model
 			
 			case 'tombo':
 				$dt = $this->books_item->le_tombo($id);
-				$sx .= $this->books_item->editar($dt,$sta);			
+				$sx .= $this->books_item->editar($dt,$sta);
 			break;				
 			
 			case 'acquisition_in':

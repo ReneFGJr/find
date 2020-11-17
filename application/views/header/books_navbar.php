@@ -61,11 +61,7 @@ if (!isset($logo))
 	</div>
 	<div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
 		<ul class="navbar-nav ml-auto">
-			
-
-			
-
-            <li class="nav-item navbar-toggler-right">
+            <li class="nav-item">
                 <?php 
                 $socials = new socials;
                 echo $socials -> menu_user(); 
