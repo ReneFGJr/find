@@ -25,8 +25,10 @@ class Books_item extends CI_model
 		$sx .= 'ISBN: '.$dt['i_identifier'];
 		$sx .= '</div>';
 		
-		$sx .= '<div class="col-2">';
-		$sx .= '<div>'.msg('Status').': '.msg('item_status_'.$dt['i_status']).'</div>';
+		$sx .= '<div class="col-2 small">';
+		$sx .= '<div>'.msg('Status').': ';
+		$sx .= '<span class="bold">'.msg('item_status_'.$dt['i_status']).'</span>';
+		$sx .= '</div>';
 		$sx .= 'Tombo: '.strzero($dt['i_tombo'],4);
 		$sx .= '<br/>';
 		$sx .= 'Ex:'.$dt['i_exemplar'];
@@ -36,6 +38,7 @@ class Books_item extends CI_model
 		$sx .= '</div>';
 		return($sx);
 	}
+
 	function item_status($id,$status)
 	{
 		$sql = "update find_item set i_status = $status where id_i = ".round($id);
@@ -265,10 +268,20 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 			$line = $rlt[0];
 			return($line);
 		}
+
+		function item_edit($id)
+			{
+				$sx = '';
+				$sx .= '<div class="border1">';
+				$sx .= '<a href="#" class="btn btn-primary">'.msg('send_to_print').'</a>';
+				$sx .= '</div>';
+				return($sx);
+			}
+
 		/**************************************** EDITAR ***************************/
 		function editar($dt,$sta='')
 		{		
-			$id = $dt['id_i'];		
+			$id = $dt['id_i'];	
 			$isbn = trim($dt['i_identifier']);
 			$status = $dt['i_status'];
 			$view = 1;
@@ -310,13 +323,16 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 						$expression = $rdf->extract_id($dt,'isAppellationOfManifestation',$idm);
 						$dt = $rdf->le_data($expression[0]);
 						$work = $rdf->extract_id($dt,'isAppellationOfExpression',$expression[0]);
-						
+
+						/* Item */
+						$sx .= '<span class="big bold">'.msg('ITEM').'</span>';						
+						$sx .= $this->item_edit($id);
 						
 						$dta = $rdf -> le($work[0]);
-						$sx .= '<h1>WORK</h1>';
+						$sx .= '<span class="big bold">'.msg('WORK').'</span>';
 						$sx .= $rdf -> form($work[0], $dta);
 						
-						$sx .= '<h1>MANIFESTATION</h1>';
+						$sx .= '<span class="big bold">'.msg('MANIFESTATION').'</span>';
 						$dta = $rdf -> le($idm);
 						$sx .= $rdf -> form($idm, $dta);
 					}

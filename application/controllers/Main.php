@@ -457,7 +457,9 @@ function a($id = '') {
     $this -> cab();
     $this->load->view('welcome');
     
-    $tela = '';
+    $tela = '<div class="container">
+    <div class="row">
+    <div class="col-md-8">';
     $linkc = '<a href="' . base_url(PATH . 'v/' . $id) . '" class="middle">';
     $linkca = '</a>';
     
@@ -471,10 +473,8 @@ function a($id = '') {
     $linkda = '</a>';
     
     $tela .= '
-    <div class="container">
-    <div class="row">
-    <div class="col-md-8">
-    <h5>' . msg('class') . ': ' . $data['c_class'] . '</h5>
+    <span class="large">' . msg('class') . ': ' . $data['c_class'] . '</span><br>
+    <a href="#" onclick="newxy(\''.base_url(PATH.'rdf/class_change/'.$id).'\',800,400);" class="small">'.msg('change').'</a>
     </div>
     
     <div class="col-md-4 text-right">';

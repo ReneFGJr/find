@@ -65,18 +65,47 @@ a:hover {
 
 .small {
     font-size: 70%;
-    line-height: 70%;
+}
+
+.normal {
+    font-size: 100%;
 }
 
 .big {
     font-size: 130%;
-    line-height: 100%;
 }
 
 .large {
     font-size: 150%;
-    line-height: 100%;
 }
+
+.bold {
+    font-weight: bold;
+}
+
+.border1 {
+    border:1px solid #888;
+}
+
+.pad3
+    {
+        padding: 3px;
+    }
+
+.pad5
+    {
+        padding: 5px;
+    }    
+
+.br5
+    {
+        border-radius: 5px;
+    }
+
+hr {
+    color: #888;
+}
+
 
 .book_image {
     box-shadow: 5px 5px 8px #888888;
