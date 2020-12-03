@@ -33,7 +33,6 @@ class libraries extends CI_model {
 
         if (!isset($id))
         {
-            echo "OPS - ".$page;
             if (strpos($page, '/library')) { 
                 define('PATH', 'index.php/main/');
                 /* Nothing */
@@ -67,7 +66,7 @@ class libraries extends CI_model {
         } else {
             redirect(PATH);
         }
-        $sx = '<h3>'.msg('library_places').'</h3>';
+        $sx = '<h2>'.msg('library_places').'</h2>';
         $sql = "select * from library_place where lp_LIBRARY = '".LIBRARY."' ";
         $rlt = $this->db->query($sql);
         $rlt = $rlt->result_array();
@@ -75,10 +74,11 @@ class libraries extends CI_model {
         {
             $line = $rlt[$r];
             $sx .= '<hr>';
-            $sx .= '<h3>'.$line['lp_name'].'</h3>';
+            $sx .= '<span class="large">'.$line['lp_name'].'</span>';
+            $sx .= '<br>';
             if (isset($dt['edit']))
             {
-                $sx .= '<a href="'.base_url(PATH.$dt['edit'].$line['id_lp']).'" class="btn btn-outline-primary">';
+                $sx .= '<a href="'.base_url(PATH.$dt['edit'].$line['id_lp']).'" class="small">';
                 $sx .= msg('edit');
                 $sx .= '</a>';
             }

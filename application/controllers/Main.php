@@ -324,8 +324,10 @@ function about()
 {
     $this -> load -> model('libraries');
     $this -> cab();
-    $data['content'] = '<br/><br/>'.$this -> libraries->about();  
+    $data['content'] = '<br/><br/><div class="container"><div class="row"><div class="col-md-12">';
+    $data['content'] .= $this -> libraries->about();  
     $data['content'] .= $this -> libraries->about_places();     
+    $data['content'] .= '</div></div></div>';
     $data['title'] = msg('About');
     $this -> load -> view('content', $data);
     

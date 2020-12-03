@@ -1,0 +1,73 @@
+{
+  "kind": "books#volumes",
+  "totalItems": 1,
+  "items": [
+    {
+      "kind": "books#volume",
+      "id": "VVpPygEACAAJ",
+      "etag": "5U73NdvPX5M",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/VVpPygEACAAJ",
+      "volumeInfo": {
+        "title": "Contos De Machado De Assis",
+        "authors": [
+          "Machado De Assis",
+          "Kerem Freitas",
+          "Kris Barz"
+        ],
+        "publishedDate": "2012-08-09",
+        "description": "Prepare-se para viver uma aventura pelos mistérios da alma humana. No comando dessa viagem, ninguém menos que o “bruxo do Cosme Velho” – Machado de Assis. Nesta seleção, você vai conhecer alguns de seus mais consagrados contos, como “O espelho”, “Missa do galo” e “A cartomante”. Perspicaz e ferino, o autor constrói personagens tão intrigantes e contraditórios que qualquer semelhança com a realidade não é mera coincidência. Preste atenção às entrelinhas – pois como já dizia Machado, “Eu gosto de catar o mínimo e o escondido. Onde ninguém meteu o nariz, aí entra o meu, com a curiosidade estreita e aguda que descobre o encoberto”.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_10",
+            "identifier": "8506006864"
+          },
+          {
+            "type": "ISBN_13",
+            "identifier": "9788506006863"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": false
+        },
+        "pageCount": 272,
+        "printType": "BOOK",
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "preview-1.0.0",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "language": "pt",
+        "previewLink": "http://books.google.com.br/books?id=VVpPygEACAAJ&dq=isbn:9788506006863&hl=&cd=1&source=gbs_api",
+        "infoLink": "http://books.google.com.br/books?id=VVpPygEACAAJ&dq=isbn:9788506006863&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/Contos_De_Machado_De_Assis.html?hl=&id=VVpPygEACAAJ"
+      },
+      "saleInfo": {
+        "country": "BR",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "BR",
+        "viewability": "NO_PAGES",
+        "embeddable": false,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": false
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=VVpPygEACAAJ&hl=&printsec=frontcover&source=gbs_api",
+        "accessViewStatus": "NONE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "No comando dessa viagem, ninguém menos que o “bruxo do Cosme Velho” – Machado de Assis. Nesta seleção, você vai conhecer alguns de seus mais consagrados contos, como “O espelho”, “Missa do galo” e “A cartomante”."
+      }
+    }
+  ]
+}

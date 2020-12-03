@@ -73,6 +73,11 @@ a:hover {
     line-height: 100%;
 }
 
+.large {
+    font-size: 150%;
+    line-height: 100%;
+}
+
 .book_image {
     box-shadow: 5px 5px 8px #888888;
     margin-bottom: 10px;

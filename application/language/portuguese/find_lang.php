@@ -297,7 +297,7 @@ $lang['view'] = 'Detalhes';
 $lang['w_title'] = 'Título da obra';
 $lang['w_authors'] = 'Autores';
 
-$lang['not_locate'] = 'não localizado';
+$lang['not_locate'] = '<span style="color: red"><b>não localizado</b></span>';
 $lang['send_file'] = 'Enviar arquivo';
 $lang['close'] = 'Fechar';
 $lang['Upload Cover'] = 'Enviar Capa';
@@ -308,5 +308,37 @@ $lang['row_type'] = 'Sistemas de classificação disponíveis';
 $lang['rdf_exclude_confirm'] = 'Confirma exclusão?';
 
 $lang['setup_library'] = 'Configurações da biblioteca';
-$lnag['isbn_list'] = 'Lista de ISBN';
+$lang['isbn_list'] = 'Lista de ISBN';
+
+
+$lang['setup_library_place'] = 'Configurar Biblioteca - Locais';
+$lang['new'] = 'Novo(a)';
+$lang['place'] = 'Biblioteca/Setor';
+$lang['controller_vocabulary'] = 'Vocabulário controlado';
+$lang['setup_loan_parameters'] = 'Parametros para empréstimo';
+$lang['setup_subject'] = 'Cabeçalhos de assuntos';
+$lang['setup_classifications'] = 'Sistemas de classificação';
+$lang['menu_setup'] = 'Configurações';
+$lang['in_prepare'] = 'Preparo';
+$lang['AUTHORS'] = 'A U T O R E S';
+$lang['TITLE'] = 'T I T U L O';
+$lang['PUBLISHER'] = 'E D I T O R A';
+$lang['PUBLICATION'] = 'P U B L I C A Ç Ã O';
+$lang['WORK'] = 'Trabalho';
+$lang['MANIFESTATION'] = 'Manifestação';
+$lang['ITEM'] = 'Item';
+$lang['library_name'] = 'nome da biblioteca';
+$lang['About'] = 'Sobre a biblioteca';
+$lang['library_list'] = 'Lista de bibliotecas';
+$lang['no show defined'] = 'Nenhum visualizador disponível';
+$lang['not found'] = 'não localizado';
+$lang['library_about'] = 'Sobre a biblioteca';
+$lang['library_logo'] = 'Logotipo';
+$lang['library_id'] = 'ID biblioteca';
+$lang['library_code'] = 'Código';
+$lang[''] = '';
+$lang[''] = '';
+$lang[''] = '';
+$lang[''] = '';
+$lang[''] = '';
 ?>
