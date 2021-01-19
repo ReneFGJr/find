@@ -592,7 +592,7 @@ function vitrine()
 		$img = $this->covers->img($isbn);
 		$link = '<a href="'.base_url(PATH.'v/'.$id).'">';
 		$linka = '</a>';
-		$sx .= '<div class="col-3 col-lg-2 col-md-2">';
+		$sx .= '<div class="col-3 col-lg-2 col-md-2 books text-center">';
 		$sx .= $link;
 		$class = ' img_cover ';
 		if (strpos($img,'no_cover.png'))

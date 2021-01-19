@@ -81,13 +81,22 @@ class Books_item extends CI_model
 		
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
+
+		/************* Container *****************************/
 		
 		$sx = '<div class="container">';
 		$sx .= '<div class="row">';
+
+		/************* Items *********************************/
+		$sx .= '<div class="col-md-12">';
+		$sx .= '<h4>'.msg('books_status').'</h4>';
+		$sx .= '</div>';
+
+		/************* Lista de Itens ************************/
+
 		for ($r=0;$r < count($rlt);$r++)
 		{
 			$line = $rlt[$r];
-			$cor = 'background-color: #D0FFD0;';
 			$st = trim($line['i_status']);
 			$link = '';
 			$linka = '';
@@ -95,7 +104,6 @@ class Books_item extends CI_model
 			{
 				case '1':
 					$sta = msg('in_prepare');
-					$cor = 'background-color: #F0F0D0;';
 					$link = '<a href="'.base_url(PATH.'preparation/tombo/'.$line['id_i']).'">';
 					$linka = '';
 				break; 
@@ -103,37 +111,34 @@ class Books_item extends CI_model
 				default:
 				$sta = '->'.$st;
 			break;
+			}
+
+			$sx .= '<div class="col-md-1 text-center">';
+			$sx .= $link;			
+
+			/* Exemplar n. ********************************/
+			$sx .= 'Ex:'.$line['i_tombo'].'<br/>';
+
+			$lb = $line['i_localization'];
+			
+			if (strlen($lb) > 0)
+			{
+				print_r($line);
+				$sx .= '<br>'.$line['i_ln1'];
+				$sx .= '<br>'.$line['i_ln2'];
+				$sx .= '<br>'.$line['i_ln3'];
+				$sx .= '<br>'.$line['i_ln4'];
+			}
+			
+			$sx .= '<img src="'.base_url('img/books/books_'.$line['i_status'].'.png').'" class="img-fluid">';
+			$sx .= $lb;
+			$sx .= $linka;
+			$sx .= '</div>';
 		}
-		
-		$sx .= '<div class="col-md-2">';			
-		$sx .= '<div class="book_label" style="'.$cor.'">';
-		$lb = $line['i_localization'];
-		
-		
-		if (strlen($lb) == 0)
+		if (count($rlt) == 0)
 		{
-			$sx .= $sta;
-			$sx .= '<br/>';
-			$sx .= '<br/>';
-		} 
-		else
-		{
-			print_r($line);
-			$sx .= '<br>'.$line['i_ln1'];
-			$sx .= '<br>'.$line['i_ln2'];
-			$sx .= '<br>'.$line['i_ln3'];
-			$sx .= '<br>'.$line['i_ln4'];
+			$sx .= '<div class="col-12">'.message('Nenhum item localizado',2).'</div>';
 		}
-		$sx .= $link;
-		$sx .= '<br/>ex:'.strzero($line['i_tombo'],7);
-		$sx .= $linka;
-		$sx .= '</div>';
-		$sx .= '</div>';
-	}
-	if (count($rlt) == 0)
-	{
-		$sx .= '<div class="col-12">'.message('Nenhum item localizado',2).'</div>';
-	}
 	$sx .= '</div>';
 	$sx .= '</div>';
 	return($sx);

@@ -8,7 +8,7 @@ if (!isset($title)) { $title = ':: Title ::';}
   <title><?php echo $title;?></title>
   <link rel="stylesheet" href="<?php echo base_url('css/bootstrap.css');?>">
   <link rel="stylesheet" href="<?php echo base_url('css/jquery-ui.css');?>">  
-  <link rel="stylesheet" href="<?php echo base_url('css/style.css');?>">
+  <link rel="stylesheet" href="<?php echo base_url('css/style.css?version=0.21.02');?>">
   <link rel="stylesheet" href="<?php echo base_url('css/style_form_sisdoc.css');?>">
   
   <script type="text/javascript" src="<?php echo base_url('js/jquery-3.1.1.js');?>"></script>

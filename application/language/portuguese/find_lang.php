@@ -337,6 +337,7 @@ $lang['library_logo'] = 'Logotipo';
 $lang['library_id'] = 'ID biblioteca';
 $lang['library_code'] = 'Código';
 $lang['send_to_print'] = 'Enviar para Preparo Físico';
+$lang['books_status'] = 'Exemplares';
 $lang[''] = '';
 $lang[''] = '';
 $lang[''] = '';
