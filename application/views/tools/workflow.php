@@ -13,8 +13,8 @@ $link = '#';
   <ul class="StepProgress">
     <li class="StepProgress-item <?php echo $st[0];?>">Aquisição</li>
     <li class="StepProgress-item <?php echo $st[1];?>">Catalogação</li>
-    <li class="StepProgress-item <?php echo $st[4];?>">Preparo físico</li>
-    <li class="StepProgress-item <?php echo $st[5];?>">Fim do processo</li>
+    <li class="StepProgress-item <?php echo $st[2];?>">Preparo físico</li>
+    <li class="StepProgress-item <?php echo $st[3];?>">Fim Preparo</li>
   </ul>
 
 <style>

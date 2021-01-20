@@ -274,12 +274,22 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 			return($line);
 		}
 
-		function item_edit($id)
+		function item_edit($id,$status)
 			{
 				$sx = '';
-				$sx .= '<div class="border1">';
-				$sx .= '<a href="#" class="btn btn-primary">'.msg('send_to_print').'</a>';
-				$sx .= '</div>';
+				switch($status)
+					{
+						case '1':
+							$sx .= '<div class="border1">';
+							$sx .= '<a href="'.base_url(PATH.'preparation/alter_status/'.$id.'/2/'.checkpost_link($id.'2')).'" class="btn btn-primary">'.msg('send_to_print').'</a>';
+							$sx .= '</div>';
+							break;
+						case '2':
+							$sx .= '<div class="border1">';
+							$sx .= '<a href="'.base_url(PATH.'preparation/alter_status/'.$id.'/5/'.checkpost_link($id.'3')).'" class="btn btn-primary">'.msg('send_to_3').'</a>';
+							$sx .= '</div>';
+							break;
+						}
 				return($sx);
 			}
 
@@ -313,6 +323,19 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 					$sx .= '<a href="'.base_url(PATH.'preparation/tombo/'.$id).'" class="btn btn-primary">'.msg('continue').'</a>';
 					$view = 2;
 				break;
+
+				case '2':
+					$dt = $this->le_tombo($id);
+					$isbn = $dt['i_identifier'];
+					
+					$dt = $this->books_item->le_tombo($id);
+					$sx = $this->books_item->header($dt) .$sx;
+
+					/* Item */
+					$sx .= '<span class="big bold">'.msg('ITEM').'</span>';						
+					$sx .= $this->item_edit($id,$status);					
+					$view = 3;
+				break;				
 				
 				
 				/************************* Catalogação ***/
@@ -331,7 +354,7 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 
 						/* Item */
 						$sx .= '<span class="big bold">'.msg('ITEM').'</span>';						
-						$sx .= $this->item_edit($id);
+						$sx .= $this->item_edit($id,$status);
 						
 						$dta = $rdf -> le($work[0]);
 						$sx .= '<span class="big bold">'.msg('WORK').'</span>';

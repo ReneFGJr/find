@@ -49,6 +49,14 @@ class book_preparations extends CI_model
 				if ($id == 0) { $id = array(0,5); }
 				$sx = $this->preparation_itens($id);
 			break;
+
+			case 'alter_status':
+				if (perfil("#ADM#CAT"))
+				{
+					$sx = $this->books_item->item_status($id,$sta);
+					redirect(base_url(PATH.'preparation/tombo/'.$id));
+				}
+			break;			
 			
 			
 			/********************************* MENU **/
