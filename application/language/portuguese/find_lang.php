@@ -338,8 +338,15 @@ $lang['library_id'] = 'ID biblioteca';
 $lang['library_code'] = 'Código';
 $lang['send_to_print'] = 'Enviar para Preparo Físico';
 $lang['books_status'] = 'Exemplares';
-$lang[''] = '';
-$lang[''] = '';
+$lang['Year'] = 'Ano';
+$lang['OTHERS'] = 'Notas / outras informações';
+$lang['UNIFORM_TITLE'] = 'Título Uniforme';
+$lang['SUBJECT'] = 'Classifcação de Assuntos';
+$lang['sc_group'] = 'GRUPO';
+$lang['BORN'] = 'Dados sobre nascimento';
+$lang['DEAD'] = 'Dados sobre falecimento';
+$lang['PERSON'] = 'P E S S O A';
+$lang['LINKEDDATA'] = 'Dados Lincados (Externos)';
 $lang[''] = '';
 $lang[''] = '';
 ?>

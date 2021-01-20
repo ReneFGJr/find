@@ -231,6 +231,8 @@ class Main extends CI_controller {
         $this->load->model("books");
         $this->load->model("covers");
         $this->load->model("isbn");
+        $this->load->helper("rdf_show");
+        
         $this -> cab();
         $tela = $this -> load -> view('welcome', null,true);
         
@@ -451,6 +453,8 @@ function config($ac='',$id='',$chk='',$chk2='',$chk3='') {
 } 
 
 function a($id = '') {
+    $this->load->model("Agents");
+   
     $rdf = new rdf;
     $data = $rdf -> le($id);
     
@@ -488,7 +492,8 @@ function a($id = '') {
     
     switch($data['c_class']) {
         case 'Person' :
-            $tela .= $this -> frbr -> show($id);
+       
+            //$tela .= $this->Agents -> show($id);
         break;
         case 'Family' :
             $tela .= $this -> frbr -> show($id);

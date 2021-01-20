@@ -73,4 +73,3 @@ class Agents extends CI_model {
         return ($rs);
     }
 }
-?>
