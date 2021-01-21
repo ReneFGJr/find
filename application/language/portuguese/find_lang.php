@@ -347,6 +347,6 @@ $lang['BORN'] = 'Dados sobre nascimento';
 $lang['DEAD'] = 'Dados sobre falecimento';
 $lang['PERSON'] = 'P E S S O A';
 $lang['LINKEDDATA'] = 'Dados Lincados (Externos)';
-$lang[''] = '';
+$lang['books_author_titles'] = 'Obras do autor';
 $lang[''] = '';
 ?>
