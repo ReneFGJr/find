@@ -61,12 +61,16 @@ class libraries extends CI_model {
                 {
                     $url = 1;
                 }
+            if ($id == 0)
+                {
+                    $id = LIBRARY;
+                }
             $type = abs($type);
 			$files = array(
                 '',
-				'logo/logo_'.LIBRARY.'_mini.jpg',
-				'logo/logo_'.LIBRARY.'.jpg',
-				'background/library_'.LIBRARY.'.jpg');
+				'logo/logo_'.$id.'_mini.jpg',
+				'logo/logo_'.$id.'.jpg',
+				'background/library_'.$id.'.jpg');
             $class = array(
                 '',
                 'logo_mini',
@@ -223,7 +227,8 @@ class libraries extends CI_model {
             $link = '<a href="' . base_url(PATH . 'library/' . $line['id_l']) . '" border=0>';
             $sx .= '<div class="col-2 text-center" style="border: 2px solid #00000; margin-bottom: 50px;">';
             $sx .= $link;
-            $sx .= '<img src="' . base_url($line['l_logo']) . '" class="img-fluid">';
+            $logo = $this->logo($line['l_id'],-1);
+            $sx .= '<img src="' . $logo . '" class="img-fluid">';
             $sx .= '<br>';
             $sx .= $line['l_name'];
             $sx .= '</a>';

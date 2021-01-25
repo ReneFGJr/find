@@ -170,22 +170,19 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 			i_tombo,i_manitestation, i_identifier, 
 			i_library, i_ip, i_aquisicao,
 			i_status, i_library_place, i_exemplar
-			)
+		)
 			values
-			(
-				'$tombo',$manifestation, '$isbn', 
-				'".$lib."','".ip()."',$acq,
-				$status,$place,$exemplar
-				)";
-				$rlt = $this->db->query($sql);					
-				return(array(1,'OK! Item inserido com sucesso!'));
-			} else {
-				return(array(-1,'ERRO! Número tombo já cadastrado!'));
-			}
-			
-		}	
-		
-		
+		(
+		'$tombo',$manifestation, '$isbn', 
+		'".$lib."','".ip()."',$acq,
+		$status,$place,$exemplar
+		)";
+		$rlt = $this->db->query($sql);					
+		return(array(1,'OK! Item inserido com sucesso!'));
+	} else {
+		return(array(-1,'ERRO! Número tombo já cadastrado!'));
+	}
+}	
 		/****************** Item Formulário *********************************************/
 		function form_item_aquisition()
 		{

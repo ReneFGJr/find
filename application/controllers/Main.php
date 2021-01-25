@@ -103,7 +103,7 @@ class Main extends CI_controller {
             INNER JOIN propel.rdf_name on cc_pref_term = id_n 
             where cc_library = 1003 and cc_class = 16 
             and cc_status >= 0
-            limit 10
+            limit 1000
             ";
             $rlt = $this->db->query($sql);
             $rlt = $rlt->result_array();
@@ -124,7 +124,8 @@ class Main extends CI_controller {
                     //echo $link.$ln['id_cc'].$linka.', ';
                 }                
             $its .= '### FINISH'.cr();
-            echo '<pre>'.$its.'</pre>';
+            echo $its;
+            exit;
         }
     
     function preparation($path='',$id='',$sta='')

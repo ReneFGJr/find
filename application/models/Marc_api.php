@@ -31,11 +31,14 @@ class Marc_api extends CI_model
 		{
 			$file = $t;
 			$sx = '';
+			$marcs = array();
+			$itens = array();
 			if (file_exists($file))
 				{
 					$txt = file_get_contents($file).cr().'###########'.cr();
 					
 					$txt = troca($txt,chr(13),chr(10));
+					$txt = troca($txt,chr(10).chr(10),chr(10));
 					$ln = explode(chr(10),$txt);
 
 					if ($ln[0] == '### START')
@@ -46,12 +49,11 @@ class Marc_api extends CI_model
 									$l = $ln[$r];
 									if ((substr($l,0,7) == '### NEW') or (substr($l,0,7) == '### FIN'))
 										{
-											echo '<pre>'.$marc.'</pre>';
+											array_push($marcs,$marc);
 											$marc = '';
 										} else {
 											$marc .= $l.cr();
 										}
-
 								}
 
 						} else {
@@ -61,6 +63,38 @@ class Marc_api extends CI_model
 				} else {
 					$sx .= message('ERRO NO ARQUIVO',3);
 				}
+
+
+				/* Processar */
+				$rdf = new rdf;
+				for ($r=0;$r < count($marcs);$r++)
+					{
+						$mc = $marcs[$r];
+						if (strpos($mc,'951 ## $a') > 0)
+							{
+								$idt = substr($mc,strpos($mc,'951 ## $a')+10,20);
+								$idt = substr($idt,0,strpos($idt,chr(10)));
+								$idt = sonumero($idt);
+								$tombo = round(substr($idt,4,strlen($idt)));
+								$dt = $this->book($mc);
+
+								if (isset($dt['isbn']['isbn13']))
+								{
+									print_r($dt['isbn']);
+									$isbn = $dt['isbn']['isbn13'];
+								}
+								$tipo = $rdf->find_class('Book');
+								$status = 1;
+
+								$place = 1;		
+								echo $place;						
+								$idd = $this->books_item->tombo_insert($tombo, $isbn, $tipo, $status, $place);
+								$sx .= $isbn. '=>'.$idd.'<br>';
+								echo $sx;
+								exit;
+							}
+					}
+
 				return($sx);
 		}
 
@@ -211,6 +245,7 @@ class Marc_api extends CI_model
 		$w['descricao'] = '';
 		$w['editora'] = '';
 		$w['pages'] = '';
+		$w['isbn'] = array();
 		$w['expressao'] = array('genere'=>'books','idioma'=>'pt');
 		$s = '';
 
