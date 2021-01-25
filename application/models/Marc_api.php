@@ -26,6 +26,160 @@ class Marc_api extends CI_model
 		}
 		return($sx);
 	}
+
+	function import($t)
+		{
+			$file = $t;
+			$sx = '';
+			if (file_exists($file))
+				{
+					$txt = file_get_contents($file).cr().'###########'.cr();
+					
+					$txt = troca($txt,chr(13),chr(10));
+					$ln = explode(chr(10),$txt);
+
+					if ($ln[0] == '### START')
+						{
+							$marc = '';
+							for ($r=1;$r < count($ln);$r++)
+								{
+									$l = $ln[$r];
+									if ((substr($l,0,7) == '### NEW') or (substr($l,0,7) == '### FIN'))
+										{
+											echo '<pre>'.$marc.'</pre>';
+											$marc = '';
+										} else {
+											$marc .= $l.cr();
+										}
+
+								}
+
+						} else {
+							$sx .= message('ERRO NO FORMATO DO ARQUIVO',3);
+						}
+
+				} else {
+					$sx .= message('ERRO NO ARQUIVO',3);
+				}
+				return($sx);
+		}
+
+	function marc_export($id)
+		{
+            $rdf = new rdf;
+            $rdf->base = 'propel.';
+
+            $dt = $rdf->le($id);
+
+            $dtd = $rdf->le_data($id);
+            echo '<pre>';
+            $marc = '';
+            $expr = array();
+            $mani = array();
+            $item = array();
+
+            for ($r=0;$r < count($dtd);$r++)
+                {
+                    $ln = $dtd[$r];
+                    $class = $ln['c_class'];                    
+                    switch($class)
+                        {
+                            case 'hasAuthor':
+                                $marc .= '100 ## $a '.nbr_author($ln['n_name'],7).cr();
+                                break;
+                            case 'hasTitle':
+                                $marc .= '245 ## $a '.$ln['n_name'].cr();
+                                break;
+                            case 'hasDateFirstWork':
+                                $marc .= '260 ## $c '.$ln['n_name'].cr();
+                                break;
+                            case 'isRealizedThrough':
+                                array_push($expr,$ln['d_r2']);
+                                break;
+                        }
+                }
+
+            /* Expressão */
+            for ($r=0;$r < count($expr);$r++)
+                {
+                    $dte = $rdf->le_data($expr[$r]);                    
+                    for ($y=0;$y < count($dte);$y++)
+                        {
+                            $ln = $dte[$y];
+                            $class = $ln['c_class'];                    
+                            switch($class)
+                                {                            
+                                    case 'isEmbodiedIn':
+                                    $idm = $ln['d_r2'];
+                                    array_push($mani,$idm);
+                                    break;
+
+                                    case 'hasLanguageExpression':
+                                    $marc .= '245 ## $l '.$ln['n_name'].cr();
+                                    break;
+
+                                    case 'hasFormExpression':
+                                    $marc .= '245 ## $t '.$ln['n_name'].cr();
+                                    break;
+                                }
+                        }
+                }
+
+             /* Manifestacao - isEmbodiedIn */
+            for ($r=0;$r < count($mani);$r++)
+                {
+                    $dte = $rdf->le_data($mani[$r]);
+
+                    for ($y=0;$y < count($dte);$y++)
+                        {
+                            $ln = $dte[$y];
+                            $class = $ln['c_class'];
+                            switch($class)
+                                {
+                                    case 'hasColorclassification':
+                                    $marc .= '085 ## $a '.$ln['n_name'].cr();
+                                    break;
+
+                                    case 'hasISBN':
+                                    $marc .= '022 ## $a '.$ln['n_name'].cr();
+                                    break;
+
+                                    case 'dateOfPublication':
+                                    $marc .= '260 ## $c '.$ln['n_name'].cr();
+                                    break;
+
+                                    case 'isPlaceOfPublication':
+                                    $marc .= '260 ## $b '.$ln['n_name'].cr();
+                                    break;
+
+                                    case 'isPublisher':
+                                    $marc .= '260 ## $a '.$ln['n_name'].cr();
+                                    break;
+
+                                    case 'hasPage':
+                                    $marc .= '300 ## $a '.$ln['n_name'].cr();
+                                    break;
+
+
+                                    case 'hasSubject':
+                                    $marc .= '650 ## $a '.$ln['n_name'].cr();
+                                    break;
+
+                                    case 'hasCover':
+                                    array_push($item,$ln['n_name']);
+                                    $marc .= '952 ## $a '.$ln['n_name'].cr();
+                                    break;                                    
+
+                                    case 'isExemplifiedBy':
+                                    array_push($item,$ln['n_name']);
+                                    $marc .= '951 ## $a '.$ln['n_name'].cr();
+                                    break;
+                                }
+                        }
+                }
+            return($marc);			
+		}
+
 	function book($t)
 	{
 		$type = "MARC2";
@@ -59,6 +213,7 @@ class Marc_api extends CI_model
 		$w['pages'] = '';
 		$w['expressao'] = array('genere'=>'books','idioma'=>'pt');
 		$s = '';
+
 		for ($r=0;$r < count($ln);$r++)
 		{
 			$l = $ln[$r];
@@ -105,20 +260,47 @@ class Marc_api extends CI_model
 					$sr = $this->extract($l,'a');
 					$sr = nbr_author($sr,8);
 					array_push($w['agents'],$sr);
-				break;				
+				break;
+
+				/* CDD */
+				case '085':
+					$sr = $this->extract($l,'a');
+					if (!isset($w['cdd_cor']))
+						{
+							$w['cdd_cor'] = array();
+						}
+					$w['cdd_cor'][$sr] = 1;
+					
+				break;								
 				
 				/* CDD */
 				case '082':
 					$sr = $this->extract($l,'a');
-					$w['cdd'] =$sr;
-				break;				
-				
+					if (!isset($w['cdu']))
+						{
+							$w['cdu'] = array();
+						}
+					$w['cdu'][$sr] = 1;
+				break;			
 				
 				/* CDU */
 				case '080':
 					$sr = $this->extract($l,'a');
-					$w['cdd'] =$sr;
-				break;		
+					if (!isset($w['cdd']))
+						{
+							$w['cdd'] = array();
+						}
+					$w['cdd'][$sr] = 1;
+				break;
+
+				/* CDU */
+				case '952':
+					$sr = $this->extract($l,'a');
+					if (strlen($sr) > 0)
+					{
+						$w['cover'] = '_repositorio/Image/'.trim($sr);
+					}
+				break;							
 				
 				/***************** Título ***********/
 				case '245':
@@ -127,20 +309,32 @@ class Marc_api extends CI_model
 					if (strlen($sb) > 0)
 					{ $sr = trim($sr).': '.trim($sb); }
 					$title = $sr;
-					$w['title'] = $sr;
+					if (strlen($sr) > 0)
+						{
+							$w['title'] = $sr;
+						}
+					
 				break;
 				
 				/***************** Editora ***********/
 				case '260':
 					$sr = $this->extract($l,'b');
+					if (strlen($sr) > 0)
+					{
 					$w['editora'] = $sr;
+					}
 					
 					$sr = $this->extract($l,'a');
+					if (strlen($sr) > 0)
+					{
 					$w['place'] = $sr;				
+					}
 					
 					$sr = $this->extract($l,'c');
+					if (strlen($sr) > 0)
+					{
 					$w['data'] = $sr;
-					
+					}					
 				break;					
 				
 				/***************** Pages ***********/
@@ -190,11 +384,11 @@ class Marc_api extends CI_model
 		$s .= $ln[$r];
 		$s .= cr();
 	}
-	
+
 	$w['error'] = 0;
 	$w['type'] = $type;
 	
-	if (strlen($title) > 0)
+	if (strlen($w['title']) > 0)
 	{
 		$w['error_msg'] = 'ISBN_inported';
 		$w['totalItems'] = 1;
@@ -205,7 +399,7 @@ class Marc_api extends CI_model
 		$w['error_msg'] = 'ISBN_not_found';
 		$w['totalItems'] = 0;
 		$w['url'] = '';
-	}	
+	}
 	return($w);
 }
 function extract($t,$sub)

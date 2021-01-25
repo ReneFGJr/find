@@ -7,16 +7,13 @@ if (!isset($url))
 {
 	$url = PATH;
 }
-if (!isset($logo))
-{
-	$logo = 'img/logo-brapci_livros_mini.png';
-}
+$logo = $this->libraries->logo(0,-1);
 ?>
 <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
 	<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"></span>
 	</button>
-	<a class="navbar-brand" href="<?php echo base_url(PATH); ?>"><img src="<?php echo base_url($logo);?>" style="height: 30px;"></a>
+	<a class="navbar-brand" href="<?php echo base_url(PATH); ?>"><img src="<?php echo $logo;?>" style="height: 30px;"></a>
 
 	<div class="collapse navbar-collapse" id="navbarSupportedContent">
 		<ul class="navbar-nav mr-auto">
@@ -59,8 +56,12 @@ if (!isset($logo))
 				<?php } ?>
 		</ul>
 	</div>
+
 	<div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
 		<ul class="navbar-nav ml-auto">
+			<li class="nav-item">
+				<a class="nav-link" href="<?php echo base_url(PATH.'library/list'); ?>"><?php echo msg('library_list');?>.'</a>
+			</li> 
             <li class="nav-item">
                 <?php 
                 $socials = new socials;

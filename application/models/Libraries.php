@@ -52,6 +52,57 @@ class libraries extends CI_model {
         return ('');
     }
 
+    function logo($id=0,$type=0,$w='',$h='',$editar=0)
+        {
+            $sx = '';
+            $url = 0;
+            /* Solicita somente a URL, tipo negativo */
+            if ($type < 0)
+                {
+                    $url = 1;
+                }
+            $type = abs($type);
+			$files = array(
+                '',
+				'logo/logo_'.LIBRARY.'_mini.jpg',
+				'logo/logo_'.LIBRARY.'.jpg',
+				'background/library_'.LIBRARY.'.jpg');
+            $class = array(
+                '',
+                'logo_mini',
+                'logo',
+                'banner_top'
+            );
+
+            if ($id == 0)
+                {
+                    $id = LIBRARY;
+                }
+            $file = 'img/'.$files[$type];
+
+            if (file_exists($file))
+                {
+                    $sx .= '<img src="'.base_url($file).'" class="'.$class[$type].'">';
+                    if ($url == 1)
+                        {
+                            $sx = base_url($file);
+                        }
+                } else {
+                    $file = 'img/logo/no_logo.png';
+                    $sx .= '<img src="'.base_url($file).'" class="'.$class[$type].'">';
+                    if ($url == 1)
+                        {
+                            $sx = base_url($file);
+                        }                    
+                }
+            if ((perfil("#ADM")) and ($url == 0) and ($editar == 1))
+                {
+                    $sx .= '<br>';
+                    $sx .= '<a href="#" class="btn btn-outline-primary">'.msg('change_image').'</a>';
+                }
+            return($sx);
+        }
+
     function contact()
     {
         $sx = 'Contato';
@@ -104,13 +155,7 @@ class libraries extends CI_model {
             redirect(PATH);
         }
         $dt = $this->le($id);
-        $logo = $dt['l_logo'];
-        if (file_exists($logo))
-        {
-            $logo = base_url($logo);
-        } else {
-            $logo = base_url('img/logo/no_logo.png');
-        }
+        $logo = $this->libraries->logo(0,-1);
         $sx = '<div class="row">';
         $sx .= '<div class="col-md-10">'.cr();
         $sx .= '<h3>'.msg("About").'</h3>'.cr();

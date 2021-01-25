@@ -277,11 +277,14 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 		function item_edit($id,$status)
 			{
 				$sx = '';
+				$btn_to_prepar = '<a href="'.base_url(PATH.'preparation/alter_status/'.$id.'/2/'.checkpost_link($id.'2')).'" class="btn btn-primary">'.msg('send_to_print').'</a>';
+				$btn_marc_import = '<a href="'.base_url(PATH.'preparation/tombo/'.$id.'/marc/'.checkpost_link($id.'2')).'" class="btn btn-primary">'.msg('marc_import').'</a>';
 				switch($status)
 					{
 						case '1':
 							$sx .= '<div class="border1">';
-							$sx .= '<a href="'.base_url(PATH.'preparation/alter_status/'.$id.'/2/'.checkpost_link($id.'2')).'" class="btn btn-primary">'.msg('send_to_print').'</a>';
+							$sx .= $btn_to_prepar;
+							$sx .= $btn_marc_import;
 							$sx .= '</div>';
 							break;
 						case '2':

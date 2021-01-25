@@ -2,7 +2,6 @@
 /*
 define('LIBRARY', '1001');
 define('PATH', 'index.php/main/');
-define('LOGO', 'img/logo_library.png');
 define('LIBRARY_NAME', 'Rede de Leitura');
 define('LIBRARY_LEMA', 'Incentivando a Leitura');
 */
@@ -86,6 +85,47 @@ class Main extends CI_controller {
         $this->load->model("labels");
         $this->labels->label_pdf();
     }
+
+    function marc($id=0)
+        {
+            $this->load->model("marc_api");
+            //$this->marc_api->marc_export($id);
+
+
+
+            //'1000 - CI'
+            //'1001 - PROPEL'
+            //'1002 - CASA'
+            //'1001 - PROPEL'
+
+            $sql = "
+            SELECT * FROM propel.rdf_concept
+            INNER JOIN propel.rdf_name on cc_pref_term = id_n 
+            where cc_library = 1003 and cc_class = 16 
+            and cc_status >= 0
+            limit 10
+            ";
+            $rlt = $this->db->query($sql);
+            $rlt = $rlt->result_array();
+
+
+            $its = '';
+
+            $its .= '### START'.cr();
+            $its .= '### TOTAL REGISTERS '.count($rlt).cr();            
+
+            for ($r=0;$r < count($rlt);$r++)
+                {
+                    $ln = $rlt[$r];
+                    $link = '<a href="'.base_url(PATH.'marc/'.$ln['id_cc']).'">';
+                    $linka = '</a>';
+                    $its .= '### NEW REGISTER '.$ln['id_cc'].cr();
+                    $its .= $this->marc_api->marc_export($ln['id_cc']);
+                    //echo $link.$ln['id_cc'].$linka.', ';
+                }                
+            $its .= '### FINISH'.cr();
+            echo '<pre>'.$its.'</pre>';
+        }
     
     function preparation($path='',$id='',$sta='')
     {
@@ -109,7 +149,6 @@ class Main extends CI_controller {
     private function cab($navbar = 1) {
         
         $data['title'] = LIBRARY_NAME;
-        $data['logo'] = LOGO;
         $data['url'] = PATH;
         $this -> load -> view('header/header', $data);
         if ($navbar == 1) {
@@ -209,7 +248,7 @@ class Main extends CI_controller {
         $this->load->model("covers");
         $rdf = new rdf;
         
-        $data['logo'] = LOGO;
+        $data['logo'] = $this->libraries->logo(0,2);
         $tela = '';
         $tela .= $this -> load -> view('welcome', $data,true);
         $tela .= $this -> load -> view('welcome_brapci', $data,true);

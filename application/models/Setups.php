@@ -37,7 +37,11 @@ class setups extends CI_model
 
 			case 'library_place_edit':
 			$sx .= $this->library_place_edit($id);
-			break;						
+			break;		
+
+			case 'setup_library_logo':
+			$sx .= $this->library_logos($id);
+			break;							
 
 			/******************** Default ****************************/
 			default:
@@ -52,6 +56,7 @@ class setups extends CI_model
 	{
 		$m = array();
 		$m['setup_library'] = 'setup/library_edit';
+		$m['setup_library_logo'] = 'setup/setup_library_logo';
 		$m['setup_library_place'] = 'setup/library_place';
 		$m['setup_classifications'] = 'setup/classifications';
 		$m['setup_subject'] = 'setup/subject';
@@ -69,6 +74,28 @@ class setups extends CI_model
 		$sx .= '</ul>';
 		return($sx);
 	}
+
+	function library_logos()
+		{
+			$types = array('','Logo - Mini','Logo - Middle','Banner top');
+            $size_w = array(0,150,600,1600);
+            $size_h = array(0,150,600,210);
+			$sx = '<h3>'.msg('setup_library_logo').'</h3>';
+
+			for ($r=1;$r < count($types);$r++)
+				{
+					$sx .= '<h5>'.msg($types[$r]).'</h5>';
+					$sx .= '<sup>'.$size_w[$r].'x'.$size_h[$r].'</sup>';
+					$sx .= '<br>';
+
+					/* Imagem - logos */
+					$editar = 1;
+					$type = $r;
+					$sx .= $this->libraries->logo(LIBRARY,$type,$size_w[$r],$size_h[$r],$editar);
+					$sx .= '<hr>';
+				}
+			return($sx);
+		}
 
 	/****************** Classifications  *************************/
 	function classification()

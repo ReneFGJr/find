@@ -44,6 +44,11 @@ class book_preparations extends CI_model
 			case 'acquisition_marc':
 				$sx = $this->acquisition_marc();
 			break;
+
+			case 'acquisition_marc_txt':
+				$sx = $this->acquisition_marc_txt();
+			break;
+
 			
 			case 'itens':
 				if ($id == 0) { $id = array(0,5); }
@@ -209,6 +214,33 @@ function actions($op,$id)
 		$sx .= 'Enviar para '.msg('item_status_'.$op[$r]).'</a>';
 	}
 	return($sx);
+}
+
+function acquisition_marc_txt()
+{
+	$this->load->model("iso2709");
+	$msgs = '';
+	$form = new form;
+	
+	$cp = array();
+	array_push($cp,array('$H8','','',false,false));
+	$m = msg('marc_file_info');
+	array_push($cp,array('$M','',$m,false,false));
+	array_push($cp,array('$FILE','','',false,false));
+	
+	$tela = '<div class="container"><div class="row"><div class="col-md-12">';
+	$tela .= $form->editar($cp,'');
+	$tela .= '</div></div></div>';	
+
+	if ((isset($_FILES['fileToUpload'])) and (strlen($_FILES['fileToUpload']['tmp_name']) > 0))
+	{
+		if (isset($_FILES['fileToUpload']['tmp_name']))
+		{
+			$file = $_FILES['fileToUpload']['tmp_name'];
+			$tela .= $this->marc_api->import($file);
+		}
+	}		
+	return($tela);	
 }
 
 function acquisition_marc()
@@ -434,14 +466,29 @@ function show($dt,$tp=1)
 
 function acquisition()
 {
-	$sx = 'Forma de Aquisição
+	$sx = '	
+	<div class="col-md-3" style="margin-top: 40px;">
+	<b>Incorporação no Acervo</b>
+	</div>
+
+	<div class="col-md-9" style="margin-top: 40px;">
+	<ul>	
+	<li><a href="'.base_url(PATH.'preparation/acquisition_in/').'">Inserção pelo ISBN</a></li>
+	</ul>
+	</div>
+
+	<!------- Importação ---->	
+	<div class="col-md-3" style="margin-top: 40px;">
+	<b>Importação</b>
+	</div>
+
+	<div class="col-md-9" style="margin-top: 40px;">
 	<ul>
-	<li>Compra</li>
-	<li>Doação</li>
-	<li>Permuta</li>
-	<li><a href="'.base_url(PATH.'preparation/acquisition_marc/').'">Incorporação no Acervo MARC</a></li>
-	<li><a href="'.base_url(PATH.'preparation/acquisition_in/').'">Incorporação no Acervo</a></li>
-	</ul>';
+	<li><a href="'.base_url(PATH.'preparation/acquisition_marc/').'">Incorporação no Acervo MARC - BIBLIVRE</a></li>
+	<li><a href="'.base_url(PATH.'preparation/acquisition_marc_txt/').'">Incorporação no Acervo MARC/TXT</a></li>
+	</ul>
+	</div>
+	';
 	return($sx);
 } 
 }

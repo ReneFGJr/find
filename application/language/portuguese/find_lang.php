@@ -348,5 +348,13 @@ $lang['DEAD'] = 'Dados sobre falecimento';
 $lang['PERSON'] = 'P E S S O A';
 $lang['LINKEDDATA'] = 'Dados Lincados (Externos)';
 $lang['books_author_titles'] = 'Obras do autor';
+$lang['setup_library_logo'] = 'Logotipo e Banners';
+$lang['Classification'] = 'Classificação';
 $lang[''] = '';
+$lang[''] = '';
+$lang[''] = '';
+$lang[''] = '';
+$lang[''] = '';
+$lang[''] = '';
+
 ?>

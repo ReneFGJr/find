@@ -1,0 +1,70 @@
+{
+  "kind": "books#volumes",
+  "totalItems": 1,
+  "items": [
+    {
+      "kind": "books#volume",
+      "id": "NpxPAAAACAAJ",
+      "etag": "YlaeVo1ZQU0",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/NpxPAAAACAAJ",
+      "volumeInfo": {
+        "title": "Dezenove poemas desengonçados",
+        "authors": [
+          "Ricardo Azevedo"
+        ],
+        "publishedDate": "1998-01-01",
+        "description": "Poemas, trovas e adivinhas brincam com as palavras, com o universo infantil. E também convidam as crianças à reflexão sobre importantes assuntos.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_10",
+            "identifier": "8508069502"
+          },
+          {
+            "type": "ISBN_13",
+            "identifier": "9788508069507"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": false
+        },
+        "pageCount": 55,
+        "printType": "BOOK",
+        "categories": [
+          "Children's poetry, Brazilian"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "preview-1.0.0",
+        "language": "pt",
+        "previewLink": "http://books.google.com.br/books?id=NpxPAAAACAAJ&dq=isbn:9788508069507&hl=&cd=1&source=gbs_api",
+        "infoLink": "http://books.google.com.br/books?id=NpxPAAAACAAJ&dq=isbn:9788508069507&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/Dezenove_poemas_desengon%C3%A7ados.html?hl=&id=NpxPAAAACAAJ"
+      },
+      "saleInfo": {
+        "country": "BR",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "BR",
+        "viewability": "NO_PAGES",
+        "embeddable": false,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": false
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=NpxPAAAACAAJ&hl=&printsec=frontcover&source=gbs_api",
+        "accessViewStatus": "NONE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "Um livro muito moleque traz 19 poemas que estimulam a reflexa~o."
+      }
+    }
+  ]
+}
