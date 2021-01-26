@@ -263,6 +263,16 @@ function manifestation($id,$d)
                     }
                 $class .= $vlrx;
             break;
+
+            case 'hasClassificationCDU':
+                $link = '<a href="'.base_url(PATH.'v/'.$idx).'">';
+				$class .= $link.$vlr.$linka;
+            break;			
+
+            case 'hasClassificationCDD':
+                $link = '<a href="'.base_url(PATH.'v/'.$idx).'">';
+				$class .= $link.$vlr.$linka;
+            break;			
 			
 		}
 	}
@@ -272,7 +282,7 @@ function manifestation($id,$d)
     {
         $sxx = '<table style="margin-top: 20px;">';
         $sxx .= '<tr>';
-        $sxx .= '<td>'.msg('Classification').'</td>';
+        $sxx .= '<td>'.msg('Classification').':</td>';
         $sxx .= '<td>'.$class.'</td>';
         $sxx .= '</tr>';
         $sxx .= '</table>';

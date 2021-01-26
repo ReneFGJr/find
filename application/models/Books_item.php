@@ -93,19 +93,37 @@ class Books_item extends CI_model
 		$sx .= '</div>';
 
 		/************* Lista de Itens ************************/
-
 		for ($r=0;$r < count($rlt);$r++)
 		{
 			$line = $rlt[$r];
 			$st = trim($line['i_status']);
+			if (substr($line['i_uri'],0,5) == 'FILE:')
+				{ $st = '99'; }
+			if (substr($line['i_uri'],0,4) == 'URL:')
+				{ $st = '98'; }
+
 			$link = '';
 			$linka = '';
+			$ex = '';
+			
 			switch($st)
 			{
+				case '99':
+					$ex .= 'Ex: DIGITAL<br/>';
+					$img = 'img/icon/icone_pdf.png';
+					$link = '<a href="'.base_url('_repositorio/books/'.substr($line['i_uri'],5,200)).'" target="new_'.date("Hmis").'">';
+					$linka = '</a>';
+					break;
+				case '98':
+					$ex .= 'Ex: URL<br/>';
+					$img = 'img/icon/icone_link.png';
+					break;					
 				case '1':
+					$ex .= 'Ex:'.$line['i_tombo'].'<br/>';
 					$sta = msg('in_prepare');
 					$link = '<a href="'.base_url(PATH.'preparation/tombo/'.$line['id_i']).'">';
 					$linka = '';
+					$img = 'img/books/books_'.$line['i_status'].'.png';	
 				break; 
 				
 				default:
@@ -114,11 +132,11 @@ class Books_item extends CI_model
 			}
 
 			$sx .= '<div class="col-md-1 text-center">';
-			$sx .= $link;			
+			$sx .= '<span class="small">'.$ex.'</span>';
+			$sx .= $link;	
+				
 
-			/* Exemplar n. ********************************/
-			$sx .= 'Ex:'.$line['i_tombo'].'<br/>';
-
+			/* Exemplar n. ********************************/	
 			$lb = $line['i_localization'];
 			
 			if (strlen($lb) > 0)
@@ -129,8 +147,8 @@ class Books_item extends CI_model
 				$sx .= '<br>'.$line['i_ln3'];
 				$sx .= '<br>'.$line['i_ln4'];
 			}
+			$sx .= '<img src="'.base_url($img).'" class="img-fluid">';
 			
-			$sx .= '<img src="'.base_url('img/books/books_'.$line['i_status'].'.png').'" class="img-fluid">';
 			$sx .= $lb;
 			$sx .= $linka;
 			$sx .= '</div>';
@@ -293,6 +311,27 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 				return($sx);
 			}
 
+		function link_item($dt)
+			{
+				$file = $dt['i_uri'];
+				$sx = '';
+				if (substr($file,0,5) == 'FILE:')
+					{
+						$file = substr($file,5,strlen($file));
+						$file = base_url('_repositorio/books/'.$file);
+						$sx .= '<a href="'.$file.'" target="_new">';
+						$sx .= '<img src="'.base_url('img/icon/icone_pdf.png').'" style="height: 24px;">';
+						$sx .= '</a>';
+					}
+				if (substr($file,0,4) == 'URL:')
+					{
+						$sx .= '<a href="'.substr($file,4,strlen($file)).'" target="_new">';
+						$sx .= '<img src="'.base_url('img/icon/icone_link.png').'" style="height: 24px;">';
+						$sx .= '</a>';
+					}
+				return($sx);
+			}
+
 		/**************************************** EDITAR ***************************/
 		function editar($dt,$sta='')
 		{		
@@ -363,6 +402,48 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 						$sx .= '<span class="big bold">'.msg('MANIFESTATION').'</span>';
 						$dta = $rdf -> le($idm);
 						$sx .= $rdf -> form($idm, $dta);
+
+						$sx .= '<span class="big bold">'.msg('ITEM').'</span>';
+						$sql = "select * 
+									from find_item 
+									INNER JOIN library_place ON i_library_place = id_lp
+									where i_manitestation = $idm 
+										and i_library = ".LIBRARY;
+						$rlt = $this->db->query($sql);
+						$rlt = $rlt->result_array();
+
+						$st = 'style = "border-top: 1px solid #000000; border-bottom: 1px solid #000000;"';
+						$sx .= '<table width="100%">';
+						$sx .= '<tr class="small text-center">';
+						$sx .= '<th '.$st.' width="25%"></th>';
+						$sx .= '<th '.$st.' width="5%" class="text-center">#</th>';
+						$sx .= '<th '.$st.' width="10%">'.msg('tombo').'</th>';
+						$sx .= '<th '.$st.' width="25%">'.msg('place').'</th>';
+						$sx .= '<th '.$st.' width="25%">'.msg('status').'</th>';
+						$sx .= '<th '.$st.' width="5%" class="text-center">'.msg('file').'</th>';
+						$sx .= '<th '.$st.' width="5%" class="text-center">'.msg('up').'</th>';
+						$sx .= '</tr>';
+						
+						for ($r=0;$r < count($rlt);$r++)
+							{
+								$li = $rlt[$r];
+								$link = '<a onclick="newxy(\''.base_url(PATH).'upload/item/'.$li['id_i'].'\',800,300);" style="cursor: pointer; color: white;" class="btn-primary br5">';
+								$linka = '</a>';
+								$up = $link.'&nbsp;+&nbsp;'.$linka;
+
+								$lk = $this->link_item($li);
+
+								$sx .= '<tr>';
+								$sx .= '<td width="25%"></td>';
+								$sx .= '<td '.$st.' class="text-center">'.($r+1).'</td>';
+								$sx .= '<td '.$st.' class="text-center">'.$li['i_tombo'].'</td>';
+								$sx .= '<td '.$st.'>'.$li['lp_name'].'</td>';
+								$sx .= '<td '.$st.' >'.msg('status_'.$li['i_status']).'</td>';
+								$sx .= '<td '.$st.' class="small text-center">'.$lk.'</td>';
+								$sx .= '<td '.$st.' class="small text-center">'.$link.$up.$linka.'</td>';
+								$sx .= '</tr>';
+							}
+						$sx .= '</table>';
 					}
 					$view = 3;
 				break;
@@ -467,6 +548,81 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 			$sx .= '</div>';
 			
 			return($sx);
-		}	
+		}
+
+		function upload_item($id,$tp='')
+			{
+				$sx = '';
+				switch ($tp)
+					{
+						case 'FILE':
+						$sx .= $this->upload_pdf($id);
+						break;
+
+						case 'URL':
+						$sx .= $this->upload_url($id);
+						break;
+
+						case 'EDIT':
+						$sx .= $this->upload_url($id);
+						break;						
+
+						default:
+						$sx .= '<style> div { border: 1px solid #000; } </style>';
+						$sx .= '<div class="col-md-12">';
+						$sx .= '<span class="small">'.msg('upload_item_info').'</span></div>';
+						$sx .= '<div class="col-md-12">';
+						$sx .= '<a href="'.base_url(PATH.'upload/item/'.$id.'/FILE').'" class="btn btn-outline-primary">'.msg('item_FILE').'</a>';
+						$sx .= '&nbsp;';
+						$sx .= '<a href="'.base_url(PATH.'upload/item/'.$id.'/URL').'" class="btn btn-outline-primary">'.msg('item_URL').'</a>';
+						$sx .= '&nbsp;';
+						$sx .= '<a href="'.base_url(PATH.'upload/item/'.$id.'/EDIT').'" class="btn btn-outline-primary">'.msg('item_EDIT').'</a>';
+						$sx .= '</div>';
+					}
+				$data['content'] = $sx;
+				$data['title'] = msg('upload_item');
+				$this->load->view('show',$data);
+
+			}
+
+		function upload_url($id)
+			{
+				$form = new form;
+				$cp = array();
+				array_push($cp,array('$H8','id_i','',false,false));
+				array_push($cp,array('$S100','i_uri',msg('url'),false,true));
+				$form->id = $id;
+				$sx = $form->editar($cp,'find_item');			
+
+				if ($form->saved > 0)
+					{
+						$sx = cr().'<script> wclose(); </script>';
+					}
+				return($sx);
+			}
+
+		function upload_pdf($id)
+			{
+				$form = new form;
+				$cp = array();
+				array_push($cp,array('$H8','','',false,false));
+				array_push($cp,array('$FILE','','',true,true));
+				$sx = $form->editar($cp,'');
+
+				if (isset($_FILES['fileToUpload']))
+					{
+						check_dir('_repositorio');
+						check_dir('_repositorio/books');
+						$dir = '_repositorio/books/';
+						$tmp = $_FILES['fileToUpload']['tmp_name'];
+						$file = LIBRARY.'_'.strzero($id,10).'.pdf';
+						move_uploaded_file($tmp,$dir.$file);
+						$sql = "update find_item set i_uri = 'FILE:$file' where id_i = ".round($id);
+						$rlt = $this->db->query($sql);
+						$sx = cr().'<script> wclose(); </script>';
+					}
+				return($sx);
+			}	
+		
 	}
 	?>

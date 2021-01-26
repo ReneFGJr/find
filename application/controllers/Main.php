@@ -194,6 +194,25 @@ class Main extends CI_controller {
             echo $sx;
         }
     }
+
+    function upload($type='',$id='',$tp='')
+        {
+            if (perfil("#ADM") > 0)
+            {
+            $this->cab(0);
+            switch($type)
+                {
+                    case 'item':
+                    $this->load->model("books_item");
+                    $this->books_item->upload_item($id,$tp);
+                    break;
+
+                    default:
+                    echo $type;
+                    break;
+                }
+            }
+        }
     
     function rdf($path='',$id='',$form='',$idx=0,$idy='')
     {
