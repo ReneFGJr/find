@@ -62,6 +62,7 @@ class Main extends CI_controller {
         $this -> load -> helper('form_sisdoc');
         $this -> load -> helper('email');
         $this -> load -> helper('url');
+        $this -> load -> helper('bootstrap');
         $this -> load -> library('session');
         $this -> load -> helper('cookie');
         $this -> load -> helper('rdf');
@@ -74,18 +75,7 @@ class Main extends CI_controller {
         //      $this -> security();
         
     }
-    
-    function login() {
-        $_SESSION['user'] = 'FINDS';
-        redirect(base_url('index.php/biblio'));
-    }
-    
-    function label()
-    {
-        $this->load->model("labels");
-        $this->labels->label_pdf();
-    }
-
+       
     function marc($id=0)
         {
             $this->load->model("marc_api");
@@ -246,7 +236,7 @@ class Main extends CI_controller {
                 redirect(base_url('index.php/main/'));
             }            
             $sx = '<h1>'.msg('Libraries').'</h1><hr>';
-            $data['content'] = $sx . $this -> libraries -> list_libraries($id);
+            $data['content'] = $this -> libraries -> list_libraries($id);
         } 
         $this -> load -> view('content', $data);
     }
@@ -255,7 +245,7 @@ class Main extends CI_controller {
         $this -> cab();
         $socials = new socials;
         $socials->social($act,$id,$chk);
-    }
+    } 
     
     private function foot() {
         $this -> load -> view('header/footer');
@@ -265,6 +255,7 @@ class Main extends CI_controller {
         $this -> cab();
         
         $this->load->model("books");
+        $this->load->model("books_item");
         $this->load->model("covers");
         $rdf = new rdf;
         
@@ -275,16 +266,53 @@ class Main extends CI_controller {
         $tela .= $this -> load -> view('find/search/search_simple', $data,true);
         
         /*************************** find */
-        $gets = array_merge($_POST, $_GET);        
-        $tela .= $rdf -> search($gets);
-        //$tela .= $this->frbr->bookcase();
-        
-        $tela .= $this->books->vitrine();
+        $gets = array_merge($_POST, $_GET); 
+
+        if (count($gets) > 0)
+        {
+            $tela .= $this->books_item -> search($gets);
+        } else {
+            $tela .= $this->books->vitrine();
+        }    
         
         $data['content'] = $tela;
         $this -> load -> view('content', $data);
         $this -> foot();
     }
+
+    function manual()
+        {
+            $this->cab();
+            $data['title'] = msg('Manuais');
+            $data['content'] = '<h1>Manuais</h1><p>Em construção</p>';
+            $this -> load -> view('welcome', null);
+            $this->load->view('content',$data);
+            $this->foot();
+        }
+
+    public function item($act='',$id=0,$d2='')
+        {
+            $this->load->model("books");
+            $this->load->model("books_item");
+            $this -> cab();
+            $tela = $this -> load -> view('welcome', null,true);
+            $tela .= $this->breadcrumb();
+            switch($act)
+                {
+                    case 'edit':
+                    if (perfil("#ADM#CAT#BER#BEP"))
+                        {
+                            $tela .= $this->books_item->tombo_edit($id,$d2);        
+                        }
+                    break;
+                    default:
+                    $tela .= $this->books_item->tombo_view($id,$d2);
+                }
+            
+            $data['content'] = $tela;
+            $this -> load -> view('content', $data);
+            $this -> foot();          
+        }
     
     public function v($id) {
         $this->load->model("books");
@@ -356,15 +384,19 @@ class Main extends CI_controller {
     
 }    
 function mod($mod = '', $act = '', $id = '', $id2 = '', $id3 = '') {
+    $tela = '';
     $this -> cab(1);
-    $title = '<sup>mod:</sup>' . UpperCase($mod);
     
     /*** load module ********/
     $this -> load -> model($mod);
     $cmd = '$tela = $this->' . $mod . '->' . $act . "('$id','$id2','$id3');";
     eval($cmd);
+
+    /***** Header Mod */
+    $mod_title = $this->$mod->title();
     
-    $data['content'] = '<h1>' . $title . '</h1>' . $tela;
+    $tt = $mod_title.$tela;
+    $data['content'] = $tt;
     $this -> load -> view('content', $data);
 }    
 public function setup($tools = '', $ac = '', $id='') {

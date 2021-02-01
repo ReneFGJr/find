@@ -49,18 +49,26 @@ $logo = $this->libraries->logo(0,-1);
 			<li class="nav-item">
 				<a class="nav-link" href="<?php echo base_url(PATH.'about'); ?>">Sobre</a>
 			</li>
+
+				<?php if (perfil("#ADM#CGU#BRE") > 0) { ?>
+				<li class="nav-item">
+					<a class="nav-link" href="<?php echo base_url(PATH.'mod/loans/row'); ?>"><?php echo msg('Users');?></a>
+				</li>
+				<?php } ?>
+
 				<?php if (perfil("#ADM") > 0) { ?>
 				<li class="nav-item">
 					<a class="nav-link" href="<?php echo base_url(PATH.'admin'); ?>">Admin</a>
 				</li>
 				<?php } ?>
+
 		</ul>
 	</div>
 
 	<div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
 		<ul class="navbar-nav ml-auto">
 			<li class="nav-item">
-				<a class="nav-link" href="<?php echo base_url(PATH.'library/list'); ?>"><?php echo msg('library_list');?>.'</a>
+				<a class="nav-link" href="<?php echo base_url(PATH.'library/list'); ?>"><?php echo msg('library_list');?></a>
 			</li> 
             <li class="nav-item">
                 <?php 

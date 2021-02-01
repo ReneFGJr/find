@@ -1,9 +1,67 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+/**
+* CodeIgniter RDF Helpers
+*
+* @package     CodeIgniter
+* @subpackage  Loan
+* @category    Model
+* @author      Rene F. Gabriel Junior <renefgj@gmail.com>
+* @link        http://www.sisdoc.com.br/
+* @version     v0.21.01.31
+*/
 class loans extends CI_model {
 	var $table = 'users';
+
+	function title()
+		{
+			$title = '<div class="'.bscol(12).'" style="border-bottom: 1px solid #000000";>';
+			$title .= '<sup>'.msg('module').'</sup>';
+			$title .= ' ';
+			$title .= '<span class="big"><b>';
+			$title .= msg("LOANS");
+			$title .= '</b></span>';
+			$title .= '</div>';
+			return($title);
+		}
+	function user_exists($email)
+		{
+			echo '==>'.$email;
+			$sql = "select * from users where us_email = '$email' ";
+			$rlt = $this->db->query($sql);
+			$rlt = $rlt->result_array();
+			if (count($rlt) > 0)
+				{
+
+				} else {
+					return(0);
+				}
+		}
 	function user($id='',$id2='')
 	{
-		$sx = msg('not_implemented');
+		$this->load->helper('webcam');
+		$webcam = new webcam;
+		$socials = new socials;
+		$form = new form;
+		$form->id = $id;
+		$cp = $socials->cp($id);
+		$table = 'users';
+		$valid = '';
+		$msg = '';
+
+		if (($this->user_exists(get("dd2")) != 0) and ($id==0))
+			{
+				$valid = 1;
+				$msg = message(msg('user_alreday_insered'),3);
+			}
+		array_push($cp,array('$HV','',$valid,True,True));
+		array_push($cp,array('$M','',$msg,false,false));
+
+		$img = $socials->user_image($id);
+		$sx = $form->editar($cp,$table);
+		$sx .= $webcam->photo('user_'.strzero($id,7),'_repositorio/users');
+		
+		echo '===>'.$form->saved;
 		return($sx);
 	}
 
@@ -90,6 +148,8 @@ class loans extends CI_model {
 	}
 
 	function row($id = '') {
+		if (perfil("#ADM") > 0)
+		{
 		$form = new form;
 
 		$form -> fd = array('id_us', 'us_nome', 'us_email', 'us_badge', 'us_ativo');
@@ -106,18 +166,282 @@ class loans extends CI_model {
 		$form -> row = base_url(PATH.'mod/loans/users');
 
 		return (row($form, $id));
-	}    
+		}
+		redirect(base_url(PATH));
+	}
 
 	function loan_user($user = 0, $chk = '') {
-		$this -> load -> model("users");
-		$this -> load -> model("barcodes");
-		$data = $this -> users -> le($user);
+		$data = array();
+		if (perfil("#ADM") > 0)
+		{
+			$this -> load -> model("users");
+			$this -> load -> model("barcodes");
+			$socials = new socials;
+			$data = $this -> users -> le($user);
+		}
 		if (count($data) > 0) {
-			$tela = $this -> load -> view('auth_social/user', $data, true);
+			$tela = $socials->user_tela($data);
+			$tela .= $this->user_endereco($user);
+			$tela .= $this->user_etnia($user);
 		} else {
 			redirect(base_url(PATH));
 		}
+		return($tela);
+	}
 
+	function le_endereco($id)
+		{
+			$sql = "select * from users_add where ua_us = ".$id;
+			$rlt = $this->db->query($sql);
+			$rlt = $rlt->result_array();
+			if (count($rlt) == 0)
+				{
+					$sqlx = "insert into users_add (ua_us) values ($id)";
+					$rlt = $this->db->query($sqlx);
+					sleep(1);
+					$rlt = $this->db->query($sql);
+					$rlt = $rlt->result_array();
+				}
+			$line = $rlt[0];
+			return($line);
+		}
+	function user_etnia($id)
+		{
+			$dt = $this->le_endereco($id);
+			$sx = '';
+			$sx .= '<div class="'.bscol(4).'">';
+			$sx .= '<div class="bold big">'.msg('ETNIA').'</div>';
+
+			$sx .= '<span class="small">'.msg('ua_nasc').'</span>';
+			$sx .= '<div class="bold">'.stodbr($dt['ua_nasc']).'&nbsp;</div>';
+
+			$sx .= '<span class="small">'.msg('us_escolaridade').'</span>';
+			$sx .= '<div class="bold">'.$this->tab_escolaridade($dt['us_escolaridade'],1);
+			if ($dt['us_escolaridade'] > 0)
+			{
+				$sx .= $this->tab_escolaridade_st($dt['us_escolaridade_st'],1);
+			}
+			$sx .= '&nbsp;</div>';
+
+			$sx .= '<span class="small">'.msg('us_genero').'</span>';
+			$sx .= '<div class="bold">'.$this->tab_genero($dt['us_genero'],1).'&nbsp;</div>';
+
+			$sx .= '<span class="small">'.msg('us_raca').'</span>';
+			$sx .= '<div class="bold">'.$this->tab_raca($dt['us_raca'],1).'&nbsp;</div>';
+
+			if (perfil("#ADM"))
+			{
+				$sx .= '<div>';
+				$sx .= '<a href="'.base_url(PATH."mod/loans/user_etnia_ed/".$id).'" class="btn btn-outline-primary">'.msg('btn_address_edit').'</a>';
+				$sx .= '</div>';
+			}
+
+			$sx .= '</div>';
+
+			$sx .= '<div class="'.bscol(4).'" style="border-bottom: 1px solid #000000;">';
+			$sx .= '</div>';									
+			return($sx);
+		}
+
+	function user_etnia_ed($id)
+		{
+			$sx = '<div class="'.bscol(12).'">';
+			$form = new form;
+			$form->id = $id;
+			$cp = array();
+			array_push($cp,array('$H8','ua_us','',false,false));
+			array_push($cp,array('$D8','ua_nasc',msg('ua_nasc'),false,TRUE));
+			$rw = $this->tab_genero('',2);
+			array_push($cp,array('$R '.$rw,'us_genero',msg('us_genero'),false,TRUE));
+			$rw = $this->tab_raca('',2);
+			array_push($cp,array('$R '.$rw,'us_raca',msg('us_raca'),false,TRUE));
+			$rw = $this->tab_escolaridade('',2);
+			array_push($cp,array('$R '.$rw,'us_escolaridade',msg('us_escolaridade'),false,TRUE));
+			$rw = $this->tab_escolaridade_st('',2);
+			array_push($cp,array('$R '.$rw,'us_escolaridade_st',msg('us_escolaridade_st'),false,TRUE));
+			$sx .= $form->editar($cp,'users_add');
+			$sx .= '</div>';
+
+			if ($form->saved > 0)
+				{
+					redirect(base_url(PATH.'mod/loans/loan_user/'.$id));
+				}
+
+			return($sx);	
+		}
+	function tab_escolaridade($id='',$t=1)
+		{
+			$g = array();
+			$g[0] = 'Não informado';
+			$g[1] = 'sem escolaridade';
+			$g[2] = 'Educação Infantil';
+			$g[3] = 'Ensino Fundamental (1º ao 5º ano)';
+			$g[4] = 'Ensino Fundamental (6º ao 9º ano)';
+			$g[6] = 'Ensino Médio';
+			$g[7] = 'Ensino Superior';
+			$g[8] = 'Pós-graduação Especialização';
+			$g[9] = 'Mestrado';
+			$g[10] = 'Doutorado';
+			return($this->tab($id,$t,$g));
+		}
+
+	function tab_escolaridade_st($id='',$t=1)
+		{
+			$g = array();
+			$g[0] = 'Não informado';
+			$g[1] = 'cursando';
+			$g[2] = 'incompleto';
+			$g[3] = 'completo';
+			return($this->tab($id,$t,$g));
+		}
+
+	function tab_raca($id='',$t=1)
+		{
+			$g = array();
+			$g[0] = 'Não informado';
+			$g[1] = 'Preta(o)';
+			$g[2] = 'Parda(o)';
+			$g[3] = 'Branca(o)';
+			$g[4] = 'Amarela(o)';
+			$g[5] = 'Indígena';
+			return($this->tab($id,$t,$g));
+		}
+
+	function tab_genero($id='',$t=1)
+		{
+			$g = array();
+			$g[0] = 'Não informado';
+			$g[1] = 'Mulher';
+			$g[2] = 'Mulher trans';
+			$g[3] = 'Homem';
+			$g[4] = 'Homens trans';
+			$g[5] = 'Não-binário';
+			return($this->tab($id,$t,$g));
+		}
+	function tab($id,$t,$g)
+		{
+			switch ($t)
+				{
+					case '1':
+					$id = round($id);
+					$g = $g[$id];
+					break;
+
+					case '2':
+					$gr = $g;
+					$g = '';
+					foreach($gr as $i => $v)
+						{
+							if ($g != '') { $g .= '&'; }
+							$g .= $i.':'.$v;
+						}
+					break;					
+
+					default:
+					/* Array */
+					break;
+				}
+			return($g);			
+		}		
+
+	function user_address($id)
+		{
+			$sx = '';			
+			$socials = new socials;
+			$data = $socials -> le($id);
+			$sx = $socials->user_tela($data);			
+
+			$cep = get("cep");
+			if (strlen($cep) > 0)
+				{
+					$data = cep($cep);
+					$data = (array)json_decode($data);
+
+					if (isset($data['logradouro']))
+						{
+							$sql = "update users_add set ";
+							$sql .= "us_cep = '".$data['cep']."',";
+							$sql .= "us_logradouro = '".$data['logradouro']."',";
+							$sql .= "us_complemento = '".$data['complemento']."',";
+							$sql .= "us_bairro = '".$data['bairro']."',";
+							$sql .= "us_localidade = '".$data['localidade']."',";
+							$sql .= "us_uf = '".$data['uf']."',";
+							$sql .= "us_ibge = '".$data['ibge']."',";
+							$sql .= "us_gia = '".$data['ddd']."',";
+							$sql .= "us_siafi = '".$data['siafi']."'";
+							$sql .= "where ua_us = $id";
+							$rlt = $this->db->query($sql);
+							redirect(base_url(PATH.'mod/loans/user_address/'.$id));
+							exit;
+						}
+
+				}
+
+			$sx .= '<div class="'.bscol(12).'">';
+			$sx .= '<form method="get">';
+			$sx .= msg('input_CEP').': ';
+			$sx .= '<input type="text" name="cep">';
+			$sx .= '<input type="submit" name="action" value="'.msg('search').'">';
+			$sx .= '</form>';
+			$sx .= '</div>';
+
+			$sx .= '<div class="'.bscol(12).'">';
+			$form = new form;
+			$form->id = $id;
+			$cp = array();
+			array_push($cp,array('$H8','ua_us','',false,false));
+			array_push($cp,array('$S10','us_cep',msg('us_cep'),false,TRUE));
+			array_push($cp,array('$S100','us_logradouro',msg('us_logradouro'),false,TRUE));
+			array_push($cp,array('$S20','ua_number',msg('ua_number'),false,TRUE));
+			array_push($cp,array('$S20','us_complemento',msg('us_complemento'),false,TRUE));
+			array_push($cp,array('$S50','us_bairro',msg('us_bairro'),false,TRUE));
+			array_push($cp,array('$S50','us_localidade',msg('us_localidade'),false,TRUE));
+			array_push($cp,array('$S5','us_uf',msg('us_uf'),false,TRUE));
+			$sx .= $form->editar($cp,'users_add');
+			$sx .= '</div>';
+
+			if ($form->saved > 0)
+				{
+					redirect(base_url(PATH.'mod/loans/loan_user/'.$id));
+				}
+
+			return($sx);
+		}		
+
+	function user_endereco($id)
+		{
+			$dt = $this->le_endereco($id);
+			$sx = '';
+			$sx .= '<div class="'.bscol(4).'">';
+			$sx .= '<div class="bold big">'.msg('ADDRESS').'</div>';
+
+			$sx .= '<span class="small">'.msg('us_address').'</span>';
+			$sx .= '<div class="bold">'.$dt['us_logradouro'].'&nbsp;</div>';
+
+			$sx .= '<span class="small">'.msg('us_complemento').'</span>';
+			$sx .= '<div class="bold">'.$dt['us_complemento'].'&nbsp;</div>';
+
+			$sx .= '<span class="small">'.msg('us_bairro').'</span>';
+			$sx .= '<div class="bold">'.$dt['us_bairro'].'&nbsp;';
+			$sx .= ' - <span class="bold">'.trim($dt['us_localidade']).'</span>';
+			$sx .= ', <span class="bold">'.$dt['us_uf'].'&nbsp;</span>';
+			$sx .= '</div>';
+
+			$sx .= '<span class="small">'.msg('us_cep').'</span>';
+			$sx .= '<div class="bold">'.$dt['us_cep'].'&nbsp;</div>';
+
+			if (perfil("#ADM"))
+			{
+				$sx .= '<div>';
+				$sx .= '<a href="'.base_url(PATH."mod/loans/user_address/".$id).'" class="btn btn-outline-primary">'.msg('btn_address_edit').'</a>';
+				$sx .= '</div>';
+			}
+			$sx .= '</div>';
+			return($sx);
+		}
+
+	function load_book($user=0,$chk='')
+		{
 		if (strlen(get("dd3")) == 0)
 		{
 			$data = date("d/m/Y");
@@ -149,61 +473,7 @@ class loans extends CI_model {
 		return ($tt);
 	}
 
-	function le_tombo($tombo) {
-		if (strlen($tombo) < 8) {
-			$tombo = LIBRARY . strzero($tombo, 7);
-			$tombo = $tombo;
-			$tombo = $tombo . $this -> barcodes -> ean13($tombo);
-		}
-		$sql = "select * from itens where i_tombo = '$tombo' ";
-		$rlt = $this -> db -> query($sql);
-		$rlt = $rlt -> result_array();
-		if (count($rlt) > 0)
-		{
-			$line = $rlt[0];
-		} else {
-			$line = array();
-		}
-		return($line);
-	}	
 
-	function loan_tombo($tombo, $user) {
-		$rdf = new rdf;
-		$tela = '';
-		$data = $this -> le_tombo($tombo);
-		if (isset($data['i_status']))
-		{
-			switch($data['i_status'])
-			{
-				case '5':
-				$tela = '<div class="alert alert-danger" role="alert">';
-				$tela = 'Obra não disponível para empréstimo';
-				$tela .= ' =x=> '.$data['i_status'];
-				$tela .= '</div>';				
-				break;
-
-				case '2':
-				$tela = '<div class="alert alert-danger" role="alert">';
-				$tela = 'Livro emprestados';
-				$tela .= ' =x=> '.$data['i_status'];
-				$tela .= '</div>';				
-				break;				
-
-				default:
-				$manifestation = $data['i_manifestation'];
-				$tombo = $data['i_tombo'];
-				$tela = $rdf ->  related($manifestation,0);
-
-				$this->loan_historico_add($tombo,$user,2);
-				$this->loan_emprestimo($tombo,$user,$data);			
-				break;				
-			}
-			$tela .= $this->loan_historico($tombo,$user);
-		} else {
-			$tela = 'Número tombo inválido!';
-		}
-		return ($tela);
-	}
 
 	function load_email($user)
 	{
@@ -255,6 +525,7 @@ class loans extends CI_model {
 			$sx .= '</table>'.cr();
 			return($sx);
 		}
+
 	function loan_historico_add($tombo,$user,$type)
 	{
 		print_r($_SESSION);

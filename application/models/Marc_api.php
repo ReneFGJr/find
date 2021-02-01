@@ -76,6 +76,7 @@ class Marc_api extends CI_model
 								$idt = substr($idt,0,strpos($idt,chr(10)));
 								$idt = sonumero($idt);
 								$tombo = round(substr($idt,4,strlen($idt)));
+								echo '<pre>'.$mc.'</pre>';
 								$dt = $this->book($mc);
 
 								if (isset($dt['isbn']['isbn13']))
@@ -87,10 +88,9 @@ class Marc_api extends CI_model
 								$status = 1;
 
 								$place = 1;		
-								echo $place;						
-								$idd = $this->books_item->tombo_insert($tombo, $isbn, $tipo, $status, $place);
-								$sx .= $isbn. '=>'.$idd.'<br>';
-								echo $sx;
+								echo '===>'.$place;						
+								$rst = $this->books_item->tombo_insert($tombo, $isbn, $tipo, $status, $place);
+								$sx .= '<li>'.$tombo.' - '.$rst[1].'</li>';
 								exit;
 							}
 					}
@@ -238,6 +238,7 @@ class Marc_api extends CI_model
 		$t = troca($t,chr(10),';');
 		$ln = splitx(';',$t);
 		$w = array();
+		$w['title'] = '';
 		$w['authors'] = array();
 		$w['agents'] = array();
 		$w['cover'] = '';

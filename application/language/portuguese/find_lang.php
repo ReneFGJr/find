@@ -270,14 +270,17 @@ $lang['without_isbn'] = 'Obra sem ISBN registrado';
 
 $lang['item_status_0'] = 'Buscando metadados';
 $lang['item_status_1'] = 'Catalogação';
-$lang['item_status_2'] = 'Classificação';
-$lang['item_status_3'] = 'Indexação';
-$lang['item_status_4'] = 'Preparo físico';
+$lang['item_status_2'] = 'Preparo físico';
+$lang['item_status_3'] = 'Reparo';
+$lang['item_status_4'] = 'Descarte';
+
+$lang['item_status_5'] = 'Disponível';
+
 /*
 
 $lang['item_status_5'] = 'Aguardado metadados';
 $lang['item_status_6'] = 'Emprestado';
-$lang['item_status_7'] = 'Disponível';
+
 $lang['item_status_9'] = 'Baixado';
 */
 
@@ -285,7 +288,7 @@ $lang['item_aquisicao_1'] = 'Tombado';
 $lang['m'] = 'Manifestação';
 $lang['v'] = 'Conceito';
 $lang['preparation'] = 'Preparo técnico';
-$lang['acquisition'] = 'Aquisição';
+$lang['acquisition'] = 'Incluir item no acervo';
 $lang['acquisition_in'] = 'Incorporação de Acervo';
 $lang['tombo'] = 'Item do Acervo';
 $lang['itens'] = 'Itens';
@@ -341,7 +344,7 @@ $lang['books_status'] = 'Exemplares';
 $lang['Year'] = 'Ano';
 $lang['OTHERS'] = 'Notas / outras informações';
 $lang['UNIFORM_TITLE'] = 'Título Uniforme';
-$lang['SUBJECT'] = 'Classifcação de Assuntos';
+$lang['SUBJECT'] = 'Classificação de Assuntos';
 $lang['sc_group'] = 'GRUPO';
 $lang['BORN'] = 'Dados sobre nascimento';
 $lang['DEAD'] = 'Dados sobre falecimento';
@@ -350,11 +353,41 @@ $lang['LINKEDDATA'] = 'Dados Lincados (Externos)';
 $lang['books_author_titles'] = 'Obras do autor';
 $lang['setup_library_logo'] = 'Logotipo e Banners';
 $lang['Classification'] = 'Classificação';
+$lang['item_add'] = 'Inserir novo item na coleção';
+$lang['library_place'] = 'Local ou biblioteca do item';
+$lang['::select an option::'] = ':::: Selecione uma opção';
+$lang['create'] = 'criar autoridade';
+$lang['save'] = 'salvar';
+$lang['hasRevisor'] = 'Revisor/Leitor';
+$lang['marc_import'] = 'Importar Marc';
+$lang['send_to_acervo'] = 'Disponibilizar no acervo';
+$lang['send_to_catalog'] = 'Devolver para catalogação';
+$lang['item_FILE'] = 'Upload de Arquivo';
+$lang['item_URL'] = 'Informar URL de acesso';
+$lang['item_EDIT'] = 'Editar';
+$lang['books_place'] = 'Disponibilidade de exemplares';
+$lang['LOANS'] = 'EMPRÉSTIMO';
+$lang['module'] = 'Módulo';
+$lang['h_date'] = 'Date e hora';
+$lang['h_status'] = 'situação';
+$lang['h_ip'] = 'IP da máquina';
+$lang['h_user'] = 'Usuário';
+$lang['i_status '] = 'Situação';
+$lang['i_ln1'] = 'Etiqueta-L1';
+$lang['i_ln2'] = 'Cutter';
+$lang['i_ln3'] = 'Etiqueta-L3';
+$lang['i_ln4'] = 'Etiqueta-L4';
+$lang['place_no_informed'] = '##Biblioteca não informação##';
+$lang['i_status'] = 'Situação';
+$lang['i_library_place '] = 'Localização';
 $lang[''] = '';
 $lang[''] = '';
 $lang[''] = '';
 $lang[''] = '';
 $lang[''] = '';
 $lang[''] = '';
+$lang[''] = '';
+
+
 
 ?>

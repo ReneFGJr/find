@@ -51,7 +51,7 @@ class book_preparations extends CI_model
 
 			
 			case 'itens':
-				if ($id == 0) { $id = array(0,5); }
+				if ($id == 0) { $id = array(0,1); }
 				$sx = $this->preparation_itens($id);
 			break;
 
@@ -67,62 +67,34 @@ class book_preparations extends CI_model
 			/********************************* MENU **/
 			default:
 			/******************************************/
-			$sx .= $this->preparation_menu('Aquisição','','preparation/acquisition',0);
-			
+			$sx .= $this->preparation_menu(msg('item_add'),'','preparation/acquisition',0);
+			$sx .= '<div class="col-md-8 col-6 col-sm-7 col-lg-9 col-xl-9">';
 			/******************* Items para Catalogação ****/
-			$sta = array(0);
-			$itens = $this->in_status($sta);			
-			if ($itens > 0)
-			{
-				$txt = '<div style="margin-top: 40px;">total de</div>
-				<span style="font-size: 500%; font-weight: bold;">'.$itens.'</span>';
-				$sx .= $this->preparation_menu('Catalogação '.$itens.' item(ns)',$txt,'preparation/itens/0',1);
-			}
-			$sta = 5;
-			$itens = $this->in_status($sta);			
-			if ($itens > 0)
-			{
-				$txt = '<div style="margin-top: 40px;">total de</div>
-				<span style="font-size: 500%; font-weight: bold;">'.$itens.'</span>';
-				$sx .= $this->preparation_menu('Catalogação Manual'.$itens.' item(ns)',$txt,'preparation/itens/5',1);
-			}
+			$sta = array(0,1,2,3,4);
+			$sx .= '<h1>'.msg('preparation_itens').'</h1>';
+			for ($r = 0;$r < count($sta);$r++)
+				{
+					$itens = $this->in_status($sta[$r]);
+					if ($itens > 0)
+					{
+						$link = '<a href="'.base_url(PATH.'preparation/itens/'.$sta[$r]).'" style="text-decoration: none;">';
+						$linka = '</a>';
+						
+						$txt = '<ul><li><h3>';
+						$txt .= $link;
+						$txt .= msg('item_status_'.$sta[$r]);
+						$txt .= $linka;
+						$txt .= ' <sup>';
+						$txt .= $itens;						
+						$txt .= ' item(ns)</sup>';
+
+						$txt .= '</h3></li></ul>';
+						$sx .= $txt;
+						//$sx .= $this->preparation_menu('Catalogação '.$itens.' item(ns)',$txt,'preparation/itens/0',1);
+					}
+				}
 			
-			/******************* Items para Catalogação ****/
-			$sta = 1;
-			$itens = $this->in_status($sta);
-			if ($itens > 0)
-			{
-				$txt = '<div style="margin-top: 40px;">total de</div>
-				<span style="font-size: 500%; font-weight: bold;">'.$itens.'</span>';
-				$sx .= $this->preparation_menu('Classificação '.$itens.' item(ns)',$txt,'preparation/itens/1',1);
-			}	
-			
-			/******************* Items para Classificação ****/
-			$sta = 2;
-			$itens = $this->in_status($sta);
-			if ($itens > 0)
-			{
-				$txt = '<div style="margin-top: 40px;">total de</div>
-				<span style="font-size: 500%; font-weight: bold;">'.$itens.'</span>';
-				$sx .= $this->preparation_menu('Classificação '.$itens.' item(ns)',$txt,'preparation/itens/2',1);
-			}
-			
-			/******************* Items para Classificação ****/
-			$sta = 4;
-			$itens = $this->in_status($sta);
-			if ($itens > 0)
-			{
-				$txt = '<div style="margin-top: 40px;">total de</div>
-				<span style="font-size: 500%; font-weight: bold;">'.$itens.'</span>';
-				$sx .= $this->preparation_menu('Preparação Fisica '.$itens.' item(ns)',$txt,'preparation/itens/4',1);
-			}
-			
-			/******************* Items para Classificação ****/
-			$txt = '<div style="margin-top: 40px;">total de</div>
-			<span style="font-size: 500%; font-weight: bold;">'.$itens.'</span>';
-			$sx .= $this->preparation_menu('Etiquetas',$txt,'label',1);
-			
-			//$sx .= '</div>';
+			$sx .= '</div>';
 			
 		break;			
 	}
@@ -343,10 +315,12 @@ function acquisition_in($loop=1)
 					/* Verifica Exemplares */
 					$exes = $this->books->exemplar($isbn_o);
 					$ex = $exes[0];
-					$mn = $exes[1];				
+					$mn = $exes[1];
+					$titulo = $exes[2];
 					if ($mn > 0)
 					{
-						$status = 5;
+						$status = 2;
+						
 					} else {
 						$mn = 0;
 						$status = 0;
@@ -354,7 +328,7 @@ function acquisition_in($loop=1)
 					$exemplar = $ex + 1;
 					
 					$tipo = 1;
-					$rs = $this->books_item->tombo_insert($tombo,$isbn_o,$tipo,$status,$place,$mn,$exemplar);
+					$rs = $this->books_item->tombo_insert($tombo,$isbn_o,$tipo,$status,$place,$mn,$exemplar,$titulo);
 					if ($rs[0] == 1)
 					{
 						if ($loop == 1)
@@ -384,12 +358,17 @@ function acquisition_in($loop=1)
 	if ($loop == 1)
 	{
 		$sx = $this->books_item->form_item_aquisition();
-		$sx .= $this->books_item->tombo_list(array(0));
+		$sx .= $this->books_item->tombo_list(array(0,2));
 	} else {
 		//$sx = '';
 	}
-	$sx = '<div class="container"><div class="row"><div class="col-md-12">'.$sx.'</div></div></div>';
-	return($sx);
+	$sa = '<div class="container">';
+	$sa .= '<div class="row">';
+	$sa .= '<div class="col-md-12">'.$sx.'</div>';
+	$sa .= '</div>';
+	$sa .= '</div>';
+	$sa .= '</div>';
+	return($sa);
 }
 
 function book_header($dt)

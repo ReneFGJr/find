@@ -2,6 +2,17 @@
 class users extends CI_model {
     var $table = 'users';
 
+    function index($act,$id1,$id2)
+        {
+            switch($act)
+                {
+                    default:
+                    $sx = $this->row($id1);
+                }
+                $sx = '<div class="container"><div class="row">'.$sx.'</div></div>';
+            return($sx);
+        }
+
     function cp($id) {
         $cp = array();
         array_push($cp, array('$H8', 'id_us', '', False, True));

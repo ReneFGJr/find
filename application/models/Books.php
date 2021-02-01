@@ -608,6 +608,7 @@ function export($id)
 
 function vitrine()
 {
+	$this->books_item->check();
 	$sx = '<h1>Vitrine</h1>';
 	$sql = "select i_manitestation, i_identifier, i_titulo 
 	from find_item 
@@ -709,17 +710,22 @@ function manual_api($id)
 
 function exemplar($isbn)
 {
-	$sql = "select max(i_exemplar) as i_exemplar, max(i_manitestation) as i_manitestation
-	from find_item
-	where i_identifier = '$isbn'
-	and i_library = '".LIBRARY."'";
+	$sql = "select max(i_exemplar) as i_exemplar, 
+					max(i_manitestation) as i_manitestation
+			from find_item
+			where i_identifier = '$isbn'
+			and i_library = '".LIBRARY."'";
 	
 	$rlt = $this->db->query($sql);
 	$rlt = $rlt->result_array();
 	if (count($rlt) > 0)
 	{
 		$line = $rlt[0];
-		return(array($line['i_exemplar'],$line['i_manitestation']));
+		$ln = $this->books_item->le_tombo($line['i_exemplar']);		
+		return(array(
+				$line['i_exemplar'],
+				$line['i_manitestation'],
+				$ln['i_titulo']));
 	} else {
 		return(0);
 	}
