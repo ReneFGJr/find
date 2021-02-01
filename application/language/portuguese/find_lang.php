@@ -380,13 +380,42 @@ $lang['i_ln4'] = 'Etiqueta-L4';
 $lang['place_no_informed'] = '##Biblioteca não informação##';
 $lang['i_status'] = 'Situação';
 $lang['i_library_place '] = 'Localização';
+$lang['Subject'] = 'Assunto';
+$lang['SerieName'] = 'Série/Coleção';
+$lang['Type'] = 'Tipo';
+$lang['class_parameters'] = 'parametros';
+$lang['class_edit'] = 'editar classe';
+$lang['form_edit_class'] = 'formulário de edição';
+$lang['check_form'] = 'checar formulário';
+$lang['class'] = 'classe';
+$lang['Users'] = 'Usuários';
+$lang['btn_address_edit'] = 'editar endereço';
+$lang['btn_etnia_edit'] = 'editar etnia';
+$lang['us_genero'] = 'Genêro';
+$lang['us_raca'] = 'Raça';
+$lang['us_escolaridade'] = 'Escolaridade';
+$lang['us_escolaridade_st'] = 'Situação da escolaridade';
+$lang['us_address'] = 'Endreço';
+$lang['us_complemento'] = 'Complemento';
+$lang['us_bairro'] = 'Bairro';
+$lang['us_cep'] = 'CEP';
+$lang['ADDRESS'] = 'ENDEREÇO';
+$lang['ETNIA'] = 'ETNIA';
+$lang['input_CEP'] = 'Infome o CEP';
+$lang['us_logradouro'] = 'Endereço';
+$lang['ua_number'] = 'Número';
+$lang['us_localidade'] = 'Cidade';
+$lang['us_uf'] = 'UF';
+$lang['search'] = 'busca';
 $lang[''] = '';
 $lang[''] = '';
 $lang[''] = '';
 $lang[''] = '';
 $lang[''] = '';
 $lang[''] = '';
-$lang[''] = '';
+
+
+
 
 
 

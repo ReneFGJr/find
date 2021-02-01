@@ -833,7 +833,8 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 				/************* FASE I da busca */
 				$wh = '';
 				$sql = "select DISTINCT i_manitestation from find_item 
-						where i_library = '".LIBRARY."'";
+						where i_library = '".LIBRARY."'
+						";
 				$rlt = $this->db->query($sql);
 				$rlt = $rlt->result_array();
 
@@ -877,32 +878,40 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 							left join rdf_class as class2 ON c2.cc_class = class2.id_c
 
 							where ($wh) and ($wh2)
+							order by class1.c_class desc, n_name
 							";
 				$rlt = $this->db->query($sql);
 				$rlt = $rlt->result_array();
 
 
 				/* Show Lista */
-				$sx = '';
-				$sx .= '<ul>';
+				$sx = '<div class="container">';
+				$sx .= '<div class="row">';	
+				$sx .= '<div class="'.bscol(2).' text-right">';
+				$sx .= '<b>'.msg('Type').'</b>';
+				$sx .= '</div>';			
+				$sx .= '<div class="'.bscol(10).'">';
+				$sx .= '<b>'.msg('description').'</b>';
+				$sx .= '</div>';			
+
 				for ($r=0;$r < count($rlt);$r++)
 					{
 						$l = $rlt[$r];
 						$idv = $l['d_r1'];
 						$link = '<a href="'.base_url(PATH.'v/'.$idv).'">';
 						$linka = '</a>';
-						$sx .= '<li>';
-						$sx .= $link.$l['n_name'].$linka;
-						$sx .= '<sup>'.$l['c1'].'</sup>';
-						$sx .= '</li>';
 
-						/*
-						echo '<pre>';
-						print_r($l);
-						echo '</pre>';
-						*/
+						$sx .= '<div class="'.bscol(2).' text-right">';
+						$sx .= msg($l['c1']);
+						$sx .= '</div>';
+
+						$sx .= '<div class="'.bscol(10).'" style="border-bottom: 1px solid #000000; margin-bottom: 5px;">';
+						$sx .= $link.$l['n_name'].$linka;						
+						$sx .= '</div>';
 					}
-				$sx .= '</ul>';
+				$sx .= '</div>';
+				$sx .= '</div>';
+				$sx .= '</div>';
 				return($sx);
 			}
 		

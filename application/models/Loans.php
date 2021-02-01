@@ -48,20 +48,35 @@ class loans extends CI_model {
 		$table = 'users';
 		$valid = '';
 		$msg = '';
+		//$cp[6][0] = '$HV';		
+		//$cp[6][2] = '1';
 
-		if (($this->user_exists(get("dd2")) != 0) and ($id==0))
+		if ($id==0)
 			{
+				if ($this->user_exists(get("dd2")) != 0)
+				{
+					$msg = message(msg('user_alreday_insered'),3);
+				} else {
+					$valid = 1;
+				}
+			} else {
 				$valid = 1;
-				$msg = message(msg('user_alreday_insered'),3);
 			}
 		array_push($cp,array('$HV','',$valid,True,True));
 		array_push($cp,array('$M','',$msg,false,false));
 
 		$img = $socials->user_image($id);
 		$sx = $form->editar($cp,$table);
-		$sx .= $webcam->photo('user_'.strzero($id,7),'_repositorio/users');
-		
-		echo '===>'.$form->saved;
+		//echo '=saved=>'.$form->saved.'=='.$valid;
+
+		if ($id > 0)
+			{
+				$sx .= $webcam->photo('user_'.strzero($id,7),'_repositorio/users');
+			}
+		if ($form->saved > 0)
+			{
+				redirect(base_url(PATH.'mod/loans/loan_user/'.$id));
+			}
 		return($sx);
 	}
 
@@ -232,7 +247,7 @@ class loans extends CI_model {
 			if (perfil("#ADM"))
 			{
 				$sx .= '<div>';
-				$sx .= '<a href="'.base_url(PATH."mod/loans/user_etnia_ed/".$id).'" class="btn btn-outline-primary">'.msg('btn_address_edit').'</a>';
+				$sx .= '<a href="'.base_url(PATH."mod/loans/user_etnia_ed/".$id).'" class="btn btn-outline-primary">'.msg('btn_etnia_edit').'</a>';
 				$sx .= '</div>';
 			}
 
