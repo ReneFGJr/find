@@ -12,7 +12,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 class loans extends CI_model {
 	var $table = 'users';
-
+	var $tempo = 10;
 	function title()
 		{
 			$title = '<div class="'.bscol(12).'" style="border-bottom: 1px solid #000000";>';
@@ -198,11 +198,57 @@ class loans extends CI_model {
 			$tela = $socials->user_tela($data);
 			$tela .= $this->user_endereco($user);
 			$tela .= $this->user_etnia($user);
+			$tela .= $this->emprestimo($user);
 		} else {
 			redirect(base_url(PATH));
 		}
 		return($tela);
 	}
+
+	function le_tombo($id)
+		{
+			$sql = "select * from find_item 
+						where i_tombo = $id
+						and i_library = ".LIBRARY;
+			$rlt = $this->db->query($sql);
+			$rlt = $rlt->result_array();
+			if (count($rlt) > 0)
+				{
+					$line = $rlt[0];
+				} else {
+					$line = array();
+				}
+			return($rlt);
+		}
+
+	function emprestimo($id)
+		{
+			$this->load->model("books_item");
+			$tombo = get("tombo");
+			$msg = '';
+			$act = get("action");
+			if (strlen($tombo) > 0)
+				{
+					$dt = $this->le_tombo($tombo);
+					if (count($dt) > 0)
+						{
+
+						} else {
+							$msg = message(msg('Item_no_found'),3);
+						}
+					print_r($dt);
+				}
+			$sx = '';
+			$sx .= '<div class="'.bscol(6).'" style="border: 1px solid #000000;">';
+			$sx .= '<form method="post">';
+			$sx .= msg('tombo');
+			$sx .= '<input type="text" name="tombo" class="form-control">';
+			$sx .= '<input type="submit" name="action" class="btn btn-outline-primary" value="'.msg('loan').'">';
+			$sx .= '</form>';
+			$sx .= $msg;
+			$sx .= '</div>';
+			return($sx);
+		}
 
 	function le_endereco($id)
 		{

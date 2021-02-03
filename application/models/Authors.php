@@ -1,6 +1,13 @@
 <?php
 class authors extends CI_model
 {
+	function cutter($id)
+		{
+			$this->load->model(("cutter"));
+			$ct = $this->cutter->find_cutter($name);
+			echo $ct;
+		}
+
 	function le_authors($idw)
 	{
 		$sql = "select * from find_work_authors
