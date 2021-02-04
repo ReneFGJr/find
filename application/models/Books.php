@@ -721,11 +721,13 @@ function exemplar($isbn)
 	if (count($rlt) > 0)
 	{
 		$line = $rlt[0];
-		$ln = $this->books_item->le_tombo($line['i_exemplar']);		
-		return(array(
-				$line['i_exemplar'],
-				$line['i_manitestation'],
-				$ln['i_titulo']));
+		if (round($line['i_exemplar']) > 0)
+			{
+				$ex = $line['i_exemplar'];
+				return($ex);
+			} else {
+				return(0);
+			}
 	} else {
 		return(0);
 	}

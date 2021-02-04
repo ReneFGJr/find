@@ -273,6 +273,7 @@ function manifestation($id,$d)
 	$pags = '';
 	$date = '';
     $class = '';
+	$class2 = '';
 	$serie = '';
 	$vol = '';
 	$rdf = new rdf;
@@ -347,9 +348,7 @@ function manifestation($id,$d)
 						$link = '<a href="'.base_url(PATH.'v/'.$idx).'" style="color: '.$corl.'; padding: 2px 5px;">';
                         $vlrx = '<div style="width: 100%; padding: 3px; background-color: '.$cor.';">';
                         $vlrx .= $link.$vlr.$linka;
-                        $vlrx .= '</div>';
-						
-						
+                        $vlrx .= '</div>';		
                     } else {
 						$vlrx = '<b>'.$vlr.'</b>';
 					}									
@@ -364,18 +363,29 @@ function manifestation($id,$d)
             case 'hasClassificationCDD':
                 $link = '<a href="'.base_url(PATH.'v/'.$idx).'">';
 				$class .= $link.$vlr.$linka;
-            break;			
+            break;
+
+            case 'hasCutter':
+                $link = '<a href="'.base_url(PATH.'v/'.$idx).'">';
+                $vlrx = '<div style="width: 100%; padding: 3px;">';
+                $vlrx .= $link.$vlr.$linka;
+                $vlrx .= '</div>';
+				$class2 .= $vlrx;
+            break;						
 			
 		}
 	}
 
     /* Classification */
-    if (strlen($class) > 0)
+    if (strlen($class.$class2) > 0)
     {
         $sxx = '<table style="margin-top: 20px; width: 100%;">';
         $sxx .= '<tr>';
-        $sxx .= '<td width="10%">'.msg('Classification').':</td>';
+        $sxx .= '<td width="10%" rowspan=2>'.msg('Classification').':</td>';
         $sxx .= '<td width="90%">'.$class.'</td>';
+		$sxx .= '</tr>';
+		$sxx .= '<tr>';
+		$sxx .= '<td width="90%">'.$class2.'</td>';
         $sxx .= '</tr>';
         $sxx .= '</table>';
 

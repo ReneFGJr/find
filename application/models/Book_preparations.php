@@ -313,22 +313,19 @@ function acquisition_in($loop=1)
 				if ($isbn_dv == $isbn_or)
 				{
 					/* Verifica Exemplares */
-					$exes = $this->books->exemplar($isbn_o);
-					$ex = $exes[0];
-					$mn = $exes[1];
-					$titulo = $exes[2];
+					$mn = $this->books->exemplar($isbn_o);
 					if ($mn > 0)
 					{
-						$status = 2;
+						$status = 1;
 						
 					} else {
 						$mn = 0;
 						$status = 0;
 					}
-					$exemplar = $ex + 1;
+					$exemplar = $mn + 1;
 					
 					$tipo = 1;
-					$rs = $this->books_item->tombo_insert($tombo,$isbn_o,$tipo,$status,$place,$mn,$exemplar,$titulo);
+					$rs = $this->books_item->tombo_insert($tombo,$isbn_o,$tipo,$status,$place,$mn,$exemplar);
 					if ($rs[0] == 1)
 					{
 						if ($loop == 1)
@@ -358,7 +355,7 @@ function acquisition_in($loop=1)
 	if ($loop == 1)
 	{
 		$sx = $this->books_item->form_item_aquisition();
-		$sx .= $this->books_item->tombo_list(array(0,2));
+		$sx .= $this->books_item->tombo_list(array(0,1,2));
 	} else {
 		//$sx = '';
 	}

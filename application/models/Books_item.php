@@ -100,7 +100,8 @@ class Books_item extends CI_model
 		$sql = "select * 
 		from find_item 		
 		left join library_place ON i_library_place = id_lp
-		where id_i = ".$id;		
+		where id_i = ".$id;	
+
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
 		if (count($rlt) > 0)
