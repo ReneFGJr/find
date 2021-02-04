@@ -708,9 +708,27 @@ function manual_api($id)
 	} 	
 }
 
+function le_manifestacao($id)
+	{
+		$sql = "select * from find_item 
+					where i_manitestation= $id
+					and i_titulo <> ''";
+		$rlt = $this->db->query($sql);
+		$rlt = $rlt->result_array();
+		if (count($rlt) > 0)
+			{
+				$line = $rlt[0];
+				return($line);
+			} else {
+				$line = array();
+				$line['i_titulo'] = '';
+			}
+		print_r($rlt);
+	}
+
 function exemplar($isbn)
 {
-	$sql = "select max(i_exemplar) as i_exemplar, 
+	$sql = "select max(i_exemplar) as i_exemplar,
 					max(i_manitestation) as i_manitestation
 			from find_item
 			where i_identifier = '$isbn'
@@ -722,14 +740,18 @@ function exemplar($isbn)
 	{
 		$line = $rlt[0];
 		if (round($line['i_exemplar']) > 0)
-			{
-				$ex = $line['i_exemplar'];
-				return($ex);
+			{		
+					$ln = $this->le_manifestacao($line['i_manitestation']);
+					$rs = array(
+					$line['i_exemplar'],
+					$line['i_manitestation'],
+					$ln['i_titulo']);
+				return($rs);
 			} else {
-				return(0);
+				return(array(0,0,''));
 			}
 	} else {
-		return(0);
+		return(array(0,0,''));
 	}
 }	
 

@@ -250,16 +250,20 @@ function acquisition_in($loop=1)
 	$form = new form;
 	
 	/**************** RECUPERA NUMERO TOMBO ****/
-	$tombo = get("dd1");
+	$tombo = get("dd5");
 	$place = get("dd4");
-	if (strlen($tombo) == 0)
+	$auto = get("dd1");
+	if ($auto == 1)
 	{
-		$_GET['dd1'] = $this->books_item->tombo_next();
-		if (isset($_SESSION['place']))
-		{
-			$_GET['dd4'] = $_SESSION['place'];
-		}
+		$tombo = $this->books_item->tombo_next();
+		$_GET['dd5'] = $tombo;
 	}
+
+	if ((isset($_SESSION['place'])) and (get("dd4") == 0))
+	{
+		$_GET['dd4'] = $_SESSION['place'];
+	}
+
 	
 	/**************** PLACE SETADO *************/
 	if (strlen($place) > 0)
@@ -280,7 +284,7 @@ function acquisition_in($loop=1)
 	}
 	
 	/***************************** Importa ISBN */
-	if (strlen($isbns) > 0)	
+	if ((strlen($isbns) > 0) and (strlen($tombo) > 0))	
 	{
 		$isbns = troca($isbns,chr(13),'');
 		$isbns = troca($isbns,chr(10),';');
@@ -313,10 +317,14 @@ function acquisition_in($loop=1)
 				if ($isbn_dv == $isbn_or)
 				{
 					/* Verifica Exemplares */
-					$mn = $this->books->exemplar($isbn_o);
+					$exes = $this->books->exemplar($isbn_o);
+					$ex = $exes[0];
+					$mn = $exes[1];
+					$titulo = $exes[2];
+
 					if ($mn > 0)
 					{
-						$status = 1;
+						$status = 2;
 						
 					} else {
 						$mn = 0;
@@ -325,7 +333,7 @@ function acquisition_in($loop=1)
 					$exemplar = $mn + 1;
 					
 					$tipo = 1;
-					$rs = $this->books_item->tombo_insert($tombo,$isbn_o,$tipo,$status,$place,$mn,$exemplar);
+					$rs = $this->books_item->tombo_insert($tombo,$isbn_o,$tipo,$status,$place,$mn,$exemplar,$titulo);
 					if ($rs[0] == 1)
 					{
 						if ($loop == 1)

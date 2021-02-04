@@ -274,6 +274,7 @@ function manifestation($id,$d)
 	$date = '';
     $class = '';
 	$class2 = '';
+	$class3 = '';
 	$serie = '';
 	$vol = '';
 	$rdf = new rdf;
@@ -365,6 +366,22 @@ function manifestation($id,$d)
 				$class .= $link.$vlr.$linka;
             break;
 
+            case 'hasClassificationLanguage':
+                $link = '<a href="'.base_url(PATH.'v/'.$idx).'">';
+                $vlrx = '<div style="width: 100%; padding: 3px;">';
+                $vlrx .= $link.$vlr.$linka;
+                $vlrx .= '</div>';
+				$class3 .= $vlrx;
+			break;
+			
+            case 'hasClassificationCountry':
+                $link = '<a href="'.base_url(PATH.'v/'.$idx).'">';
+                $vlrx = '<div style="width: 100%; padding: 3px;">';
+                $vlrx .= $link.$vlr.$linka;
+                $vlrx .= '</div>';
+				$class3 .= $vlrx;
+			break;			
+			
             case 'hasCutter':
                 $link = '<a href="'.base_url(PATH.'v/'.$idx).'">';
                 $vlrx = '<div style="width: 100%; padding: 3px;">';
@@ -377,13 +394,16 @@ function manifestation($id,$d)
 	}
 
     /* Classification */
-    if (strlen($class.$class2) > 0)
+    if (strlen($class.$class3) > 0)
     {
         $sxx = '<table style="margin-top: 20px; width: 100%;">';
         $sxx .= '<tr>';
-        $sxx .= '<td width="10%" rowspan=2>'.msg('Classification').':</td>';
+        $sxx .= '<td width="10%" rowspan=5>'.msg('Classification').':</td>';
         $sxx .= '<td width="90%">'.$class.'</td>';
 		$sxx .= '</tr>';
+		$sxx .= '<tr>';
+		$sxx .= '<td width="90%">'.$class3.'</td>';
+        $sxx .= '</tr>';		
 		$sxx .= '<tr>';
 		$sxx .= '<td width="90%">'.$class2.'</td>';
         $sxx .= '</tr>';
@@ -395,11 +415,14 @@ function manifestation($id,$d)
 	/****************** Imagem */
 	$sx .= '<div class="'.bscol(2).'">';
 	$sx .= '<img src="'.$img.'" class="img-fluid img_cover">';
-	if (perfil("#ADM"))
+	if (perfil("#ADM#CAT"))
 	{
 		$sx .= $CI->covers->btn_seek_cover($isbn);
 		$sx .= ' | ';
 		$sx .= $CI->covers->btn_upload($isbn);
+		$sx .= ' | ';
+		$rdf = new rdf;
+		$sx .= $rdf->btn_editar($id);
 	}
 	$sx .= '</div>';
 

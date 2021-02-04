@@ -368,10 +368,11 @@ $lang['item_EDIT'] = 'Editar';
 $lang['books_place'] = 'Disponibilidade de exemplares';
 $lang['LOANS'] = 'EMPRÉSTIMO';
 $lang['module'] = 'Módulo';
-$lang['h_date'] = 'Date e hora';
+$lang['h_date'] = 'data';
+$lang['h_hora'] = 'hora';
 $lang['h_status'] = 'situação';
 $lang['h_ip'] = 'IP da máquina';
-$lang['h_user'] = 'Usuário';
+$lang['h_user'] = 'usuário';
 $lang['i_status '] = 'Situação';
 $lang['i_ln1'] = 'Etiqueta-L1';
 $lang['i_ln2'] = 'Cutter';
@@ -409,10 +410,11 @@ $lang['us_uf'] = 'UF';
 $lang['search'] = 'busca';
 $lang['loan'] = 'empréstimo';
 $lang['ua_nasc'] = 'Dt Nascimento';
-$lang[''] = '';
-$lang[''] = '';
-$lang[''] = '';
-$lang[''] = '';
+$lang['nr_tombo_automatic'] = 'Atribuir tombo automáticamente';
+$lang['nr_tombo_manual'] = 'Nº tombo manual';
+$lang['hasClassificationLanguage'] = 'Classificação Idioma';
+$lang['hasClassificationCountry'] = 'Classificação Pais';
+$lang['hasCutter'] = 'Cutter';
 
 
 

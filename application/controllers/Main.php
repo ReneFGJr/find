@@ -66,6 +66,7 @@ class Main extends CI_controller {
         $this -> load -> library('session');
         $this -> load -> helper('cookie');
         $this -> load -> helper('rdf');
+        $this -> load -> helper('email');
         $this -> load -> helper('socials');
         
         $this -> load -> model('libraries');
@@ -528,7 +529,7 @@ function config($ac='',$id='',$chk='',$chk2='',$chk3='') {
             /* Classes */
             $rdf = new rdf;
             $sx .= $rdf->index($ac,$id,$chk,$chk2,$chk3);
-        break;                
+        break;  
         
         default:
         $rdf = new rdf;
@@ -574,7 +575,7 @@ function a($id = '') {
     
     <div class="col-md-4 text-right">';
     if ((perfil("#ADM") > 0)) {
-        $tela .= $linkd . msg('delete') . $linkda . ' ';
+        //$tela .= $linkd . msg('delete') . $linkda . ' ';
     }
     $tela .= $linkc . msg('return') . $linkca;
     

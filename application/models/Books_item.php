@@ -51,25 +51,39 @@ class Books_item extends CI_model
 	function item_historico($id)
 		{
 			$dt = array();
-			$dt['table'] = '(
-							select h_date, h_ip,
+			$sql = "		select h_date, h_ip,
 							us_nome as h_user,
 							is_name as h_status
 							from find_item_historic 
 							inner join users ON h_user = id_us
-							left join find_item_status ON h_status = id_is							
-							) as histo
-							';
-			$dt['type'] = '3';
-			$dt['order'] = 'h_date desc';
-			$dt['path'] = $id.'/#';
-			$cp = array();
-			array_push($cp,array('$S100',"h_date","h_date",True,True,True));
-			array_push($cp,array('$S100',"h_status","h_status",True,True,True));
-			array_push($cp,array('$S100',"h_ip","h_ip",True,True,True));
-			array_push($cp,array('$S100',"h_user","h_user",True,True,True));
-			$dt['cp'] = $cp;
-			$sx = row2($dt);
+							left join find_item_status ON h_status = id_is
+							where h_item = $id 
+							order by id_h desc						
+							";
+			$rlt = $this->db->query($sql);
+			$rlt = $rlt->result_array();
+			$sx = '<table width="100%">';
+			$sx .= '<tr style="border-top: 1px solid #808080">';
+			$sx .= '<th width="10%">'.msg('h_date').'</th>';
+			$sx .= '<th width="10%">'.msg('h_hora').'</th>';
+			$sx .= '<th width="15%">'.msg('h_status').'</th>';
+			$sx .= '<th width="64%">'.msg('h_user').'</th>';
+			$sx .= '<th width="1%">#</th>';
+			$sx .= '</tr>';
+
+			for ($r=0;$r < count($rlt);$r++)
+				{
+					$line = $rlt[$r];
+					$sx .= '<tr>';
+					$sx .= '<td>'.stodbr($line['h_date']).'</td>';
+					$sx .= '<td>'.substr($line['h_date'],11,5).'</td>';
+					$sx .= '<td>'.$line['h_status'].'</td>';					
+					$sx .= '<td>'.$line['h_user'].'</td>';
+					$inf = 'IP Adress:'.$line['h_ip'];
+					$sx .= '<td><a href="#" title="'.$inf.'">[i]</a></td>';
+					$sx .= '</tr>';
+				}
+			$sx .= '</table>';				
 			return($sx);
 		}
 
@@ -348,8 +362,14 @@ function tombo_view($id)
 		$sx .= '<div class="col-md-2">';		
 		$sx .= '<a href="'.base_url(PATH.'/item/edit/'.$dt['id_i']).'" class="btn btn-outline-warning">'.msg('edit').'</a>';
 		$sx .= '</div>';
+		
+		$sx .= '<div class="'.bscol(10).'">';		
+		$sx .= $this->item_historico($id);
 		$sx .= '</div>';
-		$sx .= '</div>';		
+
+		$sx .= '</div>';
+		$sx .= '</div>';
+
 		}
 		return($sx);
 	}
@@ -412,11 +432,12 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 			$form = new form;
 			$cp = array();
 			array_push($cp,array('$H8','','',false,false));
-			array_push($cp,array('$S40','',msg('nr_tombo'),true,true));
+			array_push($cp,array('$C','',msg('nr_tombo_automatic'),false,true));
 			array_push($cp,array('$T80:5','',msg('isbn_list'),true,true));
-			array_push($cp,array('$C','',msg('without_isbn'),false,true));
+			array_push($cp,array('$C','',msg('without_isbn'),false,true));			
 			$sql = "select * from library_place where lp_LIBRARY = ".LIBRARY."";
 			array_push($cp,array('$Q id_lp:lp_name:'.$sql,'',msg('library_place'),true,true));
+			array_push($cp,array('$S40','',msg('nr_tombo_manual'),false,true));
 			$sx = '<div class="container"><div class="row">';
 			$sx .= '<div class="col-12">';
 			$sx .= $form->editar($cp,'');
