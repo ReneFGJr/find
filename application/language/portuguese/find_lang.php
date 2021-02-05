@@ -415,6 +415,8 @@ $lang['nr_tombo_manual'] = 'Nº tombo manual';
 $lang['hasClassificationLanguage'] = 'Classificação Idioma';
 $lang['hasClassificationCountry'] = 'Classificação Pais';
 $lang['hasCutter'] = 'Cutter';
+$lang['item_status_99'] = '<span style="color: red"><B>EXCLUÍDO</B></span>';
+$lang['ITEM_EDIT'] = 'EDIÇÃO DE ITEM';
 
 
 
