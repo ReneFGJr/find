@@ -56,6 +56,12 @@ $logo = $this->libraries->logo(0,-1);
 				</li>
 				<?php } ?>
 
+				<?php if (perfil("#ADM#CGU#BRE") > 0) { ?>
+				<li class="nav-item">
+					<a class="nav-link" href="<?php echo base_url(PATH.'reports'); ?>"><?php echo msg('Reports');?></a>
+				</li>
+				<?php } ?>				
+
 				<?php if (perfil("#ADM") > 0) { ?>
 				<li class="nav-item">
 					<a class="nav-link" href="<?php echo base_url(PATH.'admin'); ?>">Admin</a>

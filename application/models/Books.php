@@ -610,10 +610,14 @@ function vitrine()
 {
 	$this->books_item->check();
 	$sx = '<h1>Vitrine</h1>';
-	$sql = "select i_manitestation, i_identifier, i_titulo 
-	from find_item 
-	where i_library = '".LIBRARY."' and i_manitestation <> 0
-	group by i_manitestation, i_identifier, i_titulo ";
+	$sql = "
+	select i_manitestation, i_identifier, i_titulo, max(id_i) as idi 
+		from find_item 
+		where i_library = '".LIBRARY."' and i_manitestation <> 0
+		group by i_manitestation, i_identifier, i_titulo
+		order by idi desc
+		limit 24
+		";
 	
 	$rlt = $this->db->query($sql);
 	$rlt = $rlt->result_array();

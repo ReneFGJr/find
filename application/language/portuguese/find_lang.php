@@ -417,6 +417,8 @@ $lang['hasClassificationCountry'] = 'Classificação Pais';
 $lang['hasCutter'] = 'Cutter';
 $lang['item_status_99'] = '<span style="color: red"><B>EXCLUÍDO</B></span>';
 $lang['ITEM_EDIT'] = 'EDIÇÃO DE ITEM';
+$lang['report_acervo_1'] = 'Itens no acervo';
+$lang['report_acervo_2'] = 'Catalogação/Catalogador';
 
 
 

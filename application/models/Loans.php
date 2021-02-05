@@ -270,7 +270,7 @@ class loans extends CI_model {
 		{
 			$dt = $this->le_endereco($id);
 			$sx = '';
-			$sx .= '<div class="'.bscol(4).'">';
+			$sx .= '<div class="'.bscol(3).'">';
 			$sx .= '<div class="bold big">'.msg('ETNIA').'</div>';
 
 			$sx .= '<span class="small">'.msg('ua_nasc').'</span>';
@@ -458,6 +458,8 @@ class loans extends CI_model {
 			array_push($cp,array('$S50','us_bairro',msg('us_bairro'),false,TRUE));
 			array_push($cp,array('$S50','us_localidade',msg('us_localidade'),false,TRUE));
 			array_push($cp,array('$S5','us_uf',msg('us_uf'),false,TRUE));
+			array_push($cp,array('$S35','us_fone1',msg('us_fone1'),false,TRUE));
+			array_push($cp,array('$S35','us_fone2',msg('us_fone2'),false,TRUE));
 			$sx .= $form->editar($cp,'users_add');
 			$sx .= '</div>';
 
@@ -473,23 +475,20 @@ class loans extends CI_model {
 		{
 			$dt = $this->le_endereco($id);
 			$sx = '';
-			$sx .= '<div class="'.bscol(4).'">';
+			$sx .= '<div class="'.bscol(5).'">';
 			$sx .= '<div class="bold big">'.msg('ADDRESS').'</div>';
 
 			$sx .= '<span class="small">'.msg('us_address').'</span>';
-			$sx .= '<div class="bold">'.$dt['us_logradouro'].'&nbsp;</div>';
-
-			$sx .= '<span class="small">'.msg('us_complemento').'</span>';
-			$sx .= '<div class="bold">'.$dt['us_complemento'].'&nbsp;</div>';
+			$sx .= '<div class="bold">'.$dt['us_logradouro'].' '.$dt['us_complemento'].'&nbsp;</div>';
 
 			$sx .= '<span class="small">'.msg('us_bairro').'</span>';
 			$sx .= '<div class="bold">'.$dt['us_bairro'].'&nbsp;';
 			$sx .= ' - <span class="bold">'.trim($dt['us_localidade']).'</span>';
-			$sx .= ', <span class="bold">'.$dt['us_uf'].'&nbsp;</span>';
+			$sx .= ', <span class="bold">'.$dt['us_uf'].'&nbsp;- '.msg('us_cep').' '.$dt['us_cep'].'</span>';
 			$sx .= '</div>';
 
-			$sx .= '<span class="small">'.msg('us_cep').'</span>';
-			$sx .= '<div class="bold">'.$dt['us_cep'].'&nbsp;</div>';
+			$sx .= '<span class="small">'.msg('phones').'</span>';
+			$sx .= '<div class="bold">'.$dt['us_fone1'].'&nbsp;'.$dt['us_fone2'].'</div>';
 
 			if (perfil("#ADM"))
 			{

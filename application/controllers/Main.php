@@ -281,6 +281,24 @@ class Main extends CI_controller {
         $this -> foot();
     }
 
+    function reports($act='',$d1='',$d2='',$d3='')
+        {
+        $this -> cab();
+        
+        $this->load->model("books");
+        $this->load->model("books_item");
+        $this->load->model("covers");
+        $this->load->model("reports");
+        $rdf = new rdf;
+        
+        $data['logo'] = $this->libraries->logo(0,2);
+        $tela = '';
+        $tela .= $this -> load -> view('welcome', $data,true);
+        $tela .= $this->reports->index($act,$d1,$d2,$d3);
+        $data['content'] = $tela;
+        $this -> load -> view('content', $data);        
+        }
+
     function manual()
         {
             $this->cab();

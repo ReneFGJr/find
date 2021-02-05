@@ -319,10 +319,35 @@ function tombo_edit($id)
 		$sx .= '</div>';
 		if ($form->saved > 0)
 			{
+				$this->atualizar_item_excluidos();
 				redirect(base_url(PATH.'item/view/'.$id));
 			}
 		return($sx);
 	}
+
+function atualizar_item_excluidos()
+{
+	$sql = "select * from find_item
+	where i_status = 99 and i_library >= 0 and i_library_place >= 0
+	";
+	$rlt = $this->db->query($sql);
+	$rlt = $rlt->result_array();
+	for ($r=0;$r < count($rlt);$r++)
+	{
+		$line = $rlt[$r];
+		$id = $line['id_i'];
+		$lib = $line['i_library']* (-1);
+		$pla = $line['i_library_place']* (-1);
+		$status = $line['i_status'];
+
+		$sql = "update find_item
+		set i_library = $lib,
+		i_library_place = $pla
+		where id_i = ".$id;
+		$rrr = $this->db->query($sql);
+		$this->item_historico_insert($id,$status);
+	}
+}	
 
 function tombo_view($id)
 	{
