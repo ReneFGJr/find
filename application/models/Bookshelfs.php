@@ -11,13 +11,13 @@ class bookshelfs extends CI_model {
                             ";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
-        $sx = '<div class="col-lg-12 col-md-12 col-xs-12 col-sm-12 header">';
+        $sx = '<div class="'.bscol(12).' header">';
         $sx .= '<h2>'.msg('acquisitions').'<small>- '.msg('latest acquisitions').'</small></h2>';
         $sx.= '</div>';
         
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
-            $sx .= '<div class="col-lg-2 col-md-4 col-xs-4 col-sm-6 book_small" style="margin-top: 40px;">';
+            $sx .= '<div class="'.bscol(4).' book_small" style="margin-top: 40px;">';
             $sx .= $this -> bookshelfs -> show_manifestation_by_works($line['w']);
             $sx .= '</div>' . cr();
         }

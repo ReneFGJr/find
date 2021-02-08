@@ -244,6 +244,8 @@ $lang['loan_book'] = 'Consultar tombo';
 $lang['load_users'] = 'Cadastro de Usuários';
 $lang['loan_renove'] = 'Renovação';
 
+$lang['book_return'] = 'Devolução';
+
 $lang['us_nome'] = 'Nome completo';
 $lang['us_email'] = 'e-mail';
 $lang['us_badge'] = 'crachá';
@@ -274,8 +276,9 @@ $lang['item_status_2'] = 'Preparo físico';
 $lang['item_status_3'] = 'Reparo';
 $lang['item_status_4'] = 'Descarte';
 
-$lang['item_status_5'] = 'Disponível';
-
+$lang['item_status_5'] = '<span style="color: green; font-width: bold;">Disponível</span>';
+$lang['item_status_6'] = '<span style="color: blue; font-width: bold;">Emprestado</span>';
+$lang['item_status_7'] = '<span style="color: brow; font-width: bold;">Devolvido</span>';
 /*
 
 $lang['item_status_5'] = 'Aguardado metadados';
@@ -408,7 +411,7 @@ $lang['ua_number'] = 'Número';
 $lang['us_localidade'] = 'Cidade';
 $lang['us_uf'] = 'UF';
 $lang['search'] = 'busca';
-$lang['loan'] = 'empréstimo';
+$lang['loan'] = 'Empréstimo';
 $lang['ua_nasc'] = 'Dt Nascimento';
 $lang['nr_tombo_automatic'] = 'Atribuir tombo automáticamente';
 $lang['nr_tombo_manual'] = 'Nº tombo manual';
@@ -417,12 +420,25 @@ $lang['hasClassificationCountry'] = 'Classificação Pais';
 $lang['hasCutter'] = 'Cutter';
 $lang['item_status_99'] = '<span style="color: red"><B>EXCLUÍDO</B></span>';
 $lang['ITEM_EDIT'] = 'EDIÇÃO DE ITEM';
+
+$lang['Reports_acervo'] = 'Relatório de Acervo';
 $lang['report_acervo_1'] = 'Itens no acervo';
 $lang['report_acervo_2'] = 'Catalogação/Catalogador';
+$lang['report_acervo_3'] = 'Empréstimos';
 
+$lang['Libraries'] = 'Bibliotecas Disponíveis';
+$lang['Find_welcome'] = 'Bem vindo ao FIND, sistema de biblitoeca desenvolvido pelo curso de Biblioteconomia da UFRGS. Para acessar uma biblioteca, clique em seu logotipo';
+$lang['loan_date'] = 'Data do empréstimo';
 
-
-
+$lang['i_tombo'] = 'Tombo';
+$lang['i_titulo'] = 'Título da obra';
+$lang['i_dt_emprestimo'] = 'Emprest.';
+$lang['i_dt_prev'] = 'Prev.Dev.';
+$lang[''] = '';
+$lang[''] = '';
+$lang[''] = '';
+$lang[''] = '';
+$lang[''] = '';
 
 
 ?>

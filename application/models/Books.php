@@ -462,8 +462,8 @@ class books extends CI_model
 			case '2':
 				$img = '<img src="'.$dt['img'].'" class="img-fluid '.$class.'">';
 				$sx .= '<div class="row">';
-				$sx .= '<div class="col-md-1">'.$img.'</div>';
-				$sx .= '<div class="col-md-11">';
+				$sx .= '<div class="'.bscol(1).'">'.$img.'</div>';
+				$sx .= '<div class="'.bscol(11).'">';
 				$sx .= '<div class="s1_title">'.$dt['w_title'].$ed.'</div>';
 				$sx .= '$[BODY]';
 				$sx .= '</div>';
@@ -475,7 +475,8 @@ class books extends CI_model
 			if (strpos($dt['img'],'no_cover') or (perfil("#ADM")))
 			{ 
 				$class = '' ; 
-				$compl = $this->covers->btn_seek_cover($dt['m_isbn13']);
+				$compl = '<br/>';
+				$compl .= $this->covers->btn_seek_cover($dt['m_isbn13']);
 				$compl .= ' | '.cr().$this->covers->btn_upload($dt['m_isbn13']).cr();
 				$compl .= ' | '.cr().$this->covers->btn_upload_link($dt['m_isbn13']).cr();
 			}
@@ -484,8 +485,8 @@ class books extends CI_model
 			}
 			$img = '<img src="'.$dt['img'].'" class="img-fluid '.$class.'">';
 			$sx .= '<div class="row">';
-			$sx .= '<div class="col-md-3">'.$img.$compl.'</div>';
-			$sx .= '<div class="col-md-9">';
+			$sx .= '<div class="'.bscol(3).'">'.$img.$compl.'</div>';
+			$sx .= '<div class="'.bscol(9).'">';
 			$sx .= '<div class="s1_title">'.$dt['w_title'].$ed.'</div>';
 			
 			/* Authors */
@@ -566,8 +567,8 @@ function export($id)
 	$dt = $this->le_m($id);
 	$img = '<img src="'.$dt['img'].'" class="img-fluid">';
 	$sx .= '<div class="row">';
-	$sx .= '<div class="col-md-3">'.$img.'</div>';
-	$sx .= '<div class="col-md-9">';
+	$sx .= '<div class="'.bscol(3).'">'.$img.'</div>';
+	$sx .= '<div class="'.bscol(9).'">';
 	$sx .= '<div class="s1_title">'.$dt['w_title'].'</div>';
 	
 	/* Authors */
@@ -630,13 +631,13 @@ function vitrine()
 		$img = $this->covers->img($isbn);
 		$link = '<a href="'.base_url(PATH.'v/'.$id).'">';
 		$linka = '</a>';
-		$sx .= '<div class="col-3 col-lg-2 col-md-2 books text-center">';
+		$sx .= '<div class="'.bscol(3).' books text-center">';
 		$sx .= $link;
 		$class = ' img_cover ';
 		if (strpos($img,'no_cover.png'))
 		{ $class = ''; }
-		$sx .= '<img src="'.$img.'" class="img-fluid '.$class.'" style="margin: 20px 10px 10px 10px;">';
-		$sx .= $linka;
+		$sx .= '<img src="'.$img.'" class="img-fluid '.$class.'" style="width: 100%; margin: 20px 10px 10px 10px;">';
+		$sx .= $linka.'<br/>';
 		$title = trim($line['i_titulo']);
 		if (strlen($title) > 60)
 		{
@@ -674,7 +675,7 @@ function i($id)
 {
 	$dt = $this->le_item($id);
 	$sx = '';
-	$sx .= '<div class="container"><div class="row"><div class="col-12">';
+	$sx .= '<div class="container"><div class="row"><div class="'.bscol(12).'">';
 	$sx .= '<table class="table">';
 	foreach ($dt as $key => $value) {
 		$sx .= '<tr>';

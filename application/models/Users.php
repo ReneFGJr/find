@@ -47,6 +47,25 @@ class users extends CI_model {
         $this -> insert_new_user($dt);
     }
 
+    function view($id)
+        {
+            $data = $this -> users -> le($id);
+            $socials = new socials;
+            $img = $socials->user_image($data);
+            
+            $sx = '<div class="row">';
+            $sx .= '<div class="'.bscol(2).'">';
+            $sx .= '    <img src="'.base_url($img).'" class="img-fluid">';
+            $sx .= '</div>';
+
+            $sx .= '<div class="'.bscol(8).'">';
+            $sx .= '    <b>'.$data['us_nome'].'</b>';
+            $sx .= ' <br/>'.$data['us_email'];
+            $sx .= '</div>';
+            $sx .= '</div>';
+            return($sx);
+        }
+
     function row($id = '') {
         $form = new form;
 

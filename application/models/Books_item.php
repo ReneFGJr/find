@@ -16,7 +16,7 @@ class Books_item extends CI_model
 		$sx .= '<div class="container" style="border-bottom: 1px solid #000000;">';
 		
 		$sx .= '<div class="row">';
-		$sx .= '<div class="col-1">';
+		$sx .= '<div class="'.bscol(1).'">';
 		$sx .= '<img src="'.$img.'" class="img-fluid img_cover">';
 		$sx .= '</div>';
 		
@@ -108,19 +108,19 @@ class Books_item extends CI_model
 		$tombo++;
 		return($tombo);
 	}
-	
-	function le_tombo($id)
+
+	function le_tombo($id,$tp='id_i')
 	{
 		$sql = "select * 
 		from find_item 		
 		left join library_place ON i_library_place = id_lp
-		where id_i = ".$id;	
+		where $tp = '".$id."' and i_library = '".LIBRARY."'";		
 
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();
 		if (count($rlt) > 0)
 		{
-			$line = $rlt[0];		
+			$line = $rlt[0];	
 		} else {
 			$line = array();
 		}
@@ -190,7 +190,13 @@ class Books_item extends CI_model
 					$sta = '<span class="small">'.msg('item_status_'.$line['i_status']).'</span>';
 					$ex .= 'Ex:'.$line['i_tombo'].'<br/>';
 					$sta = msg('in_prepare');
-					$link = '<a href="'.base_url(PATH.'preparation/tombo/'.$line['id_i']).'">';
+					if (perfil("#ADM") > 0)
+					{
+						$link = '<a href="'.base_url(PATH.'preparation/tombo/'.$line['id_i']).'">';
+					} else {
+						$link = '<a href="'.base_url(PATH.'item/view/'.$line['id_i']).'">';
+					}
+					
 					$linka = '';
 					$img = 'img/books/books_'.$line['i_status'].'.png';	
 				break; 
@@ -212,7 +218,7 @@ class Books_item extends CI_model
 			$sp .= '</tr>';
 
 			/********************* ICONE */
-			$sx .= '<div class="'.bscol(2).' text-center">';
+			$sx .= '<div class="'.bscol('2*').' text-center">';
 			$sx .= '<span class="small">'.$ex.'</span>';
 			$sx .= $link;					
 
@@ -364,11 +370,11 @@ function tombo_view($id)
 
 	    $sx .= '<div class="container" style="margin-top: 10px;">';
 		$sx .= '<div class="row">';
-		$sx .= '<div class="col-md-2">';
+		$sx .= '<div class="'.bscol(2).'">';
 		$sx .= $this->etiqueta($dt);
 		$sx .= '</div>';
 
-		$sx .= '<div class="col-md-8">';
+		$sx .= '<div class="'.bscol(8).'">';
 		$sx .= msg('status').': <b>'.msg('item_status_'.$dt['i_status']).'</b>';
 
 		$sx .= '<br>Previsão de devolução:'.stodbr($dt['i_dt_prev']);
@@ -384,7 +390,7 @@ function tombo_view($id)
 		{
 	    $sx .= '<div class="container" style="margin-top: 10px;">';
 		$sx .= '<div class="row">';
-		$sx .= '<div class="col-md-2">';		
+		$sx .= '<div class="'.bscol(2).'">';		
 		$sx .= '<a href="'.base_url(PATH.'/item/edit/'.$dt['id_i']).'" class="btn btn-outline-warning">'.msg('edit').'</a>';
 		$sx .= '</div>';
 		
@@ -464,7 +470,7 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 			array_push($cp,array('$Q id_lp:lp_name:'.$sql,'',msg('library_place'),true,true));
 			array_push($cp,array('$S40','',msg('nr_tombo_manual'),false,true));
 			$sx = '<div class="container"><div class="row">';
-			$sx .= '<div class="col-12">';
+			$sx .= '<div class="'.bscol(12).'">';
 			$sx .= $form->editar($cp,'');
 			$sx .= '<script> $("#dd2").focus(); </script>'.cr();
 			return($sx);			
@@ -606,7 +612,7 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 				$status = $sta;
 			}
 			$sx = '';
-			$sx .= '<div class="col-10">';
+			$sx .= '<div class="'.bscol(10).'">';
 						
 			switch($status)
 			{
@@ -708,7 +714,7 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 			}
 			$sx .= '</div>'.cr();
 			/**************** WORKFLOW *****************************/
-			$sx .= '<div class="col-2">';
+			$sx .= '<div class="'.bscol(2).'">';
 			if ($view < 5)
 			{
 				$dt = array('pos'=>$view,'id'=>$id);
@@ -816,9 +822,9 @@ function tombo_insert($tombo, $isbn, $tipo, $status=9, $place, $manifestation=0,
 
 						default:
 						$sx .= '<style> div { border: 1px solid #000; } </style>';
-						$sx .= '<div class="col-md-12">';
+						$sx .= '<div class="'.bscol(12).'">';
 						$sx .= '<span class="small">'.msg('upload_item_info').'</span></div>';
-						$sx .= '<div class="col-md-12">';
+						$sx .= '<div class="'.bscol(12).'">';
 						$sx .= '<a href="'.base_url(PATH.'upload/item/'.$id.'/FILE').'" class="btn btn-outline-primary">'.msg('item_FILE').'</a>';
 						$sx .= '&nbsp;';
 						$sx .= '<a href="'.base_url(PATH.'upload/item/'.$id.'/URL').'" class="btn btn-outline-primary">'.msg('item_URL').'</a>';

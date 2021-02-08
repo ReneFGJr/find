@@ -68,7 +68,7 @@ class book_preparations extends CI_model
 			default:
 			/******************************************/
 			$sx .= $this->preparation_menu(msg('item_add'),'','preparation/acquisition',0);
-			$sx .= '<div class="col-md-8 col-6 col-sm-7 col-lg-9 col-xl-9">';
+			$sx .= '<div class="'.bscol(8).'">';
 			/******************* Items para Catalogação ****/
 			$sta = array(0,1,2,3,4);
 			$sx .= '<h1>'.msg('preparation_itens').'</h1>';
@@ -106,7 +106,7 @@ function preparation_menu($name,$txt,$link,$tp=0)
 {
 	$ig = array('icone_processament_tecnico_256.jpg','');
 	$sx = '';
-	$sx .= '<div class="col-md-4 col-6 col-sm-5 col-lg-3 col-xl-3 text-center">';
+	$sx .= '<div class="'.bscol(4).' text-center">';
 	$sx .= '<a href="'.base_url(PATH.$link).'" style="text-decoration: none;">';
 	if (strlen($ig[$tp]) > 0)
 	{
@@ -126,7 +126,7 @@ function preparation_itens($sta)
 {
 	$itens = $this->in_status($sta);
 	$sx = '<div class="container"><div class="row">';
-	$sx.= '<div class="col-12">';	
+	$sx.= '<div class="'.bscol(12).'">';	
 	$sx .= '<h1>'.$itens.' '.msg('preparation_itens');
 	$sx .= ' ' ;
 	$sx .= '<a class="btn btn-outline-primary" href="'.base_url(PATH.'/preparation/itens/0/auto').'">'.msg('process_automatic').'</a>';
@@ -200,7 +200,7 @@ function acquisition_marc_txt()
 	array_push($cp,array('$M','',$m,false,false));
 	array_push($cp,array('$FILE','','',false,false));
 	
-	$tela = '<div class="container"><div class="row"><div class="col-md-12">';
+	$tela = '<div class="container"><div class="row"><div class="'.bscol(12).'">';
 	$tela .= $form->editar($cp,'');
 	$tela .= '</div></div></div>';	
 
@@ -227,7 +227,7 @@ function acquisition_marc()
 	array_push($cp,array('$M','',$m,false,false));
 	array_push($cp,array('$FILE','','',false,false));
 	
-	$tela = '<div class="container"><div class="row"><div class="col-md-12">';
+	$tela = '<div class="container"><div class="row"><div class="'.bscol(12).'">';
 	$tela .= $form->editar($cp,'');
 	$tela .= '</div></div></div>';
 	
@@ -279,7 +279,7 @@ function acquisition_in($loop=1)
 	{
 		$tb = get("dd1");
 		$isbns = LIBRARY.strzero($tb,8);
-		$isbns	 .= genchksum13($isbn);
+		$isbns	 .= genchksum13($isbns);
 		$status = 5;
 	}
 	
@@ -369,7 +369,7 @@ function acquisition_in($loop=1)
 	}
 	$sa = '<div class="container">';
 	$sa .= '<div class="row">';
-	$sa .= '<div class="col-md-12">'.$sx.'</div>';
+	$sa .= '<div class="'.bscol(12).'">'.$sx.'</div>';
 	$sa .= '</div>';
 	$sa .= '</div>';
 	$sa .= '</div>';
@@ -388,22 +388,22 @@ function book_header($dt)
 	$img = $this->covers->img($dt['m_isbn13']);
 	$sx = '';
 	
-	$sx .= '<div class="col-1">';
+	$sx .= '<div class="'.bscol(1).'">';
 	$sx .= '<a href="'.base_url(PATH.'m/'.$dt['id_m']).'">';
 	$sx .= '<img src="'.$img.'" class="img-fluid">';
 	$sx .= '</a>';
 	$sx .= '</div>';
 	
-	$sx .= '<div class="col-3">';
+	$sx .= '<div class="'.bscol(3).'">';
 	$sx .= '<span>ISBN:'.$dt['i_identifier'].'</span></br>';
 	$sx .= '<span>'.msg('item_status_'.$dt['i_status']).'</span>';
 	$sx .= '</div>';			
 	
-	$sx .= '<div class="col-7">';
+	$sx .= '<div class="'.bscol(7).'">';
 	$sx .= '<span class="find_title">'.$dt['w_title'].'</span>';
 	$sx .= '</div>';
 	
-	$sx .= '<div class="col-1 text-right">';
+	$sx .= '<div class="'.bscol(1).' text-right">';
 	$sx .= '<span class="small">TOMBO</span><br/><span class="big">'.$dt['i_tombo'].'</span>';
 	$sx .= '</div>';
 	
@@ -417,13 +417,13 @@ function show($dt,$tp=1)
 	{
 		case 1:
 			$sx = '<div class="row">';
-			$sx .= '<div class="col-10">';
+			$sx .= '<div class="'.bscol(10).'">';
 			$sx .= '<h2>'.$dt['i_identifier'].'</h2>';
 			$sx .= '<div>';
 			$sx .= msg('item_status_'.$dt['i_status']);
 			$sx .= '</div>';
 			$sx .= '</div>';
-			$sx .= '<div class="col-2 text-right">';
+			$sx .= '<div class="'.bscol(2).' text-right">';
 			$sx .= '<span class="alert alert-info"><sup>TOMBO</sup> '.$dt['i_tombo'].'</span>';
 			$sx .= '</div>';
 			$sx .= '</div>';
@@ -431,13 +431,13 @@ function show($dt,$tp=1)
 		
 		case 2:
 			$sx = '<div class="row">';
-			$sx .= '<div class="col-10">';
+			$sx .= '<div class="'.bscol(10).'">';
 			$sx .= '<h2>'.$dt['i_identifier'].'</h2>';
 			$sx .= '<div>';
 			$sx .= msg('item_status_'.$dt['i_status']);
 			$sx .= '</div>';
 			$sx .= '</div>';
-			$sx .= '<div class="col-2 text-right">';
+			$sx .= '<div class="'.bscol(2).' text-right">';
 			$sx .= '<span class="alert alert-info"><sup>TOMBO</sup> '.$dt['i_tombo'].'</span>';
 			$sx .= '</div>';
 			$sx .= '</div>';			
@@ -451,22 +451,22 @@ function show($dt,$tp=1)
 function acquisition()
 {
 	$sx = '	
-	<div class="col-md-3" style="margin-top: 40px;">
+	<div class="'.bscol(3).'" style="margin-top: 40px;">
 	<b>Incorporação no Acervo</b>
 	</div>
 
-	<div class="col-md-9" style="margin-top: 40px;">
+	<div class="'.bscol(9).'" style="margin-top: 40px;">
 	<ul>	
 	<li><a href="'.base_url(PATH.'preparation/acquisition_in/').'">Inserção pelo ISBN</a></li>
 	</ul>
 	</div>
 
 	<!------- Importação ---->	
-	<div class="col-md-3" style="margin-top: 40px;">
+	<div class="'.bscol(3).'" style="margin-top: 40px;">
 	<b>Importação</b>
 	</div>
 
-	<div class="col-md-9" style="margin-top: 40px;">
+	<div class="'.bscol(9).'" style="margin-top: 40px;">
 	<ul>
 	<li><a href="'.base_url(PATH.'preparation/acquisition_marc/').'">Incorporação no Acervo MARC - BIBLIVRE</a></li>
 	<li><a href="'.base_url(PATH.'preparation/acquisition_marc_txt/').'">Incorporação no Acervo MARC/TXT</a></li>

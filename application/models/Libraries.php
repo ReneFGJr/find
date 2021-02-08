@@ -217,7 +217,11 @@ class libraries extends CI_model {
     }    
 
     function list_libraries($id = '') {
-        $sql = "select * from library order by l_name";
+        $wh = 'where l_visible = 1';
+        //if (perfil("#ADM")) { $wh = ''; }
+        $sql = "select * from library 
+                    $wh
+                    order by l_name";
         $rlt = $this -> db -> query($sql);
         $rlt = $rlt -> result_array();
         $sx = '<div class="container">';
@@ -225,10 +229,10 @@ class libraries extends CI_model {
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
             $link = '<a href="' . base_url(PATH . 'library/' . $line['id_l']) . '" border=0>';
-            $sx .= '<div class="col-2 text-center" style="border: 2px solid #00000; margin-bottom: 50px;">';
+            $sx .= '<div class="'.bscol(2).' text-center" style="padding-bottom: 80px;">';
             $sx .= $link;
             $logo = $this->logo($line['l_id'],-1);
-            $sx .= '<img src="' . $logo . '" class="img-fluid">';
+            $sx .= '<img src="' . $logo . '" class="img-fluid" style="width: 100%;">';
             $sx .= '<br>';
             $sx .= $line['l_name'];
             $sx .= '</a>';

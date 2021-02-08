@@ -44,9 +44,10 @@ if (strpos($content,'container') > 0)
 			}
 	}
 
-	echo '===>'.$type.' '.$rowc;
+	
 	if (isset($_GET['debug']))
 	{
+		echo '===>'.$type.' '.$rowc;
 		echo  '<style> div { border: 1px solid #000; } </style>';
 	}
 ?>

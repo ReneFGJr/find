@@ -148,7 +148,7 @@ function rdf_show_data_generic($line = array())
 					$linka = '</a>';
 					$sx .= '<div class="'.bscol(2).' text-center">';
 					$sx .= $link;
-					$sx .= '<img src="'.$img.'" class="img-fluid">';
+					$sx .= '<img src="'.$img.'" class="img-fluid" style="width: 100%;">';
 					$sx .= $linka;
 					$sx .= $l['i_titulo'];
 					$sx .= '</div>';
@@ -158,7 +158,7 @@ function rdf_show_data_generic($line = array())
 
 function rdf_show_Person($line = array())
 	{
-        $sx = '<div class="col-md-12">';
+        $sx = '<div class="'.bscol(12).'">';
 		$sx .= '<h2>'.$line['n_name'].'</h2>';
         $sx .= '</div>';
 
@@ -174,8 +174,8 @@ function show_books($l)
 				case 'hasAuthor':
 					$link = '<a href="'.base_url(PATH.'v/'.$l['d_r1']).'">';
 					$linka = '</a>';
-					$books .= '<div class="col-md-2"></div>';
-					$books .= '<div class="col-md-10">'.$link.$l['n_name'].$linka.'</div>';
+					$books .= '<div class="'.bscol(2).'"></div>';
+					$books .= '<div class="'.bscol(10).'">'.$link.$l['n_name'].$linka.'</div>';
 				break;
 			}
 		return($books);
@@ -186,12 +186,12 @@ function show_books($l)
 		$img = $this->covers->img($isbn);
 		$link = '<a href="'.base_url(PATH.'v/'.$id).'">';
 		$linka = '</a>';
-		$sx .= '<div class="col-3 col-lg-2 col-md-2 books text-center">';
+		$sx .= '<div class="'.bscol(3).' books text-center">';
 		$sx .= $link;
 		$class = ' img_cover ';
 		if (strpos($img,'no_cover.png'))
 		{ $class = ''; }
-		$sx .= '<img src="'.$img.'" class="img-fluid '.$class.'" style="margin: 20px 10px 10px 10px;">';
+		$sx .= '<img src="'.$img.'" class="img-fluid '.$class.'" style="width: 100%; margin: 20px 10px 10px 10px;">';
 		$sx .= $linka;
 		$title = trim($line['i_titulo']);
 		if (strlen($title) > 60)
@@ -414,9 +414,10 @@ function manifestation($id,$d)
 
 	/****************** Imagem */
 	$sx .= '<div class="'.bscol(2).'">';
-	$sx .= '<img src="'.$img.'" class="img-fluid img_cover">';
+	$sx .= '<img src="'.$img.'" class="img-fluid img_cover" style="width: 100%;">';
 	if (perfil("#ADM#CAT"))
 	{
+		$sx .= '<br/>';
 		$sx .= $CI->covers->btn_seek_cover($isbn);
 		$sx .= ' | ';
 		$sx .= $CI->covers->btn_upload($isbn);

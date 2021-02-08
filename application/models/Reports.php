@@ -44,6 +44,7 @@ class reports extends CI_Model
                 $sx .= '</div>';
                 return($sx);                
             }
+
         function acervo($d1,$d2,$d3)
             {
                 $this->load->helper('highcharts');
@@ -57,7 +58,60 @@ class reports extends CI_Model
                         case '2':
                         $sx = $this->catalogador($d2,$d3);
                         break;
+
+                        case '3':
+                        $sx = $this->emprestados($d2,$d3);
+                        break;                        
                     }
+                return($sx);
+            }
+
+        function emprestados($d2,$d3)
+            {
+                $sx = '';
+                $sql = "select * 
+                        from find_item 
+                        INNER JOIN users ON id_us = i_usuario
+                        where i_status = 6
+                        and i_library = ".LIBRARY."
+                        order by i_dt_emprestimo";
+                $rlt = $this->db->query($sql);
+                $rlt = $rlt->result_array();
+                $sx = '';
+                $sx .= '<div class="container">';
+                $sx .= '<div class="row">';
+                $sx .= '<div class="'.bscol(12).'">';
+                $sx .= '<table width="100%">';
+                $sx .= '<tr>';
+                $sx .= '<th width="5%">'.msg('i_tombo').'</th>';
+                $sx .= '<th width="35%">'.msg('i_titulo').'</th>';
+                $sx .= '<th width="35%">'.msg('us_nome').'</th>';
+                $sx .= '<th width="5%">'.msg('i_dt_emprestimo').'</th>';
+                $sx .= '<th width="5%">'.msg('i_dt_prev').'</th>';
+                $sx .= '<th width="5%">'.msg('status').'</th>';
+                $sx .= '</tr>';
+                $tto = 0;
+                for ($r=0;$r < count($rlt);$r++)
+                    {
+                        $line = $rlt[$r];
+                        $link = '<a href="'.base_url(PATH.'mod/loans/loan_user/'.$line['id_us']).'">';
+                        $linka = '</a>';
+                        $sx .= '<tr>';
+                        $sx .= '<td align="center">'.$line['i_tombo'].'</td>';
+                        $sx .= '<td>'.$line['i_titulo'].'</td>';
+                        $sx .= '<td>'.$link.$line['us_nome'].$linka.'</td>';
+                        $sx .= '<td align="center">'.stodbr($line['i_dt_emprestimo']).'</td>';
+                        $sx .= '<td align="center">'.stodbr($line['i_dt_prev']).'</td>';
+                        $sta = msg('normal');
+                        $sx .= '<td align="center">'.$sta.'</td>';
+                        $sx .= '</tr>';
+                        $tto++;
+                    }
+                $sx .= '<tr><td colspan=6>Total '.$tto.' '.msg('items').'</td></tr>';
+                $sx .= '</table>';
+                $sx .= '</div>';
+                $sx .= '</div>';
+                $sx .= '</div>';
                 return($sx);
             }
         function catalogador($d2,$d3)

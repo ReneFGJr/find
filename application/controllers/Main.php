@@ -56,6 +56,7 @@ class Main extends CI_controller {
         
         $this -> lang -> load("app", "portuguese");
         $this -> lang -> load("find", "portuguese");
+        $this -> lang -> load("socials", "portuguese");
         
         $this -> load -> database();
         $this -> load -> helper('form');
@@ -230,14 +231,27 @@ class Main extends CI_controller {
         if ($id == 'admin')
         {
             $this->cab();
-            $data['content'] = '<div class="container">'.$this -> libraries -> row($id).'</div>';
+            $data['content'] = '<div class="container" style="margin-top: 40px;">'.$this -> libraries -> row($id).'</div>';
         } else {
             if ((strlen($id) > 0) and (round($id) > 0)) {
                 $this -> libraries -> select($id);
                 redirect(base_url('index.php/main/'));
-            }            
-            $sx = '<h1>'.msg('Libraries').'</h1><hr>';
-            $data['content'] = $this -> libraries -> list_libraries($id);
+            } 
+            $sx ='';
+            $sx .= '<div class="container">';
+            $sx .= '<div class="row">';
+            $sx .= '<div class="'.bscol(12).'">';
+            $sx .= '    <div class="big">';
+            $sx .= '        <h1 class="text-center">'.msg('Libraries').'</h1>';
+            $sx .= '    </div>';
+            $sx .= '    <div class="big">';
+            $sx .= '        <p class="text-left">'.msg('Find_welcome').'</p>';
+            $sx .= '    </div>';
+            $sx .= '</div>';
+            $sx .= $this -> libraries -> list_libraries($id);
+            $sx .= '</div>';
+            $sx .= '</div>';
+            $data['content'] = $sx;
         } 
         $this -> load -> view('content', $data);
     }
