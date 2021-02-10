@@ -98,8 +98,18 @@ function rdf_show_data_generic($line = array())
 		$CI = &get_instance();
 		$id = $line['id_cc'];
 
+		$ed = '';
+		if (perfil("#ADM#CAT"))
+			{
+				$ed = '<br/><a href="'.base_url(PATH.'a/'.$id).'" class="small">'.msg('edit').'</a>';
+			}		
+
 		$class = trim($line['c_class']);
-		$sx = '<div class="'.bscol(12).'"><sup>'.$class.':</sup> '.$line['n_name'].'</h1></div>';
+		$sx = '<div class="'.bscol(12).'"><sup>';
+		$sx .= $class.':</sup> ';
+		$sx .= $line['n_name'].'</h1>';
+		$sx .= $ed;
+		$sx .= '</div>';
 
 		/* Manifestation */
 		$sql = "SELECT 
@@ -216,6 +226,7 @@ function works($id)
 	$d = array();
 	$d['title'] = '';
 	$d['authors'] = '';
+	$d['work'] = $id;
 	$expression = array();
 	
 	$authors = '';
@@ -282,7 +293,7 @@ function manifestation($id,$d)
 	$isbn = $dd['n_name'];
 	$editora = '';
 	$img = $CI->covers->img(sonumero($isbn));
-	
+	$idw = $d['work'];
 	
 	$dt = $rdf->le_data($id);
 	$subsj = '';		
@@ -429,8 +440,13 @@ function manifestation($id,$d)
 
 	/****************** Descrição */
 	$sx .= '<div class="'.bscol(10).'">';
-	/* Title */
+	/* Title */	
 	$sx .= '<div class="work_title">'.$d['title'].'</div>';
+	if (perfil("#ADM#CAT"))
+		{
+			$ed = '<div><a href="'.base_url(PATH.'a/'.$idw).'" class="small">'.msg('edit').'</a></div>';
+			$sx .= $ed;
+		}
 	$sx .= '<div class="work_author">'.$d['authors'].'</div>';
 
 

@@ -277,7 +277,15 @@ function acquisition_in($loop=1)
 	/************* SEM ISBN, GERA UM ISBN ****/
 	if (get("dd3") == 1)
 	{
-		$tb = get("dd1");
+		$tb = ((2021-date("Y"))*36500)+(date("m")*3100)
+				+ date("d")*10
+				+ (date("H")*60*24)
+				+ (date("i")*60)
+				+ (date("s"));
+		while (strlen($tb) > 8)
+			{
+				$tb = round($tb/10);
+			}
 		$isbns = LIBRARY.strzero($tb,8);
 		$isbns	 .= genchksum13($isbns);
 		$status = 5;
