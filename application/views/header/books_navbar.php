@@ -22,6 +22,9 @@ $logo = $this->libraries->logo(0,-1);
 			<li class="nav-item active">
 				<a class="nav-link" href="<?php echo base_url(PATH); ?>">Catálogo <span class="sr-only">(current)</span></a>
 			</li>
+			<li class="nav-item active">
+				<a class="nav-link" href="<?php echo base_url(PATH.'indexes'); ?>">Índices</a>
+			</li>			
 			<li class="nav-item">
 				<a class="nav-link" href="<?php echo base_url(PATH.'bookshelf'); ?>"><?php echo msg("bookshelf");?></span></a>
 			</li>

@@ -1,0 +1,2 @@
+<div class="row"><div class="col-md-1 text-right"><h1 style="font-size: 500%;">I</h1></div><div class="col-md-11"><ul style="list-style: none; columns: 300px 4; column-gap: 0;"><li><a href="http://localhost/find/index.php/main/v/2482" style="font-size: 85%; color: #505050;">Isabela Figueiredo</a> <sup style="font-size: 70%;"></sup></li>
+</ul></div></div>

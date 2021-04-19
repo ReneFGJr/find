@@ -257,6 +257,10 @@ class loans extends CI_model {
 			$rs['messa'] = '';
 			$rs['erro'] = 0;
 
+			$date = date_create(date("Y-m-d"));
+			date_add($date, date_interval_create_from_date_string('7 days'));							
+			$data = date_format($date, 'Y-m-d');			
+
 			$dt = $this->books_item->le_tombo($tombo,'i_tombo');
 			
 			if (count($dt) > 0)
@@ -270,7 +274,6 @@ class loans extends CI_model {
 						} else {
 							$rs['messa'] = 'Itens emprestado';
 							$rs['erro'] = 1;
-							$data = '2021-02-10';
 							$idt = $dt['id_i'];
 							$this->loan_book_save($idt,$user,$data);
 						}

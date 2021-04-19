@@ -21,6 +21,12 @@ class admin extends CI_model
         /**************************** MENU PRINCIPAL *****************/
         switch($a)
         {
+            case 'index':
+            $this->load->helper("ai");
+            $ai = new ia_index;
+            $sx = $ai->export_index('Person',$id);
+            break;
+
             case 'mercadoeditorial_editoras':
             $this->load->model("Mercadoeditorial_api");
             $sx .= $this->Mercadoeditorial_api->lista_editoras();
@@ -83,6 +89,7 @@ class admin extends CI_model
         $sx .= '<ul>';
         //$sx .= '<li>'.'<a href="'.base_url(PATH.'admin/mercadoeditorial_editoras').'">'.msg("mercadoeditorial_editoras").'</a></li>';
         $sx .= '<li>'.'<a href="'.base_url(PATH.'config/class').'">'.msg("RDF Classes").'</a></li>';        
+        $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/index/author_index').'">'.msg("Índice de autores").'</a></li>';        
         $sx .= '</ul>';
 
         $sx .= '</div>';

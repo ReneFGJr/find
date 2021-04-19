@@ -370,7 +370,12 @@ function manifestation($id,$d)
             case 'hasClassificationCDU':
                 $link = '<a href="'.base_url(PATH.'v/'.$idx).'">';
 				$class .= $link.$vlr.$linka;
-            break;			
+            break;
+
+            case 'hasClassificacaoAssunto':
+                $link = '<a href="'.base_url(PATH.'v/'.$idx).'">';
+				$class .= $link.$vlr.$linka;
+            break;						
 
             case 'hasClassificationCDD':
                 $link = '<a href="'.base_url(PATH.'v/'.$idx).'">';
