@@ -263,8 +263,10 @@ class Main extends CI_controller
         $gets = array_merge($_POST, $_GET);
 
         if (count($gets) > 0) {
-            $kl = new knowland;
-            $tela .= $kl->dialog($gets);
+            $this->load->helper("ai");
+            $ai = new ia_index;
+            $rst = $ai->search($gets['dd1']);
+            $tela .= $this->books->vitrine($rst);
         } else {
             $tela .= $this->books->vitrine();
         }
@@ -542,6 +544,12 @@ class Main extends CI_controller
                 $sx .= $rdf->index($ac, $id, $chk, $chk2, $chk3);
                 break;
 
+            case 'forms':
+                /* Classes */
+                $this->load->model('catalog');
+                $sx .= $this->catalog->forms($ac, $id, $chk, $chk2, $chk3);
+                break;                
+
             default:
                 $rdf = new rdf;
                 $sx .= $ac . '?????';
@@ -684,4 +692,58 @@ class Main extends CI_controller
         $this->load->view('content', $data);
         $this->foot();
     }
+
+    public function thesa($id = '') {
+//        $this -> load -> model('frbr');
+        $this -> load -> model('vocabularies');
+        $this -> cab();
+        $id = round($id);
+        $rdf = new rdf;
+
+        $datac = $rdf -> le_class($id);
+
+        $tela = $this -> load -> view('find/view/class', $datac, true);
+        $tela .= $this -> vocabularies -> modal_th($id);
+        //$tela .= $this -> vocabularies -> list_vc($id);
+
+        $data['content'] = $tela;
+        $this -> load -> view('content', $data);
+        $this->foot();
+    } 
+
+    function ajax_action($ac = '', $id = '') {
+        $rdf = new rdf;
+        switch($ac) {
+            case 'setPrefTerm' :
+                $idc = get("q");
+                $idt = get("t");
+                $sx = $rdf -> changePrefTerm($idc, $idt);
+                break;
+            case 'exclude' :
+                $idc = get("q");
+                $rdf -> data_exclude($idc);
+                $sx = '<div class="alert alert-success" role="alert">
+                                  <strong>Sucesso!</strong> Item excluído da base.
+                                </div>';
+                $sx .= '<meta http-equiv="refresh" content="1">';
+                break;
+            case 'inport' :
+                $cl = $rdf -> le_class($id);
+                if (count($cl) == 0) {
+                    echo "Erro de classe";
+                    exit ;
+                }
+                $url = $cl['c_url'];
+                $t = read_link($url);
+                $rdf -> inport_rdf($t, $id);
+                $sql = "update rdf_class set c_url_update = '" . date("Y-m-d") . "' where id_c = " . $cl['id_c'];
+                $rlt = $this -> db -> query($sql);
+                $sx = '';
+                break;
+            default :
+                $sx = 'Metodo não localizado - ' . $ac;
+                break;
+        }
+        echo $sx;
+    }       
 }

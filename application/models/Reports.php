@@ -1,12 +1,25 @@
 <?php
 class reports extends CI_Model
     {
+        function form()
+            {
+                $form = new form;
+                $_GET['dd1'] = date("d/m/Y");
+                $_GET['dd2'] = date("d/m/Y");
+                $cp = array();
+                array_push($cp,array('$H8','','',false,false));
+                array_push($cp,array('$D8','','Data Inicial',true,true));
+                array_push($cp,array('$D8','','Data Final',true,true));
+                $sx = $form->editar($cp,'');
+                return($sx);
+            }
         function index($act,$d1,$d2,$d3)
             {
                 switch($act)
                     {
-                        case 'acervo':
+                        case 'acervo':                            
                             $sx = $this->acervo($d1,$d2,$d3);
+                            $sx .= $this->form();
                             break;
                         default:
                         $sx = $this->menu();
@@ -47,6 +60,9 @@ class reports extends CI_Model
 
         function acervo($d1,$d2,$d3)
             {
+                $d2 = brtod(get("dd1"));
+                $d3 = brtod(get("dd2"));
+                
                 $this->load->helper('highcharts');
                 $sx = '';
                 switch($d1)
@@ -125,7 +141,7 @@ class reports extends CI_Model
                         inner join find_item_historic ON h_item = id_i
                         inner join users ON h_user = id_us
                             where i_library = '".LIBRARY."' and h_status = 1
-                            and (h_date >= '$data1' and h_date <= '$data2')
+                            and (i_created >= '$d2' and i_created <= '$d3')
                             group by h_status, h_user, us_nome
                             order by us_nome";
                 $rlt = $this->db->query($sql);
@@ -161,6 +177,7 @@ class reports extends CI_Model
                         from find_item 
                         inner join library_place ON id_lp = i_library_place
                         where i_library = '".LIBRARY."'
+                        and (i_created >= '$d2' and i_created <= '$d3')
                         group by i_library_place, lp_name
                         order by lp_name
                         ";
@@ -171,6 +188,7 @@ class reports extends CI_Model
                 for ($r=0;$r < count($rlt);$r++)
                 {
                     $ln = $rlt[$r];
+
                     $data[$r] = $ln['total'];
                     $cats[$r] = ascii($ln['lp_name']);
                     /*

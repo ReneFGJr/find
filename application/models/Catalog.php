@@ -13,6 +13,30 @@ class catalog extends CI_model
 		return($sx);
 	}
 
+	function forms()
+		{
+			$sx = '';
+			$sx .= '<div class="'.bscol(12).'" style="padding: 5px; height: 50px; ">';
+			$sx .= '<H1>FORMS - FRBR - RDF</H1>';
+			$sx .= '</div>';
+
+			
+			$sx .= '<div class="'.bscol(4).'" style="padding: 5px; height: 50px; ">';
+			$sx .= '<a href="'.base_url(PATH.'config/class/forms/16/0').'">';
+			$sx .= '<div class="btn btn-outline-primary" style="width: 100%;">'.msg("WORK").'</div>';
+			$sx .= '</a>';
+			$sx .= '</div>';
+			
+
+			$sx .= '<div class="'.bscol(4).'" style="padding: 5px; height: 50px; ">';
+			$sx .= '<a href="'.base_url(PATH.'config/class/forms/34/0').'">';
+			$sx .= '<div class="btn btn-outline-primary" style="width: 100%;">'.msg("MANIFESTATION").'</div>';
+			$sx .= '</a>';
+			$sx .= '</div>';
+
+			return($sx);
+		}
+
 	function book($act='')
 	{
 		$this->load->model("covers");

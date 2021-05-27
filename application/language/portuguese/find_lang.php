@@ -11,6 +11,7 @@ $lang['hasClassificationCDD'] = 'Classificação CDD';
 $lang['hasCover'] = 'Imagem da Capa'; 
 $lang['prefLabel'] = 'Nome preferencial'; 
 $lang['hasCorporateBodyType'] = 'Área de ocupação'; 
+$lang['hasSubjectCorporate'] = 'Assunto Instituição'; 
 $lang['Place'] = 'Lugar'; 
 $lang['hasTypePlace'] = 'Tipo do local'; 
 $lang['Work'] = 'Trabalho'; 

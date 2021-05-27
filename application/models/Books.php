@@ -607,19 +607,38 @@ function export($id)
 	$sx .= '</div>';
 }
 
-function vitrine()
+function vitrine($dt=array())
 {
 	$this->books_item->check();
 	$sx = '<h1>Vitrine</h1>';
+	if (count($dt) > 0)
+	{
+		$wh = '';
+		for ($r=0;$r < count($dt);$r++)
+			{
+				if ($r > 0) { $wh .= ' or ';}
+				$wh .= '(i_manitestation = '.$dt[$r].') ';
+			}
+		$sql = "
+		select i_manitestation, i_identifier, i_titulo, max(id_i) as idi 
+			from find_item 
+			where i_library = '".LIBRARY."' and i_manitestation <> 0
+			and ($wh)
+			group by i_manitestation, i_identifier, i_titulo
+			order by idi desc
+			limit 96
+			";
+	} else {
+
 	$sql = "
-	select i_manitestation, i_identifier, i_titulo, max(id_i) as idi 
-		from find_item 
-		where i_library = '".LIBRARY."' and i_manitestation <> 0
-		group by i_manitestation, i_identifier, i_titulo
-		order by idi desc
-		limit 24
-		";
-	
+		select i_manitestation, i_identifier, i_titulo, max(id_i) as idi 
+			from find_item 
+			where i_library = '".LIBRARY."' and i_manitestation <> 0
+			group by i_manitestation, i_identifier, i_titulo
+			order by idi desc
+			limit 24
+			";
+	}
 	$rlt = $this->db->query($sql);
 	$rlt = $rlt->result_array();
 	$sx = '<div class="container"><div class="row">';

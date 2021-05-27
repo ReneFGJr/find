@@ -24,7 +24,17 @@ class admin extends CI_model
             case 'index':
             $this->load->helper("ai");
             $ai = new ia_index;
-            $sx = $ai->export_index('Person',$id);
+            switch($action)
+                {
+                    case 'author_index':
+                    $sx = $ai->export_index('Person',$id);
+                    break;
+
+                    case 'search_index':
+                    $sx = $ai->export_search('All',$id);
+                    break;
+                }
+            
             break;
 
             case 'mercadoeditorial_editoras':
@@ -75,6 +85,7 @@ class admin extends CI_model
         $sx .= '<h1>Menu de administração</h1>';
         $sx .= '<ul>';
         //$sx .= '<li>'.'<a href="'.base_url(PATH.'admin/mercadoeditorial_editoras').'">'.msg("mercadoeditorial_editoras").'</a></li>';
+        $sx .= '<li>'.'<a href="'.base_url(PATH.'social/group').'">Permissões de grupos e usuários</a></li>';
         $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/email/').'">'.msg("Email_configuration").'</a></li>';        
         $sx .= '<li>'.'<a href="'.base_url(PATH.'setup').'">Configurações</a></li>';
         $sx .= '</ul>';
@@ -88,8 +99,10 @@ class admin extends CI_model
         $sx .= '<h1>FRBR</h1>';
         $sx .= '<ul>';
         //$sx .= '<li>'.'<a href="'.base_url(PATH.'admin/mercadoeditorial_editoras').'">'.msg("mercadoeditorial_editoras").'</a></li>';
+        $sx .= '<li>'.'<a href="'.base_url(PATH.'config/forms').'">'.msg("Catalog Forms").'</a></li>';        
         $sx .= '<li>'.'<a href="'.base_url(PATH.'config/class').'">'.msg("RDF Classes").'</a></li>';        
-        $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/index/author_index').'">'.msg("Índice de autores").'</a></li>';        
+        $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/index/author_index').'">'.msg("Índice de autores").'</a></li>';
+        $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/index/search_index').'">'.msg("Índice de busca").'</a></li>';
         $sx .= '</ul>';
 
         $sx .= '</div>';

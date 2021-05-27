@@ -2,8 +2,10 @@
 class vocabularies extends CI_model {
     function modal_th($id = '') {
         $sx = '';
+        $rdf = new rdf;
+        
         if (perfil("#ADM")) {
-            $dta = $this -> frbr -> le_class($id);
+            $dta = $rdf -> le_class($id);
             $sx .= '
                     <a href="' . base_url(PATH.'vocabulary_ed/' . $dta['id_c']) . '" class="btn btn-secondary">Editar</a>
                     ';
@@ -134,7 +136,10 @@ class vocabularies extends CI_model {
             }
             $sx .= '</ul>';
         } else {
-            $ln = $this -> frbr -> data_classes($id);
+            $rdf = new rdf;
+            echo "OK";
+            exit;
+            //$ln = rdf -> data_classes($id);
             $sx = '<ul>';
             for ($r = 0; $r < count($ln); $r++) {
                 $l = $ln[$r];
