@@ -38,6 +38,27 @@ class loans extends CI_model {
 					return(0);
 				}
 		}
+
+	function cp($id)
+	{
+		$cp = array();
+		array_push($cp, array('$H8', 'id_us', '', False, True));
+		array_push($cp, array('$S80', 'us_nome', 'Nome', True, True));
+		if ($id == 0) {
+			array_push($cp, array('$S80', 'us_email', 'login/email', False, True));
+			array_push($cp, array('$P20', '', 'Senha', False, True));
+			//$pass = $this->socials->password_cripto(get("dd3"), 'T');
+			$pass = md5(get("dd3"));
+			array_push($cp, array('$HV', 'us_password', $pass, False, True));
+			array_push($cp, array('$HV', 'us_login', get("dd2"), False, True));
+			array_push($cp, array('$HV', 'us_ativo', '1', True, True));
+		} else {
+			array_push($cp, array('$O 1:SIM&0:NÃO', 'us_ativo', 'Ativo', True, True));
+		}
+		
+		return ($cp);
+	}
+
 	function user_edit($id='',$id2='')
 	{
 		$this->load->helper('webcam');
@@ -45,7 +66,7 @@ class loans extends CI_model {
 		$socials = new socials;
 		$form = new form;
 		$form->id = $id;
-		$cp = $socials->cp($id);
+		$cp = $this->cp($id);
 		$table = 'users';
 		$valid = '';
 		$msg = '';
@@ -453,7 +474,8 @@ class loans extends CI_model {
 				$tela .= $this->user_etnia($user);
 				$tela .= $this->loan_situacao($user);
 			} else {
-				redirect(base_url(PATH));
+				echo "NOVO USUÁRIO";
+				redirect(base_url(PATH.'mod/loans/user_edit/0'));
 			}
 		}
 		return($tela);

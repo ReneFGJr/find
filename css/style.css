@@ -41,8 +41,8 @@
 body {
     margin: 0px;
     padding: 0px;
-    font-family: 'Open Sans Condensed', sans-serif;
-    /* font-family: "Titillium Web","Anonymous Pro", sans-serif; */
+    /* font-family: 'Anonymous Pro', 'Open Sans Condensed', sans-serif; */
+    font-family: "Titillium Web", "Anonymous Pro", sans-serif;
     /* font-family: 'Anonymous Pro'; */
     color: #333333;
     /* line-height: 100%; */
@@ -165,6 +165,9 @@ h6,
 h7,
 h8 {
     line-height: 110%;
+    border-bottom: 1px solid #333;
+    padding: 0px 0px 5px 0px;
+    font-weight: bold;
 }
 
 
@@ -196,13 +199,15 @@ h8 {
 }
 
 input[type=text] {
-    font-size: 16px;
+    font-size: 22px;
     padding: 6px 6px;
     margin: 8px 0;
     box-sizing: border-box;
     border: 1px solid #e0e0f0;
     border-radius: 6px;
     background-color: #ffffff;
+    color: #000;
+    font-weight: bold;
 }
 
 input[type=text]:focus {

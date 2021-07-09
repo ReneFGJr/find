@@ -99,10 +99,25 @@ class libraries extends CI_model {
                             $sx = base_url($file);
                         }                    
                 }
+
+            /******************************************************* POSTAR */
             if ((perfil("#ADM")) and ($url == 0) and ($editar == 1))
                 {
+                    if (isset($_FILES['logo_'.$type]))
+                        {
+                            $file_tmp = $_FILES['logo_'.$type]['tmp_name'];
+                            move_uploaded_file($file_tmp, $file);
+                        }
                     $sx .= '<br>';
-                    $sx .= '<a href="#" class="btn btn-outline-primary">'.msg('change_image').'</a>';
+
+                    $sx .= '<div class="">';
+                    $sx .= '<form  enctype="multipart/form-data" method="POST">';
+                    $sx .= '<input type="file"
+                               id="logo" name="logo_'.$type.'"
+                               accept="image/png, image/jpeg">';
+                    $sx .= '<input type="submit" value="'.msg('save').'">';
+                    $sx .= '</form>';
+                    $sx .= '</div>';
                 }
             return($sx);
         }
@@ -268,15 +283,38 @@ class libraries extends CI_model {
         $cp = array();
         array_push($cp, array('$H8', 'id_l', '', false, true));
         array_push($cp, array('$S100', 'l_name', msg('library_name'), true, true));
-        array_push($cp, array('$S10', 'l_code', msg('library_code'), true, true));
-        array_push($cp, array('$S10', 'l_id', msg('library_id'), true, true));
-        array_push($cp, array('$S100', 'l_logo', msg('library_logo'), false, true));
+        if ($id == '0')
+        {
+            array_push($cp, array('$S10', 'l_code', msg('library_code'), true, true));
+            array_push($cp, array('$S10', 'l_id', msg('library_id'), true, true));
+        }
+        //array_push($cp, array('$S100', 'l_logo', msg('library_logo'), false, true));
         array_push($cp, array('$T80:5', 'l_about', msg('library_about'), false, true));
+
+        array_push($cp, array('$M', '', msg('l_rede'), false, false));
+        array_push($cp, array('$SN', 'l_rede', msg('l_rede'), false, true));
+
         $form = new form;
         $form -> id = $id;
         $sx = $form -> editar($cp, $this -> table);
         return ( array($sx, $form));
     }
+
+    function library_index()
+        {
+        $sx = '
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            '.msg('indexes').'
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="'.base_url(PATH.'indexes/authors').'">'.msg('authors').'</a></li>
+            <li><a class="dropdown-item" href="'.base_url(PATH.'indexes/hassubject').'">'.msg('subject').'</a></li>
+            <li><hr class="dropdown-divider"></li>
+          </ul>
+        </li>';
+        return($sx);
+        }
 
     function edit_places($id = '') {
         $cp = array();

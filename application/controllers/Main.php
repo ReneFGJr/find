@@ -30,6 +30,11 @@ class Main extends CI_controller
         $this->load->view('content', $data);
     }
 
+    function server($d1='',$d2='',$d3='',$d4='')
+    {
+        
+    }
+
     function __construct()
     {
         parent::__construct();
@@ -397,6 +402,7 @@ class Main extends CI_controller
         $this->load->view("show", $data);
         $this->foot();
     }
+
     function mod($mod = '', $act = '', $id = '', $id2 = '', $id3 = '')
     {
         $tela = '';
@@ -417,12 +423,13 @@ class Main extends CI_controller
     public function setup($tools = '', $ac = '', $id = '')
     {
         $this->load->model("setups");
-        $this->cab();
-
+        $this->cab();        
+        $this->load->view('welcome', null);
         if (!perfil("#ADM")) {
             redirect(base_url(PATH));
         }
 
+        
         $tela = $this->setups->main($tools, $ac, $id);
         $data['content'] = '<div class="container">' . $tela . '</div>';
         $this->load->view('content', $data);
@@ -645,6 +652,25 @@ class Main extends CI_controller
         }
     }
 
+    function find()
+        {
+            $this->cab();
+            $data = array();
+            $sx = $this->load->view('welcome', $data, true);
+            $sx .= '<div class="container"><div class="row"><div class="'.bscol(12).'">';
+            $sx .= breadcrumb();
+            $file = 'find_about.rd';
+            if (file_exists($file))
+            {
+                $txt = file_get_contents($file);
+                $sx .= $txt;
+            }
+            $sx .= '</div></div></div>';            
+            $data['content'] = $sx;
+            $this->load->view('content',$data);
+            $this->foot();
+        }
+
 
     function breadcrumb()
     {
@@ -669,24 +695,54 @@ class Main extends CI_controller
         $tela .= '<div class="container">';
         $tela .= '<div class="row">';
         $tela .= '<div class="'.bscol(12).'">';
-        switch($type)
+
+        if (strlen($type) == 0)
             {
-                default:
+                    $tp = array('authors','hassubject');
+                    $ok=0;
+                    $dir = 'application/views/index/'.LIBRARY.'/';
+                    $f = scandir($dir);
+
+                    $idx = array();
+                    $tela .= '<ul>';
+                    for ($r=0;$r < count($f);$r++)
+                        {
+                            $index = $f[$r];
+                            $index = substr($index,0,strpos($index,'_'));
+                            if (!isset($idx[$index]))
+                                {
+                                    if ((strlen($index) > 0) and ($index != 'index'))
+                                    {
+                                        $idx[$index] = 1;
+                                        $link = '<a href="'.base_url(PATH.'indexes/'.$index).'">';
+                                        $linka = '</a>';
+                                        $tela .= '<li>'.$link.msg($index).$linka.'</li>';
+                                        $ok = 1;
+                                    }
+                                }
+                            
+                        }                    
+                    $tela .= '</ul>';
+                    if ($ok == 0)
+                        {
+                            $tela .= message('Não foram gerados os índices',3);
+                        }
+            } else {
                 $data = array();
-                $tela .= '<a href="'.base_url(PATH.'indexes/author').'">Índice dos autores</a>';
+                $tela .= '<a href="'.base_url(PATH.'indexes/'.$type).'">Índice dos '.msg($type).'</a>';
                 for ($r=65;$r <= 90;$r++)
                 {
-                    $file = 'application/views/index/'.LIBRARY.'/authors_'.chr($r).'.php';
+                    $file = 'application/views/index/'.LIBRARY.'/'.$type.'_'.chr($r).'.php';
                     if (file_exists($file))
                     {
-                    $t = $this->load->view('index/'.LIBRARY.'/authors_'.chr($r),$data,true);
+                    $t = $this->load->view('index/'.LIBRARY.'/'.$type.'_'.chr($r),$data,true);
                     if (strlen($t) > 0)
                         {
                             $tela .= $t.'<hr style="width="50%">';
                         }
                     }
-                }
-            }        
+                }              
+            }
         $tela .= '</div></div></div>';
         $data['content'] = $tela;
         $this->load->view('content', $data);

@@ -133,7 +133,7 @@ class Books_item extends CI_model
 		$colr = 7;
 		$sql = "select * from find_item
 		LEFT JOIN library_place on i_library_place = id_lp
-		where i_manitestation = $idm";
+		where i_status <> 9 and i_manitestation = $idm";
 		
 		$rlt = $this->db->query($sql);
 		$rlt = $rlt->result_array();

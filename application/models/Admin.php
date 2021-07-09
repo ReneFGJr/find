@@ -33,6 +33,9 @@ class admin extends CI_model
                     case 'search_index':
                     $sx = $ai->export_search('All',$id);
                     break;
+
+                    default:
+                    $sx = $ai->export_index($a,$id);
                 }
             
             break;
@@ -40,6 +43,10 @@ class admin extends CI_model
             case 'mercadoeditorial_editoras':
             $this->load->model("Mercadoeditorial_api");
             $sx .= $this->Mercadoeditorial_api->lista_editoras();
+            break;
+
+            case 'rede':
+            $sx .= $this->rede($action,$id);
             break;
 
             case 'email':
@@ -71,7 +78,23 @@ class admin extends CI_model
         }
         $sx .= '</div>'; /* Container */
         return($sx);                
-    } 
+    }
+
+    function rede($d1,$d2)
+        {
+            $sx = '<h1>Rede - '.$d1.'-'.$d2.'</h1>';
+            switch($d1)
+                {
+                    case 'view':
+                    $sx .= $this->libraries->view_rede($d2);
+                    break;
+
+                    default:
+                    $sx .= $this->libraries->row_rede($d1,$d2);
+                    break;
+                }
+            return($sx);
+        } 
     function menu()
     {
         $sx = '<div class="container">';
@@ -101,13 +124,39 @@ class admin extends CI_model
         //$sx .= '<li>'.'<a href="'.base_url(PATH.'admin/mercadoeditorial_editoras').'">'.msg("mercadoeditorial_editoras").'</a></li>';
         $sx .= '<li>'.'<a href="'.base_url(PATH.'config/forms').'">'.msg("Catalog Forms").'</a></li>';        
         $sx .= '<li>'.'<a href="'.base_url(PATH.'config/class').'">'.msg("RDF Classes").'</a></li>';        
+
+        /* Index */
         $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/index/author_index').'">'.msg("Índice de autores").'</a></li>';
+        $sx .= $this->menu_index();
+        $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/index/bookselft').'">'.msg("Índice da estante").'</a></li>';
         $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/index/search_index').'">'.msg("Índice de busca").'</a></li>';
+
+        $sx .= '<h1>SUPER ADMIN</h1>';
+        $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/rede').'">'.msg("Redes de Bibliotecas").'</a></li>';
+
         $sx .= '</ul>';
 
         $sx .= '</div>';
         $sx .= '</div>'; /* Row */
         $sx .= '</div>'; /* Container */
         return($sx);
-    }     
+    }    
+    function menu_index()
+        {
+            $sql = "SELECT c_class, count(*) as total FROM rdf_class 
+                        INNER JOIN rdf_data ON d_p = id_c
+                        INNER JOIN find_item ON i_manitestation = d_r1 and i_library = '".LIBRARY."'
+                        WHERE (c_class like 'hasClass%') or (c_class like 'hasSub%')
+                        group by c_class
+                        ";
+            $rlt = $this->db->query($sql);
+            $rlt = $rlt->result_array();
+            $sx = '';
+            for ($r=0;$r < count($rlt);$r++)
+                {
+                    $line = $rlt[$r];
+                    $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/index/'.$line['c_class']).'">'.msg("Index of").' '.msg($line['c_class']).'</a></li>';
+                }
+            return($sx);
+        } 
 }

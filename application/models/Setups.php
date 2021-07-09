@@ -7,39 +7,51 @@ class setups extends CI_model
 		$this->load->model('isbn');
 		$sx = '<div class="row">';
 		$sx .= '<div class="col-3">';
-		$sx .= $this->menu();
+		$sx .= $this->menu($path);
 		$sx .= '</div>';
 		$sx .= '<div class="col-9">';
 		switch($path)
 		{
+			case 'loan':
+			$sx .= '<h1>'.msg($path).'</h1>';
+			$sx .= $this->library_loan_setup($id);
+			break;
+
 			case 'library_edit':
+			$sx .= '<h1>'.msg($path).'</h1>';
 			$sx .= $this->library_edit($id);
 			break;
 
 			/******************** Library Place **********************/
 			case 'library_place':
+			$sx .= '<h1>'.msg($path).'</h1>';
 			$sx .= $this->library_place();
 			break;
 
 			case 'library_place_edit':
+			$sx .= '<h1>'.msg($path).'</h1>';
 			$sx .= $this->library_place_edit($id);
 			break;
 
 			/******************** Library Place **********************/
 			case 'classifications':
+			$sx .= '<h1>'.msg($path).'</h1>';
 			$sx .= $this->classification();
 			break;
 
 			/******************** Library Place **********************/
 			case 'subject':
+			$sx .= '<h1>'.msg($path).'</h1>';
 			$sx .= $this->subject_skos();
 			break;			
 
 			case 'library_place_edit':
+			$sx .= '<h1>'.msg($path).'</h1>';
 			$sx .= $this->library_place_edit($id);
 			break;		
 
 			case 'setup_library_logo':
+			$sx .= '<h1>'.msg($path).'</h1>';
 			$sx .= $this->library_logos($id);
 			break;							
 
@@ -52,7 +64,7 @@ class setups extends CI_model
 		$sx .= '</div>';
 		return($sx);		
 	}
-	function menu()
+	function menu($op='')
 	{
 		$m = array();
 		$m['setup_library'] = 'setup/library_edit';
@@ -61,17 +73,24 @@ class setups extends CI_model
 		$m['setup_classifications'] = 'setup/classifications';
 		$m['setup_subject'] = 'setup/subject';
 		$m['setup_loan_parameters'] = 'setup/loan';
-		$sx = '';
+		
+		$sx = '<div class="btn btn-secondary">';
 		$sx .= '<h3>'.msg('menu_setup').'</h3>';
-		$sx .= '<ul class="menu_setup">';
+		$sx .= '<ul class="list-group text-left">';
 		foreach ($m as $key => $value) {
-			$sx .= '<li>';
-			$sx .= '<a href="'.base_url(PATH.$value).'" class="setup_link">';
+			$ac = '';
+			if ($value == 'setup/'.$op)
+				{
+					$ac = 'active';
+				}
+			$sx .= '<li class="'.$ac.'">';
+			$sx .= '<a href="'.base_url(PATH.$value).'" class="list-group-item '.$ac.'">';
 			$sx .= msg($key);
 			$sx .= '</a>';
 			$sx .= '</li>';
 		}
 		$sx .= '</ul>';
+		$sx .= '</div>';
 		return($sx);
 	}
 
@@ -80,7 +99,7 @@ class setups extends CI_model
 			$types = array('','Logo - Mini','Logo - Middle','Banner top');
             $size_w = array(0,150,600,1600);
             $size_h = array(0,150,600,210);
-			$sx = '<h3>'.msg('setup_library_logo').'</h3>';
+			$sx = '';
 
 			for ($r=1;$r < count($types);$r++)
 				{
@@ -135,6 +154,26 @@ class setups extends CI_model
 		}
 		return($sx);
 	}
+
+	function library_loan_setup($d1='')
+	{
+		$sx = '';
+		$this->load->model("libraries");
+		$cp = array();
+		array_push($cp,array('$H8','id_l','',false,false));
+		array_push($cp,array('$[1-30]','l_loan',msg('l_loan'),true,true));
+		array_push($cp,array('$[1-30]','l_loan_plus',msg('l_loan_plus'),true,true));
+		array_push($cp,array('$[1-5]','l_loan_renovations',msg('l_loan_renovations'),true,true));
+		array_push($cp,array('$SN','l_loan_reserve',msg('l_loan_reserve'),true,true));
+		$form = new form;
+		$form->id = $d1;
+		$sx = $form->editar($cp,'library');
+		if ($form->saved > 0)
+		{
+			redirect(base_url(PATH.'setup/library'));
+		}
+		return($sx);
+	}	
 
 	/****************** Library **********************************/
 	function library_place()
