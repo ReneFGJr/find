@@ -11,55 +11,10 @@ class covers extends CI_model
 	function btn_upload($isbn)
 	{
 		$link = '';
-		$sx = '<a href="#" type="button" data-toggle="modal" data-target="#uploadModal">UPLOAD</a>';
+		$sx = '<a href="#" type="button" onclick="newwin(\''.base_url(PATH.'/ajax/cover_upload/'.$isbn).'\',600,400);">UPLOAD</a>';
 		$sx .= '</a>'.cr();
-		$sx .= '
-		<!-- Modal -->
-		<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-		<div class="modal-content">
-		<div class="modal-header">
-		<h5 class="modal-title" id="uploadModalLabel">Upload Cover</h5>
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-		<span aria-hidden="true">&times;</span>
-		</button>
-		</div>
-		<div class="modal-body" id="ajax_upload_body">		';
-		$sx .= $this->cover_upload_html();
-		$sx .= '</div>
-		<div class="modal-footer">
-		<button type="button" class="btn btn-secondary" data-dismiss="modal">'.msg('close').'</button>
-		<button type="button" id="btn_submit_upload" class="btn btn-primary">'.msg('send_file').'</button>
-		</div>
-		</div>
-		</div>
-		</div>';
 
-		$sx .= '
-		<script>
-		$("#btn_submit_upload").click(function () { enviarconsulta_upload(); }); 
-
-		function enviarconsulta_upload() 
-		{ 
-			var file_data = $("#sortpicture").prop("files")[0];   
-			var form_data = new FormData();
-			form_data.append("file", file_data);
-			$.ajax(
-			{
-				url: "'.base_url(PATH.'/ajax/cover_upload/'.$isbn).'",
-				dataType: "script",
-				cache: false,
-				contentType: false,
-				processData: false,
-				data: form_data,
-				type: "post",
-				success: function(data){ 
-					jQuery("#ajax_upload_body").html(data);
-				}
-			}
-			);
-		}
-		</script>';
+		//$sx .= $this->cover_upload_html();
 
 		return($sx);
 	}
@@ -144,10 +99,18 @@ class covers extends CI_model
 		return($file);
 	}
 
-	function cover_upload_html()
+	function cover_upload_html($isbn='')
 	{
 		$sx = '';
-		$sx .= '<input id="sortpicture" type="file" name="sortpic" />';
+		$sx .= '<form enctype="multipart/form-data" action="'.
+				base_url(PATH.'ajax/cover_upload/'.$isbn).
+				'" method="POST">
+		<!-- MAX_FILE_SIZE deve preceder o campo input -->
+		<input type="hidden" name="MAX_FILE_SIZE" value="3000000" />
+		<!-- O Nome do elemento input determina o nome da array $_FILES -->
+		Enviar esse arquivo: <input name="userfile" type="file" />
+		<input type="submit" value="Enviar arquivo" />
+		</form>';
 		return($sx);
 	}
 
@@ -161,28 +124,32 @@ class covers extends CI_model
 
 	function ajax_cover_upload($isbn)
 	{
+		$idm = 0;
 		$this->load->model("books");
 		$ok = -1;
-		if (isset($_FILES['file']))
+		print_r($_FILES);
+		if (isset($_FILES['userfile']))
 		{
-			$url = $_FILES['file']['tmp_name'];
+			$url = $_FILES['userfile']['tmp_name'];
 			if (file_exists($url))
 			{
 				$ok  = 1;
 			}
 		} else {
-			echo $this->cover_upload_html();
-			echo message("ERRO: Arquivo inválido ou não localizado na base",3);			
+			echo '<h1>'.msg('Cover_upload').'</h1>';
+			echo $this->cover_upload_html($isbn);
+			exit;
 		}
+
 		if ($ok == 1)
 		{			
 			$isbn = sonumero($isbn);
 			$this->save($url,$isbn);
-			echo refresh();
+			echo wclose();
 		} else {
 			if ($idm == 0)
 			{
-			echo $this->cover_upload_html();
+			echo $this->cover_upload_html($isbn);
 			echo message("ERRO: ISBN '.$isbn.' inválido ou não localizado na base",3);			
 			}
 		}		
