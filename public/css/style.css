@@ -1,0 +1,49 @@
+@font-face {font-family: "Handel Gothic";
+    src: url("https://brapci.inf.br/eventos/css/fonts/HandelGothic/handel_gothic.eot"); /* IE9*/
+    src: url("https://brapci.inf.br/eventos/css/fonts/HandelGothic/handel_gothic.eot?#iefix") format("embedded-opentype"), /* IE6-IE8 */
+    url("https://brapci.inf.br/eventos/css/fonts/HandelGothic/handel_gothic.woff2") format("woff2"), /* chrome firefox */
+    url("https://brapci.inf.br/eventos/css/fonts/HandelGothic/handel_gothic.woff") format("woff"), /* chrome firefox */
+    url("https://brapci.inf.br/eventos/css/fonts/HandelGothic/handel_gothic.ttf") format("truetype"), /* chrome firefox opera Safari, Android, iOS 4.2+*/
+    url("https://brapci.inf.br/eventos/css/fonts/HandelGothic/handel_gothic.svg#Handel Gothic") format("svg"); /* iOS 4.1- */
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200&family=Roboto:wght@100&display=swap');
+
+body
+    {
+        background-color: #F0F0F0;
+    }
+
+.navbar-brand
+    {
+        font-family: 'Handel Gothic';
+        font-size: 200%;
+        padding: 0px 0px;
+        color: white;
+    }
+.navbar
+    {
+        padding: 0px 0px;
+    }
+.bc
+    {
+        background-color:#0093DD;
+    }
+
+a, a::after
+    {
+        text-decoration: none;
+        color: #888;
+    }
+
+a:hover
+    {
+        text-decoration: none;
+        color: #000;
+    }   
+    
+.supersmall
+    {
+        font-size: 60%;
+    }
+
