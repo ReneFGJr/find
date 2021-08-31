@@ -7,6 +7,7 @@ use App\Controllers\BaseController;
 $this->session = \Config\Services::session();
 $language = \Config\Services::language();
 
+
 helper(['boostrap','url','graphs','sisdoc_forms','form','nbr']);
 
 define("PATH","index.php/find/");
@@ -16,6 +17,7 @@ class Find extends BaseController
 
 	public function __construct()
 	{
+		$this->Books = new \App\Models\Books();
 		$this->Socials = new \App\Models\Socials();
 		$this->FindSearch = new \App\Models\FindSearch();
 	
@@ -26,7 +28,7 @@ class Find extends BaseController
 
 	private function cab($dt=array())
 		{
-			$title = 'Find Library Open Software';
+			$title = 'Find - Library Open System';
 			if (isset($dt['title'])) { $title = $dt['title']; } 
 			$sx = '<!doctype html>'.cr();
 			$sx .= '<html>'.cr();
@@ -38,7 +40,7 @@ class Find extends BaseController
 			$sx .= '  <link rel="icon" type="image/png" sizes="16x16" href="'.base_url('favicon.ico').'" />'.cr();
 			$sx .= '  <!-- CSS -->'.cr();
 			$sx .= '  <link rel="stylesheet" href="'.base_url('/css/bootstrap.css').'" />'.cr();
-			$sx .= '  <link rel="stylesheet" href="'.base_url('/css/style.css?v0.0.12').'" />'.cr();
+			$sx .= '  <link rel="stylesheet" href="'.base_url('/css/style.css?v0.0.2').'" />'.cr();
 			$sx .= ' '.cr();
 			$sx .= '  <!-- CSS -->'.cr();
 			$sx .= '  <script src="'.base_url('/js/bootstrap.js?v=5.0.2').'"></script>'.cr();
@@ -53,7 +55,7 @@ class Find extends BaseController
 
 	private function navbar($dt=array())	
 		{
-			$title = 'Find Library Open Software';
+			$title = 'Find - Library Open System';
 			if (isset($dt['title'])) { $title = $dt['title']; } 
 			$sx = '<nav class="navbar navbar-expand-lg navbar-light ">'.cr();
 			$sx .= '  <div class="container-fluid">'.cr();
@@ -136,6 +138,26 @@ class Find extends BaseController
 		$sx .= $this->FindSearch->banner();
 
 		$sx .= $this->FindSearch->search();
+
+		$st = '<h2>'.lang('find.latest_acquisitions').'</h2>';
+		$st .= $this->Books->latest_acquisitions();
+		$sx .= bs($st);
+
 		return $sx;
 	}
+
+	function v($id)
+		{
+			$RDF = new \App\Models\RDF();
+
+			$sx = $this->cab();
+			$sx .= $this->navbar();
+
+			$dt = $RDF->le($id);
+
+			$EventView = new \App\Models\EventView();
+			$sx .= $EventView->view($dt);
+
+			return $sx;			
+		}			
 }

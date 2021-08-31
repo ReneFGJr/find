@@ -6,7 +6,7 @@ return [
     'Indexes.Authors' => 'Autores',
     'search_info'=>'Informe seu termo de busca',
     'search'=>'Pesquisar',
-    ''=>'',
+    'latest_acquisitions'=>'Últimas aquisições',
     ''=>'',
     ''=>'',
     ''=>'',

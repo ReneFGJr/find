@@ -47,3 +47,11 @@ a:hover
         font-size: 60%;
     }
 
+.card-text
+        {
+        font-size: 80%;
+        line-height: 110%;
+        color: black;
+        text-align: center;
+        }
+

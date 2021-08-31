@@ -168,6 +168,25 @@ function dircheck($dir) {
     return ($ok);
 }
 
+function delTree($dir) 
+    {
+        if (is_dir($dir))    
+        {
+            $files = array_diff(scandir($dir), array('.','..'));
+                foreach ($files as $file) {
+                (is_dir("$dir/$file")) ? delTree("$dir/$file") : unlink("$dir/$file");
+                }
+                return rmdir($dir);
+        } else {
+            return '<br>Not dir '.$dir;
+        }
+    }
+
+function sonumero($t)
+    {
+        return preg_replace('/[^0-9]/', '', $t);
+    }
+
 function metarefresh($url,$time=0)
     {
         $sx = '<meta http-equiv="refresh" content="'.$time.';url='.$url.'" />';
