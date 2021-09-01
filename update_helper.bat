@@ -6,5 +6,7 @@ copy ..\Brapci3.0\app\Models\Social*.* app\Models\*.*
 echo "RDP"
 copy ..\Brapci3.0\app\Models\RDF.php app\Models\*.*
 copy ..\Brapci3.0\app\Models\RDFConcept.php app\Models\*.*
+copy ..\Brapci3.0\app\Models\RDFLiteral.php app\Models\*.*
+copy ..\Brapci3.0\app\Models\RDFData.php app\Models\*.*
 
 RDFConcept

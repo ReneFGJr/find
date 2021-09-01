@@ -1,4 +1,6 @@
 <?php
+echo "OK";
+exit;
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
@@ -12,33 +14,18 @@ helper(['boostrap','url','graphs','sisdoc_forms','form','nbr']);
 define("PATH","index.php/find/");
 
 class Find extends BaseController
-	{
+{
 
 	public function __construct()
-		{
+	{
 		$this->Books = new \App\Models\Books();
 		$this->Socials = new \App\Models\Socials();
-		$this->FindSearch = new \App\Models\FindSearch();	
+		$this->FindSearch = new \App\Models\FindSearch();
 	
 		helper(['boostrap','url','canvas']);
-		define("LIBRARY", "1003");
-		define("LIBRARY_NAME", "FIND");				
-		}
-	public function index()
-	{
-		$sx = '';
-		$sx .= $this->cab();
-		$sx .= $this->navbar();	
-
-		$sx .= $this->FindSearch->banner();	
-		$sx .= $this->FindSearch->search();
-
-		$st = '<h2>'.lang('find.latest_acquisitions').'</h2>';
-		$st .= $this->Books->latest_acquisitions();
-		$sx .= bs($st);		
-
-		return $sx;
-	}
+		define("LIBRARY", "1000");
+		define("LIBRARY_NAME", "FIND");
+	}	
 
 	private function cab($dt=array())
 		{
@@ -49,25 +36,15 @@ class Find extends BaseController
 			$sx .= '<head>'.cr();
 			$sx .= '<title>'.$title.'</title>'.cr();
 			$sx .= '  <meta charset="utf-8" />'.cr();
-			$sx .= '  <link rel="apple-touch-icon" sizes="180x180" href="'.base_url('img/favicon.png').'" />'.cr();
-			$sx .= '  <link rel="icon" type="image/png" sizes="32x32" href="'.base_url('img/favicon.png').'" />'.cr();
-			$sx .= '  <link rel="icon" type="image/png" sizes="16x16" href="'.base_url('img/favicon.png').'" />'.cr();
+			$sx .= '  <link rel="apple-touch-icon" sizes="180x180" href="'.base_url('favicon.ico').'" />'.cr();
+			$sx .= '  <link rel="icon" type="image/png" sizes="32x32" href="'.base_url('favicon.ico').'" />'.cr();
+			$sx .= '  <link rel="icon" type="image/png" sizes="16x16" href="'.base_url('favicon.ico').'" />'.cr();
 			$sx .= '  <!-- CSS -->'.cr();
 			$sx .= '  <link rel="stylesheet" href="'.base_url('/css/bootstrap.css').'" />'.cr();
-			$sx .= '  <link rel="stylesheet" href="'.base_url('/css/style.css?v=0.0.4').'" />'.cr();
+			$sx .= '  <link rel="stylesheet" href="'.base_url('/css/style.css?v0.0.2').'" />'.cr();
 			$sx .= ' '.cr();
 			$sx .= '  <!-- CSS -->'.cr();
 			$sx .= '  <script src="'.base_url('/js/bootstrap.js?v=5.0.2').'"></script>'.cr();
-			$sx .= '<style>
-					@font-face {font-family: "Handel Gothic";
-					src: url("'.base_url('css/fonts/HandelGothic/handel_gothic.eot').'"); /* IE9*/
-					src: url("'.base_url('css/fonts/HandelGothic/handel_gothic.eot?#iefix').'") format("embedded-opentype"), /* IE6-IE8 */
-					url("'.base_url('css/fonts/HandelGothic/handel_gothic.svg#Handel Gothic').'") format("svg"); /* iOS 4.1- */
-					}
-					@import url(\'https://fonts.googleapis.com/css2?family=Nunito:wght@200&family=Roboto:wght@100&display=swap\');
-					</style>
-					';
-
 			$sx .= '</head>'.cr();
 
 			if (get("debug") != '')
@@ -115,7 +92,7 @@ class Find extends BaseController
 			$sx .= '          </ul>'.cr();
 			$sx .= '        </li>'.cr();			
 
-			//if ($this->Socials->perfil("#ADM"))
+			if ($this->Socials->perfil("#ADM"))
 			{
 				$sx .= '        <li class="nav-item dropdown">'.cr();
 				$sx .= '          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">'.cr();
@@ -144,7 +121,7 @@ class Find extends BaseController
 			$sx .= '        <button class="btn btn-outline-success" type="submit">Search</button>'.cr();
 			$sx .= '      </form>'.cr();
 			*/
-			
+
 			$sx .= $this->Socials->nav_user();
 
 			$sx .= '    </div>'.cr();
@@ -152,20 +129,36 @@ class Find extends BaseController
 			$sx .= '</nav>'.cr();
 			return $sx;
 		}
+
+	public function index()
+	{
+		$sx = '';
+		$sx .= $this->cab();
+		$sx .= $this->navbar();
+
+		$sx .= $this->FindSearch->banner();
+
+		$sx .= $this->FindSearch->search();
+
+		$st = '<h2>'.lang('find.latest_acquisitions').'</h2>';
+		$st .= $this->Books->latest_acquisitions();
+		$sx .= bs($st);
+
+		return $sx;
+	}
+
 	function v($id)
 		{
 			$RDF = new \App\Models\RDF();
 
 			$sx = $this->cab();
 			$sx .= $this->navbar();
-			$sx .= $this->FindSearch->banner();	
 
 			$dt = $RDF->le($id);
 
-			$Books = new \App\Models\Books();
-			$sx .= $Books->view($dt);
+			$EventView = new \App\Models\EventView();
+			$sx .= $EventView->view($dt);
 
 			return $sx;			
-		}	
-
+		}			
 }

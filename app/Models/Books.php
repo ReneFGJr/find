@@ -40,29 +40,71 @@ class Books extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
+	var $dir_images = '../../_covers/image/';
+
 
 	function latest_acquisitions()
 		{
 			$sx = '';
-			$Find_Item = new \App\models\Find_Item();
+			$Find_Item = new \App\Models\Find_Item();
 
+			$Find_Item->select('i_library, id_i, i_titulo, i_identifier');
+			$Find_Item->distinct();
 			$Find_Item->where('i_library',LIBRARY);
-			$Find_Item->limit(12);
+			$Find_Item->orderBy('i_created DESC');
+			$Find_Item->limit(18);
 			$result = $Find_Item->Find();
 
 			for($r=0;$r < count($result);$r++)
 				{
 					$line = $result[$r];
-					$sx .= $this->card($line);
+					//print_r($line);
+					$file = $this->dir_images.$line['i_identifier'].'.jpg';
+					if (file_exists($file))
+						{
+							$img = 'https://ufrgs.br/find/_covers/image/'.$line['i_identifier'].'.jpg';
+						} else {
+							$img = base_url('img/book/no_cover.jpg');
+						}
+					
+					$sx .= $this->card($line,$img);
 				}
 			return $sx;			
 		}
+
+	function view($dt)
+		{
+			$RDFData = new \App\Models\RDFData();			
+			$class = $dt['concept']['prefix_ref'].':'.$dt['concept']['c_class'];
+			switch($class)
+				{
+					case 'frbr:Work':
+						$sx = $this->viewWork($dt);
+						$sx .= $RDFData->view_data($dt);						
+					break;
+
+					default:
+					$sx = $this->viewWork($dt);
+					$sx .= $RDFData->view_data($dt);
+				}
+			return $sx;
+		}
+
+	function viewWork($dt)
+		{
+			$sx = '';
+			$class = $dt['concept']['prefix_ref'].':'.$dt['concept']['c_class'];
+			$sx .= '<h1>'.$class.'</h1>';
+
+			$sx = bs($sx);
+			return $sx;
+		}				
 
 	function card($dt,$img='')
 		{
 			$title = $dt['i_titulo'];
 			$st = '<a href="'.base_url(PATH.'v/'.$dt['id_i']).'">';
-			$st .= '<img class="card-img-top" src="'.base_url('img/book/1011000326885.jpg').'" alt="Card image cap">';
+			$st .= '<img class="card-img-top" src="'.$img.'" alt="Card image cap">';
 			$st .= '</a>';
 
 			$sx = bsc(				 
