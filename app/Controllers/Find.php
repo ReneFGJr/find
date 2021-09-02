@@ -125,7 +125,7 @@ class Find extends BaseController
 				$sx .= '            <li><a class="dropdown-item" href="'.base_url(PATH.'proceedings').'">'.lang('events.proceedings.row').'</a></li>'.cr();
 				$sx .= '            <li><a class="dropdown-item" href="'.base_url(PATH.'rdf').'">'.lang('events.rdf.row').'</a></li>'.cr();
 				$sx .= '            <li><a class="dropdown-item" href="'.base_url(PATH.'proceedings/gets').'">'.lang('events.proceedings.gets').'</a></li>'.cr();
-				$sx .= '            <li><a class="dropdown-item" href="'.base_url(PATH.'proceedings/export').'">'.lang('events.proceedings.export').'</a></li>'.cr();
+				$sx .= '            <li><a class="dropdown-item" href="'.base_url(PATH.'export/rdf').'">'.lang('events.export.rdf').'</a></li>'.cr();
 				$sx .= '          </ul>'.cr();
 				$sx .= '        </li>'.cr();
 			}
@@ -166,6 +166,19 @@ class Find extends BaseController
 			$sx .= $Books->view($dt);
 
 			return $sx;			
-		}	
+		}
+	function export($d1='',$d2='',$d3='',$d4='')	
+		{
+			$RDF = new \App\Models\RDF();
+
+			$sx = $this->cab();
+			$sx .= $this->navbar();
+			$sx .= $this->FindSearch->banner();	
+			
+			/* Export Command */
+			$sx .= $RDF->export($d1,$d2);
+
+			return $sx;
+		}
 
 }

@@ -7,8 +7,8 @@ use CodeIgniter\Model;
 class RDF extends Model
 {
 	protected $DBGroup              = 'default';
-	protected $table                = 'rdfs';
-	protected $primaryKey           = 'id';
+	protected $table                = 'rdf_concept';
+	protected $primaryKey           = 'id_cc';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
 	protected $returnType           = 'array';
@@ -126,7 +126,24 @@ class RDF extends Model
 				file_put_contents($file,$sx);
 		}
 
-	function export($id)
+	function export($d1='',$d2='',$d3='')
+	{
+		echo '<h3>D1='.$d1.'</h3>';
+		echo '<h3>D2='.$d2.'</h3>';
+
+		$dt = 
+			$this->select('id_cc')
+			->where('cc_library',LIBRARY)
+			->limit(10)
+			->orderBy('id_cc')
+		 	->get()
+			->result(); 
+
+		print_r($dt);
+
+	}	
+	
+	function export_id($id)
 		{
 			$sx = '';
 			$id = round($id);
