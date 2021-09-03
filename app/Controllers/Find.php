@@ -54,7 +54,7 @@ class Find extends BaseController
 			$sx .= '  <link rel="icon" type="image/png" sizes="16x16" href="'.base_url('img/favicon.png').'" />'.cr();
 			$sx .= '  <!-- CSS -->'.cr();
 			$sx .= '  <link rel="stylesheet" href="'.base_url('/css/bootstrap.css').'" />'.cr();
-			$sx .= '  <link rel="stylesheet" href="'.base_url('/css/style.css?v=0.0.4').'" />'.cr();
+			$sx .= '  <link rel="stylesheet" href="'.base_url('/css/style.css?v=0.0.6').'" />'.cr();
 			$sx .= ' '.cr();
 			$sx .= '  <!-- CSS -->'.cr();
 			$sx .= '  <script src="'.base_url('/js/bootstrap.js?v=5.0.2').'"></script>'.cr();
@@ -79,7 +79,7 @@ class Find extends BaseController
 
 	private function navbar($dt=array())	
 		{
-			$title = 'Find - Library Open System';
+			$title = 'Find';
 			if (isset($dt['title'])) { $title = $dt['title']; } 
 			$sx = '<nav class="navbar navbar-expand-lg navbar-light ">'.cr();
 			$sx .= '  <div class="container-fluid">'.cr();

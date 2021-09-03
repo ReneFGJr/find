@@ -126,21 +126,41 @@ class RDF extends Model
 				file_put_contents($file,$sx);
 		}
 
-	function export($d1='',$d2='',$d3='')
+	function export($d1='',$d2=0,$d3='')
 	{
-		echo '<h3>D1='.$d1.'</h3>';
-		echo '<h3>D2='.$d2.'</h3>';
+		$RDFConcept = new \App\Models\RDFConcept();
 
-		$dt = 
-			$this->select('id_cc')
-			->where('cc_library',LIBRARY)
-			->limit(10)
-			->orderBy('id_cc')
-		 	->get()
-			->result(); 
+		$sx = '';
+		$d2 = round($d2);
+		if ($d2==0)
+		{
+			$this->convert_name_to_literal();
+		}
+		
+		$limit = 50;
+		$offset = round($d2)*$limit;
 
-		print_r($dt);
+		$sx .= '<h3>D1='.$d1.'</h3>';
+		$sx .= '<h3>D2='.$offset.'</h3>';
 
+		$dt = $RDFConcept->select('id_cc')
+				->where('cc_library',LIBRARY)
+				->orderBy('id_cc')
+				->limit($limit,$offset)
+				->findAll($limit,$offset);
+		$sx .= '<ul>';
+		for($r=0;$r < count($dt);$r++)
+			{
+				$idc = $dt[$r]['id_cc'];
+				$sx .= '<li>'.$this->export_id($idc).'</li>';
+			}
+		$sx .= '</ul>';
+		$sx = bs(bsc($sx,12));
+		if (count($dt) > 0)
+		{
+			$sx .= metarefresh(base_url(PATH.'export/rdf/'.(round($d2)+1)),2);
+		}
+		return $sx;
 	}	
 	
 	function export_id($id)
@@ -199,12 +219,6 @@ class RDF extends Model
 										break;										
 									}
 							}
-						/*
-						echo '<pre>';
-						print_r($dt);
-						echo '<hr>';
-						exit;		
-						*/
 						break;	
 				}		
 				
@@ -294,5 +308,23 @@ class RDF extends Model
 				}
 			$sx = bs($sx);
 			return $sx;
+		}
+
+	function convert_name_to_literal()
+		{
+			$sql = "TRUNCATE RDF_literal;";
+			$this->query($sql);
+
+			$RDFLiteral = new \App\Models\RDFLiteral();
+
+			$sql = "select * from RDF_name";
+			$query = $this->query($sql);
+
+			foreach ($query->getResult() as $row)
+			{
+				//print_r($row);
+				$RDFLiteral->insert($row);
+			}			
+			return 'Imported';
 		}
 }

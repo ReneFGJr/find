@@ -55,7 +55,7 @@ class RDFConcept extends Model
 			$this->select('rdf_concept.*');
 			$this->where('id_cc',$id);
 			$dt = $this->First();
-			// echo $this->db->getLastQuery();
+			//echo $this->db->getLastQuery();
 			return($dt);
 		}
 
