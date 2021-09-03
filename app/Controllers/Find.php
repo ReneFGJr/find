@@ -152,6 +152,23 @@ class Find extends BaseController
 			$sx .= '</nav>'.cr();
 			return $sx;
 		}
+	function cover($isbn='0788598802633',$type='')
+		{
+			$IMG = new \App\Models\Images();
+			if ($isbn == 'check')
+				{
+					$sx = $this->cab();
+					$sx .= $this->navbar();
+					$sx .= $this->FindSearch->banner();	
+
+					$dir = '../_covers/image/';
+					$sx .= bs(bsc($IMG->check($dir),12));
+				} else {
+					$sx = $IMG->resize('../_covers/image/'.$isbn.'.jpg','');
+				}
+			return $sx;
+		}
+
 	function v($id)
 		{
 			$RDF = new \App\Models\RDF();

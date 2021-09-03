@@ -40,7 +40,7 @@ class Books extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
-	var $dir_images = '../../_covers/image/';
+	var $dir_images = '../_covers/image/';
 
 
 	function latest_acquisitions()

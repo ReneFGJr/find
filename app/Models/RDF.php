@@ -154,12 +154,14 @@ class RDF extends Model
 				$idc = $dt[$r]['id_cc'];
 				$sx .= '<li>'.$this->export_id($idc).'</li>';
 			}
-		$sx .= '</ul>';
-		$sx = bs(bsc($sx,12));
+		$sx .= '</ul>';		
 		if (count($dt) > 0)
 		{
 			$sx .= metarefresh(base_url(PATH.'export/rdf/'.(round($d2)+1)),2);
+		} else {
+			$sx .= bsmessage(lang('Export_Finish'));
 		}
+		$sx = bs(bsc($sx,12));
 		return $sx;
 	}	
 	
