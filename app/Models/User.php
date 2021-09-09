@@ -20,10 +20,8 @@ class User extends Model
 
 	protected $typeFields        = [
 		'hi',
-		'st100*',
-		'st100*',
-		'st100*',
-		'st100*',
+		'st:100*',
+		'email*',
 	];	
 
 	// Dates
@@ -50,10 +48,14 @@ class User extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
-	function index($d1,$d2)
+	function index($d1,$d2,$d3)
 		{
 			switch($d1)
 				{
+					case 'edit':
+						$sx = $this->editar($d2,$d3);
+						break;
+
 					case 'viewid':
 						$sd = $this->card($d2);		
 						$sr = $this->loan($d2);				
@@ -70,6 +72,38 @@ class User extends Model
 				}
 				return $sx;
 		}
+
+	function editar($id)
+		{
+			$UserEtnia = new \App\Models\UserEtnia();
+			$UserGenere = new \App\Models\UserGenere();
+			$this->lib = 'find';
+			$this->id = $id;
+			$this->path = 'users/';
+			$this->path_back = PATH.'users/';
+			
+			$it = array('edit1','edit2','edit3','edit4');
+			$ed[0] = form($this);
+			$ed[2] = $UserEtnia->form($this);
+			$ed[3] = $UserGenere->form($this);
+			$ed[1] = '';
+			$sx = '';
+			for ($idx=0;$idx < count($ed);$idx++)
+			{
+				$sm = '<a href="'.base_url(PATH.'/users/edit/'.$id.'/#ED'.$idx).'">';
+				$sm .= lang('find.user_edit_'.$idx);
+				$sm .= '</a>';
+				$sx .= bsc($sm,3,'text-right text-bold');
+				/*** Edit */
+				$sx .= bsc($ed[$idx],9);
+				$sx .= '<hr>';
+			}
+			$this->id = $id;			
+
+			$sx = bs($sx);
+			return $sx;
+		}
+
 	function loan($id)
 		{
 			$Loan = new \App\Models\Loan();
@@ -99,6 +133,7 @@ class User extends Model
 				{
 					$da = $da[0];
 				}
+			print_r($da);
 
 			$sx = '<h4>'.lang('find.user.profile').'</h4>';
 
@@ -176,7 +211,7 @@ class User extends Model
 			
 			/* Genere */
 			$st .= '<td width="50%" align="center">';
-			$st .= '<img src="'.$this->show_genere($da).'" style="max-height: 100px;" title="'.lang('opendata.genere_'.$da['us_genero']).'">';
+			$st .= '<img src="'.$this->show_genere($dt).'" style="max-height: 100px;" title="'.lang('opendata.genere_'.$da['us_genero']).'">';
 			$st .= '</td>';
 
 			/* Breed */

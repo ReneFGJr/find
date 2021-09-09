@@ -22,6 +22,7 @@ return [
     'genere_5'=>'Não binário',
     ''=>'',
     ''=>'',
+    'breed_0'=>'Não informado',
     'breed_1'=>'Preto(a)',
     'breed_2'=>'Pardo(a)',
     'breed_3'=>'Branco(a)',

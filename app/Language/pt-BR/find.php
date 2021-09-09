@@ -18,5 +18,11 @@ return [
     'title'=>'Título',
     'NORMAL'=>'NORMAL',
     'LATE'=>'ATRASADO',
-    
+    'user_edit_0'=>'Nome e e-mail',
+    'user_edit_1'=>'Documentos',
+    'user_edit_2'=>'Etnia',
+    'user_edit_3'=>'Endereço',
+
+    'us_nome' => 'Nome completo',
+    'us_email' => 'E-mail',
 ];

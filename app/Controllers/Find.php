@@ -337,7 +337,7 @@ class Find extends BaseController
 			$sx .= $this->FindSearch->banner();	
 			
 			/* Export Command */
-			$sx .= $User->index($d1,$d2);
+			$sx .= $User->index($d1,$d2,$d3,$d4);
 
 			return $sx;
 		}

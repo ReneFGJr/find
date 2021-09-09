@@ -10,7 +10,7 @@
 * @version     v0.21.06.24
 */
 //$sx .= form($url,$dt,$this);
-
+require('sisdoc_form_1.php');
 function msg($txt)
     {
         global $msg;
@@ -99,62 +99,7 @@ function msg($txt)
         return ($term);
     }    
 
-function form($th)
-    {
-        $sx = '';
 
-        $fl = $th->allowedFields;
-        $tp = $th->typeFields;
-        $id = round($th->id);
-        $url = base_url(PATH.$th->path.'/edit');        
-
-        $dt = $_POST;
-        if ((count($dt) == 0) and ($id > 0))
-            {
-                $dt = $th->find($id);
-            } else {
-                if (($th->save($dt)) and (count($dt) > 0))
-                    {
-                        $url = substr($url,0,strpos($url,'/edit'));
-                        $sx .= bsmessage('SALVO');
-                        //$sx = redireciona($url);
-                        $sx .= anchor($url,'Voltar',['class'=>'btn btn-primary']);
-                        return($sx);
-                    }
-            }
-        
-        
-        $sx .= form_open($url).cr();
-
-        $sx .= '<table class="table" width="100%">';
-        $sx .= '<tr><th width="20%">'.msg('label').'</th>
-                    <th width="80%">'.msg('values').'</th></tr>';
-        $submit = false;
-
-        /* Formulario */
-        for ($r=0;$r < count($fl);$r++)
-            {
-                $fld = $fl[$r];
-                $typ = $tp[$r];
-                $vlr = '';
-                if (isset($dt[$fld])) { $vlr = $dt[$fld]; }
-                $sx .= form_fields($typ,$fld,$vlr,$th);
-            }
-
-        /***************************************** BOTAO SUBMIT */
-        if (!$submit)
-            {
-                $sx .= '<tr><td>'.bt_submit().' | '.bt_cancel($url).'</td></tr>'.cr();
-            }
-
-        /************************************** FIM DO FORMULARIO */
-        $sx .= '</table>'.cr();
-
-        $sx .= form_close().cr();
-
-        return($sx);
-
-    }
 /* checa e cria diretorio */
 function dircheck($dir) {
     $ok = 0;
@@ -229,10 +174,9 @@ function linked($url)
 
 function form_del($th)
     {
-        global $th;
         $sx = '';
         $id = $th->id;
-
+ 
         if ($th->delete($id))
             {
                 $sx .= bsmessage('Item excluído',1);
@@ -260,153 +204,7 @@ function stodbr($dt)
     }
 
 
-function form_fields($typ,$fld,$vlr,$th=array())
-    {   
-        $td = '<td>'; $tdc = '</td>';
-        /*********** Mandatory */
-        $sub = 0;
-        $mandatory = false;        
-        $sx = '<tr>';
-        $t = substr($typ,0,2);
 
-        switch($t)
-                {
-                    case 'up':
-                        $sx .= '<input type="hidden" id="'.$fld.'" name="'.$fld.'" value="'.date("YmdHi").'">';
-                        break;
-                    case 'hi':
-                        $sx .= '<input type="hidden" id="'.$fld.'" name="'.$fld.'" value="'.$vlr.'">';
-                        break;
-                    case 'dt':
-                        $sx .= $td.($fld).$tdc;
-                        $sx .= $td;
-                        $sx .= '<input type="text" id="'.$fld.'" name="'.$fld.'" value="'.$vlr.'" class="form-control" style="width:200px;">';
-                        $sx .= $tdc;
-                        break;       
-                    case 'ur':
-                        $sx .= $td.($fld).$tdc;
-                        $sx .= $td;
-                        $sx .= '<input type="text" id="'.$fld.'" name="'.$fld.'" value="'.$vlr.'" class="form-control">';
-                        $sx .= $tdc;
-                        break;                         
-                    case 'yr':
-                        $sx .= $td.($fld).$tdc;
-                        $sx .= $td;
-                        $op = array();
-                        $opc = array();
-                        for ($r=date("Y")+1;$r > 1900;$r--)
-                            {
-                                array_push($op,$r);
-                                array_push($opc,$r);
-                            }
-                        $sg = '<select id="'.$fld.'" name="'.$fld.'" value="'.$vlr.'" class="form-control" style="width: 200px;">'.cr();
-                        for ($r=0;$r < count($op);$r++)
-                            {
-                                $sel = '';
-                                $sg .= '<option value="'.$op[$r].'" '.$sel.'>'.$opc[$r].'</option>'.cr();
-                            }
-                        $sg .= '</select>'.cr();
-                        $sx .= $sg;
-                        $sx .= $tdc;
-                        break;        
-                    case 'pl':
-                        $sx .= $td.($fld).$tdc;
-                        $sx .= $td;
-                        //$dt = $this->db->query("select * from oa_country where ct_lang = 'pt-BR'").findAll();
-
-                        $sql = "SELECT * FROM some_table WHERE ct_lang = :ct_lang:";
-                        $rlt = $this->db->query($sql, ['ct_lang' => 'pt-BR']);
-                        print_r($dt);
-                        $op = array();
-                        $opc = array();
-                        for ($r=date("Y")+1;$r > 1900;$r--)
-                            {
-                                array_push($op,$r);
-                                array_push($opc,$r);
-                            }
-                        $sg = '<select id="'.$fld.'" name="'.$fld.'" value="'.$vlr.'" class="form-control" style="width: 200px;">'.cr();
-                        for ($r=0;$r < count($op);$r++)
-                            {
-                                $sel = '';
-                                $sg .= '<option value="'.$op[$r].'" '.$sel.'>'.$opc[$r].'</option>'.cr();
-                            }
-                        $sg .= '</select>'.cr();
-                        $sx .= $sg;
-                        $sx .= $tdc;
-                        break;                                                           
-                    case 'tx':
-                        $rows = 5;
-                        $sx .= $td.($fld).$tdc;
-                        $sx .= $td;
-                        $sx .= '<textarea id="'.$fld.'" rows="'.$rows.'" name="'.$fld.'" class="form-control">'.$vlr.'</textarea>';
-                        $sx .= $tdc;
-                        break;
-                    case 'sn':
-                        $sx .= $td.($fld).$tdc;
-                        $sx .= $td;
-                        $op = array(1,0);
-                        $opc = array(msg('YES'),msg('NO'));
-                        $sg = '<select id="'.$fld.'" name="'.$fld.'" value="'.$vlr.'" class="form-control">'.cr();
-                        for ($r=0;$r < count($op);$r++)
-                            {
-                                $sel = '';
-                                $sg .= '<option value="'.$op[$r].'" '.$sel.'>'.$opc[$r].'</option>'.cr();
-                            }
-                        $sg .= '</select>'.cr();
-                        $sx .= $sg;
-                        $sx .= $tdc;
-                        break;
-                    case 'op':
-                        $sx .= $td.($fld).$tdc;
-                        $sx .= $td;
-                        $op = array(1,0);
-                        $opc = array(msg('YES'),msg('NO'));
-                        $sg = '<select id="'.$fld.'" name="'.$fld.'" value="'.$vlr.'" class="form-control">'.cr();
-                        for ($r=0;$r < count($op);$r++)
-                            {
-                                $sel = '';
-                                $sg .= '<option value="'.$op[$r].'" '.$sel.'>'.$opc[$r].'</option>'.cr();
-                            }
-                        $sg .= '</select>'.cr();
-                        $sx .= $sg;
-                        $sx .= $tdc;
-                        break;  
-                        /**************************************** Query */                        
-                    case 'qr':
-                        $q = explode(':',trim(substr($typ,2,strlen($typ))));
-                        print_r($q);
-                        $fld1 = $q[0];
-                        $fld2 = $q[1];
-
-                        $sx .= $td.($fld).$tdc;
-                        $sx .= $td;
-                        $query = $th->query($q[2]);
-                        $query = $query->getResult();
-                        
-                        $sg = '<select id="'.$fld.'" name="'.$fld.'" value="'.$vlr.'" class="form-control">'.cr();
-                        for ($r=0;$r < count($query);$r++)
-                            {
-                                $ql = (array)$query[$r];                                
-                                $sel = '';
-                                $sg .= '<option value="'.$ql[$fld1].'" '.$sel.'>'.$ql[$fld2].'</option>'.cr();
-                            }
-                        $sg .= '</select>'.cr();
-                        $sx .= $sg;
-                        $sx .= $tdc;
-                        break;                                               
-                    case 'st':
-                        $sx .= $td.($fld).$tdc;
-                        $sx .= $td;
-                        $sx .= '<input type="text" id="'.$fld.'" name="'.$fld.'" value="'.$vlr.'" class="form-control">';
-                        $sx .= $tdc;
-                        break;
-                    default:
-                        $sx .= 'OPS - '.$t;
-                        echo '==>'.$t.'<br>';
-                }
-            $sx .= '</tr>';
-        return($sx);
-    }
 
     function bt_cancel($url)
         {
@@ -421,7 +219,7 @@ function form_fields($typ,$fld,$vlr,$th=array())
             return($sx);
         }
 
-        function tableview($th,$dt=array())
+    function tableview($th,$dt=array())
         {
             $url = base_url(PATH.$th->path);
 
