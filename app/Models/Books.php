@@ -45,6 +45,8 @@ class Books extends Model
 
 	function latest_acquisitions()
 		{
+			$url = 'https://ufrgs.br/find/_covers/image/';
+			$url = 'http://find/_covers/image/';
 			$sx = '';
 			$Find_Item = new \App\Models\Find_Item();
 
@@ -62,14 +64,14 @@ class Books extends Model
 					$file = $this->dir_images.$line['i_identifier'].'.jpg';
 					if (file_exists($file))
 						{
-							$img = 'https://ufrgs.br/find/_covers/image/'.$line['i_identifier'].'.jpg';
+							$img = $url.$line['i_identifier'].'.jpg';
 						} else {
 							$img = base_url('img/book/no_cover.jpg');
 						}
 					
 					$sx .= $this->card($line,$img);
 				}
-			return $sx;			
+			return bs($sx);
 		}
 
 	function view($dt)
@@ -111,7 +113,7 @@ class Books extends Model
 						bscard($st,
 									'<span class="book_title">'.$title.'</span>',
 					)
-				,2);			
+				,3);			
 			return $sx;
 		}
 }

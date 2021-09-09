@@ -108,11 +108,11 @@ class RDFData extends Model
 
 	function le($id)
 		{
-			$this->join('rdf_literal', 'd_literal = rdf_literal.id_n', 'LEFT');
+			$this->join('rdf_name', 'd_literal = rdf_name.id_n', 'LEFT');
 			$this->join('rdf_class', 'rdf_data.d_p = rdf_class.id_c', 'LEFT');
 			$this->join('rdf_prefix', 'rdf_class.c_prefix = rdf_prefix.id_prefix', 'LEFT');
 
-    		$this->select('rdf_literal.id_n, rdf_literal.n_name, rdf_literal.n_lang');
+    		$this->select('rdf_name.id_n, rdf_name.n_name, rdf_name.n_lang');
 			$this->select('rdf_class.c_class, rdf_class.c_prefix, rdf_class.c_type');	
 			$this->select('rdf_prefix.prefix_ref, rdf_prefix.prefix_url');
     		$this->select('rdf_data.*');	

@@ -4,18 +4,18 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class RDFLiteral extends Model
+class ItemHistoric extends Model
 {
 	protected $DBGroup              = 'default';
-	protected $table                = 'rdf_name';
-	protected $primaryKey           = 'id_n';
+	protected $table                = 'find_item_historic_loan';
+	protected $primaryKey           = 'id_hl';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
 	protected $returnType           = 'array';
 	protected $useSoftDeletes       = false;
 	protected $protectFields        = true;
 	protected $allowedFields        = [
-		'id_n','n_name','n_lock','n_lang'
+		'id_hl','hl_item','h_status','h_ip','h_user'
 	];
 
 	// Dates
@@ -42,18 +42,13 @@ class RDFLiteral extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
-	function name($name,$lg='pt-BR')
+	function history($id)
 		{
-			$dt = $this->where('n_name',$name)->First();
-			if (!is_array($dt))
-				{
-					$data['n_name'] = $name;
-					$data['n_lock'] = 0;
-					$data['n_lang'] = $lg;
-					$this->insert($data);
-					$dt = $this->where('n_name',$name)->First();
-					return $dt['id_n'];
-				}
-			return $dt['id_n'];
+			$this->select("i_titulo, i_manitestation, i_tombo, hl_date, hl_status, hl_ip, hl_created");
+			$this->join('find_item', 'hl_item = i_tombo', 'LEFT');
+			$this->where('hl_user',$id);
+			$this->where('hl_library',LIBRARY);
+			$this->orderBy('hl_created DESC');
+			$dt = $this->findAll(0,5);
 		}
 }

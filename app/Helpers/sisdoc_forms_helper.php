@@ -421,7 +421,7 @@ function form_fields($typ,$fld,$vlr,$th=array())
             return($sx);
         }
 
-        function tableview($th,$dt)
+        function tableview($th,$dt=array())
         {
             $url = base_url(PATH.$th->path);
 

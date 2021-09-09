@@ -28,7 +28,7 @@ class RdfMame extends Migration
             'updated_at datetime default current_timestamp on update current_timestamp'
         ]);
         $this->forge->addKey('id_n', true);
-        $this->forge->createTable('rdf_literal');
+        $this->forge->createTable('rdf_name');
 	}
 
 	public function down()

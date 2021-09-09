@@ -73,7 +73,7 @@ class RDF extends Model
 
 			$class = $RDFClass->Class($class_name);
 			$rlt = $RDFConcept
-						->join('rdf_literal', 'cc_pref_term = rdf_literal.id_n', 'LEFT')
+						->join('rdf_name', 'cc_pref_term = rdf_name.id_n', 'LEFT')
 						->select('id_cc, n_name, cc_use')
 						->where('cc_class',$class)
 						->where('cc_library',LIBRARY)
@@ -131,12 +131,7 @@ class RDF extends Model
 		$RDFConcept = new \App\Models\RDFConcept();
 
 		$sx = '';
-		$d2 = round($d2);
-		if ($d2==0)
-		{
-			$this->convert_name_to_literal();
-		}
-		
+		$d2 = round($d2);		
 		$limit = 50;
 		$offset = round($d2)*$limit;
 
@@ -310,23 +305,5 @@ class RDF extends Model
 				}
 			$sx = bs($sx);
 			return $sx;
-		}
-
-	function convert_name_to_literal()
-		{
-			$sql = "TRUNCATE RDF_literal;";
-			$this->query($sql);
-
-			$RDFLiteral = new \App\Models\RDFLiteral();
-
-			$sql = "select * from RDF_name";
-			$query = $this->query($sql);
-
-			foreach ($query->getResult() as $row)
-			{
-				//print_r($row);
-				$RDFLiteral->insert($row);
-			}			
-			return 'Imported';
 		}
 }

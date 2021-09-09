@@ -4,19 +4,17 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class RDFLiteral extends Model
+class Classification extends Model
 {
 	protected $DBGroup              = 'default';
-	protected $table                = 'rdf_name';
-	protected $primaryKey           = 'id_n';
+	protected $table                = 'classifications';
+	protected $primaryKey           = 'id';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
 	protected $returnType           = 'array';
 	protected $useSoftDeletes       = false;
 	protected $protectFields        = true;
-	protected $allowedFields        = [
-		'id_n','n_name','n_lock','n_lang'
-	];
+	protected $allowedFields        = [];
 
 	// Dates
 	protected $useTimestamps        = false;
@@ -42,18 +40,13 @@ class RDFLiteral extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
-	function name($name,$lg='pt-BR')
+	function sections()
 		{
-			$dt = $this->where('n_name',$name)->First();
-			if (!is_array($dt))
-				{
-					$data['n_name'] = $name;
-					$data['n_lock'] = 0;
-					$data['n_lang'] = $lg;
-					$this->insert($data);
-					$dt = $this->where('n_name',$name)->First();
-					return $dt['id_n'];
-				}
-			return $dt['id_n'];
+			$sx = '<ul>';
+			$sx .= '<li>';
+			$sx .= 'Literatura';
+			$sx .= '</li>';
+			$sx .= '</ul>';
+			return $sx;
 		}
 }
