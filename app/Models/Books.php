@@ -76,7 +76,9 @@ class Books extends Model
 
 	function view($dt)
 		{
-			$RDFData = new \App\Models\RDFData();			
+			$sx = '';
+			$RDF = new \App\Models\RDF();
+			$RDFData = new \App\Models\RDFData();
 			$class = $dt['concept']['prefix_ref'].':'.$dt['concept']['c_class'];
 			switch($class)
 				{
@@ -84,6 +86,21 @@ class Books extends Model
 						$sx = $this->viewWork($dt);
 						$sx .= $RDFData->view_data($dt);						
 					break;
+
+					case 'frbr:Expression':
+						$work = $RDF->recover($dt,'isAppellationOfExpression');
+						$mani = $RDF->recover($dt,'hasFormExpression');
+
+						echo '=W=>';
+						print_r($work);
+						echo '<br>';
+						echo '=M=>';
+						print_r($mani);
+						/* WORK */
+						$dtw = $RDF->le($work[0]);
+						$sx .= $this->viewWork($dtw);
+						$sx .= $RDFData->view_data($dt);						
+					break;					
 
 					default:
 					$sx = $this->viewWork($dt);
@@ -95,6 +112,8 @@ class Books extends Model
 	function viewWork($dt)
 		{
 			$sx = '';
+			echo '<pre>';
+			print_r($dt);
 			$class = $dt['concept']['prefix_ref'].':'.$dt['concept']['c_class'];
 			$sx .= '<h1>'.$class.'</h1>';
 

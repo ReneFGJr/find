@@ -1,26 +1,53 @@
 <?php
 
+function bt_cancel($url)
+    {
+        if (strpos($url,'/edit')) { $url = substr($url,0,strpos($url,'/edit')); }
+        $sx = anchor($url,msg('return'),['class'=>'btn btn-outline-warning']);
+        return $sx;
+    }
+
+function bt_submit($t='save')
+    {
+        $sx = '<input type="submit" value="'.$t.'" class="btn btn-outline-primary">';        
+        return($sx);
+    }
+
 function form($th)
     {
         $sx = '';
+        
         /* Arquivo para tradução - language ************************/
         if (!isset($th->lib)) { $th->lib = ''; }
         $fl = $th->allowedFields;
         $tp = $th->typeFields;
         $id = round($th->id);
-        $url = base_url(PATH.$th->path.'/edit');        
+
+        /* Sem PATH */
+        if (!isset($th->path))
+        {
+            $url = base_url(PATH.$th->path.'/edit/'.$id);        
+        } else {
+            $url = $th->path;
+        }        
 
         /********************************* Salvar *****************/
-        $dt = $_POST;        
+        $dt = $_POST;    
+
+        /* Load Data from registrer *******************************/
+        if ((count($dt) == 0) and ($id > 0))
+            {
+                $dt = $th->find($th->id);
+            }
+
+        /* Verifica o formulário correto **************************/    
         if (!isset($th->form)) { $th->form = 'form_'.date("Ymd"); }
         $form_id = md5($th->form);
 
-        if ((count($dt) == 0) and ($id > 0))
-            {
-                $dt = $th->find($id);
-            } else {
+                
                 if ( get("form") == $form_id)
                 {
+                /* Salvar dados */
                 if (($th->save($dt)) and (count($dt) > 0))
                     {
                         $sx .= bsmessage('SALVO');
@@ -34,10 +61,11 @@ function form($th)
                         return($sx);
                     }
                 }
-            }     
+              
         
         /************************************************ Formulário */
         $attr = array('name'=>$th->form);
+        $sx .= '<div class="shadow p-3 mb-5 bg-white rounded">';
         $sx .= form_open($url,$attr).cr();
         $sx .= '<input type="hidden" name="form" value="'.$form_id.'">';
         $submit = false;
@@ -61,6 +89,7 @@ function form($th)
         /************************************** FIM DO FORMULARIO */
 
         $sx .= form_close().cr();
+        $sx .= '</div>';
 
         return($sx);
 
@@ -133,7 +162,6 @@ function form($th)
 
                         $sql = "SELECT * FROM some_table WHERE ct_lang = :ct_lang:";
                         $rlt = $this->db->query($sql, ['ct_lang' => 'pt-BR']);
-                        print_r($dt);
                         $op = array();
                         $opc = array();
                         for ($r=date("Y")+1;$r > 1900;$r--)

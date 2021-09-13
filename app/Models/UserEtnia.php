@@ -51,11 +51,19 @@ class UserEtnia extends Model
 	function form($th)
 		{
 			$dt = $this->where('ua_us',$th->id)->findAll();
-			$this->id = $dt[0]['id_ua'];
-			echo '===>'.$this->id;
+			if (count($dt) == 0)
+				{					
+					echo "OP - not found";
+					exit;
+					$dt['ua_us'] = $id;
+					$this->insert($dt);
+					$dt = $this->where('ua_us',$th->id)->findAll();
+				}			
+			$ida = $dt[0]['id_ua'];
+			$this->id = $ida;
+
 			$this->path = $th->path;
 			$this->path_back = $th->path_back;
-
 			$sx = form($this);
 
 			return $sx;

@@ -21,7 +21,7 @@ class UserGenere extends Model
 
 	protected $typeFields        = [
 		'hi',
-		'select:opendata.genere_woman:opendata.genere_woman:opendata.genere_woman:opendata.genere_woman:opendata.genere_woman:opendata.genere_woman',
+		'select:opendata.genere_0:opendata.genere_1:opendata.genere_2:opendata.genere_3:opendata.genere_4:openda.tagenere_5',
 	];	
 
 	// Dates

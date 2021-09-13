@@ -14,10 +14,24 @@ class UserAddress extends Model
 	protected $returnType           = 'array';
 	protected $useSoftDeletes       = false;
 	protected $protectFields        = true;
+	protected $form			        = 'formUserAddress';
 	protected $allowedFields        = [
-		'id_ua'
+		'id_ua','us_cep','us_logradouro','ua_number',
+		'us_complemento','us_bairro','us_localidade',
+		'us_uf','us_ibge'
 	];
 
+	protected $typeFields        = [
+		'hi',
+		'st:100',
+		'st:100',
+		'st:100',
+		'st:100',
+		'st:100',
+		'st:100',
+		'st:100',
+		'st:100',
+	];
 	// Dates
 	protected $useTimestamps        = false;
 	protected $dateFormat           = 'datetime';
@@ -42,5 +56,24 @@ class UserAddress extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
-	
+	function form($th)
+		{
+			$dt = $this->where('ua_us',$th->id)->findAll();
+			if (count($dt) == 0)
+				{					
+					echo "OP - not found";
+					exit;
+					$dt['ua_us'] = $id;
+					$this->insert($dt);
+					$dt = $this->where('ua_us',$th->id)->findAll();
+				}			
+			$ida = $dt[0]['id_ua'];
+			$this->id = $ida;
+
+			$this->path = $th->path;
+			$this->path_back = $th->path_back;
+			$sx = form($this);
+
+			return $sx;
+		}
 }

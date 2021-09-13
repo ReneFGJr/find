@@ -206,18 +206,7 @@ function stodbr($dt)
 
 
 
-    function bt_cancel($url)
-        {
-            if (strpos($url,'/edit')) { $url = substr($url,0,strpos($url,'/edit')); }
-            $sx = anchor($url,msg('return'),['class'=>'btn btn-outline-danger']);
-            return $sx;
-        }
 
-    function bt_submit($t='save')
-        {
-            $sx = '<input type="submit" value="'.$t.'" class="btn btn-primary">';        
-            return($sx);
-        }
 
     function tableview($th,$dt=array())
         {

@@ -14,7 +14,7 @@ return [
     'month_11' => 'novembro',
     'month_12' => 'dezembro',
 
-
+    'genere_0'=>'Não informado',
     'genere_1'=>'Mulher',
     'genere_2'=>'Mulher Trans.',
     'genere_3'=>'Homem', 

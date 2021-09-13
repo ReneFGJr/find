@@ -156,7 +156,7 @@ class Find extends BaseController
 	private function footer()
 		{
 			$sx = '<!-- Footer -->
-					<footer class="page-footer font-small blue-grey lighten-5">
+					<footer class="page-footer font-small blue-grey lighten-5" style="margin-top: 50px;">
 
 					<div style="background-color: #21d192;">
 						<div class="container">
@@ -338,6 +338,8 @@ class Find extends BaseController
 			
 			/* Export Command */
 			$sx .= $User->index($d1,$d2,$d3,$d4);
+
+			$sx .= $this->footer();
 
 			return $sx;
 		}

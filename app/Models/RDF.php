@@ -51,6 +51,27 @@ class RDF extends Model
 			return($dt);
 		}
 
+	function recover($dt=array(),$class='')
+		{
+			$rst = array();
+			$id = $dt['concept']['id_cc'];
+			$dt = $dt['data'];
+			for ($r=0;$r < count($dt);$r++)
+				{
+					$line = $dt[$r];
+					if ($line['c_class'] == $class)
+					{
+						if ($line['d_r1'] == $id)
+						{
+							array_push($rst,$line['d_r2']);
+						} else {
+							array_push($rst,$line['d_r1']);
+						}
+					}
+				}	
+			return $rst;
+		}
+
 	function info($id)
 		{
 			$sx = '';

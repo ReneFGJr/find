@@ -77,30 +77,45 @@ class User extends Model
 		{
 			$UserEtnia = new \App\Models\UserEtnia();
 			$UserGenere = new \App\Models\UserGenere();
+			$UserAddress = new \App\Models\UserAddress();
 			$this->lib = 'find';
 			$this->id = $id;
-			$this->path = 'users/';
+			$this->path = base_url(PATH.'users/edit/'.$id);
 			$this->path_back = PATH.'users/';
 			
 			$it = array('edit1','edit2','edit3','edit4');
 			$ed[0] = form($this);
 			$ed[2] = $UserEtnia->form($this);
 			$ed[3] = $UserGenere->form($this);
+			$ed[4] = $UserAddress->form($this);
 			$ed[1] = '';
 			$sx = '';
+
+			$sm = '<div id="list-example" class="list-group">';
 			for ($idx=0;$idx < count($ed);$idx++)
 			{
-				$sm = '<a href="'.base_url(PATH.'/users/edit/'.$id.'/#ED'.$idx).'">';
-				$sm .= lang('find.user_edit_'.$idx);
-				$sm .= '</a>';
-				$sx .= bsc($sm,3,'text-right text-bold');
-				/*** Edit */
-				$sx .= bsc($ed[$idx],9);
-				$sx .= '<hr>';
+				$sm .= '<a class="list-group-item list-group-item-action" href="#list-item-1">'.lang('find.user_edit_'.$idx).'</a>';
+			}
+			$sm .= '</div>';
+			$sx = bsc($sm,2);
+			
+			$sx .= '
+			<style>
+			body {
+ 				 position: relative;
+			}
+			</style>		
+			';
+			$sm = '';
+			for ($idx=0;$idx < count($ed);$idx++)
+			{
+				$sm .= '<h4 id="list-item-'.$idx.'">'.lang('find.user_edit_'.$idx).'</h4>';
+				$sm .= $ed[$idx];
+				$sm .= '<hr>';
 			}
 			$this->id = $id;			
-
-			$sx = bs($sx);
+			$sm = bsc($sm,10);
+			$sx = bs($sx.$sm);
 			return $sx;
 		}
 
@@ -133,12 +148,12 @@ class User extends Model
 				{
 					$da = $da[0];
 				}
-			print_r($da);
 
 			$sx = '<h4>'.lang('find.user.profile').'</h4>';
 
 			$sn = '<span class="supersmall">'.lang('find.user_name').'</span><br/>';
 			$sn .= '<span class="text-bold">'.$dt['us_nome'].'</span>';
+			$sn .= '<br/><a href="'.base_url(PATH.'users/edit/'.$id).'" class="supersmall" style="color: white">'.lang('edit').'</a>';
 
 			$st = $this->show_image($dt);
 
@@ -211,7 +226,7 @@ class User extends Model
 			
 			/* Genere */
 			$st .= '<td width="50%" align="center">';
-			$st .= '<img src="'.$this->show_genere($dt).'" style="max-height: 100px;" title="'.lang('opendata.genere_'.$da['us_genero']).'">';
+			$st .= '<img src="'.$this->show_genere($dt).'" style="max-height: 100px;" title="'.lang('opendata.genere_'.$dt['us_genero']).'">';
 			$st .= '</td>';
 
 			/* Breed */
