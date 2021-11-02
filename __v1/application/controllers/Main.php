@@ -44,17 +44,8 @@ class Main extends CI_controller
         $this->lang->load("socials", "portuguese");
 
         $this->load->database();
-        $this->load->helper('form');
-        $this->load->helper('form_sisdoc');
-        $this->load->helper('email');
-        $this->load->helper('url');
-        $this->load->helper('bootstrap');
-        $this->load->library('session');
-        $this->load->helper('cookie');
-        $this->load->helper('rdf');
-        $this->load->helper('email');
-        $this->load->helper('socials');
-        $this->load->helper("knowland");
+        helper(['boostrap', 'url', 'graphs', 'sisdoc_forms', 'form', 'nbr','sessions']);
+        $session = \Config\Services::session();
 
         $this->load->model('libraries');
 
