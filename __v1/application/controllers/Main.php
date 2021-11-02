@@ -5,7 +5,10 @@ define('PATH', 'index.php/main/');
 define('LIBRARY_NAME', 'Rede de Leitura');
 define('LIBRARY_LEMA', 'Incentivando a Leitura');
 */
+helper(['boostrap', 'url', 'graphs', 'sisdoc_forms', 'form', 'nbr','sessions']);        
+$session = \Config\Services::session();
 define("SYSTEM_ID", 1);
+
 class Main extends CI_controller
 {
     var $lib = 10010000000;
@@ -44,8 +47,6 @@ class Main extends CI_controller
         $this->lang->load("socials", "portuguese");
 
         $this->load->database();
-        helper(['boostrap', 'url', 'graphs', 'sisdoc_forms', 'form', 'nbr','sessions']);
-        $session = \Config\Services::session();
 
         $this->load->model('libraries');
 

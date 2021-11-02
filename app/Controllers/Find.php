@@ -23,7 +23,6 @@ class Find extends BaseController
 		$this->Socials = new \App\Models\Socials();
 		$this->FindSearch = new \App\Models\FindSearch();	
 	
-		helper(['boostrap','url','canvas']);
 		define("LIBRARY", "1003");
 		define("LIBRARY_NAME", "FIND");				
 		}
