@@ -1,9 +1,0 @@
-<lattes:curriculolattes rdf:about="http://localhost/find/index.php/main/rdf/id/1584">
-<owl:Class>Work</owl:Class>
-<lattes:id>A revolução dos bichos: um conto de fadas</lattes:id>
-<lattes:published>A revolução dos bichos: um conto de fadas</lattes:published>
-<lattes:hasAuthor resource="redd:1585"/>
-<lattes:hasAuthor resource="redd:1586"/>
-<skos:prefLabel>A revolução dos bichos: um conto de fadas</skos:prefLabel>
-<lattes:isAppellationOfExpression resource="redd:1587"/>
-</lattes:curriculolattes>

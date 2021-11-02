@@ -414,7 +414,7 @@ function bs_pages($ini,$stop,$link='')
         $sx .= '<ul class="pagination">'.cr();
         for ($r=$ini;$r <= $stop;$r++)
             {
-                $xlink = base_url($link.'/'.chr($r));
+                $xlink = URL.($link.'/'.chr($r));
                 $sx .= '<li class="page-item"><a class="page-link" href="'.$xlink.'">'.chr($r).'</a></li>'.cr();
             }
         $sx .= '</ul>';

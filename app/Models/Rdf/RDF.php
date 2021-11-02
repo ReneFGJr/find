@@ -177,7 +177,7 @@ class RDF extends Model
 				$flx = $upper;
 				$fi[$flx] = '';
 			}
-			$link = '<a href="' . base_url(URL . 'v/' . $line['id_cc']) . '">';
+			$link = '<a href="' . (URL . 'v/' . $line['id_cc']) . '">';
 			$linka = '</a>';
 			$fi[$flx] .= $link . $name . $linka . '<br>';
 		}

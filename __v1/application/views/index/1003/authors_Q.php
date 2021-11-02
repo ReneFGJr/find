@@ -1,4 +1,0 @@
-<div class="row"><div class="col-md-1 text-right"><h1 style="font-size: 500%;">Q</h1></div><div class="col-md-11"><ul style="list-style: none; columns: 300px 4; column-gap: 0;"><li><a href="http://localhost/find/index.php/main/v/4995" style="font-size: 85%; color: #505050;">Quentin Blake</a> <sup style="font-size: 70%;"></sup></li>
-<li><a href="http://localhost/find/index.php/main/v/12728" style="font-size: 85%; color: #505050;">Quentin Gréban</a> <sup style="font-size: 70%;"></sup></li>
-<li><a href="http://localhost/find/index.php/main/v/16780" style="font-size: 85%; color: #505050;">Quintino da Rosa</a> <sup style="font-size: 70%;"></sup></li>
-</ul></div></div>

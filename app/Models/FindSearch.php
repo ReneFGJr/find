@@ -51,13 +51,13 @@ class FindSearch extends Model
 			</ol>
 			<div class="carousel-inner">
 			  <div class="carousel-item ">
-				<img class="d-block w-100" src="'.base_url('img/banner_01.png').'" alt="First slide">
+				<img class="d-block w-100" src="'.URL.('img/banner_01.png').'" alt="First slide">
 			  </div>
 			  <div class="carousel-item active">
-				<img class="d-block w-100" src="'.base_url('img/banner_02.png').'" alt="Second slide">
+				<img class="d-block w-100" src="'.URL.('img/banner_02.png').'" alt="Second slide">
 			  </div>
 			  <div class="carousel-item">
-				<img class="d-block w-100" src="'.base_url('img/banner_03.png').'" alt="Third slide">
+				<img class="d-block w-100" src="'.URL.('img/banner_03.png').'" alt="Third slide">
 			  </div>
 			</div>
 			<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">

@@ -29,6 +29,7 @@ return [
     'us_email' => 'E-mail',
     'recomendations' => 'Recomendações',
     'author' => 'Autor',
+    'organizator' => 'Organizador',
     'ilustrator' => 'Ilustrador',
     'classification' => 'Classificação',
     'year'=>'Ano',

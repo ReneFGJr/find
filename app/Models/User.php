@@ -80,7 +80,7 @@ class User extends Model
 			$UserAddress = new \App\Models\UserAddress();
 			$this->lib = 'find';
 			$this->id = $id;
-			$this->path = base_url(PATH.'users/edit/'.$id);
+			$this->path = URL.(PATH.'users/edit/'.$id);
 			$this->path_back = PATH.'users/';
 			
 			$it = array('edit1','edit2','edit3','edit4');
@@ -153,7 +153,7 @@ class User extends Model
 
 			$sn = '<span class="supersmall">'.lang('find.user_name').'</span><br/>';
 			$sn .= '<span class="text-bold">'.$dt['us_nome'].'</span>';
-			$sn .= '<br/><a href="'.base_url(PATH.'users/edit/'.$id).'" class="supersmall" style="color: white">'.lang('edit').'</a>';
+			$sn .= '<br/><a href="'.(PATH.'users/edit/'.$id).'" class="supersmall" style="color: white">'.lang('edit').'</a>';
 
 			$st = $this->show_image($dt);
 
@@ -302,7 +302,7 @@ class User extends Model
 						$img = 'genere_none.png';
 						break;
 				}
-			$sx = base_url('img/genere/'.$img);
+			$sx = URL.'img/genere/'.$img);
 			return $sx;
 		}
 
@@ -330,7 +330,7 @@ class User extends Model
 						$img = 'breed_none.png';
 						break;
 				}
-			$sx = base_url('img/breed/'.$img);				
+			$sx = URL.'img/breed/'.$img);				
 			return $sx;
 		}
 	function show_phone($dt)

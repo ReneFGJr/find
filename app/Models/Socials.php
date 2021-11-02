@@ -69,9 +69,9 @@ class Socials extends Model
 						'.$user.'
 						</a>
 						<div class="dropdown-menu" aria-labelledby="navbarDropdown">
-						<a class="dropdown-item" href="'.base_url(PATH.'social/perfil').'">Perfil</a>
+						<a class="dropdown-item" href="'.URL.(PATH.'social/perfil').'">Perfil</a>
 						<div class="dropdown-divider"></div>
-						<a class="dropdown-item" href="'.base_url(PATH.'social/logout').'">Logout</a>
+						<a class="dropdown-item" href="'.URL.(PATH.'social/logout').'">Logout</a>
 						</div>
 					</li>				
 				';
@@ -213,7 +213,7 @@ class Socials extends Model
 						$_SESSION['user'] = $dt[0]['us_nome'];	
 						$_SESSION['email'] = $dt[0]['us_email'];
 						$sx .= '<h2>'.lang('social.success').'<h2>';
-						$sx .= '<meta http-equiv="refresh" content="2;URL=\''.base_url(PATH).'\'">';
+						$sx .= '<meta http-equiv="refresh" content="2;URL=\''.URL.(PATH).'\'">';
 					} else {
 						$sx .= '<h2>'.lang('ERROR').'<h2>';
 						$sx .= '<span class="singin" onclick="showLogin()">'.lang('social.return').'</span>';						
@@ -290,15 +290,15 @@ class Socials extends Model
 				$sx .= '            '.$email.cr();
 				$sx .= '          </a>'.cr();
 				$sx .= '          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">'.cr();
-				$sx .= '            <li><a class="dropdown-item" href="'.base_url(PATH.'social/?cmd=perfil').'">'.lang('social.perfil').'</a></li>'.cr();
-				$sx .= '            <li><a class="dropdown-item" href="'.base_url(PATH.'social/?cmd=logout').'">'.lang('social.logout').'</a></li>'.cr();
+				$sx .= '            <li><a class="dropdown-item" href="'(PATH.'social/?cmd=perfil').'">'.lang('social.perfil').'</a></li>'.cr();
+				$sx .= '            <li><a class="dropdown-item" href="'(PATH.'social/?cmd=logout').'">'.lang('social.logout').'</a></li>'.cr();
 				$sx .= '          </ul>'.cr();
 				$sx .= '        </li>'.cr();
 				$sx .= '</ul>'.cr();
 			} else {
 				$sx .= '<li class="nav-item d-flex align-items-center">';
               	$sx .= '
-              		<a href="'.base_url(PATH.'res/social/login').'" class="nav-link text-body font-weight-bold px-0">
+              		<a href="'.(PATH.'res/social/login').'" class="nav-link text-body font-weight-bold px-0">
                 	<i class="fa fa-user me-sm-1"></i>
                 	<span class="d-sm-inline d-none">'.lang('social.social_sign_in').'</span></a>';
 				$sx .= '</li>';
@@ -696,7 +696,7 @@ class Socials extends Model
 					data.append("signup_retype_password", document.getElementById("signup_retype_password").value);
 				}
 
-            var url = "'.base_url(PATH.'social/ajax/').'";
+            var url = "'.(PATH.'social/ajax/').'";
             var xhttp = new XMLHttpRequest();
             xhttp.open("POST", url, false);
             xhttp.send(data);

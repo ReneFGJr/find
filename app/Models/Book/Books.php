@@ -112,9 +112,11 @@ class Books extends Model
 			$trad = '';
 			$auth = '';
 			$ilus = '';
+			$org = '';
 			$pre_auth = '';
 			$pre_trad = '';
 			$pre_ilus = '';
+			$pre_org = '';
 
 			for ($r=0;$r < count($dt);$r++)
 				{
@@ -126,11 +128,14 @@ class Books extends Model
 						if (strlen($ilus) > 0) { $pre_ilus .= 'es'; }
 						$ilus .= $this->link($line).' ';
 						break;
-
 					case 'hasAuthor':
 						if (strlen($auth) > 0) { $pre_auth .= 'es'; }
 						$auth .= $this->link($line).' ';
-						break;						
+						break;	
+					case 'hasOrganizator':
+						if (strlen($org) > 0) { $pre_org .= 'es'; }
+						$org .= $this->link($line).' ';
+						break;							
 
 					case 'hasTranslator':
 						if (strlen($trad) > 0) { $pre_trad .= 'es'; }
@@ -149,6 +154,12 @@ class Books extends Model
 
 			$tela = '<div class="find.title supersmall">'.h($title,2).'</div>';
 			$tela .= '<div class="authors mb-4">';
+
+			if (strlen($org) > 0)
+				{
+					$tela .= '<div class="find.author">'.lang('find.organizator'.$pre_org).': '.$org.'(Orgs)</div>';
+				}
+
 			if (strlen($auth) > 0)
 				{
 					$tela .= '<div class="find.author">'.lang('find.author'.$pre_auth).': '.$auth.'</div>';

@@ -56,9 +56,9 @@ class Logos extends Model
 
 			if (file_exists($file))
 				{
-					$file = base_url($file);					
+					$file = URL.($file);					
 				} else {
-					$file = base_url('img/logo/no_logo.png');
+					$file = URL.('img/logo/no_logo.png');
 				}
 			$file = '<img src="'.$file.'" class="img-fluid"/>';			
 			$tela = $file;
@@ -81,9 +81,9 @@ class Logos extends Model
 
 			if (file_exists($file))
 				{
-					$file = base_url($file);					
+					$file = URL.($file);					
 				} else {
-					$file = base_url('img/logo/no_logo.png');
+					$file = URL.('img/logo/no_logo.png');
 				}
 			$file = '<img src="'.$file.'" style="height: 40px;"/>';			
 			$tela = $file;
