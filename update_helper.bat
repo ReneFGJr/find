@@ -4,9 +4,12 @@ copy ..\Brapci3.0\app\Helpers\*.* app\Helpers\*.*
 copy ..\Brapci3.0\app\Models\Social*.* app\Models\*.*
 
 echo "RDP"
-copy ..\Brapci3.0\app\Models\RDF.php app\Models\*.* 
-copy ..\Brapci3.0\app\Models\RDFConcept.php app\Models\*.* 
-copy ..\Brapci3.0\app\Models\RDFLiteral.php app\Models\*.* 
-copy ..\Brapci3.0\app\Models\RDFData.php app\Models\*.* 
+mkdir app\Models\Rdf
+
+copy ..\Brapci3.0\app\Models\RDF\RDF*.php app\Models\RDF\*.* 
 echo "Images"
 copy ..\Brapci3.0\app\Models\Images.php app\Models\*.* 
+
+echo "IO"
+mkdir app\Models\Io
+copy ..\Brapci3.0\app\Models\Io\*.php app\Models\Io\*.* 

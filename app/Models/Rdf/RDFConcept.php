@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\RDF;
 
 use CodeIgniter\Model;
 
 class RDFConcept extends Model
 {
-	protected $DBGroup              = 'default';
-	protected $table                = 'rdf_concept';
+	var $DBGroup              = 'default';
+	protected $table                = PREFIX.'rdf_concept';
 	protected $primaryKey           = 'id_cc';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
@@ -45,9 +45,9 @@ class RDFConcept extends Model
 
 	function le($id)
 		{
-			$this->join('rdf_name', 'cc_pref_term = rdf_name.id_n', 'LEFT');
-			$this->join('rdf_class', 'rdf_concept.cc_class = rdf_class.id_c', 'LEFT');
-			$this->join('rdf_prefix', 'rdf_class.c_prefix = rdf_prefix.id_prefix', 'LEFT');
+			$this->join(PREFIX.'rdf_name', 'cc_pref_term = rdf_name.id_n', 'LEFT');
+			$this->join(PREFIX.'rdf_class', 'rdf_concept.cc_class = rdf_class.id_c', 'LEFT');
+			$this->join(PREFIX.'rdf_prefix', 'rdf_class.c_prefix = rdf_prefix.id_prefix', 'LEFT');
 
 			$this->select('rdf_class.c_class, rdf_class.c_type, rdf_class.c_url, rdf_class.c_equivalent');
     		$this->select('rdf_name.n_name, rdf_name.n_lang');    		
@@ -62,10 +62,14 @@ class RDFConcept extends Model
 	function concept($dt)
 		{			
 			/* Definição da Classe */
-			$Class = new \App\Models\RDFClass();			
-			$RDFdata = new \App\Models\RDFdata();
-			$RDFLiteral = new \App\Models\RDFLiteral();
-			$Property = new \App\Models\RDFClassProperty();
+			$Class = new \App\Models\RDF\RDFClass();			
+			$Class->DBGroup = $this->DBGroup;
+			$RDFdata = new \App\Models\RDF\RDFData();
+			$RDFdata->DBGroup = $this->DBGroup;
+			$RDFLiteral = new \App\Models\RDF\RDFLiteral();
+			$RDFLiteral->DBGroup = $this->DBGroup;
+			$Property = new \App\Models\RDF\RDFClassProperty();
+			$Property->DBGroup = $this->DBGroup;
 
 			$cl = $dt['Class'];
 			$id_class = $Class->class($cl);

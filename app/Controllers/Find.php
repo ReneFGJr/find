@@ -9,14 +9,17 @@ $language = \Config\Services::language();
 
 helper(['boostrap','url','graphs','sisdoc_forms','form','nbr']);
 
-define("PATH","index.php/find/");
+define("PATH",$_SERVER['app.baseURL']."index.php/find/");
+define("MODULE",'find');
+define("URL",$_SERVER['app.baseURL']);
+define('PREFIX','find.');
 
 class Find extends BaseController
 	{
 
 	public function __construct()
 		{
-		$this->Books = new \App\Models\Books();
+		$this->Books = new \App\Models\Book\Books();
 		$this->Socials = new \App\Models\Socials();
 		$this->FindSearch = new \App\Models\FindSearch();	
 	
@@ -89,36 +92,29 @@ class Find extends BaseController
 
 	private function navbar($dt=array())	
 		{
+			$Logo = new \App\Models\Library\Logos();
 			$title = 'Find';
 			if (isset($dt['title'])) { $title = $dt['title']; } 
 			$sx = '<nav class="navbar navbar-expand-lg navbar-light ">'.cr();
 			$sx .= '  <div class="container-fluid">'.cr();
-			$sx .= '    <a class="navbar-brand" href="'.base_url(PATH).'">'.$title.'</a>'.cr();
+			$sx .= '    <a class="navbar-brand" href="'.PATH.'">'.$Logo->logo_mini(LIBRARY).'</a>'.cr();
 			$sx .= '    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">'.cr();
 			$sx .= '      <span class="navbar-toggler-icon"></span>'.cr();
 			$sx .= '    </button>'.cr();
 			$sx .= '    <div class="collapse navbar-collapse" id="navbarSupportedContent">'.cr();
 			$sx .= '      <ul class="navbar-nav me-auto mb-2 mb-lg-0">'.cr();
-			/*
-			$sx .= '        <li class="nav-item">'.cr();
-			$sx .= '          <a class="nav-link active" aria-current="page" href="#">Home</a>'.cr();
-			$sx .= '        </li>'.cr();
-			$sx .= '        <li class="nav-item">'.cr();
-			$sx .= '          <a class="nav-link" href="#">Link</a>'.cr();
-    		$sx .= '		</li>'.cr();
-			*/
 			$sx .= '        <li class="nav-item dropdown">'.cr();
 			$sx .= '          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">'.cr();
-			$sx .= '            '.lang('find.Home').cr();
+			$sx .= '          '.lang('find.index').cr();
 			$sx .= '          </a>'.cr();
 			$sx .= '          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">'.cr();
-			$sx .= '            <li><a class="dropdown-item" href="'.base_url(PATH.'events/').'">'.lang('proceedings.Menu.events').'</a></li>'.cr();
+			$sx .= '            <li><a class="dropdown-item" href="'.PATH.'events/'.'">'.lang('proceedings.Menu.events').'</a></li>'.cr();
 			$sx .= '          </ul>'.cr();
 			$sx .= '        </li>'.cr();
 
 			$sx .= '
 							<li class="nav-item">
-								<a class="nav-link" href="'.base_url(PATH.'users/').'">'.lang('find.users').'</a>
+								<a class="nav-link" href="'.PATH.'users/'.'">'.lang('find.users').'</a>
 							</li>			
 			';
 
@@ -311,19 +307,26 @@ class Find extends BaseController
 				}
 			return $sx;
 		}
-
-	function v($id)
+		
+	function item($id)
 		{
-			$RDF = new \App\Models\RDF();
-
 			$sx = $this->cab();
 			$sx .= $this->navbar();
 			$sx .= $this->FindSearch->banner();	
 
-			$dt = $RDF->le($id);
+			$Books = new \App\Models\Book\Books();
+			$sx .= $Books->view_item($id);
 
-			$Books = new \App\Models\Books();
-			$sx .= $Books->view($dt);
+			return $sx;				
+		}
+	function v($id)
+		{
+			$sx = $this->cab();
+			$sx .= $this->navbar();
+			$sx .= $this->FindSearch->banner();	
+
+			$Books = new \App\Models\Book\Books();
+			$sx .= $Books->v($id);
 
 			return $sx;			
 		}
@@ -344,6 +347,19 @@ class Find extends BaseController
 			return $sx;
 		}
 
+	function config($d1='',$d2='')
+		{
+			$tela = $this->cab();
+			$tela .= $this->navbar();
+			$tela .= $this->FindSearch->banner();
+
+			$Libraries = new \App\Models\Library\Libraries();
+			$tela .= $Libraries->index($d1,$d2);
+
+			$tela .= $this->footer();
+			return $tela;
+		}
+
 	function export($d1='',$d2='',$d3='',$d4='')	
 		{
 			$RDF = new \App\Models\RDF();
@@ -359,3 +375,4 @@ class Find extends BaseController
 		}
 
 }
+

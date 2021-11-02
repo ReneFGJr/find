@@ -27,4 +27,19 @@ return [
 
     'us_nome' => 'Nome completo',
     'us_email' => 'E-mail',
+    'recomendations' => 'Recomendações',
+    'author' => 'Autor',
+    'ilustrator' => 'Ilustrador',
+    'classification' => 'Classificação',
+    'year'=>'Ano',
+    'place'=>'Local',
+    'total_pages' => 'Total de páginas',
+    'subject' => 'Assunto(s)',
+    'publisher' => 'Editora',
+    'translater' =>'Tradutor',
+    'description' => 'Descrição',
+    'volume' => 'Volume(s)',
+    'serie' => 'Série',
+    'hasClassificationCountry' => 'Pais',
+    'hasClassificacaoAssunto' => 'Assunto'
 ];

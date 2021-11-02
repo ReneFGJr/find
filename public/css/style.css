@@ -43,4 +43,8 @@ a:hover
         color: black;
         text-align: center;
         }
+.supersmall
+    {
+        font-size: font-size: 60%;
+    }
 

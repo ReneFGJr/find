@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\RDF;
 
 use CodeIgniter\Model;
 
-class RDFLiteral extends Model
+class RDFClassProperty extends Model
 {
-	protected $DBGroup              = 'default';
-	protected $table                = 'rdf_name';
-	protected $primaryKey           = 'id_n';
+	var $DBGroup              = 'default';
+	protected $table                = PREFIX.'rdf_data';
+	protected $primaryKey           = 'id_d';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
 	protected $returnType           = 'array';
 	protected $useSoftDeletes       = false;
 	protected $protectFields        = true;
 	protected $allowedFields        = [
-		'id_n','n_name','n_lock','n_lang'
+		'd_r1','d_p','d_r2','d_literal','d_library'
 	];
 
 	// Dates
@@ -42,18 +42,22 @@ class RDFLiteral extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
-	function name($name,$lg='pt-BR')
+
+
+	function relation($data)
 		{
-			$dt = $this->where('n_name',$name)->First();
+			$this->where('d_r1',$data['d_r1']);
+			$this->where('d_r2',$data['d_r2']);
+			$this->where('d_p',$data['d_p']);
+			$this->where('d_literal',$data['d_literal']);
+			$this->where('d_library',$data['d_library']);
+			$dt = $this->First();
+
 			if (!is_array($dt))
 				{
-					$data['n_name'] = $name;
-					$data['n_lock'] = 0;
-					$data['n_lang'] = $lg;
 					$this->insert($data);
-					$dt = $this->where('n_name',$name)->First();
-					return $dt['id_n'];
+					$dt = $this->relation($data);
 				}
-			return $dt['id_n'];
+			return($dt);
 		}
 }
