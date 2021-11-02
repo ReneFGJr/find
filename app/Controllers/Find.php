@@ -61,20 +61,20 @@ class Find extends BaseController
 			$sx .= '<head>'.cr();
 			$sx .= '<title>'.$title.'</title>'.cr();
 			$sx .= '  <meta charset="utf-8" />'.cr();
-			$sx .= '  <link rel="apple-touch-icon" sizes="180x180" href="'.base_url('img/favicon.png').'" />'.cr();
-			$sx .= '  <link rel="icon" type="image/png" sizes="32x32" href="'.base_url('img/favicon.png').'" />'.cr();
-			$sx .= '  <link rel="icon" type="image/png" sizes="16x16" href="'.base_url('img/favicon.png').'" />'.cr();
+			$sx .= '  <link rel="apple-touch-icon" sizes="180x180" href="'.URL.('img/favicon.png').'" />'.cr();
+			$sx .= '  <link rel="icon" type="image/png" sizes="32x32" href="'.URL.('img/favicon.png').'" />'.cr();
+			$sx .= '  <link rel="icon" type="image/png" sizes="16x16" href="'.URL.('img/favicon.png').'" />'.cr();
 			$sx .= '  <!-- CSS -->'.cr();
-			$sx .= '  <link rel="stylesheet" href="'.base_url('/css/bootstrap.css').'" />'.cr();
-			$sx .= '  <link rel="stylesheet" href="'.base_url('/css/style.css?v=0.0.6').'" />'.cr();
+			$sx .= '  <link rel="stylesheet" href="'.URL.('/css/bootstrap.css').'" />'.cr();
+			$sx .= '  <link rel="stylesheet" href="'.URL.('/css/style.css?v=0.0.6').'" />'.cr();
 			$sx .= ' '.cr();
 			$sx .= '  <!-- CSS -->'.cr();
-			$sx .= '  <script src="'.base_url('/js/bootstrap.js?v=5.0.2').'"></script>'.cr();
+			$sx .= '  <script src="'.URL.('/js/bootstrap.js?v=5.0.2').'"></script>'.cr();
 			$sx .= '<style>
 					@font-face {font-family: "Handel Gothic";
-					src: url("'.base_url('css/fonts/HandelGothic/handel_gothic.eot').'"); /* IE9*/
-					src: url("'.base_url('css/fonts/HandelGothic/handel_gothic.eot?#iefix').'") format("embedded-opentype"), /* IE6-IE8 */
-					url("'.base_url('css/fonts/HandelGothic/handel_gothic.svg#Handel Gothic').'") format("svg"); /* iOS 4.1- */
+					src: url("'.URL.('css/fonts/HandelGothic/handel_gothic.eot').'"); /* IE9*/
+					src: url("'.URL.('css/fonts/HandelGothic/handel_gothic.eot?#iefix').'") format("embedded-opentype"), /* IE6-IE8 */
+					url("'.URL.('css/fonts/HandelGothic/handel_gothic.svg#Handel Gothic').'") format("svg"); /* iOS 4.1- */
 					}
 					@import url(\'https://fonts.googleapis.com/css2?family=Nunito:wght@200&family=Roboto:wght@100&display=swap\');
 					</style>
@@ -122,7 +122,7 @@ class Find extends BaseController
 			$sx .= '            '.lang('find.Index').cr();
 			$sx .= '          </a>'.cr();
 			$sx .= '          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">'.cr();
-			$sx .= '            <li><a class="dropdown-item" href="'.base_url(PATH.'indexes/authors').'">'.lang('find.Indexes.Authors').'</a></li>'.cr();
+			$sx .= '            <li><a class="dropdown-item" href="'.URL.(PATH.'indexes/authors').'">'.lang('find.Indexes.Authors').'</a></li>'.cr();
 			$sx .= '          </ul>'.cr();
 			$sx .= '        </li>'.cr();			
 
@@ -133,10 +133,10 @@ class Find extends BaseController
 				$sx .= '            '.lang('events.proceedings').cr();
 				$sx .= '          </a>'.cr();
 				$sx .= '          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">'.cr();
-				$sx .= '            <li><a class="dropdown-item" href="'.base_url(PATH.'proceedings').'">'.lang('events.proceedings.row').'</a></li>'.cr();
-				$sx .= '            <li><a class="dropdown-item" href="'.base_url(PATH.'rdf').'">'.lang('events.rdf.row').'</a></li>'.cr();
-				$sx .= '            <li><a class="dropdown-item" href="'.base_url(PATH.'proceedings/gets').'">'.lang('events.proceedings.gets').'</a></li>'.cr();
-				$sx .= '            <li><a class="dropdown-item" href="'.base_url(PATH.'export/rdf').'">'.lang('events.export.rdf').'</a></li>'.cr();
+				$sx .= '            <li><a class="dropdown-item" href="'.URL.(PATH.'proceedings').'">'.lang('events.proceedings.row').'</a></li>'.cr();
+				$sx .= '            <li><a class="dropdown-item" href="'.URL.(PATH.'rdf').'">'.lang('events.rdf.row').'</a></li>'.cr();
+				$sx .= '            <li><a class="dropdown-item" href="'.URL.(PATH.'proceedings/gets').'">'.lang('events.proceedings.gets').'</a></li>'.cr();
+				$sx .= '            <li><a class="dropdown-item" href="'.URL.(PATH.'export/rdf').'">'.lang('events.export.rdf').'</a></li>'.cr();
 				$sx .= '          </ul>'.cr();
 				$sx .= '        </li>'.cr();
 			}
