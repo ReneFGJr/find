@@ -7,7 +7,10 @@ $this->session = \Config\Services::session();
 $language = \Config\Services::language();
 
 
-helper(['boostrap','url','graphs','sisdoc_forms','form','nbr']);
+helper(['boostrap', 'url', 'graphs', 'sisdoc_forms', 'form', 'nbr','sessions']);
+$session = \Config\Services::session();
+
+$this->Socials = new \App\Models\Socials();
 
 define("PATH",$_SERVER['app.baseURL']."index.php/find/");
 define("MODULE",'find');
