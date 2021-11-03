@@ -54,7 +54,7 @@ class Images extends Model
 		{
 			$id = str_pad($id,5,'0',STR_PAD_LEFT);
 			$file = $path.$id;
-			$file = URL.('img/other/face_no_picture.png');
+			$file = base_url('img/other/face_no_picture.png');
 			return $file;
 		}
 

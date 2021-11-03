@@ -42,6 +42,25 @@ class RDFPrefix extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
+function prefixn($dt)
+	{
+		$pre = trim($dt['prefix_ref']);
+		$class = trim($dt['c_class']);
+		if (strlen($class) > 0)
+		{
+			if (strlen($pre) > 0)
+			{
+				$sx = $pre.':'.$class;
+			} else {
+				$sx = $class;
+			}
+		} else {
+			$sx = '<i>'.msg('none').'</i>';
+		}
+		return($sx);
+
+	}	
+
 	function prefixo($pre)
 		{
 			$ID = 0;	

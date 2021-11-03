@@ -333,9 +333,16 @@ class Books extends Model
 			return $tela;
 		}
 
+	function a($id)
+		{		
+			$RDF = new \App\Models\Rdf\RDF();
+			$sx = $RDF->form($id);
+			return $sx;
+		}
+
 	function v($id)
 		{
-			$RDF = new \App\Models\RDF\RDF();
+			$RDF = new \App\Models\Rdf\RDF();
 			$dt = $RDF->le($id);
 
 			$sx = '';

@@ -333,6 +333,18 @@ class Find extends BaseController
 			return $sx;			
 		}
 
+	function a($id)
+		{
+			$sx = $this->cab();
+			$sx .= $this->navbar();
+			$sx .= $this->FindSearch->banner();	
+
+			$Books = new \App\Models\Book\Books();
+			$sx .= $Books->a($id);
+
+			return $sx;			
+		}		
+
 	function users($d1='',$d2='',$d3='',$d4='')	
 		{
 			$User = new \App\Models\User();
@@ -359,6 +371,13 @@ class Find extends BaseController
 			$tela .= $Libraries->index($d1,$d2);
 
 			$tela .= $this->footer();
+			return $tela;
+		}
+	function rdf($d1='',$d2='',$d3='')
+		{
+			$cab = $this->cab('head');
+			$RDF = new \App\Models\Rdf\RDF();
+			$tela = $RDF->index($d1,$d2,$d3,$cab);
 			return $tela;
 		}
 

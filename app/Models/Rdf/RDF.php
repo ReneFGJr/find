@@ -40,6 +40,32 @@ class RDF extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
+	/*
+		function rdf($d1='',$d2='',$d3='')
+		{
+			$RDF = new \App\Models\Rdf\RDF();
+			$tela = $RDF->index($d1,$d2,$d3);
+			return $tela;
+		}
+	*/
+
+	function form($id)
+		{
+			$RDFForm = new \App\Models\RDF\RDFForm();
+			$dt = $this->le($id);
+			$class = $dt['concept']['c_class'];
+			switch($class)
+				{
+					case 'brapci_author':
+						$tela = 'x';
+					default:
+						$tela = $RDFForm->form($id,$dt['concept']);
+						$tela .= '<h1>'.$class.'</h1>';
+						break;
+				}
+			return $tela;			
+		}
+
 	function recovery($dt, $fclass = '')
 	{
 		$rsp = array();
@@ -177,7 +203,7 @@ class RDF extends Model
 				$flx = $upper;
 				$fi[$flx] = '';
 			}
-			$link = '<a href="' . (URL . 'v/' . $line['id_cc']) . '">';
+			$link = '<a href="' . base_url(URL . 'v/' . $line['id_cc']) . '">';
 			$linka = '</a>';
 			$fi[$flx] .= $link . $name . $linka . '<br>';
 		}
@@ -338,6 +364,11 @@ class RDF extends Model
 		$sx = '';
 		$type = get("type");
 		switch ($d1) {
+			case 'text':
+				$RdfFormText = new \App\Models\RDF\RdfFormText();
+				$sx = $cab;
+				$sx .= $RdfFormText->edit($d2);
+				break;
 			case 'inport':
 				$sx = $cab;
 				switch ($type) {
