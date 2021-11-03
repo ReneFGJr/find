@@ -121,7 +121,7 @@ class RDF extends Model
 		$id = $dt['concept']['id_cc'];
 		$dt = $dt['data'];
 		for ($r = 0; $r < count($dt); $r++) {
-			$line = $dt[$r];
+			$line = (array)$dt[$r];
 			if ($line['c_class'] == $class) {
 				if (trim($line['n_name']) != '') {
 					array_push($rst, $line['n_name']);
