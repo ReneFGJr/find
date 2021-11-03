@@ -6,8 +6,8 @@ use CodeIgniter\Model;
 
 class RDFData extends Model
 {
-	var $DBGroup              = 'brapci';
-	protected $table                = 'brapci.rdf_data';
+	var $DBGroup              = 'default';
+	protected $table                = 'rdf_data';
 	protected $primaryKey           = 'id_d';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;

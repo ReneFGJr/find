@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class RDFConcept extends Model
 {
 	var $DBGroup              = 'default';
-	protected $table                = 'brapci.rdf_concept';
+	protected $table                = 'rdf_concept';
 	protected $primaryKey           = 'id_cc';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
@@ -45,9 +45,9 @@ class RDFConcept extends Model
 
 	function le($id)
 		{
-			$this->join('brapci.rdf_name', 'cc_pref_term = rdf_name.id_n', 'LEFT');
-			$this->join('brapci.rdf_class', 'rdf_concept.cc_class = rdf_class.id_c', 'LEFT');
-			$this->join('brapci.rdf_prefix', 'rdf_class.c_prefix = rdf_prefix.id_prefix', 'LEFT');
+			$this->join(PREFIX.'rdf_name', 'cc_pref_term = rdf_name.id_n', 'LEFT');
+			$this->join(PREFIX.'rdf_class', 'rdf_concept.cc_class = rdf_class.id_c', 'LEFT');
+			$this->join(PREFIX.'rdf_prefix', 'rdf_class.c_prefix = rdf_prefix.id_prefix', 'LEFT');
 
 			$this->select('rdf_class.c_class, rdf_class.c_type, rdf_class.c_url, rdf_class.c_equivalent');
     		$this->select('rdf_name.n_name, rdf_name.n_lang');    		

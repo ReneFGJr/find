@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class RDFPrefix extends Model
 {
 	var $DBGroup             		= 'default';
-	protected $table                = 'brapci.rdf_prefix';
+	protected $table                = 'rdf_prefix';
 	protected $primaryKey           = 'id_prefix ';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
