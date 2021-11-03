@@ -345,8 +345,7 @@ class Books extends Model
 			$RDF = new \App\Models\Rdf\RDF();
 			$dt = $RDF->le($id);
 
-			$sx = '';
-			$RDF = new \App\Models\Rdf\RDF();
+			$sx = '';			
 			$RDFData = new \App\Models\Rdf\RDFData();
 			$class = $dt['concept']['prefix_ref'].':'.$dt['concept']['c_class'];
 
