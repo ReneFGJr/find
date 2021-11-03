@@ -120,7 +120,7 @@ class Books extends Model
 
 			for ($r=0;$r < count($dt);$r++)
 				{
-					$line = $dt[$r];
+					$line = (array)$dt[$r];
 					$class = $line['c_class'];
 					switch($class)
 					{
@@ -180,7 +180,7 @@ class Books extends Model
 
 	function manifestation($m)
 		{
-			$dt = $m['data'];
+			$dt = (array)$m['data'];
 			$d['ano'] = array();
 			$classification = '';
 			$classificationf = '';
@@ -195,7 +195,7 @@ class Books extends Model
 			$tela = '';
 			for ($r=0;$r < count($dt);$r++)
 				{
-					$line = $dt[$r];
+					$line = (array)$dt[$r];
 					$prefix = $line['prefix_ref'];
 					$class = $line['c_class'];
 					$dr1 = $line['d_r1'];
@@ -455,14 +455,6 @@ class Books extends Model
 
 
 			$tela = bs($tela1.$tela2.$tela3);
-
-			/*
-			echo $mani;
-			echo '<pre>';
-			print_r($dt);
-			print_r($manif);
-			echo '</pre>';
-			*/
 			return $tela;
 		}	
 

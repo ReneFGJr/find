@@ -43,8 +43,6 @@ class Publisher extends Model
 	function viewManifestations($dt)
 		{
 			$Itens = new \App\Models\Book\Itens();
-			//echo '<pre>';
-			//print_r($dt);
 			$tela1 = '';
 			$tela2 = $this->showPublishers($dt);
 			$tela2 .= $Itens->showItens($dt);
