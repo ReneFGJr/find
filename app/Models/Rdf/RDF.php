@@ -51,7 +51,7 @@ class RDF extends Model
 
 	function form($id)
 		{
-			$RDFForm = new \App\Models\RDF\RDFForm();
+			$RDFForm = new \App\Models\Rdf\RDFForm();
 			$dt = $this->le($id);
 			$class = $dt['concept']['c_class'];
 			switch($class)
@@ -94,7 +94,7 @@ class RDF extends Model
 			$tela = file_get_contents($file);
 		} else {
 			$tela = 'Content not found: ' . $id . '==' . $file . '<br>';
-			$RDFExport = new \App\Models\RDF\RDFExport();
+			$RDFExport = new \App\Models\Rdf\RDFExport();
 			$RDFExport->export($id);
 			$tela = file_get_contents($file);
 		}
@@ -103,7 +103,7 @@ class RDF extends Model
 
 	function le_content($id)
 	{
-		$RDFConcept = new \App\Models\RDF\RDFConcept();
+		$RDFConcept = new \App\Models\Rdf\RDFConcept();
 		$dt = $RDFConcept->le($id);
 		$name = $dt['n_name'];
 		return $name;
@@ -111,12 +111,12 @@ class RDF extends Model
 
 	function le($id, $simple = 0)
 	{
-		$RDFConcept = new \App\Models\RDF\RDFConcept();
+		$RDFConcept = new \App\Models\Rdf\RDFConcept();
 
 		$dt['concept'] = $RDFConcept->le($id);
 		
 		if ($simple == 0) {
-			$RDFData = new \App\Models\RDF\RDFData();
+			$RDFData = new \App\Models\Rdf\RDFData();
 			$dt['data'] = $RDFData->le($id);
 		}
 
@@ -125,7 +125,7 @@ class RDF extends Model
 
 	function le_data($id)
 	{
-		$RDFData = new \App\Models\RDF\RDFData();
+		$RDFData = new \App\Models\Rdf\RDFData();
 		$dt['data'] = $RDFData->le($id);
 
 		return ($dt);
@@ -134,8 +134,8 @@ class RDF extends Model
 	function find($sr='', $class = '')
 		{
 			echo '<h1>'.$class.'</h1>';
-			$RDFClass = new \App\Models\RDF\RDFClass();
-			$RDFLiteral = new \App\Models\RDF\RDFLiteral();
+			$RDFClass = new \App\Models\Rdf\RDFClass();
+			$RDFLiteral = new \App\Models\Rdf\RDFLiteral();
 			$prop = $RDFClass->class($class);
 			$id = $RDFLiteral->name($sr);
 			return $id;
@@ -179,9 +179,9 @@ class RDF extends Model
 
 	function export_index($class_name, $file = '')
 	{
-		$RDFData = new \App\Models\RDF\RDFData();
-		$RDFClass = new \App\Models\RDF\RDFClass();
-		$RDFConcept = new \App\Models\RDF\RDFConcept();
+		$RDFData = new \App\Models\Rdf\RDFData();
+		$RDFClass = new \App\Models\Rdf\RDFClass();
+		$RDFConcept = new \App\Models\Rdf\RDFConcept();
 
 		$class = $RDFClass->Class($class_name);
 		$rlt = $RDFConcept
@@ -235,7 +235,7 @@ class RDF extends Model
 
 	function export_all($d1 = '', $d2 = 0, $d3 = '')
 	{
-		$RDFConcept = new \App\Models\RDF\RDFConcept();
+		$RDFConcept = new \App\Models\Rdf\RDFConcept();
 
 		$sx = '';
 		$d2 = round($d2);
@@ -283,8 +283,8 @@ class RDF extends Model
 		}
 
 		/*************************************************************** EXPORT */
-		$RDFData = new \App\Models\RDF\RDFData();
-		$RDFConcept = new \App\Models\RDF\RDFConcept();
+		$RDFData = new \App\Models\Rdf\RDFData();
+		$RDFConcept = new \App\Models\Rdf\RDFConcept();
 
 		$dt = $this->le($id);
 
@@ -352,7 +352,7 @@ class RDF extends Model
 			{
 				$dt = $this->le($dt);
 			}
-		$RDFdata = new \App\Models\RDF\RDFData();
+		$RDFdata = new \App\Models\Rdf\RDFData();
 		$tela = $RDFdata->view_data($dt);
 		return $tela;
 	}
@@ -365,7 +365,7 @@ class RDF extends Model
 		$type = get("type");
 		switch ($d1) {
 			case 'text':
-				$RdfFormText = new \App\Models\RDF\RdfFormText();
+				$RdfFormText = new \App\Models\Rdf\RdfFormText();
 				$sx = $cab;
 				$sx .= $RdfFormText->edit($d2);
 				break;
@@ -400,7 +400,7 @@ class RDF extends Model
 
 	function RDP_concept($name, $class)
 	{
-		$RDPConcept = new \App\Models\RDF\RDFConcept();
+		$RDPConcept = new \App\Models\Rdf\RDFConcept();
 
 		$dt['Class'] = $class;
 		$dt['Literal']['skos:prefLabel'] = $name;
@@ -416,8 +416,8 @@ class RDF extends Model
 
 	function RDP_property($idp, $prop='', $resource=0)
 	{
-		$RDFClass = new \App\Models\RDF\RDFClass();
-		$RDFData = new \App\Models\RDF\RDFData();
+		$RDFClass = new \App\Models\Rdf\RDFClass();
+		$RDFData = new \App\Models\Rdf\RDFData();
 		$d = array();
 
 		if ($resource > 0)
