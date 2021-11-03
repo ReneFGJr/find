@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class RDFLiteral extends Model
 {
 	var $DBGroup              = 'default';
-	protected $table                = 'brapci.rdf_name';
+	protected $table                = 'rdf_name';
 	protected $primaryKey           = 'id_n';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;

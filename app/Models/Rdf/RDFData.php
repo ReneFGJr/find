@@ -157,10 +157,10 @@ class RDFData extends Model
     		rdf_data.*
 			";
 
-			$sql .= "from brapci.rdf_data ";
-			$sql .= "left join brapci.rdf_name ON d_literal = rdf_name.id_n ";
-			$sql .= "left join brapci.rdf_class ON rdf_data.d_p = rdf_class.id_c ";
-			$sql .= "left join brapci.rdf_prefix ON rdf_class.c_prefix = rdf_prefix.id_prefix ";
+			$sql .= "from ".PREFIX."rdf_data ";
+			$sql .= "left join ".PREFIX.".rdf_name ON d_literal = rdf_name.id_n ";
+			$sql .= "left join ".PREFIX.".rdf_class ON rdf_data.d_p = rdf_class.id_c ";
+			$sql .= "left join ".PREFIX.".rdf_prefix ON rdf_class.c_prefix = rdf_prefix.id_prefix ";
 			$sql .= "where (d_r1 = $id) OR (d_r2 = $id)";
 			$sql .= "order by c_class, d_r1, d_r2, n_name";
 			$dt = (array)$this->db->query($sql)->getResult();			
