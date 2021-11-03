@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class RDFConcept extends Model
 {
 	var $DBGroup              = 'default';
-	protected $table                = 'rdf_concept';
+	protected $table                = PREFIX.'rdf_concept';
 	protected $primaryKey           = 'id_cc';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
@@ -49,7 +49,7 @@ class RDFConcept extends Model
 			$this->join(PREFIX.'rdf_class', 'rdf_concept.cc_class = rdf_class.id_c', 'LEFT');
 			$this->join(PREFIX.'rdf_prefix', 'rdf_class.c_prefix = rdf_prefix.id_prefix', 'LEFT');
 
-			$this->select('rdf_class.c_class, rdf_class.c_type, rdf_class.c_url, rdf_class.c_equivalent');
+			$this->select('rdf_class.c_class, rdf_class.id_c, rdf_class.c_type, rdf_class.c_url, rdf_class.c_equivalent');
     		$this->select('rdf_name.n_name, rdf_name.n_lang');    		
 			$this->select('rdf_prefix.prefix_ref, rdf_prefix.prefix_url');
 			$this->select('rdf_concept.*');

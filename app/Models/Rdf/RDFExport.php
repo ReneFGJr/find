@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class RDFExport extends Model
 {
 	protected $DBGroup              = 'default';
-	protected $table                = 'rdfexports';
+	protected $table                = PREFIX.'rdfexports';
 	protected $primaryKey           = 'id';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
@@ -39,6 +39,22 @@ class RDFExport extends Model
 	protected $afterFind            = [];
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
+
+	function exportNail($id)
+		{
+			$RDF = new \App\Models\RDF\RDF();
+			$Covers = new \App\Models\Book\Covers();
+			$dt = $RDF->le($id);
+			$class = $dt['concept']['c_class'];
+			switch($class)
+				{
+					case 'Manifestation':
+						$isbn = substr($dt['concept']['n_name'],5,13);
+						$cover_nail = $Covers->get_cover($isbn);
+						return $cover_nail;
+						break;
+				}
+		}	
 
 	function export($id)
 		{

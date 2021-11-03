@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class RDFPrefix extends Model
 {
 	var $DBGroup             		= 'default';
-	protected $table                = 'rdf_prefix';
+	protected $table                = PREFIX.'rdf_prefix';
 	protected $primaryKey           = 'id_prefix ';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
@@ -41,6 +41,25 @@ class RDFPrefix extends Model
 	protected $afterFind            = [];
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
+
+function prefixn($dt)
+	{
+		$pre = trim($dt['prefix_ref']);
+		$class = trim($dt['c_class']);
+		if (strlen($class) > 0)
+		{
+			if (strlen($pre) > 0)
+			{
+				$sx = $pre.':'.$class;
+			} else {
+				$sx = $class;
+			}
+		} else {
+			$sx = '<i>'.msg('none').'</i>';
+		}
+		return($sx);
+
+	}	
 
 	function prefixo($pre)
 		{
