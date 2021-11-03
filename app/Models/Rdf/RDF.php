@@ -119,7 +119,7 @@ class RDF extends Model
 	{
 		$rst = array();
 		$id = $dt['concept']['id_cc'];
-		$dt = $dt['data'];
+		$dt = (array)$dt['data'];
 		for ($r = 0; $r < count($dt); $r++) {
 			$line = (array)$dt[$r];
 			if ($line['c_class'] == $class) {
