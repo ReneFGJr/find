@@ -365,7 +365,7 @@ class RDF extends Model
 		$type = get("type");
 		switch ($d1) {
 			case 'text':
-				$RdfFormText = new \App\Models\Rdf\RdfFormText();
+				$RdfFormText = new \App\Models\Rdf\RDFFormText();
 				$sx = $cab;
 				$sx .= $RdfFormText->edit($d2);
 				break;

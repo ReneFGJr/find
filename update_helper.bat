@@ -1,4 +1,8 @@
 echo off
+echo "Language"
+mkdir app\Language\pt-BR
+copy ..\Brapci3.0\app\Language\pt-BR\social.* app\Language\pt-BR\*.* 
+
 echo "Copiando Helper"
 copy ..\Brapci3.0\app\Helpers\*.* app\Helpers\*.* 
 copy ..\Brapci3.0\app\Models\Social*.* app\Models\*.*

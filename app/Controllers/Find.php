@@ -13,7 +13,7 @@ $session = \Config\Services::session();
 $this->Socials = new \App\Models\Socials();
 
 define("PATH",$_SERVER['app.baseURL']."index.php/find/");
-define("MODULE",'find');
+define("MODULE",'find/');
 define("URL",$_SERVER['app.baseURL']);
 define('PREFIX','find.');
 
@@ -309,6 +309,18 @@ class Find extends BaseController
 				}
 			return $sx;
 		}
+
+	public function social($d1 = '', $id = '')
+	{
+		$cab  = $this->cab();
+		$cab .= $this->navbar();
+		$cab .= $this->FindSearch->banner();	
+
+		$dt = array();
+		$sx = ''.$this->Socials->index($d1, $id, $dt,$cab);
+		//$sx .= $this->footer();
+		return $sx;
+	}		
 		
 	function item($id)
 		{
@@ -318,6 +330,7 @@ class Find extends BaseController
 
 			$Books = new \App\Models\Book\Books();
 			$sx .= $Books->view_item($id);
+			$sx .= $this->footer();
 
 			return $sx;				
 		}
