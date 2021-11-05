@@ -42,6 +42,22 @@ class RDFLiteral extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
+	function atualiza($data,$id)
+		{
+			$n_name = $data['n_name'];
+			$n_lang = $data['n_lang'];
+			$sql = "update ".$this->table." 
+				set n_name = '$n_name', n_lang = '$n_lang' where id_n = $id";
+			$this->query($sql);
+			return 1;
+		}
+
+	function le($id)
+		{
+			$dt = $this->find($id);
+			return $dt;
+		}
+
 	function name($name,$lg='pt-BR',$force = 1)
 		{
 			$dt = $this->where('n_name',$name)->First();

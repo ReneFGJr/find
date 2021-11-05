@@ -696,7 +696,7 @@ class Socials extends Model
 					data.append("signup_retype_password", document.getElementById("signup_retype_password").value);
 				}
 
-            var url = "'.PATH.MODULE.'social/ajax/'.'";
+            var url = "'.PATH.MODULE.'social/ajax/"+cmd;
             var xhttp = new XMLHttpRequest();
             xhttp.open("POST", url, false);
             xhttp.send(data);

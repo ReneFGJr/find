@@ -49,7 +49,7 @@ function form($id, $dt) {
 		/* complementos */
 		switch($class) {
 			default :
-			$cp = 'n_name, cpt.id_cc as idcc, d_p as prop, id_d, d_literal';
+			$cp = 'n_name, cpt.id_cc as idcc, d_p as prop, id_d, d_literal, id_n';
 			$sqla = "select $cp from rdf_data as rdata
 			INNER JOIN rdf_class as prop ON d_p = prop.id_c 
 			INNER JOIN rdf_concept as cpt ON d_r2 = id_cc 
@@ -66,10 +66,12 @@ function form($id, $dt) {
 			INNER JOIN rdf_class as t0 ON id_c = sc_propriety
 			LEFT JOIN (" . $sqla . ") as t1 ON id_c = prop 
 			LEFT JOIN rdf_class as t2 ON sc_propriety = t2.id_c
-			where sc_class = $class 
+			where sc_class = $class and (sc_library = ".LIBRARY." OR sc_library = 0)
 			order by sc_ord, id_sc, t0.c_order";
 
+
 			$rlt =  (array)$this->db->query($sql)->getResult();
+
 			$sx .= '<table width="100%" cellpadding=5>';
 			$js = '';
 			$xcap = '';
@@ -95,10 +97,12 @@ function form($id, $dt) {
 				$form_id = $line['id_sc']; /* ID do formulário */
 				/* $class =>  ID da classe */
 
-				$furl = base_url(PATH.'rdf/form/'.$class.'/'.$line['id_sc'].'/'.$id);
+				$furl = (PATH.MODULE.'rdf/form/'.$class.'/'.$line['id_sc'].'/'.$id);
 
-				$link = '<a href="#" id="action_' . trim($line['c_class']) . '" 
-				onclick="newxy(\''.$furl.'\',800,400);">';
+				$class = trim($line['c_class']);
+				print_r($line);
+				echo '<hr>';
+				$link = onclick(PATH.'rdf/form/edit/'.$class.'/'.$line['id_sc'].'/'.$id,800,400);
 				$linka = '</a>';
 				$sx .= '<tr>';
 				$sx .= '<td width="25%" align="right" valign="top">';
@@ -116,7 +120,7 @@ function form($id, $dt) {
 				/***************** Editar campo *******************************************/
 				$sx .= '<td style="border-bottom: 1px solid #808080;">';
 				if (strlen($line['n_name']) > 0) {
-					$linkc = '<a href="' . base_url(PATH . '/v/' . $line['idcc']) . '" class="middle">';
+					$linkc = '<a href="' . (PATH . '/v/' . $line['idcc']) . '" class="middle">';
 					$linkca = '</a>';
 					if (strlen($line['idcc']) == 0)
 					{
