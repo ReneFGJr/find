@@ -66,7 +66,13 @@ class Covers extends Model
 						{
 							$img = URL.$file;
 						} else {
-							$img = URL.('img/book/no_cover.jpg');
+							$file = '../../_covers/image/'.$id.'.jpg';
+							if (file_exists($file))
+							{
+								$img = URL.$file;
+							} else {
+								$img = URL.('img/book/no_cover.jpg');
+							}
 						}
 					return $img;
 		}
