@@ -47,6 +47,27 @@ class Classification extends Model
 			$sx .= 'Literatura';
 			$sx .= '</li>';
 			$sx .= '</ul>';
+
+			$sx .= $this->indexes();
+
 			return $sx;
+		}
+
+	function indexes()
+		{
+			$ndx = array('author','publisher','subject','year');
+			$sx = '';
+			$sx .= h(lang('find.indexes'),6);
+			$sx .= '<ul class="small">';
+			foreach($ndx as $type)
+				{				
+					$sx .= '<li>';
+					$sx .= '<a href="#'.$type.'">';
+					$sx .= lang('find.'.$type);
+					$sx .= '</a>';
+					$sx .= '</li>';
+				}
+			$sx .= '</ul>';
+			return $sx;	
 		}
 }

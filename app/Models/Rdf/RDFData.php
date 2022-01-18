@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class RDFData extends Model
 {
-	var $DBGroup              = 'default';
+	var $DBGroup              = 'rdf';
 	protected $table                = PREFIX.'rdf_data';
 	protected $primaryKey           = 'id_d';
 	protected $useAutoIncrement     = true;
@@ -42,13 +42,13 @@ class RDFData extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
-	function literal($id,$prop,$name)
+	function literal($id,$prop,$name,$lang='')
 		{
 			$RDFClass = new \App\Models\RDF\RDFClass();
 			$idp = $RDFClass->class($prop);
 
 			$RDFLiteral = new \App\Models\RDF\RDFLiteral();
-			$d['d_literal'] = $RDFLiteral->name($name);
+			$d['d_literal'] = $RDFLiteral->name($name,$lang);
 			$d['d_library'] = LIBRARY;
 			$d['d_r1'] = $id;
 			$d['d_r2'] = 0;
@@ -62,6 +62,30 @@ class RDFData extends Model
 				}
 			$id = $rst[0]['id_d'];
 			return $id;
+		}
+
+	function propriety($id1,$prop,$id2)
+		{
+			$RDFClass = new \App\Models\RDF\RDFClass();
+			$idp = $RDFClass->class($prop);
+
+			$d['d_r1'] = $id1;
+			$d['d_r2'] = $id2;
+			$d['d_p'] = $idp;
+			$d['d_library'] = LIBRARY;
+			$d['d_literal'] = 0;
+			$rst = $this->where('d_r1',$id1)->where('d_r2',$id2)->FindAll();
+			if (count($rst) == 0)
+				{
+					$rst = $this->where('d_r2',$id1)->where('d_r1',$id2)->FindAll();
+					if (count($rst) ==0)
+						{
+							$this->insert($d);
+						}					
+					$rst = $this->where('d_r1',$id1)->where('d_r2',$id2)->FindAll();
+				}
+			$id = $rst[0]['id_d'];
+			return $id;			
 		}
 
 	function check($dt)
@@ -86,6 +110,7 @@ class RDFData extends Model
 		{
 			$RDF = new \App\Models\RDF\RDF();
 			$sx = '';
+			IF (!isset($dt['concept']['id_cc'])) { return ''; }
 			$ID = $dt['concept']['id_cc'];
 			if (isset($dt['data']))
 				{

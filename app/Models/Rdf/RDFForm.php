@@ -6,15 +6,19 @@ use CodeIgniter\Model;
 
 class RdfForm extends Model
 {
-	protected $DBGroup              = 'default';
-	protected $table                = 'rdfforms';
-	protected $primaryKey           = 'id';
+	protected $DBGroup              = 'rdf';
+	protected $table                = 'rdf_form_class';
+	protected $primaryKey           = 'id_sc';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
 	protected $returnType           = 'array';
 	protected $useSoftDeletes       = false;
 	protected $protectFields        = true;
-	protected $allowedFields        = [];
+	protected $allowedFields        = [
+		'id_sc','sc_class','sc_propriety',
+		'sc_range','sx_ativo','sc_library',
+		'sc_global','sc_group'
+	];
 
 	// Dates
 	protected $useTimestamps        = false;
@@ -88,8 +92,6 @@ function form($id, $dt) {
 					$sx .= '</tr>';
 					$xgrp = $grp;
 				}
-
-
 				$cap = msg($line['c_class']);
 
 				/************************************************************** LINKS EDICAO */
@@ -100,9 +102,7 @@ function form($id, $dt) {
 				$furl = (PATH.MODULE.'rdf/form/'.$class.'/'.$line['id_sc'].'/'.$id);
 
 				$class = trim($line['c_class']);
-				print_r($line);
-				echo '<hr>';
-				$link = onclick(PATH.'rdf/form/edit/'.$class.'/'.$line['id_sc'].'/'.$id,800,400);
+				$link = onclick(PATH.MODULE.'rdf/form/edit/'.$class.'/'.$line['id_sc'].'/'.$id,800,400);
 				$linka = '</a>';
 				$sx .= '<tr>';
 				$sx .= '<td width="25%" align="right" valign="top">';
@@ -120,31 +120,30 @@ function form($id, $dt) {
 				/***************** Editar campo *******************************************/
 				$sx .= '<td style="border-bottom: 1px solid #808080;">';
 				if (strlen($line['n_name']) > 0) {
-					$linkc = '<a href="' . (PATH . '/v/' . $line['idcc']) . '" class="middle">';
+					$linkc = '<a href="' . (PATH . MODULE. 'v/' . $line['idcc']) . '" class="middle">';
 					$linkca = '</a>';
 					if (strlen($line['idcc']) == 0)
 					{
 						$linkc = '';
 						$linkca = '';
 					}
-
-					$sx .= $linkc . $line['n_name'] . $linkca;
-
+					$sx .= $linkc . ''.$line['n_name'] . $linkca;
 
 					/********************** Editar caso texto */
 					$elinka = '</a>';
 					if (strlen($line['idcc']) == 0)
 					{
-						$onclick = onclick(PATH.'rdf/text/'.$line['d_literal'],$x=600,$y=400,$class="btn-warning p-1 text-white supersmall rounded");
-						$elink = $onclick;
-						
+						$onclick = onclick(PATH.MODULE.'rdf/text/'.$line['d_literal'],$x=600,$y=400,$class="btn-warning p-1 text-white supersmall rounded");
+						$elink = $onclick;												
 						$sx .= '&nbsp; '.$elink . '[ed]' . $elinka;
+						$sx .= '</span>';
 					}
-					/********************* Excluir lancamento */
-					$onclick = onclick(PATH.'rdf/exclude/'.$line['id_d'],$x=600,$y=400,$class="btn-danger p-1 text-white supersmall rounded");
-					$link = $onclick;
-					$sx .= '&nbsp; '. $link .'[X]' . $elinka;
-					$sx .= '</span>';
+
+				/************* Excluir Texto/Conceito Associado */
+				$onclick = onclick(PATH.MODULE.'rdf/exclude/'.$line['id_d'],$x=600,$y=300,$class="btn-danger p-1 text-white supersmall rounded");
+				$link = $onclick;
+				$sx .= '&nbsp; '. $link .'[X]' . $elinka;
+				$sx .= '</span>';
 				}
 
 				$sx .= '</td>';
@@ -154,7 +153,87 @@ function form($id, $dt) {
 			break;
 		}		
 		return ($sx);
-	}	
+	}
+	
+function le($id)
+	{
+		$dt = $this->find($id);
+		return $dt;
+	}
+
+function edit($d1,$d2,$d3,$d4,$d5)
+	{
+		$sx = '';
+		$prop = $d3;
+		$id = $d4;
+		$idc = $d5;
+		$dt = $this->le($id);
+		/*************************** RANGE */
+		$range = $dt['sc_range'];
+		$RDFClass = new \App\Models\RDF\RDFClass();
+		$dr = $RDFClass->find($range);
+
+		$rclass = $dr['c_class'];
+		switch($rclass)
+			{
+				case 'Text':
+					$RDFFormText = new \App\Models\RDF\RDFFormText();
+					$sx .= $RDFFormText->edit(0,$d3,$d4,$d5);
+					break;
+				default:
+					$RDFFormVC = new \App\Models\RDF\RDFFormVC();
+					$sx .= $RDFFormVC->edit($d3,$d4,$d5,$rclass);					
+			}
+		return $sx;
+	}
+
+function exclude($id,$ac='')
+	{
+		$check = md5($id.MODULE);
+		$RDFData = new \App\Models\RDF\RDFData();
+		$dt = $RDFData->find($id);
+
+		$sx = '';
+
+		/* Confirm */
+		if ($ac == $check)
+			{				
+				echo wclose();
+				echo bsmessage(lang('Success'),1);
+				$RDFData->delete($id);
+				exit;
+			}
+
+		/* Concept */
+		if ($dt['d_r2'] > 0)
+			{
+				$RDFConcept = new \App\Models\RDF\RDFConcept();
+				$dd = $RDFConcept->le($dt['d_r2']);
+				$sx .= '<div class="mt-2">'.lang('find.concept').'</div>';
+			}
+		/* Text */
+		if (($dt['d_r2'] == 0) and ($dt['d_literal'] > 0))
+			{
+				$RDFLiteral = new \App\Models\RDF\RDFLiteral();
+				$dd = $RDFLiteral->find($dt['d_literal']);
+				$sx .= '<div class="mt-2">'.lang('find.term').'</div>';
+			}
+		/* Mostra Nome */
+		
+		$sx .= h($dd['n_name'],3).'<hr>';
+
+		/* Mostra mensagem de exclusão */
+		$sx .= '<center>'.h(msg('find.rdf_exclude_confirm'),4,'text-danger').'</center>';
+		$sx .= '
+			</div>		
+			<div class="modal-footer">
+			<button type="button" class="btn btn-default" onclick="wclose();" data-dismiss="modal">'.lang('find.cancel').'</button>
+			<a href="'.(PATH.MODULE.'rdf/exclude/'.$id.'/'.$check).'" class="btn btn-warning" id="submt">'.lang('find.confirm_exclude').'</a>
+			</div>                  
+		';
+		/**************** fim ******************/
+		return $sx;
+}
 
 function form_class_edit($id,$class='')
 		{
@@ -188,7 +267,7 @@ function form_class_edit($id,$class='')
 			for ($r=0;$r < count($rlt);$r++)			
 			{
 				$line = (array)$rlt[$r];
-				$link = '<a href="#" onclick="newxy(\''.base_url(PATH.'config/class/formss/'.$line['sc_class'].'/'.$line['id_sc']).'\',800,600);">';
+				$link = '<a href="#" onclick="newxy(\''.base_url(PATH.MODULE.'rdf/class/formss/'.$line['sc_class'].'/'.$line['id_sc']).'\',800,600);">';
 				$linka = '</a>';
 				$sx .= '<tr>';
 
@@ -223,7 +302,7 @@ function form_class_edit($id,$class='')
 			$sx .= '</table>';
 			$sx .= '</div>';
 
-			$link = '<a href="#" onclick="newxy(\''.base_url(PATH.'config/class/formss/'.$id.'/0').'\',800,600);">';
+			$link = '<a href="#" onclick="newxy(\''.base_url(PATH.MODULE.'rdf/config/class/formss/'.$id.'/0').'\',800,600);">';
 			$linka = '</a>';
 			$sx .= $link.'novo'.$linka;
 

@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class RDFExport extends Model
 {
-	protected $DBGroup              = 'default';
+	protected $DBGroup              = 'rdf';
 	protected $table                = PREFIX.'rdfexports';
 	protected $primaryKey           = 'id';
 	protected $useAutoIncrement     = true;

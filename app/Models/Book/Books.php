@@ -89,7 +89,7 @@ class Books extends Model
 
 		$tela = '
 			<div style="width: 100%; padding: 3px; background-color: '.$cor1.';">
-			<a href="'.PATH.'v/'.$dt['d_r2'].'" 
+			<a href="'.PATH.MODULE.'v/'.$dt['d_r2'].'" 
 			style="color: '.$cor2.'; padding: 2px 5px;">
 			'.$n.'
 			</a></div>';
@@ -100,7 +100,7 @@ class Books extends Model
 		{
 			$n = $dt['n_name2'];
 			$tela = '
-			<a href="'.PATH.'v/'.$dt['d_r2'].'">'.$n.'</a>';
+			<a href="'.PATH.MODULE.'v/'.$dt['d_r2'].'">'.$n.'</a>';
 			return $tela;
 		}
 
@@ -343,6 +343,7 @@ class Books extends Model
 	function v($id)
 		{
 			$RDF = new \App\Models\Rdf\RDF();
+			$RDF->DBGroup = 'default';
 			$dt = $RDF->le($id);
 
 			$sx = '';			
@@ -377,7 +378,7 @@ class Books extends Model
 						$d['expression'] = $expre;
 						$d['manifestattion'] = $dt;
 
-						$sx = $this->viewItem($d);
+						$sx = $this->viewItem($d,$id);
 					break;
 
 					case 'frbr:Expression':
@@ -406,7 +407,7 @@ class Books extends Model
 	function card($dt,$img='')
 		{
 			$title = $dt['i_titulo'];
-			$st = '<a href="'.PATH.'v/'.$dt['i_manitestation'].'">';
+			$st = '<a href="'.PATH.MODULE.'v/'.$dt['i_manitestation'].'">';
 			$st .= '<img class="card-img-top" src="'.$img.'" alt="Card image cap">';
 			$st .= '</a>';
 
@@ -425,7 +426,21 @@ class Books extends Model
 			return $isbn;
 		}
 
-	function viewItem($d)
+	function bt_edit($id)
+		{
+			// security
+			$sx = '
+			<div style="float:left; width: 180px;">
+			<span style="position: fixed; left: 5px; top: 140px;" class="btn btn-outline-primary p-1">
+			<a href="'.PATH.MODULE.'a/'.$id.'">
+			'.lang('find.edit').'
+			</a>
+			</span>
+			</div>';
+			return $sx;
+		}
+
+	function viewItem($d,$idc)
 		{
 			$tela1 = '';
 			$tela2 = '';
@@ -455,6 +470,7 @@ class Books extends Model
 
 
 			$tela = bs($tela1.$tela2.$tela3);
+			$tela .= $this->bt_edit($idc);
 			return $tela;
 		}	
 

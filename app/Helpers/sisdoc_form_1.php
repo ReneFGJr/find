@@ -43,7 +43,7 @@ function form($th)
     if (isset($th->path)) {
         $url = ($th->path . '/edit/' . $id);
     } else {
-        echo 'Erro $th->path não informado';
+        echo 'Erro $this->path não informado';
         exit;
     }
 
@@ -140,6 +140,9 @@ function form_fields($typ, $fld, $vlr, $th = array())
     if ($t == 'index') {
         $t = 'hidden';
     }
+    if ($t == 'sql') {
+        $t = 'qr';
+    }    
     if ($t == 'hi') {
         $t = 'hidden';
     }
@@ -263,7 +266,9 @@ function form_fields($typ, $fld, $vlr, $th = array())
             $op = array(1, 0);            
             $opt = substr($typ, strpos($typ, ':') + 1, strlen($typ));
             $opc = explode(':', $opt);
+            print_r($opc);
             $sg = '<select id="' . $fld . '" name="' . $fld . '" value="' . $vlr . '" class="form-control">' . cr();
+            $sg .= '<option value="">:: options ::</option>'.cr();
             for ($r = 0; $r < count($opc); $r++) {
                 $sel = '';
                 $opx = explode('&',$opc[$r]);
@@ -281,6 +286,7 @@ function form_fields($typ, $fld, $vlr, $th = array())
 
             $sx .= $td . ($fld) . $tdc;
             $sx .= $td;
+            print_r($q);
             $sql = 'select * from ' . $q[3];
             if (isset($q[4])) {
                 $sql .= ' where ' . $q[4];
@@ -290,6 +296,7 @@ function form_fields($typ, $fld, $vlr, $th = array())
             $query = $query->getResult();
 
             $sg = '<select id="' . $fld . '" name="' . $fld . '" value="' . $vlr . '" class="form-control">' . cr();
+            $sg .= '<option value=""></option>'.cr();
             for ($r = 0; $r < count($query); $r++) {
                 $ql = (array)$query[$r];
                 $sel = '';
@@ -311,6 +318,38 @@ function form_fields($typ, $fld, $vlr, $th = array())
             $opt = explode(':', $opt);
 
             $sx .= '<div class="form-group">' . cr();
+            $sx .= '<small id="emailHelp" class="form-text text-muted">' . lang($lib . $fld) . '</small>';
+            $sx .= '<select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="' . $fld . '" name="' . $fld . '">';
+            $sx .= '<option>'.lang('Select an option').'</option>' . cr();
+            for ($r = 0; $r < count($opt); $r++) {
+                $chk = '';
+                if ($vlr == $r) {
+                    $chk = 'selected';
+                }
+                $sx .= '<option value="' . $r . '" ' . $chk . '>' . lang($opt[$r]) . '</option>' . cr();
+            }
+            $sx .= '</select>';
+            $sx .= '</div>';
+            break;
+
+        case 'status':
+            $opt = array();
+            $source = substr($typ, strpos($typ, ':') + 1, strlen($typ));
+            if (strlen($source) == 0) 
+                { 
+                  $source = 'main.'; 
+                } else {
+                  $source .= '.';  
+                }
+            array_push($opt, lang($source.'status_0'));
+            array_push($opt, lang($source.'status_1'));
+            array_push($opt, lang($source.'status_2'));
+            array_push($opt, lang($source.'status_3'));
+            array_push($opt, lang($source.'status_4'));
+            array_push($opt, lang($source.'status_9'));
+
+            $sx .= '<div class="form-group">' . cr();
+            $sx .= '<small id="emailHelp" class="form-text text-muted">' . lang($lib . $fld) . '</small>';
             $sx .= '<select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="' . $fld . '" name="' . $fld . '">';
             $sx .= '<option>Select...</option>' . cr();
             for ($r = 0; $r < count($opt); $r++) {
@@ -322,7 +361,7 @@ function form_fields($typ, $fld, $vlr, $th = array())
             }
             $sx .= '</select>';
             $sx .= '</div>';
-            break;
+            break;            
 
         case 'version':
             if (strlen($vlr) == 0) { $vlr = version(); }
@@ -365,6 +404,11 @@ function form_fields($typ, $fld, $vlr, $th = array())
             $sx .= '<input type="hidden" id="' . $fld . '" name="' . $fld . '" value="' . $vlr . '">';
             break;
 
+        case 'user':
+            $user_id = user_id();
+            $sx .= '<input type="hidden" id="' . $fld . '" name="' . $fld . '" value="' . $user_id . '">';
+            break;            
+
         case 'password':
             $sx .= '<div class="form-group" style="margin-bottom: 20px;">' . cr();
             $sx .= '<label for="' . $fld . '">' . lang($lib . $fld) . '</label>
@@ -383,6 +427,7 @@ function form_fields($typ, $fld, $vlr, $th = array())
 
         case 'text':
             $rows = 5;
+            $sx .= '<div class="form-group" style="margin-bottom: 20px;">' . cr();
             $sx .= '<label for="' . $fld . '">' . lang($lib . $fld) . '</label>' . cr();
             $sx .= '<textarea id="' . $fld . '" rows="' . $rows . '" name="' . $fld . '" class="form-control">' . $vlr . '</textarea>';
             $sx .= $tdc;

@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class RDFConcept extends Model
 {
-	var $DBGroup              = 'default';
+	var $DBGroup              = 'rdf';
 	protected $table                = PREFIX.'rdf_concept';
 	protected $primaryKey           = 'id_cc';
 	protected $useAutoIncrement     = true;
@@ -43,6 +43,26 @@ class RDFConcept extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
+	function like($t,$class)
+		{
+			if ($class != sonumero($class))
+				{
+					$RDFClass = new \App\Models\RDF\RDFClass();
+					$class = $RDFClass->class($class,false);
+				}
+
+			$cp = 'id_cc, n_name, cc_use';
+			$sql = "select $cp from ".$this->table." ";
+			$sql .= "left join rdf_name ON cc_pref_term = rdf_name.id_n";
+			$sql .= " where (cc_class = ".$class.') ';
+			$sql .= " and (n_name like '%".$t."%') ";
+			$sql .= " order by n_name";
+			$sql .= " limit 100";
+			$dt = $this->query($sql)->getResult();
+			$dt = (array)$dt;
+			return $dt;
+		}
+
 	function le($id)
 		{
 			$this->join(PREFIX.'rdf_name', 'cc_pref_term = rdf_name.id_n', 'LEFT');
@@ -60,7 +80,9 @@ class RDFConcept extends Model
 		}
 
 	function concept($dt)
-		{			
+		{		
+			$Language = new \App\Models\AI\NLP\Language();
+
 			/* Definição da Classe */
 			$Class = new \App\Models\RDF\RDFClass();			
 			$Class->DBGroup = $this->DBGroup;
@@ -74,7 +96,8 @@ class RDFConcept extends Model
 			$cl = $dt['Class'];
 			$id_class = $Class->class($cl);
 
-			$id_prefTerm = $RDFLiteral->name($dt['Literal']['skos:prefLabel']);
+			$lang = $Language->getTextLanguage($dt['Literal']['skos:prefLabel']);
+			$id_prefTerm = $RDFLiteral->name($dt['Literal']['skos:prefLabel'],$lang);
 
 			/************************************************************* CREATE CONCEPT */
 			$dtc = $this

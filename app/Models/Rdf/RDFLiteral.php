@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class RDFLiteral extends Model
 {
-	var $DBGroup              = 'default';
+	var $DBGroup              = 'rdf';
 	protected $table                = PREFIX.'rdf_name';
 	protected $primaryKey           = 'id_n';
 	protected $useAutoIncrement     = true;

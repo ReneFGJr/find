@@ -12,7 +12,7 @@ $session = \Config\Services::session();
 
 $this->Socials = new \App\Models\Socials();
 
-define("PATH",$_SERVER['app.baseURL']."index.php/find/");
+define("PATH",$_SERVER['app.baseURL']."index.php/");
 define("MODULE",'find/');
 define("URL",$_SERVER['app.baseURL']);
 define('PREFIX','find.');
@@ -386,11 +386,11 @@ class Find extends BaseController
 			$tela .= $this->footer();
 			return $tela;
 		}
-	function rdf($d1='',$d2='',$d3='')
+	function rdf($d1='',$d2='',$d3='',$d4='',$d5='')
 		{
 			$cab = $this->cab('head');
 			$RDF = new \App\Models\Rdf\RDF();
-			$tela = $RDF->index($d1,$d2,$d3,$cab);
+			$tela = $RDF->index($d1,$d2,$d3,$d4,$d5,$cab);
 			return $tela;
 		}
 
