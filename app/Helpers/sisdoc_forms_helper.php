@@ -13,6 +13,7 @@
 require('sisdoc_form_1.php');
 require('sisdoc_form_2.php');
 require('sisdoc_form_3.php');
+require('sisdoc_date.php');
 require('sisdoc_form_js.php');
 require('sisdoc_drag_drop.php');
 
@@ -59,6 +60,18 @@ require('sisdoc_drag_drop.php');
         }        
         return (str_replace($qc, $qt, $qutf));
     }
+
+    function perfil($tp='')
+    {
+        $access = false;
+        if ((isset($_SESSION['check'])) and (isset($_SESSION['access'])))
+            {                
+                $check = $_SESSION['check'];
+                $priv = $_SESSION['access'];
+                $access = true;
+            }
+        return $access;
+    }    
 
     function ascii($d)
     {    //$d = strtoupper($d);

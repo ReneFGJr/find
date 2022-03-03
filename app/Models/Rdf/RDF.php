@@ -14,7 +14,9 @@ class RDF extends Model
 	protected $returnType           = 'array';
 	protected $useSoftDeletes       = false;
 	protected $protectFields        = true;
-	protected $allowedFields        = [];
+	protected $allowedFields        = [
+		'id_cc','cc_use'
+	];
 
 	// Dates
 	protected $useTimestamps        = false;
@@ -49,11 +51,130 @@ class RDF extends Model
 		}
 	*/
 
+	function string_array($d,$t=0,$sep = ';')
+		{
+			$sx = '';
+			$max = count($d);
+			
+			if ($t == 1) { $max = $t; }
+			for ($r=0;$r < $max;$r++)
+				{
+					if (isset($d[$r]))
+					{
+						$line = $d[$r];
+						if (strlen($line[2]) > 0)
+							{
+								$sx .= '<p>'.$line[2].'</p>';
+							} else {
+								if (strlen($sx) > 0) { $sx .= $sep.' '; }
+								$dt['id_cc'] = $line[1];
+								$sx .= $this->link($dt);
+								$sx .= $this->c($line[1]);
+								$sx .= '</a>';
+							}
+					}
+				}
+			return $sx;			
+		}
+
+	function string($d,$t=0,$sep = ';')
+		{
+			$sx = '';
+
+			/* Retorna se for string */
+			if (!is_array($d)) { return($d); }
+			/* Array vazia */
+			if (count($d) == 0) { return ''; }
+
+			$max = count($d);
+			if ($t == 1) { $max = $t; }
+			for ($r=0;$r < $max;$r++)
+				{
+					if (isset($d[$r]))
+					{
+						if (strlen($sx) > 0) { $sx .= $sep.' '; }
+						if (is_array($d[$r]))
+							{
+								$sx .= $this->c($d[$r][1]);
+							} else {
+								$sx .= $d[$r];
+							}						
+					}
+				}
+			return $sx;
+		}
+
+
+
+		
+
+	function le_class($id)
+		{
+			$RDFClass = new \App\Models\Rdf\RDFClass();
+			$dt = $RDFClass->le($id);
+			return $dt;
+		}
+
+	function link($dt,$class='')
+		{
+			$sx = '<a href="'.(URL.'v/'.$dt['id_cc']).'" class="'.$class.'">';
+			return $sx;
+		}
+
 	function index($d1, $d2, $d3 = '', $d4 = '', $d5 = '', $cab = '')
 	{
 		$sx = '';
 		$type = get("type");
 		switch ($d1) {
+			case 'remissive_Person':			
+				$sx .= $this->remissive($d2, $d3, $d4, $d5, $cab,'Person');
+				break;
+			case 'remissive_CorporateBody':
+				$sx .= $this->remissive($d2, $d3, $d4, $d5, $cab,'CorporateBody');
+				break;
+			case 'remissive_Subject':
+				$sx .= $this->remissive($d2, $d3, $d4, $d5, $cab,'Subject');
+				break;								
+			case 'check_loop';
+				$RDFChecks = new \App\Models\Rdf\RDFChecks();
+				$sx .= $cab;
+				$sx .= $RDFChecks->check_loop();
+				break;
+			case 'check_corporate_body':
+				$RDFChecks = new \App\Models\Rdf\RDFChecks();
+				$sx .= $cab;
+				$sx .= $RDFChecks->check_html('CorporateBody');
+				break;
+			case 'check_subject':
+				$RDFChecks = new \App\Models\Rdf\RDFChecks();
+				$sx .= $cab;
+				$sx .= $RDFChecks->check_html('Subject');
+				break;
+			case 'set_pref_term':
+				$RDFConcept = new \App\Models\Rdf\RDFConcept();
+				$RDFConcept->set_pref_term($d2,$d3);
+				$sx .= wclose();
+				break;
+			case 'check':
+				$RDFChecks = new \App\Models\Rdf\RDFChecks();
+				$sx .= $cab;
+				$sx .= $RDFChecks->check_duplicate();
+				break;
+			case 'check_authors':
+				$RDFChecks = new \App\Models\Rdf\RDFChecks();
+				$sx .= $cab;
+				$sx .= $RDFChecks->check_authors();			
+				
+				break;
+			case 'set':
+				$RDFFormVC = new \App\Models\Rdf\RDFFormVC();
+				$sx = $RDFFormVC->ajax_save();
+				break;
+			case 'form_ed':
+				$sx = $cab;
+				$RdfForm = new \App\Models\Rdf\RdfForm();
+				$sx .= $RdfForm->form_ed($d2, $d3, $d4, $d5);
+				break;
 			case 'search':
 				$RDFFormVC = new \App\Models\Rdf\RDFFormVC();
 				$sx = '';
@@ -97,11 +218,84 @@ class RDF extends Model
 				$sx .= '<ul>';
 				$sx .= '<li><a href="' . base_url(PATH . 'rdf/inport?type=prefix') . '">' . lang('Inport Prefix') . '</a></li>';
 				$sx .= '<li><a href="' . base_url(PATH . 'rdf/inport?type=class') . '">' . lang('Inport Class') . '</a></li>';
+				$sx .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/check') . '">' . lang('rdf.Check_class_duplicate') . '</a></li>';
+				$sx .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/check_loop') . '">' . lang('rdf.Check_loop') . '</a></li>';
+				$sx .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/check_authors') . '">' . lang('rdf.Check_authors') . '</a></li>';
+				$sx .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/check_corporate_body') . '">' . lang('rdf.Check_corporate_body') . '</a></li>';
+				$sx .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/check_subject') . '">' . lang('rdf.Check_subject') . '</a></li>';
 				$sx .= '</ul>';
 		}
 		$sx = bs($sx);
 		return $sx;
 	}
+
+	function change($d1,$d2)
+		{
+			$RDFData = new \App\Models\Rdf\RDFData();
+			$RDFData->change($d1,$d2);
+		}
+
+	function remissive($d2, $d3, $d4, $d5, $cab,$class = "Person")
+		{
+			$dt = $this->le($d2);
+			$nome = $dt['concept']['n_name'];
+			$sx = $cab;
+
+			$nome = troca($nome,',','');
+			$wd = explode(' ',$nome);
+			$sa = '';
+			for ($r=0;$r < count($wd);$r++)
+				{
+					$sa .= '<a href="'.PATH.MODULE.'rdf/remissive_'.$class.'/'.$d2.'/'.$d3.'?arg='.$wd[$r].'">'.$wd[$r].'</a> ';
+				}
+			$sx .= bsc($sa,12);
+
+			/******************************* SAVE */				
+			$act = get("action");
+			if ($act != '')
+				{
+					$d1x = get("id_cc");
+					$d2x = get("id_use");
+
+					$dt['cc_use'] = $d1x;
+					$this->set($dt)->where('id_cc',$d2x)->update();
+					$this->change($d2x,$d1x);
+					$sx = metarefresh(PATH.MODULE.'rdf/remissive_'.$class.'/'.$d2.'/'.$d3.'?arg='.get('arg'));
+					return $sx;
+				}
+			
+			/* Classe */			
+			$id_class = $this->getClass($class);
+
+			$nm = get("arg");
+			if (strlen($nm) == 0) { $nm = $wd[0]; }
+
+			$this->join('rdf_name','cc_pref_term = id_n');
+			$this->where('cc_class',$id_class);
+			$this->where('cc_use',0);
+			$this->where('id_cc <> '.$d2);
+			$this->like('n_name',$nm);
+			$this->orderBy('n_name');
+			$dt = $this->FindAll();
+			
+			$sx .= form_open();
+			$sx .= '<input type="text" name="arg" value="'.$nm.'" size="20" class="form-control">';
+			$sx .= '<input type="hidden" name="id_cc" value="' . $d2 . '">';
+			$sx .= count($dt).' names found';
+			$sx .= '<select name="id_use" style="width: 100%;" size=12>';
+			for ($r=0;$r < count($dt);$r++)
+				{
+					$line = $dt[$r];
+					$sx .= '<option value="'.$line['id_cc'].'">';
+					$sx .= $line['n_name'];
+					$sx .= '</option>';
+				}
+			$sx .= '</select>';
+			$sx .= '<input type="submit" name="action" value="'.lang('Join').'" class="btn btn-outline-primary">';
+			$sx .= form_close();
+
+			return $sx;
+		}
 
 	function form($id)
 		{
@@ -120,14 +314,23 @@ class RDF extends Model
 			return $tela;			
 		}
 
-	function recovery($dt, $fclass = '')
+	function recovery($dt, $fclass = '',$ido = 0)
 	{
 		$rsp = array();
+		$fclass = trim($fclass);
 		for ($r = 0; $r < count($dt); $r++) {
 			$line = $dt[$r];
 			$class = trim($line['c_class']);
 			if ($class == $fclass) {
-				array_push($rsp, array($line['d_r1'], $line['d_r2'], $line['n_name']));
+				$id1 = round($line['d_r1']);
+				$id2 = round($line['d_r2']);
+				//echo '<br>=o=>'.$ido.'<br>=1=>'.$id1.'<br>=2=>'.$id2.'<br>';
+				if ($ido == $id2)
+					{
+						array_push($rsp, array($line['d_r2'], $line['d_r1'], $line['n_name'], $line['d_p']));
+					} else {
+						array_push($rsp, array($line['d_r1'], $line['d_r2'], $line['n_name'], $line['d_p']));
+					}				
 			}
 		}
 		return $rsp;
@@ -136,23 +339,44 @@ class RDF extends Model
 	function directory($id)
 	{
 		$IO = new \App\Models\IO\Files();
-		return $IO->directory($id);
+		$idc = round($id);
+		if ($idc == 0) { 
+			print_r($id);
+			echo h('ERROR: directory ID invalid -> '.$id,3); 
+			$x = $y;
+			exit; 
+			}
+		return $IO->directory($idc);
 	}
 
-	function content($id)
-	{
-		$dir = $this->directory($id);
-		$file = $dir . 'name.nm';
-		if (file_exists($file)) {
-			$tela = file_get_contents($file);
-		} else {
-			$tela = 'Content not found: ' . $id . '==' . $file . '<br>';
-			$RDFExport = new \App\Models\Rdf\RDFExport();
-			$RDFExport->export($id);
-			$tela = file_get_contents($file);
+	function remove($id,$class)
+		{
+			$RDFClass = new \App\Models\RDF\RDFClass();
+			$RDFData = new \App\Models\RDF\RDFData();
+			$class = $RDFClass->Class($class,false);
+			$dt = $RDFData->where('d_r1', $id)->where('d_p',$class)->FindAll();
+			for ($r=0;$r < count($dt);$r++)
+				{
+					$line = $dt[$r];
+					$idd = $line['id_d'];
+					$d_r1 = $line['d_r1']*(-1);
+					$d_r2 = $line['d_r2']*(-1);
+					$d_p = $line['d_p']*(-1);
+					$RDFData->set(array('d_r1' => $d_r1, 'd_r2' => $d_r2, 'd_p' => $d_p))->where('id_d',$idd)->update();
+				}
+			$dt = $RDFData->where('d_r2', $id)->where('d_p',$class)->FindAll();
+			for ($r=0;$r < count($dt);$r++)
+				{
+					$line = $dt[$r];
+					$idd = $line['id_d'];
+					$d_r1 = $line['d_r1']*(-1);
+					$d_r2 = $line['d_r2']*(-1);
+					$d_p = $line['d_p']*(-1);
+					$RDFData->set(array('d_r1' => $d_r1, 'd_r2' => $d_r2, 'd_p' => $d_p))->where('id_d',$idd)->update();
+				}
+			return true;
 		}
-		return $tela;
-	}
+
 
 	function le_content($id)
 	{
@@ -183,10 +407,16 @@ class RDF extends Model
 
 		return ($dt);
 	}
+
+	function getClass($class)
+		{
+			$RDFClass = new \App\Models\Rdf\RDFClass();
+			$prop = $RDFClass->class($class);
+			return $prop;			
+		}
 	
 	function find($sr='', $class = '')
 		{
-			echo '<h1>'.$class.'</h1>';
 			$RDFClass = new \App\Models\Rdf\RDFClass();
 			$RDFLiteral = new \App\Models\Rdf\RDFLiteral();
 			$prop = $RDFClass->class($class);
@@ -194,14 +424,66 @@ class RDF extends Model
 			return $id;
 		}
 
+	function get_literal($idc)
+		{
+			$RDFConcept = new \App\Models\Rdf\RDFConcept();
+			$dt = $RDFConcept->le($idc);
+			$n_name = $dt['n_name'];
+			return $n_name;
+		}
+
+	function get_content($dt=array(),$class='')
+		{
+			$rst = array();
+			$id = $dt['concept']['id_cc'];
+			$dt = $dt['data'];
+			for ($r = 0; $r < count($dt); $r++) {
+				$line = $dt[$r];
+				if ($line['c_class'] == $class) {
+					if (trim($line['n_name']) != '') {
+						array_push($rst, $line['n_name']);
+					} else {
+						if ($line['d_r1'] == $id) {
+							array_push($rst, $line['d_r2']);
+						} else {
+							array_push($rst, $line['d_r1']);
+						}
+					}
+				}
+			}
+			return $rst;
+		}
+
+	function c($id,$force=false)
+	{
+		if ($id == 0) { return "empty"; }
+		$dir = $this->directory($id);
+		$file = $dir . 'name.nm';
+		
+		if ((file_exists($file)) and ($force==false)) {
+			$tela = file_get_contents($file);
+		} else {
+			$tela = 'Content not found: ' . $id . '==' . $file . '<br>';
+			$RDFExport = new \App\Models\Rdf\RDFExport();
+			$RDFExport->export($id,$force);
+			if (file_exists($file)) {
+				$tela = file_get_contents($file);
+			} else {
+				$tela = 'Content not found: ' . $id . '==' . $file . '<br>';
+			}
+		}
+		return $tela;
+	}
+
 	function recover($dt = array(), $class = '')
 	{
 		$rst = array();
+		$class = trim($class);
 		$id = $dt['concept']['id_cc'];
 		$dt = $dt['data'];
 		for ($r = 0; $r < count($dt); $r++) {
 			$line = $dt[$r];
-			if ($line['c_class'] == $class) {
+			if (trim($line['c_class']) == $class) {
 				if (trim($line['n_name']) != '') {
 					array_push($rst, $line['n_name']);
 				} else {
@@ -411,6 +693,22 @@ class RDF extends Model
 	}
 
 
+	function RDF_check_equivalent($to,$from)
+		{
+			$RDFConcept = new \App\Models\Rdf\RDFConcept();
+			$dt = $RDFConcept->select('id_cc, cc_class')->where('cc_class', $from)->findAll();
+			if (count($dt) == 0) {
+				return 0;
+			} else {
+				for ($r=0;$r < count($dt);$r++)
+					{
+						$da['cc_class'] = $to;
+						$RDFConcept->set($da);
+						$RDFConcept->where('id_cc',$dt[$r]['id_cc'])->update();
+					}
+			}
+		}
+
 
 	function show_class($dt)
 		{
@@ -439,10 +737,16 @@ class RDF extends Model
 
 	function conecpt($name,$class)
 		{
-			return $this->RDP_concept($name,$class);
+			return $this->RDF_concept($name,$class);
 		}
 
-	function RDP_concept($name, $class)
+	function put_literal($name,$lg='NaN',$force = 1)
+		{
+			$RDFLiteral = new \App\Models\Rdf\RDFLiteral();	
+			return $RDFLiteral-> name($name,$lg,$force);
+		}
+
+	function RDF_concept($name, $class)
 	{
 		$RDPConcept = new \App\Models\Rdf\RDFConcept();
 

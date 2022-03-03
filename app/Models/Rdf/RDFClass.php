@@ -42,9 +42,18 @@ class RDFClass extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
+	function le($id)
+		{
+			$dt = $this
+				->join('rdf_prefix', 'c_prefix = id_prefix', 'LEFT')
+				->where('id_c', $id)
+				->findAll();
+			return $dt;
+		}
+
 	function class($c, $force = True)
 	{
-		$this->Prefix = new \App\Models\RDF\RDFPrefix();
+		$this->Prefix = new \App\Models\Rdf\RDFPrefix();
 		$this->Prefix->DBGroup = $this->DBGroup;
 
 		if (strpos($c, ':')) {

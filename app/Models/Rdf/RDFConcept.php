@@ -47,7 +47,7 @@ class RDFConcept extends Model
 		{
 			if ($class != sonumero($class))
 				{
-					$RDFClass = new \App\Models\RDF\RDFClass();
+					$RDFClass = new \App\Models\Rdf\RDFClass();
 					$class = $RDFClass->class($class,false);
 				}
 
@@ -79,18 +79,80 @@ class RDFConcept extends Model
 			return($dt);
 		}
 
+	function set_pref_term($d1,$d2)
+		{
+			$sx = '';
+			$RDF = new \App\Models\Rdf\RDF();
+			$RDFData = new \App\Models\Rdf\RDFData();
+			$dt1 = $this->find($d1);
+			$dt2 = $this->find($d2);
+
+			/************************************************************************ RDF PrefTerm */
+
+
+			$class = 'skos:prefLabel';
+			$prop = $RDF->getClass($class,0);
+
+			echo 'd1='.$d1.'<br>';
+			echo 'd2='.$d2.'<br>';
+			echo 'prop='.$prop.'<br>';
+
+			$dq1 = $RDFData
+					->where('d_r1',$d1)
+					->where('d_p',$prop)
+					->findAll();
+					echo '<hr>';
+			$dq2 = $RDFData
+					->where('d_r1',$d2)
+					->where('d_p',$prop)
+					->findAll();
+
+			/*************************************************** Update 1 */
+			$dt['cc_pref_term'] = $dt2['cc_pref_term'];
+			$this->set($dt)->where('id_cc',$d1)->update();
+
+			/*************************************************** Update 3 */
+			$dt['cc_pref_term'] = $dt1['cc_pref_term'];
+			$this->set($dt)->where('id_cc',$d2)->update();			
+
+			/*************************************************** Update 2 */
+			if (!isset($dq1[0]))
+				{
+					echo "OPS - dq1 not found";
+				} else {
+					$dq1 = $dq1[0];	
+					$da['d_literal'] = $dt2['cc_pref_term'];
+					$RDFData->set($da)->where('id_d',$dq1['id_d'])->update();
+				}
+
+
+
+			/*************************************************** Update 4 */
+			if (!isset($dq2[0]))
+				{
+					echo "OPS - dq2 not found";
+				} else {
+					$dq2 = $dq2[0];	
+					$da['d_literal'] = $dt2['cc_pref_term'];
+					$RDFData->set($da)->where('id_d',$dq2['id_d'])->update();
+				}	
+
+			$sx .= wclose();
+			return $sx;		
+		}
+
 	function concept($dt)
 		{		
 			$Language = new \App\Models\AI\NLP\Language();
 
 			/* Definição da Classe */
-			$Class = new \App\Models\RDF\RDFClass();			
+			$Class = new \App\Models\Rdf\RDFClass();			
 			$Class->DBGroup = $this->DBGroup;
-			$RDFdata = new \App\Models\RDF\RDFData();
+			$RDFdata = new \App\Models\Rdf\RDFData();
 			$RDFdata->DBGroup = $this->DBGroup;
-			$RDFLiteral = new \App\Models\RDF\RDFLiteral();
+			$RDFLiteral = new \App\Models\Rdf\RDFLiteral();
 			$RDFLiteral->DBGroup = $this->DBGroup;
-			$Property = new \App\Models\RDF\RDFClassProperty();
+			$Property = new \App\Models\Rdf\RDFClassProperty();
 			$Property->DBGroup = $this->DBGroup;
 
 			$cl = $dt['Class'];

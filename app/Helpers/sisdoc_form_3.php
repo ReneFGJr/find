@@ -1,4 +1,21 @@
 <?php
+
+function pre($dt)
+    {
+        echo '<pre>';
+        print_r($dt);
+        echo '</pre>';
+    }
+    
+function hexdump($string)
+    {
+        $sx = '';
+        for ($i = 0; $i < strlen($string); $i++) {
+            $sx .= str_pad(dechex(ord($string[$i])), 2, '0', STR_PAD_LEFT);
+            $sx .= ' ';
+        }        
+        return $sx;
+    }
 function romano($n)
 {
     $n = sonumero($n);
@@ -42,4 +59,15 @@ function brtos($dt)
         $dt = sonumero($dt);
         $dt = substr($dt,4,4).substr($dt,2,2).substr($dt,0,2);
         return $dt;
+    }
+
+function df($N,$pre='',$pos='')
+    {
+        if (defined($N) == true)
+            {
+                $var = constant($N);
+                $var = $pre.$var.$pos;
+                return $var;
+            }
+        return '';
     }

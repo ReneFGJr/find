@@ -42,5 +42,26 @@ return [
     'volume' => 'Volume(s)',
     'serie' => 'Série',
     'hasClassificationCountry' => 'Pais',
-    'hasClassificacaoAssunto' => 'Assunto'
+    'hasClassificacaoAssunto' => 'Assunto',
+
+    'tech'=>'Preparo Técnico',
+    'techpreparation'=>'Preparo Técnico',
+    'tech_I'=>'Incluir novos itens',
+    'tech_IA'=>'Incorporação no Acervo',
+    'tech_IA1'=>'Inserção pelo ISBN',
+    'tech_IA1_form1'=>'Local do(s) Item(ns)',
+    'tech_IA1_form2'=>'Atribuir tombo automáticamente',
+    'tech_IA1_form3'=>'Insira um ISBN ou uma lista (um por linha)',    
+    'tech_IA1_form4'=>'Nº tombo manual (opcional - para mais de um ISBN, o nº do tombo será incremental)',
+    'tech_IB'=>'Importação',
+    'tech_IB1'=>'Inserção pelo MARC21',    
+    'tech_0'=>'Buscando metadados',
+    'tech_1'=>'Catalogação',
+    'tech_2'=>'Preparo físico - Etiquetas',
+    'tech_3'=>'Disponizado',
+    'tech_4'=>'Empréstimo',
+    'tech_5'=>'Manutenção',
+    'tech_9'=>'Excluído',
+
+    'itens'=>'Item(ns)',
 ];

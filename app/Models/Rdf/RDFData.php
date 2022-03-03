@@ -64,6 +64,55 @@ class RDFData extends Model
 			return $id;
 		}
 
+	function check_duplicates()
+		{
+
+			$sql = "select d_r1,d_r2,d_p,d_literal,count(*) as total, d_library, max(id_d) as max
+					from ".PREFIX."rdf_data 
+					group by d_r1,d_r2,d_p,d_literal, d_library 
+					having count(*) > 1";
+			$dt = $this->db->query($sql)->getResultArray();
+
+			for ($r=0;$r < count($dt);$r++)
+				{
+					$this->where('id_d',$dt[$r]['max'])->delete();
+					if ($r > 100) { break; }
+				}
+			return count($dt);
+		}
+
+	function change($d1,$d2)
+		{
+			$d1= round($d1);
+			$d2= round($d2);
+
+			if (($d1==0) or ($d2==0)) { return ""; }
+			/* Part 1 */
+			$this->set('d_r1',$d1);
+			$this->where('d_r1',$d2);
+			$this->update();
+
+			/* Part 2 */
+			$this->set('d_r2',$d1);
+			$this->where('d_r2',$d2);
+			$this->update();
+
+			return 0;
+		}
+
+	function remove($d2)
+		{
+			/* Part 3 */
+			$RDFConcept = new \App\Models\Rdf\RDFConcept();
+			$RDFConcept->where('id_cc',$d2)->delete();			
+		}
+
+	function set_rdf_data($id1,$prop,$id2)
+		{
+			$sx = $this->propriety($id1,$prop,$id2);
+			return $sx;
+		}
+
 	function propriety($id1,$prop,$id2)
 		{
 			$RDFClass = new \App\Models\RDF\RDFClass();
@@ -115,9 +164,9 @@ class RDFData extends Model
 			if (isset($dt['data']))
 				{
 					$dtd = $dt['data'];
-					for ($r=0;$r < count($dtd);$r++)
+					for ($qr=0;$qr < count($dtd);$qr++)
 						{
-							$line = (array)$dtd[$r];
+							$line = (array)$dtd[$qr];
 							$sx .= bsc('<small>'.lang($line['prefix_ref'].':'.
 									$line['c_class'].'</small>'),2,
 									'supersmall border-top border-1 border-secondary my-2');
@@ -126,7 +175,7 @@ class RDFData extends Model
 								if ($ID == $line['d_r2'])
 									{
 										$link = base_url(PATH.MODULE.'/v/'.$line['d_r1']);
-										$txt = $RDF->info($line['d_r1'],1);
+										$txt = $RDF->c($line['d_r1'],1);
 										if (strlen($txt) > 0)
 											{
 												$link = '<a href="'.$link.'">'.$txt.'</a>';
@@ -137,7 +186,7 @@ class RDFData extends Model
 										
 									} else {
 										$link = base_url(PATH.MODULE.'/v/'.$line['d_r2']);
-										$txt = $RDF->info($line['d_r2'],1);
+										$txt = $RDF->c($line['d_r2'],1);
 										if (strlen($txt) > 0)
 											{
 												$link = '<a href="'.$link.'">'.$txt.'</a>';
@@ -157,11 +206,9 @@ class RDFData extends Model
 								if (substr($txt,0,4) == 'http')
 									{
 										$txt = '<a href="'.$line['n_name'].'" target="_blank">'.$txt.'</a>';
-									}
-								
+									}								
 								$sx .= bsc($txt,10,'border-top border-1 border-secondary my-2');
-							}
-							
+							}							
 						}
 				}
 			return bs($sx);

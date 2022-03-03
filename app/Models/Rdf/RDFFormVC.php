@@ -63,6 +63,22 @@ class RdfFormVC extends Model
 						}
 				}
 			$sx .= '</select>';
+			$sx .= '<script>';
+
+			if (strlen($q) >=3)
+			{
+			if (count($dt) > 0)
+				{
+					$sx .= '$("#b3").attr("disabled", false);';
+					$sx .= '$("#b2").attr("disabled", false);';
+					$sx .= '$("#b1").attr("disabled", true);';
+				} else {
+					$sx .= '$("#b3").attr("disabled", true);';
+					$sx .= '$("#b2").attr("disabled", true);';
+					$sx .= '$("#b1").attr("disabled", false);';
+				}
+			}
+			$sx .= '</script>';
 
 			return $sx;
 		}	
@@ -76,27 +92,70 @@ class RdfFormVC extends Model
 		$action = get("action");
 
 		$path = PATH.MODULE.'rdf/form/edit/'.$d1.'/'.$d2.'/'.$d3;
-
-		$sx .= form_open($path);
+		$dd['name'] = 'RDFFORM';
+		$sx .= form_open($path,$dd);
 		$sx .= '<span class="small">'.lang('find.filter_to').' '.lang('find.'.$range).'</span>';
 		$sx .= '<input type="text" id="dd50" name="dd50" class="form-control">';
 
 		/* Select */
 		$sx .= '<span class="small mt-1">'.lang('find.select_an').' '.lang('find.'.$range).'</span>';
-		$sx .= '<div id="dd51a"><select class="form-control" size="5" name="dd51" id="dd51"></select></div>';
-		$sx .= form_close();
+		$sx .= '<div id="dd51a"><select class="form-control" size="5" name="dd51" id="dd51"></select></div>';		
 
 		$bts = '';
-		$bts .= '<input type="submit" id="b1" class="btn btn-outline-secondary" disabled value="'.lang('find.force_create').'"> ';
-		$bts .= '<input type="submit" id="b2" class="btn btn-outline-primary" disabled value="'.lang('find.save_continue').'"> ';
-		$bts .= '<input type="submit" id="b3" class="btn btn-outline-primary" disabled value="'.lang('find.save').'"> ';
+		$bts .= '<input type="button" id="b1" class="btn btn-outline-secondary" disabled value="'.lang('find.force_create').'" onclick="submitb1();"> ';
+		$bts .= '<input type="button" id="b2" class="btn btn-outline-primary" disabled value="'.lang('find.save_continue').'" onclick="submitb(1);"> ';
+		$bts .= '<input type="button" id="b3" class="btn btn-outline-primary" disabled value="'.lang('find.save').'" onclick="submitb(0);"> ';
 		$bts .= '<button onclick="window.close();" id="b4" class="btn btn-outline-danger">'.lang('find.cancel').'</buttontype=>';
-
+		
 		$sx .= bsc($bts,12);
+		$sx .= form_close();
 
 		$js = '';
 		$js .= '<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>';
 		$js .= '<script>
+		function submitb($c)
+			{
+				$vlr = $("#dd51").val();
+				if ($vlr == null)
+					{
+						alert("OPS, selecione um registro");
+					} else {
+						$.ajax(
+							{								
+								type: "GET",
+								url: "'.PATH.MODULE.'rdf/set/",
+								data: "act=set&reload="+$c+"&reg='.$d3.'&prop='.$d1.'&vlr="+$vlr,
+								dataType: "html",
+							})
+							.done(function(data)
+								{
+									$("#dd51a").html(data);
+								}
+							);			
+					}	
+			}
+
+			function submitb2()
+			{
+				$vlr = $("#dd51").val();
+				if ($vlr == null)
+					{
+						alert("OPS");
+					} else {
+						alert($vlr);
+					}				
+			}
+			
+			function submitb1()
+			{
+				$vlr = $("#dd50").val();
+				if ($vlr == null)
+					{
+						alert("OPS");
+					} else {
+						alert($vlr);
+					}				
+			}			
 		/************ keyup *****************/
 		jQuery("#dd50").keyup(function() 
 		{
@@ -114,4 +173,26 @@ class RdfFormVC extends Model
 		</script>';
 		return $sx.$js;
 	}	
+
+	function ajax_save()
+		{
+			$act = get("act");
+			switch ($act)
+				{
+					case 'set':
+						$RDFData = new \App\Models\Rdf\RDFData();
+						$RDFData->set_rdf_data(get("reg"),get("prop"),get("vlr"));
+
+						if (get("reload") == 1)
+							{
+								$sx = '<script>location.reload();</script>';
+							} else {
+								$sx = '<script>window.close();</script>';
+							}
+						break;
+				}
+				echo bsmessage("SAVED");
+				echo $sx;
+				return "";
+		}
 }

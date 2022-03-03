@@ -119,6 +119,15 @@ class Find extends BaseController
 								<a class="nav-link" href="'.PATH.'users/'.'">'.lang('find.users').'</a>
 							</li>			
 			';
+			
+			if ((perfil("#ADM#CAT")) or (isset($_SESSION['access'])))
+			{
+				$sx .= '
+				<li class="nav-item">
+				<a class="nav-link" href="'.PATH.MODULE.'tech/'.'">'.lang('find.tech').'</a>
+				</li>			
+				';			
+			}
 
 			$sx .= '        <li class="nav-item dropdown">'.cr();
 			$sx .= '          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">'.cr();
@@ -149,6 +158,17 @@ class Find extends BaseController
 			$sx .= '    </div>'.cr();
 			$sx .= '  </div>'.cr();
 			$sx .= '</nav>'.cr();
+			return $sx;
+		}
+
+	function tech($d1='',$d2='',$d3='',$d4='',$d5='')
+		{
+			$TechPreparation = new \App\Models\Book\TechPreparation();
+			$sx = '';
+			$sx .= $this->cab();
+			$sx .= $this->navbar();	
+			$sx .= $TechPreparation->index($d1,$d2,$d3,$d4);
+			$sx .= $this->footer();	
 			return $sx;
 		}
 	private function footer()
