@@ -42,34 +42,69 @@ class Google extends Model
 
 function book($isbn,$id) {
 		$rsp = array('count' => 0);
+
+		$ISBN = new \App\Models\Isbn\Isbn();
+		$Language = new \App\Models\Languages\Language();		
 		
-		$type = 'GOOGL';
-		$t = $this->isbn->get($isbn,$type);
+		$type = 'GOOGLE';
+		$t = $ISBN->get($isbn,$type);
 		$w = (array)json_decode($t);
+		
 		$rsp['serie'] = '';
 		$rsp['cover'] = '';
+		if (isset($w['items']))
+			{
+				$wi = (array)$w['items'][0];
+				if (isset($wi['volumeInfo']))
+					{
+						$wv = (array)$wi['volumeInfo'];
+						if (isset($wv['imageLinks']))
+							{
+								$wimg = (array)$wv['imageLinks'];
+								if (isset($wimg['thumbnail']))
+									{	
+										$rsp['cover'] = $wimg['thumbnail'];
+									}							
+							}						
+					}
+				}
 		$rsp['editora'] = '';
 		$rsp['subject']= array();
 		$rsp['item'] = $id;
 		/*******************************************************************************/
-		
+
 		if ($w['totalItems'] > 0) {
 			$rsp['expressao']['genere'] = $w['kind'];
+			if (strpos($rsp['expressao']['genere'],'#') > 0)
+				{ 
+					$rsp['expressao']['genere'] = substr($rsp['expressao']['genere'],0,strpos($rsp['expressao']['genere'],'#'));
+				}
 			$w = (array)$w['items'][0];
 			$w = (array)$w['volumeInfo'];
 			$rsp['title'] = trim((string)$w['title']);
 			if (isset($w['subtitle'])) {
-				$rsp['title'] .= ': ' . trim($w['subtitle']);
+				$rsp['title'] .= ': ' . mb_strtolower(trim($w['subtitle']));
 			}
 			$rsp['title'] = troca($rsp['title'], ' - ',': ');
-			$rsp['title'] = nbr_author($rsp['title'],18);
+			//$rsp['title'] = nbr_author($rsp['title'],8);
+
 			/********** Autores ****************************/
 			if (isset($w['authors']))
 			{
-				$rsp['authors'] = $w['authors'];
-				for ($q=0;$q < count($rsp['authors']);$q++)
+				$authors = $w['authors'];
+				for ($q=0;$q < count($authors);$q++)
+					{
+						if (strpos($authors[$q],'/') > 0)
+							{
+								$nome2 = trim(substr($authors[$q],strpos($authors[$q],'/')+1,strlen($authors[$q])));
+								array_push($authors,$nome2);
+								$authors[$q] = trim(substr($authors[$q],0,strpos($authors[$q],'/')));
+							}
+					}
+				$rsp['authors'] = $authors;
+				for ($q=0;$q < count($authors);$q++)
 				{
-					$rsp['authors'][$q] = nbr_author($rsp['authors'][$q],7);
+					$rsp['authors'][$q] = nbr_author($authors[$q],7);
 				} 
 			} else {
 				$rsp['authors'] = array();
@@ -104,7 +139,7 @@ function book($isbn,$id) {
 			$rsp['error'] = 0;
 			$rsp['error_msg'] = msg('ISBN_inported');
 			$rsp['totalItems'] = 1;
-			$rsp['url'] = $this->isbn->vurl;
+			$rsp['url'] = 'https://www.googleapis.com/books/v1/volumes?q=isbn:'.$isbn;
 			$rsp['type'] = $type;
 		} else {
 			$rsp = $w;

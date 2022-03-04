@@ -48,8 +48,7 @@ class MercadoEditorial extends Model
 
 		$ISBN = new \App\Models\Isbn\Isbn();
 		$Language = new \App\Models\Languages\Language();
-		$rsp = array('count' => 0);
-		$rsp['totalItems'] = 0;
+		$rsp = array();
 
 		/* Recupera Dados */
 		$type = 'MERCA';

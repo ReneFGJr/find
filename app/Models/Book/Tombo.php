@@ -18,7 +18,8 @@ class Tombo extends Model
 		'id_i','i_tombo','i_manifestation','i_identifier',
 		'i_type','i_library_classification','i_aquisicao',
 		'i_year','i_status','i_usuario',
-		'i_titulo','i_status','i_library','i_library_place'
+		'i_titulo','i_status','i_library','i_library_place',
+		'i_exemplar'
 	];
 
 	// Dates
@@ -44,6 +45,27 @@ class Tombo extends Model
 	protected $afterFind            = [];
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
+
+	function exemplar($isbn)
+		{
+			$dt = $this
+			->select("count(*) as total, i_identifier")
+			->where('i_library',LIBRARY)
+			->where('i_identifier',$isbn)
+			->groupBy('i_identifier')
+			->findAll();
+
+			print_r($dt);
+
+			if (count($dt) > 0)
+				{
+					$total = $dt[0]['total'];
+					echo '===>'.$total;
+				} else {
+					$total = 1;
+				}
+			return $total;
+		}
 
 	function next()
 		{

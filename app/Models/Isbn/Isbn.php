@@ -43,41 +43,73 @@ class Isbn extends Model
 	var $vurl = '';
 
 	/*************************************************************************** GET */
-	function get($isbn,$type)	
+	function get($isbn, $type)
 	{
 		$tmp = '../.tmp/';
 		dircheck($tmp);
 		$tmp = '../.tmp/isbn/';
 		dircheck($tmp);
 
-		$file = $tmp.'isbn-'.$isbn.'.'.strtolower($type);
-		if (file_exists($file))
-			{
-				$txt = file_get_contents($file);
-				return $txt;
-			}
+		$file = $tmp . 'isbn-' . $isbn . '.' . strtolower($type);
+		if (file_exists($file)) {
+			$txt = file_get_contents($file);
+			return $txt;
+		}
 
-		switch($type)
-			{
+		switch ($type) {
+			case 'OCLC':
+				$code = 999;
+				$url = 'http://classify.oclc.org/classify2/Classify?isbn=' . $isbn . '&summary=true';
+				$json = read_link($url);
+				$xml = simplexml_load_string($json);
+
+				$json = json_encode($xml);
+				$array = (array)json_decode($json, TRUE);
+
+				if (isset($array['response'])) {
+					$rsp = (array)$array['response'];
+					$att = (array)$rsp['@attributes'];
+					$code = round($att['code']);
+				}
+
+				if ($code == 0) {
+					file_put_contents($file, $json);
+				} else {
+					$array = array();
+				}
+				return $array;
+				break;
+
+			case 'GOOGLE':
+				$isbn = '9786589367307';
+				$url = 'https://www.googleapis.com/books/v1/volumes?q=isbn:' . $isbn;
+				$json = read_link($url);
+				if (strlen($json) > 10) {
+					file_put_contents($file, $json);
+					return $json;
+				}
+				break;
 
 			case 'MERCA':
 				/* Link produção */
 				$url = 'https://api.mercadoeditorial.org/api/v1/requisitar_livro_unico';
 				$url .= '?isbn=' . $isbn;
 				$json = read_link($url);
-				if (strlen($json) > 10)
-					{
-						file_put_contents($file,$json);
-					}
+				$rsp = json_decode($json, true);
+				if ($rsp['status_code'] != '101') {
+					file_put_contents($file, $json);
+				} else {
+					$json = json_encode(array('status_code' => '101'));
+				}
 				return $json;
-			break;
+				break;
 
 			default:
-			/* Link para testes */
-				$sx = bsmessage('TYPE NOT EXIST '.$type,3);
-			break;
+				/* Link para testes */
+				$sx = bsmessage('TYPE NOT EXIST ' . $type, 3);
+				break;
 
-			return $sx;
+				return $sx;
 		}
 	}
 
@@ -95,6 +127,10 @@ class Isbn extends Model
 
 			case 'AMAZO':
 				$url = 'https://www.amazon.com.br/dp/' . $isbn;
+				break;
+
+			case 'OCLC':
+				$url = 'http://classify.oclc.org/classify2/Classify?isbn=' . $isbn . '&summary=true';
 				break;
 
 			case 'MERCA':

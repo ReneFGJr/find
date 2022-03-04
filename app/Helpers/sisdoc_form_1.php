@@ -134,7 +134,7 @@ function form($th)
         if (isset($th->pre)) { $pre = $th->pre; }
 
         /***************************************************** monta campo */
-        if (!isset($mandatory[$r])) { $mandatory[$r] = 0; }
+        if (!isset($mandatory[$r])) { $mandatory[$r] = 0; }        
         $sx .= form_fields($typ, $fld, $vlr, $th ,$mandatory[$r], $pre);
     }
 
@@ -153,6 +153,7 @@ function form($th)
 
 function form_fields($typ, $fld, $vlr, $th = array(),$obg=0, $pre='')
 {
+    $fld = troca($fld,'*','');
     $label_madatory = '';
     if ($obg == 1)
         {
@@ -204,7 +205,6 @@ function form_fields($typ, $fld, $vlr, $th = array(),$obg=0, $pre='')
         $t = 'yr';
     }    
     /************************************* Formulários */
-    //echo '<br>' . $t;
     switch ($t) {
         case 'hr':
             $sx .= $td.' &nbsp; '.$tdc;

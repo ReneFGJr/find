@@ -1,21 +1,22 @@
 <?php
-// http://classify.oclc.org/classify2/Classify?isbn=9781501110368&summary=true
 
 namespace App\Models\API;
 
 use CodeIgniter\Model;
 
-class OCLC extends Model
+class Find extends Model
 {
 	protected $DBGroup              = 'default';
-	protected $table                = 'oclcs';
-	protected $primaryKey           = 'id';
+	protected $table                = 'find_item';
+	protected $primaryKey           = 'id_i';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
 	protected $returnType           = 'array';
 	protected $useSoftDeletes       = false;
 	protected $protectFields        = true;
-	protected $allowedFields        = [];
+	protected $allowedFields        = [
+		'i_identifier'
+	];
 
 	// Dates
 	protected $useTimestamps        = false;
@@ -42,16 +43,23 @@ class OCLC extends Model
 	protected $afterDelete          = [];
 
 	function book($isbn,$id) {
-		$rsp = array('count' => 0);
 
 		$ISBN = new \App\Models\Isbn\Isbn();
-		$Language = new \App\Models\Languages\Language();		
-		
-		$type = 'OCLC';
-		$t = $ISBN->get($isbn,$type);
-		if (count($t) == 0) {
-			return array();
+		$Language = new \App\Models\Languages\Language();
+		$rsp = array();
+
+		$dt = $this
+			->where('i_identifier',$isbn)
+			->where('i_manitestation > 0')
+			->findAll();
+		if (count($dt) == 0)
+			{
+				return array();
+			}
+		else {
+			$dd['manitestation'] = $dt[0]['i_manitestation'];
+			return $dt[0];
 		}
-		pre($t);
-	}	
+		
+	}
 }
