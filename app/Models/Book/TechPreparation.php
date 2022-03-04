@@ -49,7 +49,13 @@ class TechPreparation extends Model
 						/* Novos Itens */
 						$Itens = new \App\Models\Book\Itens();
 						$sx .= bsc($this->image_left(2),2);
-						$sx .= bsc($Itens->prepare_0($d2,$d3,$d4),10);
+						if ($d2=='')
+							{
+								$sx .= bsc($Itens->prepare_0($d2,$d3,$d4),10);
+							} else {
+								$sx .= bsc($Itens->harvesting_metadata($d2,$d3,$d4),10);
+							}
+						
 						$sx = bs($sx);
 						break;						
 						break;

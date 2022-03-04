@@ -52,7 +52,25 @@ class Itens extends Model
 			return $dt;
 		}
 
+	function harvesting_metadata($id,$id2)
+		{
+			$dt = $this->Find($id);
+			$isbn = $dt['i_identifier'];
+			if (substr($isbn,0,3) == '978')
+				{
+					$isbn = substr($isbn,3);
+				} else {
+						$sx = bsmessage('ISBN inválido - '.$isbn,3);
+						return $sx;
+				}
 
+			/* Mercado Editorial */
+			$MecadoEditorial = new \App\Models\API\MercadoEditorial();
+			$dt[0] = $MecadoEditorial->book($isbn,$id);
+			echo '<pre>';
+			print_r($dt);
+			return $dt;
+		}
 
 	function resume()
 		{
@@ -115,7 +133,6 @@ class Itens extends Model
 						$line = $dt[$r];
 						$sx .= $this->show_item_line($line);
 					}
-					pre($dt[0]);
 				$sx .= '</table>';
 				return $sx;
 			}
@@ -130,19 +147,33 @@ class Itens extends Model
 				$sx .= '<th width="7%">'.lang('find.i_ln1').'</th>';
 				$sx .= '<th width="7%">'.lang('find.i_ln2').'</th>';
 				$sx .= '<th width="7%">'.lang('find.i_ln3').'</th>';
+				$sx .= '<th width="7%">'.lang('find.i_created').'</th>';
 				$sx .= '</tr>';
 				return $sx;
 			}
 		function show_item_line($dt,$link='')
 			{
+				$link = '';
+				$linka = '';
+				$st = $dt['i_status'];
+				switch($st)
+					{
+						case '0':
+							$link = '<a href="'.(PATH.MODULE.'tech/prepare_0/'.$dt['id_i']).'">';
+							$linka = '</a>';
+							break;
+					}
+				
+
 				$sx = '';
 				$sx .= '<tr>';
-				$sx .= '<td>'.$dt['i_tombo'].'</td>';
+				$sx .= '<td>'.$link.$dt['i_tombo'].$linka.'</td>';
 				$sx .= '<td>'.$dt['i_identifier'].'</td>';
 				$sx .= '<td>'.$dt['i_titulo'].'</td>';
 				$sx .= '<td>'.$dt['i_ln1'].'</td>';
 				$sx .= '<td>'.$dt['i_ln2'].'</td>';
 				$sx .= '<td>'.$dt['i_ln3'].'</td>';	
+				$sx .= '<td>'.stodbr(sonumero($dt['i_created'])).'</td>';					
 				$sx .= '</tr>';
 				return $sx;
 			}
