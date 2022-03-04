@@ -41,6 +41,47 @@ class Isbn extends Model
 	protected $afterDelete          = [];
 
 	var $vurl = '';
+
+	/*************************************************************************** GET */
+	function get($isbn,$type)	
+	{
+		$tmp = '../.tmp/';
+		dircheck($tmp);
+		$tmp = '../.tmp/isbn/';
+		dircheck($tmp);
+
+		$file = $tmp.'isbn-'.$isbn.'.'.strtolower($type);
+		if (file_exists($file))
+			{
+				$txt = file_get_contents($file);
+				return $txt;
+			}
+
+		switch($type)
+			{
+
+			case 'MERCA':
+				/* Link produção */
+				$url = 'https://api.mercadoeditorial.org/api/v1/requisitar_livro_unico';
+				$url .= '?isbn=' . $isbn;
+				$json = read_link($url);
+				if (strlen($json) > 10)
+					{
+						file_put_contents($file,$json);
+					}
+				return $json;
+			break;
+
+			default:
+			/* Link para testes */
+				$sx = bsmessage('TYPE NOT EXIST '.$type,3);
+			break;
+
+			return $sx;
+		}
+	}
+
+
 	function urls($isbn, $type)
 	{
 		switch ($type) {
@@ -64,7 +105,7 @@ class Isbn extends Model
 	}
 
 	/**********************************************************************/
-	function get($isbn, $type)
+	function xget($isbn, $type)
 	{
 		$file = $this->file_locate($isbn, $type);
 

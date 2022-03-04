@@ -134,6 +134,7 @@ function form($th)
         if (isset($th->pre)) { $pre = $th->pre; }
 
         /***************************************************** monta campo */
+        if (!isset($mandatory[$r])) { $mandatory[$r] = 0; }
         $sx .= form_fields($typ, $fld, $vlr, $th ,$mandatory[$r], $pre);
     }
 

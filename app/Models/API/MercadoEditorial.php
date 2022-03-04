@@ -44,15 +44,17 @@ class MercadoEditorial extends Model
 	/* Link para testes */
 	//var $url = 'https://sandbox.mercadoeditorial.org/api/v1/requisitar_livro_unico';
 
-	/* Link produção */
-	var $url = 'https://api.mercadoeditorial.org/api/v1/requisitar_livro_unico';
-
 	function book($isbn,$id) {
-		$isbn = new \App\Models\Isbn\Isbn();
+
+		$ISBN = new \App\Models\Isbn\Isbn();
+		$Language = new \App\Models\Languages\Language();
 		$rsp = array('count' => 0);
 		$rsp['totalItems'] = 0;
+
+		/* Recupera Dados */
 		$type = 'MERCA';
-		$t = $isbn->get($isbn,$type);
+		$t = $ISBN->get($isbn,$type);
+
 		$w = (array)json_decode($t);
 		$erro = $w['status_code'];
 		if ($erro == '101')
@@ -60,9 +62,7 @@ class MercadoEditorial extends Model
 			return($rsp);
 		}
 
-
 		$w = (array)$w['livro'];
-
 		$rsp['serie'] = '';
 		$rsp['cover'] = '';
 		$rsp['editora'] = '';
@@ -77,7 +77,7 @@ class MercadoEditorial extends Model
 			$rsp['title'] .= ': ' . trim($w['subtitulo']);
 		}
 		$rsp['title'] = troca($rsp['title'], ' - ',': ');
-		$rsp['title'] = nbr_author($rsp['title'],18);
+		$rsp['title'] = nbr_author($rsp['title'],8);
 
 		/********** Autores ****************************/
 		for ($q=0;$q < count($w['autores']);$q++)
@@ -89,7 +89,6 @@ class MercadoEditorial extends Model
 
 		/********** DESCRICAO **************************/
 		$rsp['descricao'] = $w['sinopse'];
-
 
 		/********** IMAGENS **************************/
 		$cover = (array)$w['imagens'];
@@ -111,7 +110,7 @@ class MercadoEditorial extends Model
 
 		/********** Idioma ****************************/
 		if (isset($w['idioma'])) {
-			$rsp['expressao']['idioma'] = $this->languages->code($w['idioma']);
+			$rsp['expressao']['idioma'] = $Language->code($w['idioma']);
 		} else {
 			$rsp['expressao']['idioma'] = '';
 		}	
@@ -143,7 +142,7 @@ class MercadoEditorial extends Model
 		/******** assuntos ****************************/
 		$sub = (array)$w['catalogacao'];
 		$sub = troca($sub['assuntos'],',',';');
-		$sub = splitx(';',$sub);
+		$sub = explode(';',$sub);
 		$rsp['subject'] = $sub;
 
 		$rsp['totalItems'] = 1;	

@@ -58,18 +58,18 @@ class Itens extends Model
 			$isbn = $dt['i_identifier'];
 			if (substr($isbn,0,3) == '978')
 				{
-					$isbn = substr($isbn,3);
+					
 				} else {
-						$sx = bsmessage('ISBN inválido - '.$isbn,3);
-						return $sx;
+					$sx = bsmessage('ISBN inválido - '.$isbn,3);
+					return $sx;
 				}
 
 			/* Mercado Editorial */
 			$MecadoEditorial = new \App\Models\API\MercadoEditorial();
-			$dt[0] = $MecadoEditorial->book($isbn,$id);
-			echo '<pre>';
-			print_r($dt);
-			return $dt;
+			$dd[0] = $MecadoEditorial->book($isbn,$id);
+			
+			pre($dd);
+			return $dd;
 		}
 
 	function resume()
