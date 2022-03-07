@@ -73,7 +73,7 @@ function book($isbn,$id) {
 		$rsp['item'] = $id;
 		/*******************************************************************************/
 
-		if ($w['totalItems'] > 0) {
+		if (count($w)> 0) {
 			$rsp['expressao']['genere'] = $w['kind'];
 			if (strpos($rsp['expressao']['genere'],'#') > 0)
 				{ 
@@ -143,10 +143,6 @@ function book($isbn,$id) {
 			$rsp['type'] = $type;
 		} else {
 			$rsp = $w;
-			$rsp['error'] = 1;
-			$rsp['error_msg'] = msg('ISBN_not_found');
-			$rsp['totalItems'] = 0;
-			$rsp['url'] = '';
 		}
 		return ($rsp);
 	}	

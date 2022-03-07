@@ -1,14 +1,13 @@
 <?php
-// http://classify.oclc.org/classify2/Classify?isbn=9781501110368&summary=true
 
-namespace App\Models\API;
+namespace App\Models\AI\NLP;
 
 use CodeIgniter\Model;
 
-class OCLC extends Model
+class Charsets extends Model
 {
 	protected $DBGroup              = 'default';
-	protected $table                = 'oclcs';
+	protected $table                = 'charsets';
 	protected $primaryKey           = 'id';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
@@ -41,18 +40,20 @@ class OCLC extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
-	function book($isbn,$id) {
-		$rsp = array('count' => 0);
-
-		$ISBN = new \App\Models\Isbn\Isbn();
-		$Language = new \App\Models\Languages\Language();		
-		
-		$type = 'OCLC';
-		$t = $ISBN->get($isbn,$type);
-		
-		if (count($t) == 0) {
-			return array();
+	function convert($d1,$d2,$d3)
+		{
+			$sx = '';
+			$txt = get("dd1");
+			
+			if (strlen($txt) > 0)
+				{
+					$t1 = utf8_decode($txt);
+					$t2 = utf8_encode($txt);
+					$t1 = '<textarea class="form-control" rows="10">'.$t1.'</textarea>';
+					$t2 = '<textarea class="form-control" rows="10">'.$t2.'</textarea>';
+					$sx .= bsc(h('ai.without_utf8',3).$t1,6).bsc(h('ai.with_utf8',3).$t2,6);
+					$sx = bs($sx);
+				}
+			return $sx;
 		}
-		return $t;
-	}	
 }

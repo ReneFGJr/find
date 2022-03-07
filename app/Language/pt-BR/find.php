@@ -63,5 +63,7 @@ return [
     'tech_5'=>'Manutenção',
     'tech_9'=>'Excluído',
 
+    'set_status_to'=>'Alterar status para',
+
     'itens'=>'Item(ns)',
 ];

@@ -120,7 +120,6 @@ function manual($id)
 
 								if (isset($dt['isbn']['isbn13']))
 								{
-									print_r($dt['isbn']);
 									$isbn = $dt['isbn']['isbn13'];
 								}
 								$tipo = $rdf->find_class('Book');

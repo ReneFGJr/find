@@ -131,3 +131,5 @@ nb-configuration.xml
 
 *.merca
 *.google
+*.oclc
+app/Models/Book/Itens.php

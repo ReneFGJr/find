@@ -1,14 +1,13 @@
 <?php
-// http://classify.oclc.org/classify2/Classify?isbn=9781501110368&summary=true
 
-namespace App\Models\API;
+namespace App\Models\Rdf;
 
 use CodeIgniter\Model;
 
-class OCLC extends Model
+class RDFRange extends Model
 {
 	protected $DBGroup              = 'default';
-	protected $table                = 'oclcs';
+	protected $table                = 'rdfranges';
 	protected $primaryKey           = 'id';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
@@ -41,18 +40,10 @@ class OCLC extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
-	function book($isbn,$id) {
-		$rsp = array('count' => 0);
-
-		$ISBN = new \App\Models\Isbn\Isbn();
-		$Language = new \App\Models\Languages\Language();		
-		
-		$type = 'OCLC';
-		$t = $ISBN->get($isbn,$type);
-		
-		if (count($t) == 0) {
-			return array();
+	function range_insert_value($class,$name)
+		{
+			$RDF = new \App\Models\Rdf\RDF();
+			$IDV = $RDF->RDF_concept($name,$class);
+			return $IDV;
 		}
-		return $t;
-	}	
 }

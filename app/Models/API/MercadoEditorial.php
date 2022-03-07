@@ -55,6 +55,8 @@ class MercadoEditorial extends Model
 		$t = $ISBN->get($isbn,$type);
 
 		$w = (array)json_decode($t);
+
+		if (count($w) == 0) { return $rsp; }
 		$erro = $w['status_code'];
 		if ($erro == '101')
 		{
@@ -175,13 +177,6 @@ class MercadoEditorial extends Model
 					$idn = $rdf->rdf_concept_create('CNPJ', $cnpj, '', $idioma);
 					$rdf->set_propriety($idc,'brgov:is_cnpj',$idn);
 					$rdf->set_propriety($idc,'brgov:is_source',$ids);
-
-					//$rdf->set_propriety($ide,'isAppellationOfManifestation',$idm);
-					echo '<hr>';
 				}
-				echo '<pre>';
-				print_r($ed);
-				echo '</pre>';
-
 			}		
 }

@@ -1,14 +1,13 @@
 <?php
-// http://classify.oclc.org/classify2/Classify?isbn=9781501110368&summary=true
 
-namespace App\Models\API;
+namespace App\Models\AI\NLP;
 
 use CodeIgniter\Model;
 
-class OCLC extends Model
+class WordMatch extends Model
 {
 	protected $DBGroup              = 'default';
-	protected $table                = 'oclcs';
+	protected $table                = 'wordmatches';
 	protected $primaryKey           = 'id';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
@@ -41,18 +40,34 @@ class OCLC extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
-	function book($isbn,$id) {
-		$rsp = array('count' => 0);
+	function analyse($txt,$vc)
+		{
+			$TextPrepare = new \App\Models\AI\NLP\TextPrepare();
+			$rst = array();
+			$txt = $TextPrepare->Text($txt);
 
-		$ISBN = new \App\Models\Isbn\Isbn();
-		$Language = new \App\Models\Languages\Language();		
-		
-		$type = 'OCLC';
-		$t = $ISBN->get($isbn,$type);
-		
-		if (count($t) == 0) {
-			return array();
+
+			$w = array();
+			foreach($vc as $t1=>$t2)
+				{			
+					$txt = troca($txt,' '.$t1.' ',' <b style="color: blue;">'.$t2.'</b> ');
+					$w[$t2] = 0;
+				}
+
+			$wt = array();
+			foreach($w as $t1=>$v)
+				{
+				$ocorrencia = substr_count($txt,$t1);
+				if ($ocorrencia > 0)
+					{
+						$w[$t1] = $ocorrencia;
+						$wt[$t1] = $ocorrencia;
+						//echo $t1.'-['.$ocorrencia.']<br>';
+					}	
+				}
+			
+			$txt = troca($txt,chr(13),'<hr>');
+			$rst = array($txt,'keys'=>$wt);
+			return $rst;
 		}
-		return $t;
-	}	
 }

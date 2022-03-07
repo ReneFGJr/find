@@ -329,8 +329,6 @@ class Rededeleitura extends CI_controller {
             $dd1 = get("dd1");
             if (strlen($dd1) == 0) {
                 $dd1 = $_FILES['fileUpload']['name'];
-                //print_r($_FILES);
-                //exit;
             }
 
             /**********************************************/

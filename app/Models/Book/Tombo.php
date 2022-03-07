@@ -15,7 +15,7 @@ class Tombo extends Model
 	protected $useSoftDeletes       = false;
 	protected $protectFields        = true;
 	protected $allowedFields        = [
-		'id_i','i_tombo','i_manifestation','i_identifier',
+		'id_i','i_tombo','i_manitestation','i_identifier',
 		'i_type','i_library_classification','i_aquisicao',
 		'i_year','i_status','i_usuario',
 		'i_titulo','i_status','i_library','i_library_place',
@@ -55,12 +55,9 @@ class Tombo extends Model
 			->groupBy('i_identifier')
 			->findAll();
 
-			print_r($dt);
-
 			if (count($dt) > 0)
 				{
 					$total = $dt[0]['total'];
-					echo '===>'.$total;
 				} else {
 					$total = 1;
 				}
@@ -82,4 +79,5 @@ class Tombo extends Model
 				}
 			return $max;
 		}
+
 }

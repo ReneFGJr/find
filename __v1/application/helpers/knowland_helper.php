@@ -33,9 +33,7 @@ class knowland
                         $dt = $this->json($term,$to[$r]);
                         $bs[$term] = $dt;
                     }
-                echo '<pre>';
-                print_r($bs);
-                echo '</pre>';
+               pre($bs);
 
             }
 

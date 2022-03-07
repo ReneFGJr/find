@@ -319,7 +319,7 @@ class Books extends Model
 				if (strlen(trim($vol)) > 0)
 					{
 						$tela .= '<div>'.lang('find.volume').': '.$vol.'</div>';
-					}					
+					}				
 
 				return $tela;
 		}
@@ -335,8 +335,55 @@ class Books extends Model
 
 	function a($id)
 		{		
+			$sx = '';
 			$RDF = new \App\Models\Rdf\RDF();
-			$sx = $RDF->form($id);
+			$Itens = new \App\Models\Book\Itens();
+
+			$dt = $RDF->le($id);
+			switch ($dt['concept']['c_class'])
+				{
+					case 'Manifestation':
+						//$RDF->recover('');
+						$expression = $RDF->recovery($dt['data'],'isAppellationOfManifestation');
+						$se = '';
+						$sw = '';
+
+						if (isset($expression[0][0]))
+							{
+								/* Expression */
+								$expression = $expression[0][0];								
+								$se .= $RDF->form($expression);
+								$expression = $RDF->le($expression);
+
+								/********************************************* WORK */
+								$work = $RDF->recovery($expression['data'],'isAppellationOfExpression');
+
+								if (isset($work[0][0]))
+									{
+										$work = $work[0][0];
+										/* Work */
+										$sw = $RDF->form($work);
+									} else {
+										$sw .= bsmessage(lang('find.class_work_not_found'),3);
+									}
+							} else {
+								$se .= bsmessage(lang('find.class_expression_not_found'),3);
+							}
+
+						/* Manifestation */
+//						$dt = $Itens->le($id);
+//						pre($dt);
+//						$sx .= $Itens->header($dt);
+						$sx .= bsc($RDF->btn_return($id),12);
+						$sx .= $sw;
+						$sx .= $se;
+						$sx .= $RDF->form($id);
+
+						break;
+					default:
+						$sx = $RDF->form($id);
+						break;
+				}
 			return $sx;
 		}
 
@@ -364,7 +411,8 @@ class Books extends Model
 					break;
 
 					case 'frbr:Manifestation':
-						$sx = 'MANIFESTATION';						
+						$sx = 'MANIFESTATION';			
+							
 						$expre = $RDF->recover($dt,'isAppellationOfManifestation');
 						$expre = $expre[0];
 						$expre = $RDF->le($expre);
@@ -456,7 +504,6 @@ class Books extends Model
 			$isbn = $this->isbn($m);
 			$cover = '<img src="'.$Cover->get_cover($isbn).'" class="img-fluid shadow-lg mb-5 bg-body rounded">';			
 
-//			$tela1 = h($dt['i_titulo'],3);
 			$tela1 .= bsc($cover,2);
 
 			/* Recomendações */

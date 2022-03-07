@@ -126,6 +126,10 @@ class RDF extends Model
 		$sx = '';
 		$type = get("type");
 		switch ($d1) {
+
+			case 'vc_create':
+				$sx = $this->vc_create();
+				break;
 			case 'remissive_Person':			
 				$sx .= $this->remissive($d2, $d3, $d4, $d5, $cab,'Person');
 				break;
@@ -297,6 +301,18 @@ class RDF extends Model
 			return $sx;
 		}
 
+	function btn_return($id,$class='')
+		{
+			if (is_array($id))
+				{
+					$id = $id['id_cc'];
+				}
+			$sx = '<a href="'.PATH.MODULE.'v/'.$id.'" class="'.$class.'">';
+			$sx .= lang('rdf.return');
+			$sx .= '</a>';
+			return $sx;
+		}
+
 	function form($id)
 		{
 			$RDFForm = new \App\Models\Rdf\RDFForm();
@@ -308,7 +324,6 @@ class RDF extends Model
 						$tela = 'x';
 					default:
 						$tela = $RDFForm->form($id,$dt['concept']);
-						$tela .= '<h1>'.$class.'</h1>';
 						break;
 				}
 			return $tela;			
@@ -734,11 +749,9 @@ class RDF extends Model
 			return $class;
 		}
 
-
-	function conecpt($name,$class)
-		{
-			return $this->RDF_concept($name,$class);
-		}
+/********************* REMISSIVAS */
+	function conecpt($name,$class) { return $this->RDF_concept($name,$class); }
+	function concept($name,$class) { return $this->RDF_concept($name,$class); }
 
 	function put_literal($name,$lg='NaN',$force = 1)
 		{
@@ -812,5 +825,17 @@ class RDF extends Model
 				}
 		return 0;
 	}
-
+	function vc_create()
+		{
+				$RDFRange = new \App\Models\Rdf\RDFRange();
+				$d2 = get("reload");
+				$d3 = get("vlr");
+				$reg = get("reg");
+				$prop = get("prop");
+				$IDC = $RDFRange->range_insert_value($d2, $d3);
+				$this->propriety($reg,$prop,$IDC);
+				$sx = wclose();
+				echo $sx;
+				exit;			
+		}
 }

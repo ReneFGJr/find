@@ -102,10 +102,10 @@ class RdfFormVC extends Model
 		$sx .= '<div id="dd51a"><select class="form-control" size="5" name="dd51" id="dd51"></select></div>';		
 
 		$bts = '';
-		$bts .= '<input type="button" id="b1" class="btn btn-outline-secondary" disabled value="'.lang('find.force_create').'" onclick="submitb1();"> ';
-		$bts .= '<input type="button" id="b2" class="btn btn-outline-primary" disabled value="'.lang('find.save_continue').'" onclick="submitb(1);"> ';
-		$bts .= '<input type="button" id="b3" class="btn btn-outline-primary" disabled value="'.lang('find.save').'" onclick="submitb(0);"> ';
-		$bts .= '<button onclick="window.close();" id="b4" class="btn btn-outline-danger">'.lang('find.cancel').'</buttontype=>';
+		$bts .= '<input type="button" id="b1" class="btn btn-outline-secondary" disabled value="'.lang('rdf.force_create').'" onclick="submitb1(\''.$range.'\');"> ';
+		$bts .= '<input type="button" id="b2" class="btn btn-outline-primary" disabled value="'.lang('rdf.save_continue').'" onclick="submitb(1);"> ';
+		$bts .= '<input type="button" id="b3" class="btn btn-outline-primary" disabled value="'.lang('rdf.save').'" onclick="submitb(0);"> ';
+		$bts .= '<button onclick="window.close();" id="b4" class="btn btn-outline-danger">'.lang('rdf.cancel').'</buttontype=>';
 		
 		$sx .= bsc($bts,12);
 		$sx .= form_close();
@@ -142,18 +142,29 @@ class RdfFormVC extends Model
 					{
 						alert("OPS");
 					} else {
-						alert($vlr);
+
 					}				
 			}
 			
-			function submitb1()
+			function submitb1($c)
 			{
 				$vlr = $("#dd50").val();
 				if ($vlr == null)
 					{
 						alert("OPS");
 					} else {
-						alert($vlr);
+						$.ajax(
+							{								
+								type: "GET",
+								url: "'.PATH.MODULE.'rdf/vc_create/",
+								data: "act=set&reload="+$c+"&reg='.$d3.'&prop='.$d1.'&vlr="+$vlr,
+								dataType: "html",
+							})
+							.done(function(data)
+								{
+									$("#dd51a").html(data);
+								}
+							);
 					}				
 			}			
 		/************ keyup *****************/

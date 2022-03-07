@@ -53,20 +53,110 @@ class Itens extends Model
 		return $dt;
 	}
 
+	function create_rdf_work($id)
+	{
+		$sx = '';
+		$RDF = new \App\Models\Rdf\RDF();
+		$Tombo = new \App\Models\Book\Tombo();
+		$dt = $this->Find($id);
+		$work_title = 'work-'.$dt['i_identifier'];
+		$expression_title = 'expression-'.$dt['i_identifier'];
+		$manifestation_title = 'manifestation-'.$dt['i_identifier'];
+		$IDW = $RDF->conecpt($work_title,'frbr:Work');
+		$IDE = $RDF->conecpt($expression_title,'frbr:Expression');
+		$IDM = $RDF->conecpt($manifestation_title,'frbr:Manifestation');
+		$RDF->propriety($IDW,'isAppellationOfExpression',$IDE);
+		$RDF->propriety($IDE,'isAppellationOfManifestation',$IDM);
+		$dd['i_manitestation'] = $IDM;
+		$Tombo->set($dd)->where('id_i',$id)->update();
+
+		return $IDM;
+	}
+
+	function header($id)
+		{
+			$dt = $this->le($id);
+			$sx = '';
+			$title = $dt['i_titulo'];
+			if (strlen($title) == 0) { $title = lang('find.no_title').' - '.$dt['i_identifier']; }
+			$sa = h($title);
+			$sb = '<tt>';
+
+			for ($r=1;$r <= 4;$r++)
+				{
+					if (strlen($dt['i_ln'.$r]) > 0) $sb .= $dt['i_ln'.$r].'<br>';
+				}
+
+			$sx = bs(bsc($sa,9).bsc($sb,3));
+			return $sx;
+		}
+
+	function status($id,$st)
+		{
+			$dd['i_status'] = $st;
+			$dt = $this
+			->set($dd)
+			->where('id_i',$id)
+			->update();
+			return $dt;
+		}
+
+	function process_metadata($hv,$id)
+		{
+			$sx = '';
+			/********************************************************* METADATA */			
+			if (count($hv['FIND']) > 0)
+				{
+					$Find = new \App\Models\API\Find();
+					$sx = $Find->process($hv['FIND'],$id);
+				}
+			return $sx;
+		}
+
+	function actions($id,$or=0)
+		{
+			$menu = array();
+			$dt = $this->le($id);
+			$st = $dt['i_status'];
+			if ($st == $or)
+				{
+					$sx = bsmessage('Não foi possível processar a operação',3);
+
+					if ($st == 0)
+						{
+							$menu['1'] = lang('find.set_status_to').' <b>'.lang('find.tech_1').'</b>';
+						}
+					$sx .= '<ul>';
+					foreach ($menu as $link=>$label)
+						{
+							$sx .= '<li><a href="'.(PATH.'find/tech/item_status/'.$id.'/'.$link).'">'.$label.'</a></li>';
+						}
+					$sx .= '</ul>';
+				} else {
+					$sx = bsmessage('Processamento realizado',1);
+				}
+			return $sx;
+		}
+
 	function harvesting_metadata($id, $id2)
 	{
 		$dt = $this->Find($id);
 		$isbn = $dt['i_identifier'];
+		$isbn_ok = 0;
 		if (substr($isbn, 0, 3) == '978') {
-		} else {
-			$sx = bsmessage('ISBN inválido - ' . $isbn, 3);
-			return $sx;
+			$isbn_ok = 1;
 		}
 
 		/* Find */
 		$Find = new \App\Models\API\Find();
 		$dd['FIND'] = $Find->book($isbn, $id);
 
+		$dd['OCLC'] = array();
+		$dd['GOOGLE'] = array();
+		$dd['MERCA'] = array();
+
+		if ($isbn_ok == 1)
+		{
 		/* OCLC */
 		$OCLC = new \App\Models\API\OCLC();
 		$dd['OCLC'] = $OCLC->book($isbn, $id);
@@ -78,9 +168,8 @@ class Itens extends Model
 		/* Mercado Editorial */
 		$MecadoEditorial = new \App\Models\API\MercadoEditorial();
 		$dd['MERCA'] = $MecadoEditorial->book($isbn, $id);
+		}
 
-		echo h($isbn);
-		pre($dd);
 		return $dd;
 	}
 
@@ -110,7 +199,7 @@ class Itens extends Model
 					array_push($wh, $line['d_r1']);
 					break;
 				default:
-					echo '<br>===>' . $class;
+					echo '<br>=showItens==>' . $class;
 					break;
 			}
 		}
@@ -135,7 +224,8 @@ class Itens extends Model
 			->where('i_library', LIBRARY)
 			->orderBy('i_tombo', 'asc')
 			->findAll();
-		$sx = '<table class="table">';
+		$sx = h(lang('find.total') . ': ' . count($dt).' '.lang('find.itens'),4);
+		$sx .= '<table class="table">';
 		$sx .= $this->table_header();
 		for ($r = 0; $r < count($dt); $r++) {
 			$line = $dt[$r];
@@ -170,32 +260,49 @@ class Itens extends Model
 				$link = '<a href="' . (PATH . MODULE . 'tech/prepare_0/' . $dt['id_i']) . '">';
 				$linka = '</a>';
 				break;
+			case '1':
+				$link = '<a href="' . (PATH . MODULE . 'tech/prepare_1/' . $dt['id_i']) . '">';
+				$linka = '</a>';
+				break;
+			case '2':
+				$link = '<a href="' . (PATH . MODULE . 'tech/prepare_2/' . $dt['id_i']) . '">';
+				$linka = '</a>';
+				break;
+			case '3':
+				$link = '<a href="' . (PATH . MODULE . 'tech/prepare_3/' . $dt['id_i']) . '">';
+				$linka = '</a>';
+				break;												
 		}
 
 
 		$sx = '';
 		$sx .= '<tr>';
 		$sx .= '<td>' . $link . $dt['i_tombo'] . $linka . '</td>';
-		$sx .= '<td>Ex.:' . $dt['i_exemplar'] . '</td>';
-		$sx .= '<td>' . $dt['i_identifier'] . '</td>';
-		$sx .= '<td>' . $dt['i_titulo'] . '</td>';
-		$sx .= '<td>' . $dt['i_ln1'] . '</td>';
-		$sx .= '<td>' . $dt['i_ln2'] . '</td>';
-		$sx .= '<td>' . $dt['i_ln3'] . '</td>';
-		$sx .= '<td>' . stodbr(sonumero($dt['i_created'])) . '</td>';
+		$sx .= '<td>Ex.:' . $dt['i_exemplar'] . $linka .'</td>';
+		$sx .= '<td>' . $link. $dt['i_identifier'] . $linka .'</td>';
+		$sx .= '<td>' . $link. $dt['i_titulo'] .$linka . '</td>';
+		$sx .= '<td>' . $link. $dt['i_ln1'] .$linka . '</td>';
+		$sx .= '<td>' . $link. $dt['i_ln2'] .$linka . '</td>';
+		$sx .= '<td>' . $link. $dt['i_ln3'] .$linka . '</td>';
+		$sx .= '<td>' . $link. stodbr(sonumero($dt['i_created'])) . $linka .'</td>';
+		switch ($dt['i_status'])
+			{
+				case '0':
+					$sx .= '<td>'.$link.bsicone('process').$linka.'</td>';
+					break;
+			}		
 		$sx .= '</tr>';
 		return $sx;
 	}
 
 	/************************************************************************** BUSCA METADADOS */
-	function prepare_0($d1, $d2, $d3)
+	function prepare($d1, $d2, $d3)
 	{
-		$sx = 'xxx';
-		$sx = h(lang('find.tech_0'), 2);
+		$sx = h(lang('find.tech_'.$d3), 2);
 
 		switch ($d1) {
 			default:
-				$sx .= $this->itens_list(0);
+				$sx .= $this->itens_list($d3);
 		}
 		return $sx;
 	}
@@ -275,8 +382,6 @@ class Itens extends Model
 			for ($r = 0; $r < count($isbn); $r++) {
 			/******************************** Exemplares */
 				$ex = $Tombo->exemplar($isbn[$r]);
-				echo '===>'.$sx;
-
 
 				$dd['i_identifier'] = $isbn[$r];
 				$dd['i_library_place'] = $place;

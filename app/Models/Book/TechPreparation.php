@@ -43,17 +43,50 @@ class TechPreparation extends Model
 	function index($d1,$d2,$d3,$d4)
 		{
 			$sx = '';
+			if ($d1=='prepare_0') { $d1 = 'prepare'; $st = '0'; }
+			if ($d1=='prepare_1') { $d1 = 'prepare'; $st = '1';  }
+			if ($d1=='prepare_2') { $d1 = 'prepare'; $st = '2';  }
 			switch($d1)
 				{
-					case 'prepare_0':
+					case 'item_status':
+						$Itens = new \App\Models\Book\Itens();
+						$Itens->status($d2,$d3);
+						$link = PATH.MODULE.'tech/prepare_'.$d3.'/'.$d2;
+						$sx = metarefresh($link,0);
+						break;
+					case 'prepare':
 						/* Novos Itens */
 						$Itens = new \App\Models\Book\Itens();
 						$sx .= bsc($this->image_left(2),2);
 						if ($d2=='')
 							{
-								$sx .= bsc($Itens->prepare_0($d2,$d3,$d4),10);
+								$sx .= bsc($Itens->prepare($d2,$d3,$st),10);
 							} else {
-								$sx .= bsc($Itens->harvesting_metadata($d2,$d3,$d4),10);
+								switch($st)
+									{
+										case '0':
+										/**************************************** HARVESTING */
+											$harvesting = $Itens->harvesting_metadata($d2,$d3,$d4);
+											$sa = $Itens->process_metadata($harvesting,$d2,$d3);
+											$sa .= $Itens->header($d2);
+											
+											/**************************** Status */
+											$sa .= $Itens->actions($d2,$st);
+
+											$sx .= bsc($sa,10);
+											break;
+
+										case '1':
+										/******************************************* CATALOG */
+											$IDM = $Itens->create_rdf_work($d2);
+											$Books = new \App\Models\Book\Books();
+											$sx .= bsc($Books->a($IDM),10);
+											break;
+										default:
+											$sx .= bsc(bsmessage('Tech '.$st.' not implemented'),10);
+											break;
+
+									}
 							}
 						
 						$sx = bs($sx);
@@ -66,6 +99,7 @@ class TechPreparation extends Model
 						$sx .= bsc($Itens->new($d2,$d3,$d4),10);
 						$sx = bs($sx);
 						break;
+																		
 					default:
 						$sx = $this->resume();
 						break;

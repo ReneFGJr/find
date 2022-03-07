@@ -52,14 +52,21 @@ class Isbn extends Model
 
 		$file = $tmp . 'isbn-' . $isbn . '.' . strtolower($type);
 		if (file_exists($file)) {
-			$txt = file_get_contents($file);
-			return $txt;
+			if ($type == 'OCLC') {
+				$rsp = (array)json_decode(file_get_contents($file), true);
+				return $rsp;
+			} else {
+				$rsp = file_get_contents($file);
+				return $rsp;
+			}
+			return $rsp;
 		}
 
 		switch ($type) {
 			case 'OCLC':
 				$code = 999;
 				$url = 'http://classify.oclc.org/classify2/Classify?isbn=' . $isbn . '&summary=true';
+				//$url = 'http://classify.oclc.org/classify2/Classify?isbn=' . $isbn;
 				$json = read_link($url);
 				$xml = simplexml_load_string($json);
 

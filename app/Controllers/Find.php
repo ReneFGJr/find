@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
@@ -7,173 +8,170 @@ $this->session = \Config\Services::session();
 $language = \Config\Services::language();
 
 
-helper(['boostrap', 'url', 'graphs', 'sisdoc_forms', 'form', 'nbr','sessions']);
+helper(['boostrap', 'url', 'graphs', 'sisdoc_forms', 'form', 'nbr', 'sessions']);
 $session = \Config\Services::session();
 
 $this->Socials = new \App\Models\Socials();
 
-define("PATH",$_SERVER['app.baseURL']."index.php/");
-define("MODULE",'find/');
-define("URL",$_SERVER['app.baseURL']);
-define('PREFIX','find.');
+define("PATH", $_SERVER['app.baseURL'] . "index.php/");
+define("MODULE", 'find/');
+define("URL", $_SERVER['app.baseURL']);
+define('PREFIX', 'find.');
 
 class Find extends BaseController
-	{
+{
 
 	public function __construct()
-		{
+	{
 		$this->Books = new \App\Models\Book\Books();
 		$this->Socials = new \App\Models\Socials();
-		$this->FindSearch = new \App\Models\FindSearch();	
-	
+		$this->FindSearch = new \App\Models\FindSearch();
+
 		define("LIBRARY", "1003");
-		define("LIBRARY_NAME", "FIND");				
-		}
-		
+		define("LIBRARY_NAME", "FIND");
+	}
+
 	public function index()
 	{
 		$Classification = new \App\Models\Classification();
 
 		$sx = '';
 		$sx .= $this->cab();
-		$sx .= $this->navbar();	
+		$sx .= $this->navbar();
 
-		$sx .= $this->FindSearch->banner();	
+		$sx .= $this->FindSearch->banner();
 		$sx .= $this->FindSearch->search();
 
 
-		$st = '<h2>'.lang('find.latest_acquisitions').'</h2>';
+		$st = '<h2>' . lang('find.latest_acquisitions') . '</h2>';
 		$st .= $this->Books->latest_acquisitions();
 
-		$sc = '<h2>'.lang('find.classifications').'</h2>';
+		$sc = '<h2>' . lang('find.classifications') . '</h2>';
 		$sc .= $Classification->sections();
-		$sx .= bs(bsc($sc,3).bsc($st,9));	
+		$sx .= bs(bsc($sc, 3) . bsc($st, 9));
 
 
-		$sx .= $this->footer();	
+		$sx .= $this->footer();
 
 		return $sx;
 	}
 
-	private function cab($dt=array())
-		{
-			$title = 'Find - Library Open System';
-			if (isset($dt['title'])) { $title = $dt['title']; } 
-			$sx = '<!doctype html>'.cr();
-			$sx .= '<html>'.cr();
-			$sx .= '<head>'.cr();
-			$sx .= '<title>'.$title.'</title>'.cr();
-			$sx .= '  <meta charset="utf-8" />'.cr();
-			$sx .= '  <link rel="apple-touch-icon" sizes="180x180" href="'.URL.('img/favicon.png').'" />'.cr();
-			$sx .= '  <link rel="icon" type="image/png" sizes="32x32" href="'.URL.('img/favicon.png').'" />'.cr();
-			$sx .= '  <link rel="icon" type="image/png" sizes="16x16" href="'.URL.('img/favicon.png').'" />'.cr();
-			$sx .= '  <!-- CSS -->'.cr();
-			$sx .= '  <link rel="stylesheet" href="'.URL.('/css/bootstrap.css').'" />'.cr();
-			$sx .= '  <link rel="stylesheet" href="'.URL.('/css/style.css?v=0.0.6').'" />'.cr();
-			$sx .= ' '.cr();
-			$sx .= '  <!-- CSS -->'.cr();
-			$sx .= '  <script src="'.URL.('/js/bootstrap.js?v=5.0.2').'"></script>'.cr();
-			$sx .= '<style>
+	private function cab($dt = array())
+	{
+		$title = 'Find - Library Open System';
+		if (isset($dt['title'])) {
+			$title = $dt['title'];
+		}
+		$sx = '<!doctype html>' . cr();
+		$sx .= '<html>' . cr();
+		$sx .= '<head>' . cr();
+		$sx .= '<title>' . $title . '</title>' . cr();
+		$sx .= '  <meta charset="utf-8" />' . cr();
+		$sx .= '  <link rel="apple-touch-icon" sizes="180x180" href="' . URL . ('img/favicon.png') . '" />' . cr();
+		$sx .= '  <link rel="icon" type="image/png" sizes="32x32" href="' . URL . ('img/favicon.png') . '" />' . cr();
+		$sx .= '  <link rel="icon" type="image/png" sizes="16x16" href="' . URL . ('img/favicon.png') . '" />' . cr();
+		$sx .= '  <!-- CSS -->' . cr();
+		$sx .= '  <link rel="stylesheet" href="' . URL . ('/css/bootstrap.css') . '" />' . cr();
+		$sx .= '  <link rel="stylesheet" href="' . URL . ('/css/style.css?v=0.0.6') . '" />' . cr();
+		$sx .= ' ' . cr();
+		$sx .= '  <!-- CSS -->' . cr();
+		$sx .= '  <script src="' . URL . ('/js/bootstrap.js?v=5.0.2') . '"></script>' . cr();
+		$sx .= '<style>
 					@font-face {font-family: "Handel Gothic";
-					src: url("'.URL.('css/fonts/HandelGothic/handel_gothic.eot').'"); /* IE9*/
-					src: url("'.URL.('css/fonts/HandelGothic/handel_gothic.eot?#iefix').'") format("embedded-opentype"), /* IE6-IE8 */
-					url("'.URL.('css/fonts/HandelGothic/handel_gothic.svg#Handel Gothic').'") format("svg"); /* iOS 4.1- */
+					src: url("' . URL . ('css/fonts/HandelGothic/handel_gothic.eot') . '"); /* IE9*/
+					src: url("' . URL . ('css/fonts/HandelGothic/handel_gothic.eot?#iefix') . '") format("embedded-opentype"), /* IE6-IE8 */
+					url("' . URL . ('css/fonts/HandelGothic/handel_gothic.svg#Handel Gothic') . '") format("svg"); /* iOS 4.1- */
 					}
 					@import url(\'https://fonts.googleapis.com/css2?family=Nunito:wght@200&family=Roboto:wght@100&display=swap\');
 					</style>
 					';
 
-			$sx .= '</head>'.cr();
+		$sx .= '</head>' . cr();
 
-			if (get("debug") != '')
-				{
-					$sx .= '<style> div { border: 1px solid #000000;"> </style>';
-				}			
-			return $sx;
+		if (get("debug") != '') {
+			$sx .= '<style> div { border: 1px solid #000000;"> </style>';
 		}
+		return $sx;
+	}
 
-	private function navbar($dt=array())	
-		{
-			$Logo = new \App\Models\Library\Logos();
-			$title = 'Find';
-			if (isset($dt['title'])) { $title = $dt['title']; } 
-			$sx = '<nav class="navbar navbar-expand-lg navbar-light ">'.cr();
-			$sx .= '  <div class="container-fluid">'.cr();
-			$sx .= '    <a class="navbar-brand" href="'.PATH.'">'.$Logo->logo_mini(LIBRARY).'</a>'.cr();
-			$sx .= '    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">'.cr();
-			$sx .= '      <span class="navbar-toggler-icon"></span>'.cr();
-			$sx .= '    </button>'.cr();
-			$sx .= '    <div class="collapse navbar-collapse" id="navbarSupportedContent">'.cr();
-			$sx .= '      <ul class="navbar-nav me-auto mb-2 mb-lg-0">'.cr();
-			$sx .= '        <li class="nav-item dropdown">'.cr();
-			$sx .= '          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">'.cr();
-			$sx .= '          '.lang('find.index').cr();
-			$sx .= '          </a>'.cr();
-			$sx .= '          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">'.cr();
-			$sx .= '            <li><a class="dropdown-item" href="'.PATH.'events/'.'">'.lang('proceedings.Menu.events').'</a></li>'.cr();
-			$sx .= '          </ul>'.cr();
-			$sx .= '        </li>'.cr();
+	private function navbar($dt = array())
+	{
+		$Logo = new \App\Models\Library\Logos();
+		$title = 'Find';
+		if (isset($dt['title'])) {
+			$title = $dt['title'];
+		}
+		$sx = '<nav class="navbar navbar-expand-lg navbar-light ">' . cr();
+		$sx .= '  <div class="container-fluid">' . cr();
+		$sx .= '    <a class="navbar-brand" href="' . PATH . '">' . $Logo->logo_mini(LIBRARY) . '</a>' . cr();
+		$sx .= '    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">' . cr();
+		$sx .= '      <span class="navbar-toggler-icon"></span>' . cr();
+		$sx .= '    </button>' . cr();
+		$sx .= '    <div class="collapse navbar-collapse" id="navbarSupportedContent">' . cr();
+		$sx .= '      <ul class="navbar-nav me-auto mb-2 mb-lg-0">' . cr();
+		$sx .= '        <li class="nav-item dropdown">' . cr();
+		$sx .= '          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">' . cr();
+		$sx .= '          ' . lang('find.index') . cr();
+		$sx .= '          </a>' . cr();
+		$sx .= '          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">' . cr();
+		$sx .= '            <li><a class="dropdown-item" href="' . PATH . 'events/' . '">' . lang('proceedings.Menu.events') . '</a></li>' . cr();
+		$sx .= '          </ul>' . cr();
+		$sx .= '        </li>' . cr();
 
-			$sx .= '
+		$sx .= '
 							<li class="nav-item">
-								<a class="nav-link" href="'.PATH.'users/'.'">'.lang('find.users').'</a>
+								<a class="nav-link" href="' . PATH . 'users/' . '">' . lang('find.users') . '</a>
 							</li>			
 			';
-			
-			if ((perfil("#ADM#CAT")) or (isset($_SESSION['access'])))
-			{
-				$sx .= '
+
+		if ((perfil("#ADM#CAT")) or (isset($_SESSION['access']))) {
+			$sx .= '
 				<li class="nav-item">
-				<a class="nav-link" href="'.PATH.MODULE.'tech/'.'">'.lang('find.tech').'</a>
+				<a class="nav-link" href="' . PATH . MODULE . 'tech/' . '">' . lang('find.tech') . '</a>
 				</li>			
-				';			
-			}
+				';
 
-			$sx .= '        <li class="nav-item dropdown">'.cr();
-			$sx .= '          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">'.cr();
-			$sx .= '            '.lang('find.Index').cr();
-			$sx .= '          </a>'.cr();
-			$sx .= '          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">'.cr();
-			$sx .= '            <li><a class="dropdown-item" href="'.URL.(PATH.'indexes/authors').'">'.lang('find.Indexes.Authors').'</a></li>'.cr();
-			$sx .= '          </ul>'.cr();
-			$sx .= '        </li>'.cr();			
-
-			//if ($this->Socials->perfil("#ADM"))
-			{
-				$sx .= '        <li class="nav-item dropdown">'.cr();
-				$sx .= '          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">'.cr();
-				$sx .= '            '.lang('events.proceedings').cr();
-				$sx .= '          </a>'.cr();
-				$sx .= '          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">'.cr();
-				$sx .= '            <li><a class="dropdown-item" href="'.URL.(PATH.'proceedings').'">'.lang('events.proceedings.row').'</a></li>'.cr();
-				$sx .= '            <li><a class="dropdown-item" href="'.URL.(PATH.'rdf').'">'.lang('events.rdf.row').'</a></li>'.cr();
-				$sx .= '            <li><a class="dropdown-item" href="'.URL.(PATH.'proceedings/gets').'">'.lang('events.proceedings.gets').'</a></li>'.cr();
-				$sx .= '            <li><a class="dropdown-item" href="'.URL.(PATH.'export/rdf').'">'.lang('events.export.rdf').'</a></li>'.cr();
-				$sx .= '          </ul>'.cr();
-				$sx .= '        </li>'.cr();
-			}
-			$sx .= '      </ul>'.cr();
-			$sx .= $this->Socials->nav_user();
-
-			$sx .= '    </div>'.cr();
-			$sx .= '  </div>'.cr();
-			$sx .= '</nav>'.cr();
-			return $sx;
+			$sx .= '        <li class="nav-item dropdown">' . cr();
+			$sx .= '          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">' . cr();
+			$sx .= '            ' . lang('events.admin') . cr();
+			$sx .= '          </a>' . cr();
+			$sx .= '          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">' . cr();
+			$sx .= '            <li><a class="dropdown-item" href="' . PATH . MODULE . 'rdf">' . lang('events.rdf.row') . '</a></li>' . cr();
+			$sx .= '          </ul>' . cr();
+			$sx .= '        </li>' . cr();
 		}
 
-	function tech($d1='',$d2='',$d3='',$d4='',$d5='')
-		{
-			$TechPreparation = new \App\Models\Book\TechPreparation();
-			$sx = '';
-			$sx .= $this->cab();
-			$sx .= $this->navbar();	
-			$sx .= $TechPreparation->index($d1,$d2,$d3,$d4);
-			$sx .= $this->footer();	
-			return $sx;
-		}
+		$sx .= '        <li class="nav-item dropdown">' . cr();
+		$sx .= '          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">' . cr();
+		$sx .= '            ' . lang('find.Index') . cr();
+		$sx .= '          </a>' . cr();
+		$sx .= '          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">' . cr();
+		$sx .= '            <li><a class="dropdown-item" href="' . URL . (PATH . 'indexes/authors') . '">' . lang('find.Indexes.Authors') . '</a></li>' . cr();
+		$sx .= '          </ul>' . cr();
+		$sx .= '        </li>' . cr();
+
+		$sx .= '      </ul>' . cr();
+		$sx .= $this->Socials->nav_user();
+
+		$sx .= '    </div>' . cr();
+		$sx .= '  </div>' . cr();
+		$sx .= '</nav>' . cr();
+		return $sx;
+	}
+
+	function tech($d1 = '', $d2 = '', $d3 = '', $d4 = '', $d5 = '')
+	{
+		$TechPreparation = new \App\Models\Book\TechPreparation();
+		$sx = '';
+		$sx .= $this->cab();
+		$sx .= $this->navbar();
+		$sx .= $TechPreparation->index($d1, $d2, $d3, $d4);
+		$sx .= $this->footer();
+		return $sx;
+	}
 	private function footer()
-		{
-			$sx = '<!-- Footer -->
+	{
+		$sx = '<!-- Footer -->
 					<footer class="page-footer font-small blue-grey lighten-5" style="margin-top: 50px;">
 
 					<div style="background-color: #21d192;">
@@ -231,7 +229,7 @@ class Find extends BaseController
 						<div class="col-md-3 col-lg-4 col-xl-3 mb-4">
 
 							<!-- Content -->
-							<h6 class="text-uppercase font-weight-bold">'.lang('social.COMPANY NAME').'</h6>
+							<h6 class="text-uppercase font-weight-bold">' . lang('social.COMPANY NAME') . '</h6>
 							<hr class="teal accent-3 mb-4 mt-0 d-inline-block mx-auto" style="width: 60px;">
 							<p>Here you can use rows and columns to organize your footer content. Lorem ipsum dolor sit amet,
 							consectetur
@@ -244,7 +242,7 @@ class Find extends BaseController
 						<div class="col-md-2 col-lg-2 col-xl-2 mx-auto mb-4">
 
 							<!-- Links -->
-							<h6 class="text-uppercase font-weight-bold">'.lang('social.Products').'</h6>
+							<h6 class="text-uppercase font-weight-bold">' . lang('social.Products') . '</h6>
 							<hr class="teal accent-3 mb-4 mt-0 d-inline-block mx-auto" style="width: 60px;">
 							<p>
 							<a class="dark-grey-text" href="#!">MDBootstrap</a>
@@ -266,13 +264,13 @@ class Find extends BaseController
 						<div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
 
 							<!-- Links -->
-							<h6 class="text-uppercase font-weight-bold">'.lang('social.Useful_links').'</h6>
+							<h6 class="text-uppercase font-weight-bold">' . lang('social.Useful_links') . '</h6>
 							<hr class="teal accent-3 mb-4 mt-0 d-inline-block mx-auto" style="width: 60px;">
 							<p>
-							<a class="dark-grey-text" href="#!">'.lang('social.profile').'</a>
+							<a class="dark-grey-text" href="#!">' . lang('social.profile') . '</a>
 							</p>
 							<p>
-							<a class="dark-grey-text" href="#!">'.lang('social.help').'</a>
+							<a class="dark-grey-text" href="#!">' . lang('social.help') . '</a>
 							</p>
 
 						</div>
@@ -282,7 +280,7 @@ class Find extends BaseController
 						<div class="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
 
 							<!-- Links -->
-							<h6 class="text-uppercase font-weight-bold">'.lang('social.Contact').'</h6>
+							<h6 class="text-uppercase font-weight-bold">' . lang('social.Contact') . '</h6>
 							<hr class="teal accent-3 mb-4 mt-0 d-inline-block mx-auto" style="width: 60px;">
 							<p>
 							<i class="fas fa-home mr-3"></i> New York, NY 10012, US</p>
@@ -303,130 +301,131 @@ class Find extends BaseController
 					<!-- Footer Links -->
 
 					<!-- Copyright -->
-					<div class="footer-copyright text-center text-black-50 py-3">© 2019-'.date("Y").' Copyright:
+					<div class="footer-copyright text-center text-black-50 py-3">© 2019-' . date("Y") . ' Copyright:
 						<a class="dark-grey-text" href="https://github.com/ReneFGJr/find" target="_github">GitHub / ReneFGJr / Find </a>
 					</div>
 					<!-- Copyright -->
 
 					</footer>
 					<!-- Footer -->';
-			return $sx;
-		}
+		return $sx;
+	}
 
-	function cover($isbn='0788598802633',$type='')
-		{
-			$IMG = new \App\Models\Images();
-			if ($isbn == 'check')
-				{
-					$sx = $this->cab();
-					$sx .= $this->navbar();
-					$sx .= $this->FindSearch->banner();	
+	function cover($isbn = '0788598802633', $type = '')
+	{
+		$IMG = new \App\Models\Images();
+		if ($isbn == 'check') {
+			$sx = $this->cab();
+			$sx .= $this->navbar();
+			$sx .= $this->FindSearch->banner();
 
-					$dir = '../_covers/image/';
-					$sx .= bs(bsc($IMG->check($dir),12));
-				} else {
-					$sx = $IMG->resize('../_covers/image/'.$isbn.'.jpg','');
-				}
-			return $sx;
+			$dir = '../_covers/image/';
+			$sx .= bs(bsc($IMG->check($dir), 12));
+		} else {
+			$sx = $IMG->resize('../_covers/image/' . $isbn . '.jpg', '');
 		}
+		return $sx;
+	}
 
 	public function social($d1 = '', $id = '')
 	{
 		$cab  = $this->cab();
 		$cab .= $this->navbar();
-		$cab .= $this->FindSearch->banner();	
+		$cab .= $this->FindSearch->banner();
 
 		$dt = array();
-		$sx = ''.$this->Socials->index($d1, $id, $dt,$cab);
+		$sx = '' . $this->Socials->index($d1, $id, $dt, $cab);
 		//$sx .= $this->footer();
 		return $sx;
-	}		
-		
+	}
+
 	function item($id)
-		{
-			$sx = $this->cab();
-			$sx .= $this->navbar();
-			$sx .= $this->FindSearch->banner();	
+	{
+		$sx = $this->cab();
+		$sx .= $this->navbar();
+		$sx .= $this->FindSearch->banner();
 
-			$Books = new \App\Models\Book\Books();
-			$sx .= $Books->view_item($id);
-			$sx .= $this->footer();
+		$Books = new \App\Models\Book\Books();
+		$sx .= $Books->view_item($id);
+		$sx .= $this->footer();
 
-			return $sx;				
-		}
+		return $sx;
+	}
 	function v($id)
-		{
-			$sx = $this->cab();
-			$sx .= $this->navbar();
-			$sx .= $this->FindSearch->banner();	
+	{
+		$sx = $this->cab();
+		$sx .= $this->navbar();
+		$sx .= $this->FindSearch->banner();
 
-			$Books = new \App\Models\Book\Books();
-			$sx .= $Books->v($id);
+		$Books = new \App\Models\Book\Books();
+		$sx .= $Books->v($id);
 
-			return $sx;			
-		}
+		$sx .= $this->footer();
+
+		return $sx;
+	}
 
 	function a($id)
-		{
-			$sx = $this->cab();
-			$sx .= $this->navbar();
-			$sx .= $this->FindSearch->banner();	
+	{
+		$sx = $this->cab();
+		$sx .= $this->navbar();
+		$sx .= $this->FindSearch->banner();
 
-			$Books = new \App\Models\Book\Books();
-			$sx .= $Books->a($id);
+		$Books = new \App\Models\Book\Books();
+		$sx .= bs(bsc($Books->a($id), 12));
 
-			return $sx;			
-		}		
+		$sx .= $this->footer();
 
-	function users($d1='',$d2='',$d3='',$d4='')	
-		{
-			$User = new \App\Models\User();
+		return $sx;
+	}
 
-			$sx = $this->cab();
-			$sx .= $this->navbar();
-			$sx .= $this->FindSearch->banner();	
-			
-			/* Export Command */
-			$sx .= $User->index($d1,$d2,$d3,$d4);
+	function users($d1 = '', $d2 = '', $d3 = '', $d4 = '')
+	{
+		$User = new \App\Models\User();
 
-			$sx .= $this->footer();
+		$sx = $this->cab();
+		$sx .= $this->navbar();
+		$sx .= $this->FindSearch->banner();
 
-			return $sx;
-		}
+		/* Export Command */
+		$sx .= $User->index($d1, $d2, $d3, $d4);
 
-	function config($d1='',$d2='')
-		{
-			$tela = $this->cab();
-			$tela .= $this->navbar();
-			$tela .= $this->FindSearch->banner();
+		$sx .= $this->footer();
 
-			$Libraries = new \App\Models\Library\Libraries();
-			$tela .= $Libraries->index($d1,$d2);
+		return $sx;
+	}
 
-			$tela .= $this->footer();
-			return $tela;
-		}
-	function rdf($d1='',$d2='',$d3='',$d4='',$d5='')
-		{
-			$cab = $this->cab('head');
-			$RDF = new \App\Models\Rdf\RDF();
-			$tela = $RDF->index($d1,$d2,$d3,$d4,$d5,$cab);
-			return $tela;
-		}
+	function config($d1 = '', $d2 = '')
+	{
+		$tela = $this->cab();
+		$tela .= $this->navbar();
+		$tela .= $this->FindSearch->banner();
 
-	function export($d1='',$d2='',$d3='',$d4='')	
-		{
-			$RDF = new \App\Models\RDF();
+		$Libraries = new \App\Models\Library\Libraries();
+		$tela .= $Libraries->index($d1, $d2);
 
-			$sx = $this->cab();
-			$sx .= $this->navbar();
-			$sx .= $this->FindSearch->banner();	
-			
-			/* Export Command */
-			$sx .= $RDF->export($d1,$d2);
+		$tela .= $this->footer();
+		return $tela;
+	}
+	function rdf($d1 = '', $d2 = '', $d3 = '', $d4 = '', $d5 = '')
+	{
+		$cab = $this->cab('head');
+		$RDF = new \App\Models\Rdf\RDF();
+		$tela = $RDF->index($d1, $d2, $d3, $d4, $d5, $cab);
+		return $tela;
+	}
 
-			return $sx;
-		}
+	function export($d1 = '', $d2 = '', $d3 = '', $d4 = '')
+	{
+		$RDF = new \App\Models\RDF();
 
+		$sx = $this->cab();
+		$sx .= $this->navbar();
+		$sx .= $this->FindSearch->banner();
+
+		/* Export Command */
+		$sx .= $RDF->export($d1, $d2);
+
+		return $sx;
+	}
 }
-
