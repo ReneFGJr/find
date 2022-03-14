@@ -52,6 +52,15 @@ function hexdump($string)
     }
     return $sx;
 }
+
+function geturl()
+    {
+        $path = $_SERVER['REQUEST_URI'];
+        if (strlen($path) == 0) { $path = $_SERVER['PATH_INFO']; }
+        if (strlen($path) == 0) { $path = $_SERVER['PHP_SELF']; }
+        return $path;
+    }
+
 function romano($n)
 {
     $n = sonumero($n);

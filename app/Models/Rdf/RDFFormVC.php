@@ -42,7 +42,7 @@ class RdfFormVC extends Model
 
 	function search($d1,$d2,$d3)
 		{
-			$RDFConcept = new \App\Models\RDF\RDFConcept();
+			$RDFConcept = new \App\Models\Rdf\RDFConcept();
 			$sx = '<select class="form-control" size="5" name="dd51" id="dd51">';
 			/********************************/
 			$q = get("q");

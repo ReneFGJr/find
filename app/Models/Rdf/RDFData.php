@@ -44,10 +44,10 @@ class RDFData extends Model
 
 	function literal($id,$prop,$name,$lang='')
 		{
-			$RDFClass = new \App\Models\RDF\RDFClass();
+			$RDFClass = new \App\Models\Rdf\RDFClass();
 			$idp = $RDFClass->class($prop);
 
-			$RDFLiteral = new \App\Models\RDF\RDFLiteral();
+			$RDFLiteral = new \App\Models\Rdf\RDFLiteral();
 			$d['d_literal'] = $RDFLiteral->name($name,$lang);
 			$d['d_library'] = LIBRARY;
 			$d['d_r1'] = $id;
@@ -115,7 +115,7 @@ class RDFData extends Model
 
 	function propriety($id1,$prop,$id2)
 		{
-			$RDFClass = new \App\Models\RDF\RDFClass();
+			$RDFClass = new \App\Models\Rdf\RDFClass();
 			$idp = $RDFClass->class($prop);
 
 			$d['d_r1'] = $id1;
@@ -157,7 +157,7 @@ class RDFData extends Model
 
 	function view_data($dt)
 		{
-			$RDF = new \App\Models\RDF\RDF();
+			$RDF = new \App\Models\Rdf\RDF();
 			$sx = '';
 			IF (!isset($dt['concept']['id_cc'])) { return ''; }
 			$ID = $dt['concept']['id_cc'];
