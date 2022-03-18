@@ -62,6 +62,7 @@ class TechPreparation extends Model
 							{
 								$sx .= bsc($Itens->prepare($d2,$d3,$st),10);
 							} else {
+								echo '==>'.$st;
 								switch($st)
 									{
 										case '0':

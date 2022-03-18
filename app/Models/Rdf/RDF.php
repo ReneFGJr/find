@@ -55,8 +55,13 @@ class RDF extends Model
 	{
 		$sx = '';
 		$type = get("type");
+		$sx .= h($d1);
 
 		switch ($d1) {
+			case 'ontology':
+				$RDFOntology = new \App\Models\Rdf\RDFOntology();
+				$sx .= $RDFOntology->index($d2, $d3, $d4, $d5, $cab);
+				break;
 			case 'export':
 				$RDFExport = new \App\Models\Rdf\RDFExport();
 				$sx = $cab;
@@ -188,6 +193,8 @@ class RDF extends Model
 				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/export/index_corporatebody') . '">' . lang('rdf.Export_corporatebody.index') . '</a></li>';
 				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/export/index_journal') . '">' . lang('rdf.Export_journal.index') . '</a></li>';
 				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/export/index_proceeding') . '">' . lang('rdf.Export_proceeding.index') . '</a></li>';
+				$sa .= h(lang('brapci.ontology'),4);
+				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/ontology') . '">' . lang('rdf.ontology') . '</a></li>';
 				$sa .= '</ul>';
 				$sx .= bs(bsc($sa,12));
 		}		

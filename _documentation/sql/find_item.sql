@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS `find_item` (
   `i_ln3` varchar(20) COLLATE utf8_bin DEFAULT NULL,
   `i_ln4` varchar(20) COLLATE utf8_bin DEFAULT NULL,
   `i_type` int(11) NOT NULL,
+  `i_work` int(11) NOT NULL,
   `i_identifier` char(15) COLLATE utf8_bin NOT NULL,
   `i_uri` char(100) COLLATE utf8_bin DEFAULT NULL,
   `i_library` int(11) NOT NULL,

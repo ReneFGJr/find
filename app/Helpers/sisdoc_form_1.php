@@ -97,7 +97,18 @@ function form($th)
                     } 
                 $sx .= bsmessage('SALVO');
                 if (isset($th->path_back)) {
-                    $sx .= metarefresh($th->path_back, 0);
+                    switch($th->path_back)
+                        {
+                            case 'close':
+                                $sx .= '<script>close();</script>';
+                                break;
+                            case 'nome':
+                                $sx .= '';
+                                break;
+                            default:
+                                $sx .= metarefresh($th->path_back, 1);
+                                break;    
+                        }                    
                 } else {
                     $sx .= bsmessage('$this->path_back não foi informado! - ' . $th->table, 3);
                 }

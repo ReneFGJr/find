@@ -73,6 +73,7 @@ class Find extends Model
 			->where('i_identifier',$isbn)
 			->where('i_manitestation > 0')
 			->findAll();
+
 		if (count($dt) == 0)
 			{
 				return array();

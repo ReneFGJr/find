@@ -101,6 +101,51 @@ class Itens extends Model
 			return $dt;
 		}
 
+		function save_metadata($dt,$id)	
+		{
+			$RDF = new \App\Models\Rdf\RDF();
+			$Item = new \App\Models\Book\Itens();
+			$di = $Item->find($id);
+			$isbn = $di['i_identifier'];	
+			
+			if (isset($dt['title']))
+				{
+					$title = trim($dt['title']);
+					$dd['i_titulo'] = $title;
+					$this->set($dd)->where('id_i',$id)->where('i_titulo','')->update();
+				} else {
+					
+				}
+			/************************** WORK ******/
+			$IDW = $RDF->rdf_concept($title,'Work');
+
+			/************************** AUTHORES */
+			for($r=0;$r < count($dt['authors']);$r++)
+				{
+					$name = trim($dt['authors'][$r]);
+					$IDA = $RDF->rdf_concept($name,'Person');
+					$RDF->propriety($IDW,'brapci:hasAuthor',$IDA);
+				}
+
+			/************************** EXPRESSAO */
+			$language = $dt['expressao']['idioma'];
+			
+			$name = 'ISBN:'.$isbn.':book';
+			$IDE = $RDF->rdf_concept($name,'frbr:Expression');
+			$IDL = $RDF->rdf_concept($language,'brapci:Linguage');
+			$RDF->propriety($IDE,'brapci:hasFormExpression',$IDL);
+
+			$prop = 'brapci:hasFormExpression';
+			$RDF->propriety($IDW,$prop,$IDE);
+
+					//$prop = 'skos:prefLabel';
+					//$RDF->propriety($IDW,$prop,$title);
+				
+							
+			echo anchor(PATH.MODULE.'/v/'.$IDW,'Link');
+			pre($dt);				
+		}		
+
 	function process_metadata($hv,$id)
 		{
 			$sx = '';
@@ -110,6 +155,21 @@ class Itens extends Model
 					$Find = new \App\Models\API\Find();
 					$sx = $Find->process($hv['FIND'],$id);
 				}
+				if (count($hv['OCLC']) > 0)
+				{
+					$Find = new \App\Models\API\Find();
+					$sx = $this->save_metadata($hv['OCLC'],$id);
+				}	
+				if (count($hv['GOOGLE']) > 0)
+				{
+					$Find = new \App\Models\API\Find();
+					$sx = $this->save_metadata($hv['GOOGLE'],$id);
+				}	
+				if (count($hv['MERCA']) > 0)
+				{
+					$Find = new \App\Models\API\Find();
+					$sx = $this->save_metadata($hv['MERCA'],$id);
+				}										
 			return $sx;
 		}
 
@@ -150,7 +210,6 @@ class Itens extends Model
 		/* Find */
 		$Find = new \App\Models\API\Find();
 		$dd['FIND'] = $Find->book($isbn, $id);
-
 		$dd['OCLC'] = array();
 		$dd['GOOGLE'] = array();
 		$dd['MERCA'] = array();
@@ -169,7 +228,6 @@ class Itens extends Model
 		$MecadoEditorial = new \App\Models\API\MercadoEditorial();
 		$dd['MERCA'] = $MecadoEditorial->book($isbn, $id);
 		}
-
 		return $dd;
 	}
 
@@ -353,6 +411,7 @@ class Itens extends Model
 
 		$sql = 'sql:id_bs:bs_name:library_place_bookshelf:bs_LIBRARY = \'' . LIBRARY . '\'';
 		$this->typeFields = array('hidden', $sql, 'hr', 'checkbox', 'hr', 'text:5', 'string:50');
+		$this->path_back = 'none';
 		$this->table = '*';
 		$this->id = 0;
 		$this->pre = 'find.';

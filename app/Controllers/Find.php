@@ -11,7 +11,7 @@ $session = \Config\Services::session();
 
 $this->Socials = new \App\Models\Socials();
 
-define("PATH", $_SERVER['app.baseURL'] . "index.php/");
+define("PATH", $_SERVER['app.baseURL']);
 define("MODULE", 'find/');
 define("URL", $_SERVER['app.baseURL']);
 define('PREFIX', 'find.');
@@ -432,6 +432,16 @@ class Find extends BaseController
 		$tela .= $this->footer();
 		return $tela;
 	}
+
+	function ontology($d1='',$d2='',$d3='',$d4='')
+	{
+		$Ontology = new \App\Models\Rdf\RDFOntology();
+		$tela = $this->cab();		
+		$tela .= bs($Ontology->index($d1,$d2,$d3,$d4));
+		$tela .= $this->cab("footer");		
+		return $tela;
+	}
+		
 	function rdf($d1 = '', $d2 = '', $d3 = '', $d4 = '', $d5 = '')
 	{
 		$cab = $this->cab('head');

@@ -2,6 +2,8 @@ public/.c/*
 public/_c/*
 public/_covers/*
 
+.c/
+
 #-------------------------
 # Operating Specific Junk Files
 #-------------------------
