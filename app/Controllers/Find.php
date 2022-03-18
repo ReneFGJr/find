@@ -1,5 +1,4 @@
 <?php
-#
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
@@ -32,6 +31,21 @@ class Find extends BaseController
 		helper('URL');
 		helper('form');
 	}
+
+	function admin($d1='',$d2='',$d3='',$d4='')
+		{
+			$sx = '';
+			$sx .= $this->cab();
+			$sx .= $this->navbar();
+			$sx .= $this->FindSearch->banner();
+			$sx .= breadcrumbs();
+
+			$Admin = new \App\Models\Admin\Index();
+			$sx .= $Admin->index($d1,$d2,$d3,$d4);
+
+			return $sx;
+		}
+
 
 	public function index()
 	{
@@ -138,7 +152,8 @@ class Find extends BaseController
 			$sx .= '            ' . lang('events.admin') . cr();
 			$sx .= '          </a>' . cr();
 			$sx .= '          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">' . cr();
-			$sx .= '            <li><a class="dropdown-item" href="' . PATH . MODULE . 'rdf">' . lang('events.rdf.row') . '</a></li>' . cr();
+			$sx .= '            <li><a class="dropdown-item" href="' . PATH . MODULE . 'rdf">' . lang('find.rdf.row') . '</a></li>' . cr();
+			$sx .= '            <li><a class="dropdown-item" href="' . PATH . MODULE . 'admin">' . lang('find.admin') . '</a></li>' . cr();
 			$sx .= '          </ul>' . cr();
 			$sx .= '        </li>' . cr();
 		}

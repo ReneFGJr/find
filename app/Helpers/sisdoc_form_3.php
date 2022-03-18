@@ -35,6 +35,17 @@ function read_link($url, $read = 'CURL')
     return ($contents);
 }
 
+function menu($menu)
+    {
+        $sx = '<ul>';
+        foreach($menu as $link=>$name)
+            {
+                $sx .= '<li><a href="' . $link . '">' . $name . '</a></li>';
+            }
+        $sx .= '</ul>';
+        return $sx;
+    }
+
 function pre($dt)
 {
     echo '<pre>';
