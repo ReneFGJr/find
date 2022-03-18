@@ -327,6 +327,14 @@ class Find extends BaseController
 		return $sx;
 	}
 
+	function labels($d1='',$d2='',$d3='',$d4='')
+		{
+			$Labels = new \App\Models\Labels\Index();
+			$sx = $this->cab();
+			$sx .= $Labels->index($d1,$d2,$d3,$d4);
+			return $sx;
+		}
+
 	public function social($d1 = '', $id = '')
 	{
 		$cab  = $this->cab();
