@@ -63,6 +63,48 @@ class RDFConcept extends Model
 			return $dt;
 		}
 
+	function getNameId($t,$class)
+		{
+			if ($class != sonumero($class))
+				{
+					$RDFClass = new \App\Models\Rdf\RDFClass();
+					$class = $RDFClass->class($class,false);
+				}
+
+			$cp = 'id_cc, n_name, cc_use';
+			$sql = "select $cp from ".$this->table." ";
+			$sql .= "left join rdf_name ON cc_pref_term = rdf_name.id_n";
+			$sql .= " where (cc_class = ".$class.') ';
+			$sql .= " and (n_name = '".$t."') ";
+			$sql .= " order by n_name";
+			$sql .= " limit 100";
+			$dt = $this->query($sql)->getResult();
+			$dt = (array)$dt;
+			$id = 0;
+			
+			for ($r=0;$r < count($dt);$r++)
+				{
+					$line = (array)$dt[$r];
+					if ($line['cc_use'] > 0) 
+						{ 
+							$id = $line['cc_use']; 
+						} else {
+							if ($id > 0)
+								{
+									if ($line['id_cc'] != $id)
+										{
+											echo "RDFConcept - OPS, redundant name";
+											exit;
+										} else {
+											$id = $line['id_cc'];
+										}
+								}
+						}
+				return $id;
+				}
+			return $dt;
+		}		
+
 	function le($id)
 		{
 			$this->join(PREFIX.'rdf_name', 'cc_pref_term = rdf_name.id_n', 'LEFT');

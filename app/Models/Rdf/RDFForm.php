@@ -236,7 +236,7 @@ function edit($d1,$d2,$d3,$d4,$d5)
 
 		if ($range == 0)
 			{
-				if (perfil("#ADMIN"))
+				if  ($this->Socials->getAccess("#ADM"))
 					{
 						$id = $dt['id_sc'];
 						$sx = metarefresh(PATH.MODULE.'rdf/form_ed/'.$id.'?msg=range_not_found',0);

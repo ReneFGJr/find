@@ -302,8 +302,8 @@ function form_fields($typ, $fld, $vlr, $th = array(),$obg=0, $pre='')
             for ($r = $opc[0]; $r <= $opc[1]; $r++) {
                 $sel = '';
                 $vll = strzero($r,2);
-                if ($vlr == $r) { $sel = 'selected'; }
-                $sg .= '<option value="' . $vll . '" ' . strzero($r,2) . '>' . $vll . '</option>' . cr();
+                if (round($vlr) == $r) { $sel = 'selected'; }
+                $sg .= '<option value="' . $vll . '" ' . strzero($r,2) . ' '.$sel.'>' . $vll . '</option>' . cr();
             }
             $sg .= '</select>' . cr();
             $sx .= $sg;
@@ -338,6 +338,7 @@ function form_fields($typ, $fld, $vlr, $th = array(),$obg=0, $pre='')
             for ($r = 0; $r < count($opc); $r++) {
                 $sel = '';
                 $opx = explode('&',$opc[$r]);
+                if ($opx[0] == $vlr) { $sel = 'selected'; }
                 $sg .= '<option value="' . $opx[0] . '" ' . $sel . '>' . $opx[1] . '</option>' . cr();
             }
             $sg .= '</select>' . cr();

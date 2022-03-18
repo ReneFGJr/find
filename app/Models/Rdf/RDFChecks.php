@@ -45,7 +45,8 @@ class RDFChecks extends Model
 	function check_html($class)
 		{
 			$sx = '';
-			$sx .= h(lang('brapci.check')).' '.$class;
+			$sx .= breadcrumbs(array('Home'=>PATH.MODULE,'RDF'=>PATH.MODULE.'rdf','Check '.$class=>'#'));
+			$sx .= h(lang('rdf.check').' '.lang('rdf.'.$class));
 			$RDF = new \App\Models\Rdf\RDF();
 			$RDFLiteral = new \App\Models\Rdf\RDFLiteral();
 			$class = $RDF->getClass($class);
@@ -63,7 +64,6 @@ class RDFChecks extends Model
 					$t++;
 					if ($t > 10) { break; }
 
-					echo '<br>'.$r;
 					$line = $dt[$r];
 
 					$sx .= '<li>';
@@ -82,14 +82,17 @@ class RDFChecks extends Model
 					$sx .= '<li>'.$nome.' <b>Update</b></li>';
 				}
 				$sx .= '</ul>';
-			$sx = 'Update '.$t.' for '.count($dt).'<br>'.$sx;
+
+			$sx .= 'Update '.$t.' for '.count($dt).'<br>';
 			if ($t > 0)
 				{
 					$sx .= metarefresh(PATH.MODULE.'rdf/check_corporate_body',2);
 				} else {
-					$sx .= bsmessage(lang('brapci.process_finished'));
+					$sx .= bsmessage(lang('rdf.process_finished'));
 					$sx .= '<a href="'.PATH.MODULE.'rdf" class="btn btn-outline-primary">'.lang('brapci.return').'</a>';
 				}
+
+			$sx = bs(bsc($sx,12));
 			return $sx;
 		}
 
@@ -98,7 +101,8 @@ class RDFChecks extends Model
 		/********************************************** Check RDF */
 		$RDFData = new \App\Models\Rdf\RDFData();
 		$sx = '';
-		$sx .= '<h2>'.msg('brapci.check_duplicate').'</h2>';
+		$sx .= breadcrumbs(array('Home'=>PATH.MODULE,'RDF'=>PATH.MODULE.'rdf','Duplicate'=>'#'));
+		$sx .= '<h2>'.msg('rdf.Check_class_duplicate').'</h2>';
 		$sx .= '<ul>';
 		$sx .= '<li class="text-success">';
 		$tot = $RDFData->check_duplicates();
@@ -111,9 +115,10 @@ class RDFChecks extends Model
 				$sx .= metarefresh(PATH.MODULE.'rdf/check',5);
 				$sx .= $this->btn_return();
 			} else {
-				$sx .= bsmessage(lang('brapci.rdf_check_ok'),1);
+				$sx .= bsmessage(lang('rdf.rdf_check_ok'),1);
 				$sx .= $this->btn_return();
 			}
+		$sx = bs(bsc($sx,12));
 		return $sx;
 		}	
 
@@ -126,7 +131,9 @@ class RDFChecks extends Model
 	function check_loop()
 		{
 			$RDF = new \App\Models\Rdf\RDF();
-			$sx = h('Check Loop');
+			$sx = '';
+			$sx .= breadcrumbs(array('Home'=>PATH.MODULE,'RDF'=>PATH.MODULE.'rdf','Loop'=>'#'));
+			$sx .= h('Check Loop');
 			$this->select('
 				rdf_concept.id_cc as r0idc, rc1.id_cc as r1idc,rc2.id_cc as r2idc,
 				rdf_concept.cc_use as r0use, rc1.cc_use as r1use,rc2.cc_use as r2use,
@@ -139,7 +146,7 @@ class RDFChecks extends Model
 
 			for ($r=0;$r < count($dt);$r++)
 				{
-					$ln = $dt[$r];					
+					$ln = $dt[$r];	
 
 					/* Method 0 */
 					if ($ln['r0idc'] == $ln['r0use'])
@@ -187,31 +194,29 @@ class RDFChecks extends Model
 				{
 					$sx .= $this->btn_return();
 				}			
+			$sx = bs(bsc($sx,12));
 			return $sx;
 		}	
 
-	function check_authors()
+	function check_class($class="Person")
 		{
 			$AuthotityRDF = new \App\Models\Authority\AuthotityRDF();
-			$sx  = '';
-			$ph = get("phase");
-			switch ($ph)
-				{
-					default:
-						/*************************************** Etapa I */				
-						$sx .= h('Method 1');
-						$sx .= $AuthotityRDF->author_check_method_1();
-						$sx .= $this->btn_return();
-						break;
+			$sx = '';
+			$sx .= breadcrumbs(array('Home'=>PATH.MODULE,'RDF'=>PATH.MODULE.'rdf',lang('rdf.Check_'.$class)=>'#'));
 
-					case '2':
-						$sx .= h('Method 3');
-						/*************************************** Etapa I */				
-						$sx .= $AuthotityRDF->author_check_method_3();
-						$sx .= $this->btn_return();
-						break;
-				}
+			/*************************************** Etapa I */				
+			$sx .= h('Method 1');
+			$sx .= $AuthotityRDF->check_method_1($class);
+			
+			$sx .= h('Method 3');
+			/*************************************** Etapa I */				
+			$sx .= $AuthotityRDF->check_method_3($class);
+			$sx .= '<br><br>';
 
+
+			$sx .= $this->btn_return();
+
+			$sx = bs(bsc($sx,12));
 			return $sx;
 		}					
 }
