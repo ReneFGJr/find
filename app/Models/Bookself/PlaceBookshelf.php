@@ -75,6 +75,7 @@ class PlaceBookshelf extends Model
     function viewid($id)
         {
             $dt = $this->find($id);
-            pre($dt);
+            $sx = h($dt['bs_name']);
+            return $sx;
         }
 }
