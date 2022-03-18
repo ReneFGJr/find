@@ -45,8 +45,7 @@ class RDFChecks extends Model
 	function check_html($class)
 		{
 			$sx = '';
-			$sx .= breadcrumbs(array('Home'=>PATH.MODULE,'RDF'=>PATH.MODULE.'rdf','Check '.$class=>'#'));
-			$sx .= h(lang('rdf.check').' '.lang('rdf.'.$class));
+			$sx .= h('Method 4');
 			$RDF = new \App\Models\Rdf\RDF();
 			$RDFLiteral = new \App\Models\Rdf\RDFLiteral();
 			$class = $RDF->getClass($class);
@@ -61,8 +60,8 @@ class RDFChecks extends Model
 
 			for($r=0;$r < $total;$r++)
 				{
-					$t++;
 					if ($t > 10) { break; }
+					$t++;
 
 					$line = $dt[$r];
 
@@ -82,14 +81,13 @@ class RDFChecks extends Model
 					$sx .= '<li>'.$nome.' <b>Update</b></li>';
 				}
 				$sx .= '</ul>';
-
-			$sx .= 'Update '.$t.' for '.count($dt).'<br>';
+			
 			if ($t > 0)
 				{
-					$sx .= metarefresh(PATH.MODULE.'rdf/check_corporate_body',2);
+					$sx .= 'Update '.$t.' for '.count($dt).'<br>';
+					$sx .= metarefresh('#',3);
 				} else {
-					$sx .= bsmessage(lang('rdf.process_finished'));
-					$sx .= '<a href="'.PATH.MODULE.'rdf" class="btn btn-outline-primary">'.lang('brapci.return').'</a>';
+					$sx .= msg('rdf.no_changes',3);
 				}
 
 			$sx = bs(bsc($sx,12));
@@ -211,10 +209,7 @@ class RDFChecks extends Model
 			$sx .= h('Method 3');
 			/*************************************** Etapa I */				
 			$sx .= $AuthotityRDF->check_method_3($class);
-			$sx .= '<br><br>';
-
-
-			$sx .= $this->btn_return();
+			$sx .= '<br><br>';			
 
 			$sx = bs(bsc($sx,12));
 			return $sx;

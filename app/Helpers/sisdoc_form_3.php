@@ -43,6 +43,16 @@ function pre($dt)
     exit;
 }
 
+if (!function_exists("current_url")) {
+    function current_url()
+    {
+        $url = getenv('app.baseURL');
+        echo $url;
+        exit;
+        return $url;    
+    }
+}
+
 function hexdump($string)
 {
     $sx = '';

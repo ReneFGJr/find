@@ -63,6 +63,16 @@ class RDFConcept extends Model
 			return $dt;
 		}
 
+	function exclude($id)
+		{
+			$dt = $this->find($id);
+			$dt['cc_status'] = -1;
+			$dt['cc_class'] = $dt['cc_class']*(-1);
+			$dt['cc_use'] = $dt['cc_use']*(-1);
+			$dt['cc_pref_term'] = $dt['cc_pref_term']*(-1);
+			$this->set($dt)->where('id_cc',$id)->update();
+		}
+
 	function getNameId($t,$class)
 		{
 			if ($class != sonumero($class))

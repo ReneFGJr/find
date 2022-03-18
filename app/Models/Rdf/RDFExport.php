@@ -359,6 +359,7 @@ class RDFExport extends Model
 		$this->saveRDF($id, json_encode($dc), 'issue.json');
 		return "";
 	}
+	
 	function export_geral($dt, $id)
 	{
 		$name = trim($dt['concept']['n_name']);
@@ -394,7 +395,15 @@ class RDFExport extends Model
 			case 'index_corporatebody':
 				$tela .= $this->export_index_list_all($FORCE,'CorporateBody',$id);
 				return $tela;
-				break;					
+				break;		
+			case 'index_journal':
+				$tela .= $this->export_index_list_all($FORCE,'Journal',$id);
+				return $tela;
+				break;	
+			case 'index_proceeding':
+				$tela .= $this->export_index_list_all($FORCE,'Proceeding',$id);
+				return $tela;
+				break;													
 			}
 
 		$this->RDF = new \App\Models\RDF\RDF();

@@ -67,7 +67,6 @@ class RDF extends Model
 				break;
 			case 'remissive_Person':			
 				$sx .= $this->remissive($d2, $d3, $d4, $d5, $cab,'Person');
-				$sx .= $RDFChecks->check_html('Person');
 				break;
 			case 'remissive_CorporateBody':
 				$sx .= $this->remissive($d2, $d3, $d4, $d5, $cab,'CorporateBody');
@@ -84,25 +83,28 @@ class RDF extends Model
 				$RDFChecks = new \App\Models\Rdf\RDFChecks();
 				$sx .= $cab;
 				$sx .= $RDFChecks->check_duplicate();
+				$sx .= $RDFChecks->btn_return();
 				break;
 			case 'check_authors':
 				$RDFChecks = new \App\Models\Rdf\RDFChecks();
 				$sx .= $cab;
 				$sx .= $RDFChecks->check_class("Person");
+				$sx .= $RDFChecks->check_html('Person');
+				$sx .= bs(bsc($RDFChecks->btn_return(),12));
 				break;
 			case 'check_corporate_body':
 				$RDFChecks = new \App\Models\Rdf\RDFChecks();
 				$sx .= $cab;
 				$sx .= $RDFChecks->check_class("CorporateBody");
-				//$sx .= $this->remissive($d2, $d3, $d4, $d5, $cab,'CorporateBody');
 				$sx .= $RDFChecks->check_html('CorporateBody');
+				$sx .= bs(bsc($RDFChecks->btn_return(),12));
 				break;		
 			case 'check_subject':
 				$RDFChecks = new \App\Models\Rdf\RDFChecks();
 				$sx .= $cab;
 				$sx .= $RDFChecks->check_class("Subject");
-				//$sx .= $this->remissive($d2, $d3, $d4, $d5, $cab,'Subject');
 				$sx .= $RDFChecks->check_html('Subject');
+				$sx .= bs(bsc($RDFChecks->btn_return(),12));
 				break;						
 			case 'check_loop';
 				$RDFChecks = new \App\Models\Rdf\RDFChecks();
@@ -124,6 +126,10 @@ class RDF extends Model
 				$sx .= $RDFFormVC->search($d1,$d2,$d3);
 				echo $sx;
 				exit;
+				break;
+			case 'exclude_concept':
+				$sx = $cab;
+				$sx .= $this->exclude_conecpt($d2,$d3);			
 				break;
 			case 'exclude':				
 				$RDFForm = new \App\Models\Rdf\RDFForm();
@@ -180,11 +186,59 @@ class RDF extends Model
 				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/export/index_authors') . '">' . lang('rdf.Export_authors.index') . '</a></li>';
 				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/export/index_subject') . '">' . lang('rdf.Export_subject.index') . '</a></li>';
 				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/export/index_corporatebody') . '">' . lang('rdf.Export_corporatebody.index') . '</a></li>';
+				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/export/index_journal') . '">' . lang('rdf.Export_journal.index') . '</a></li>';
+				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/export/index_proceeding') . '">' . lang('rdf.Export_proceeding.index') . '</a></li>';
 				$sa .= '</ul>';
 				$sx .= bs(bsc($sa,12));
 		}		
 		return $sx;
 	}
+
+	function exclude($id)
+		{
+			$RDFConcept = new \App\Models\Rdf\RDFConcept();
+			$RDFData = new \App\Models\Rdf\RDFData();
+
+			$RDFData->exclude($id);
+			$RDFConcept->exclude($id);
+		}
+
+	function E404()
+		{
+			$sx = '<h1>' . 'ERROR: 404' . '</h1>';
+			$sx .= '<p>' . lang('rdf.concept_was_deleted') . '</p>';
+			$sx .= '<button onclick="history.back()">Go Back</button>';
+			return($sx);
+		}
+
+	function exclude_conecpt($id,$chk)
+		{
+		$sx = '';
+		
+		$check = md5(MODULE.$id);
+		if ($check == $chk)
+			{
+				$this->exclude($id);
+				$sx .= wclose();
+				return $sx;
+			}
+		$dt = $this->le($id,1);
+		
+		$sx .= 'class:'.$dt['concept']['c_class'];
+		$sx .= '<br>';
+		$sx .= h($dt['concept']['n_name'],4);
+		$sx .= '<hr>';
+		/* Mostra mensagem de exclusão */
+		$sx .= '<center>'.h(msg('find.rdf_exclude_confirm'),4,'text-danger').'</center>';
+		$sx .= '
+			</div>		
+			<div class="modal-footer">
+			<button type="button" class="btn btn-default" onclick="wclose();" data-dismiss="modal">'.lang('find.cancel').'</button>
+			<a href="'.(PATH.MODULE.'rdf/exclude_concept/'.$id.'/'.$check).'" class="btn btn-warning" id="submt">'.lang('find.confirm_exclude').'</a>
+			</div>                  
+		';
+		return $sx;
+		}
 
 
 	function string_array($d,$t=0,$sep = ';')
@@ -293,7 +347,7 @@ class RDF extends Model
 									$d2xa = $d2x[$q];
 									$dt['cc_use'] = $d1x;
 									$this->set($dt)->where('id_cc',$d2xa)->update();
-									$this->change($d2xa,$d1x);								
+									$this->change($d1x,$d2xa);								
 								}
 							$sx = metarefresh(PATH.MODULE.'rdf/remissive_'.$class.'/'.$d2.'/'.$d3.'?arg='.get('arg'));
 							return $sx;
@@ -302,7 +356,7 @@ class RDF extends Model
 							{
 								$dt['cc_use'] = $d1x;
 								$this->set($dt)->where('id_cc',$d2x)->update();
-								$this->change($d2x,$d1x);							
+								$this->change($d1x,$d2x);
 								$sx = metarefresh(PATH.MODULE.'rdf/remissive_'.$class.'/'.$d2.'/'.$d3.'?arg='.get('arg'));
 								return $sx;
 							}
@@ -611,7 +665,6 @@ class RDF extends Model
 		if ((file_exists($file)) and ($force==false)) {
 			$tela = file_get_contents($file);
 		} else {
-			$tela = 'Content not found: ' . $id . '==' . $file . '<br>';
 			$RDFExport = new \App\Models\Rdf\RDFExport();
 			$RDFExport->export($id,$force);
 			if (file_exists($file)) {

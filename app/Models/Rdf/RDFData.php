@@ -154,6 +154,21 @@ class RDFData extends Model
 				}
 			return false;
 		}
+	function exclude($id)
+		{
+			$this->where('d_r1',$id);
+			$this->ORwhere('d_r2',$id);
+			$dt = $this->FindAll();
+
+			for ($r=0;$r < count($dt);$r++)
+				{
+					$dd = $dt[$r];
+					$dd['d_r1'] = $dd['d_r1']*(-1);
+					$dd['d_r2'] = $dd['d_r2']*(-1);
+					$dd['d_literal'] = $dd['d_literal']*(-1);
+					$this->set($dd)->where('id_d',$dd['id_d'])->update();
+				}
+		}
 
 	function view_data($dt)
 		{
@@ -166,6 +181,11 @@ class RDFData extends Model
 					$dtd = $dt['data'];
 					for ($qr=0;$qr < count($dtd);$qr++)
 						{
+							if ($qr > 100)
+								{
+									$sx .= bsc(bsmessage('Limite de 100 registros'),12);
+									break;
+								}
 							$line = (array)$dtd[$qr];
 							$sx .= bsc('<small>'.lang($line['prefix_ref'].':'.
 									$line['c_class'].'</small>'),2,
@@ -175,7 +195,7 @@ class RDFData extends Model
 								if ($ID == $line['d_r2'])
 									{
 										$link = base_url(PATH.MODULE.'/v/'.$line['d_r1']);
-										$txt = $RDF->c($line['d_r1'],1);
+										$txt = $RDF->c($line['d_r1']);
 										if (strlen($txt) > 0)
 											{
 												$link = '<a href="'.$link.'">'.$txt.'</a>';
@@ -186,7 +206,7 @@ class RDFData extends Model
 										
 									} else {
 										$link = base_url(PATH.MODULE.'/v/'.$line['d_r2']);
-										$txt = $RDF->c($line['d_r2'],1);
+										$txt = $RDF->c($line['d_r2']);
 										if (strlen($txt) > 0)
 											{
 												$link = '<a href="'.$link.'">'.$txt.'</a>';

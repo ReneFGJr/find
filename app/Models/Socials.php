@@ -420,7 +420,34 @@ class Socials extends Model
 				$this->primaryKey = "id_pe";
 				$this->allowedFields = ['id_pe', 'pe_abrev', 'pe_descricao', 'pe_nivel'];
 				$this->typeFields = ['hidden', 'string:100', 'string:100', '[0-9]'];
-		}		
+		}	
+		
+	function change_password($id)
+		{
+			$pw1 = get("password_old");
+			$pw2 = get("password");
+			$pw3 = get("password_confirm");
+
+			$sx = 'Change Password';
+
+			if (($pw1 != '') and ($pw2 != '') and ($pw3 != ''))
+				{
+					$sx = bsmessage(lang('social.password_change_ok'),1);
+				} else {
+					$this->table = '*';
+					$this->primaryKey = "id_pe";
+					$this->allowedFields = ['id_us', 'password_old', 'password', 'password_confirm'];
+					$this->typeFields = ['hidden', 'password', 'password', 'password'];
+					$this->path = PATH.MODULE.'social/perfil';
+					$this->path_back = '#';
+					$sx .= form($this);		
+				}
+
+		
+
+			return $sx;
+
+		}
 
 	function setUserDb()
 		{
@@ -603,6 +630,7 @@ class Socials extends Model
 						<h6 class="text-uppercase text-body text-xs font-weight-bolder">'.lang('social.my_settings').'</h6>
 						<ul class="list-group">';
 		$sx .= '<li class="list-group-item border-0 px-0">'.lang('social.my_settings_info').'</li>';
+		$sx .= $this->change_password($id);
 		$sx .= '
 						</ul>
 					</div>
