@@ -7,9 +7,7 @@ use App\Controllers\BaseController;
 $this->session = \Config\Services::session();
 $language = \Config\Services::language();
 
-
-helper(['boostrap', 'url', 'graphs', 'sisdoc_forms', 'form', 'nbr', 'sessions']);
-helper('URL');
+helper(['boostrap', 'url', 'graphs', 'sisdoc_forms', 'form', 'nbr','sessions']);
 $session = \Config\Services::session();
 
 $this->Socials = new \App\Models\Socials();
@@ -30,6 +28,9 @@ class Find extends BaseController
 
 		define("LIBRARY", "1003");
 		define("LIBRARY_NAME", "FIND");
+
+		helper('URL');
+		helper('form');
 	}
 
 	public function index()
