@@ -33,6 +33,9 @@ $routes->setAutoRoute(true);
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 $routes->get('/', 'Find::index');
+$routes->get('/index.php/find', 'Find::index');
+
+
 
 /*
  * --------------------------------------------------------------------
