@@ -51,6 +51,15 @@ if (!function_exists("current_url")) {
     }
 }
 
+if (!function_exists("site_url")) {
+    function site_url()
+    {
+        $url = getenv('app.baseURL');
+        return $url;    
+    }
+}
+
+
 function hexdump($string)
 {
     $sx = '';
