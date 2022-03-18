@@ -9,6 +9,7 @@ $language = \Config\Services::language();
 
 
 helper(['boostrap', 'url', 'graphs', 'sisdoc_forms', 'form', 'nbr', 'sessions']);
+helper('URL');
 $session = \Config\Services::session();
 
 $this->Socials = new \App\Models\Socials();
