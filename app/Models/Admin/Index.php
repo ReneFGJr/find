@@ -40,18 +40,23 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    function index($d1='',$d2='',$d3='',$d4='')
+    function index($d1='',$d2='',$d3='',$d4='',$d5='')
         {
-            $sx = '==>'.$d1;
-
+            $sx = '';
             switch($d1)
                 {
+        			case 'Library':
+                        $Library = new \App\Models\Library\Libraries();
+                        $sx .= $Library->index($d2,$d3,$d4,$d5);
+                        break;                        
                     case 'PlaceBookshelf':
                         $PlaceBookshelf = new \App\Models\Bookself\PlaceBookshelf();
                         $sx = $PlaceBookshelf->index($d2,$d3,$d4);
                         break;
                     default:
+                        $sx .= '==>'.$d1;
                         $menu[URL.MODULE.'admin/PlaceBookshelf'] = 'find.PlaceBookshelf';
+                        $menu[URL.MODULE.'admin/Library'] = 'find.Library';
                         $sx .= h('find.adminPlaceBookshelf');
                         $sx .= menu($menu);
                         break;        

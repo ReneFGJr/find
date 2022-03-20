@@ -412,7 +412,7 @@ class Books extends Model
 
 					case 'frbr:Manifestation':
 						$sx = 'MANIFESTATION';			
-							
+						//pre($dt);
 						$expre = $RDF->recover($dt,'isAppellationOfManifestation');
 						$expre = $expre[0];
 						$expre = $RDF->le($expre);
@@ -480,7 +480,7 @@ class Books extends Model
 			$sx = '
 			<div style="float:left; width: 180px;">
 			<span style="position: fixed; left: 5px; top: 140px;" class="btn btn-outline-primary p-1">
-			<a href="'.PATH.MODULE.'a/'.$id.'">
+			<a href="'.PATH.MODULE.'/a/'.$id.'">
 			'.lang('find.edit').'
 			</a>
 			</span>

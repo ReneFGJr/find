@@ -103,73 +103,217 @@ class Itens extends Model
 
 		function save_metadata($dt,$id)	
 		{
+			$sx = '';
 			$RDF = new \App\Models\Rdf\RDF();
 			$Item = new \App\Models\Book\Itens();
 			$di = $Item->find($id);
 			$isbn = $di['i_identifier'];	
+			$language = '';
+
+			/****************************************** OCLC */
+			if (isset($dt['editions']))
+				{
+					$editons = $dt['editions'];
+					$editons = $editons['edition'];
+					$tit = array();
+					for($r=0;$r < count($editons);$r++)
+						{
+							$line = $editons[$r];
+							$attr = $line['@attributes'];
+							$lang = $attr['language'];
+							$title = $attr['title'];
+							$title = troca($title,' :',':');
+							$tit[$lang] = $title;
+							$format = $attr['format'];
+							if (isset($attr['author']))
+								{
+									$author = $attr['author'];
+								}							
+						}
+					if (isset($tit['por']))
+						{
+							$dt['title'] = $tit['por'];
+							$language = 'pt';
+						} else {
+							if (isset($tit['eng']))
+								{
+									$dt['title'] = $tit['eng'];
+									$language = 'en';
+								} else {
+									if (isset($tit['spa']))
+									{
+										$dt['title'] = $tit['spa'];
+										$language = 'es';
+									} else {
+										if (isset($tit['fre']))
+										{
+											$dt['title'] = $tit['fre'];
+											$language = 'fr';
+										} else {
+											
+										}
+									}
+								}
+						}
+
+				}
 			
 			if (isset($dt['title']))
-				{
+				{					
 					$title = trim($dt['title']);
 					$dd['i_titulo'] = $title;
 					$this->set($dd)->where('id_i',$id)->where('i_titulo','')->update();
+					$sx .= '<hr><span>Title: <b>'.$title.'</b></span><br>';
 				} else {
 					
 				}
 			/************************** WORK ******/
+			if (!isset($title))
+				{
+					return lang('find.title_not_proceess');
+				}
 			$IDW = $RDF->rdf_concept($title,'Work');
 
 			/************************** AUTHORES */
+			/************************************ OCLS */
+			if (isset($dt['authors']))
+				{
+					$auth = $dt['authors'];
+					if (isset($auth['author']))
+						{
+							$dta = $auth['author'];
+							$dt['authors'] = $dta;
+						}
+				}
+
+			/************************************ AUTHORS */
+			if (isset($dt['authors']))
+					{
+					if (!is_array($dt['authors']))
+						{
+							$name = $dt['authors'];
+							$ano1 = '';
+							$ano2 = '';
+							for ($r=1800;$r < date("Y");$r++)
+								{
+									if ($pos=strpos($name,$r.'-')) { $ano1 = substr($name, $pos,4); }
+									if ($pos=strpos($name,'-'.$r)) { $ano2 = substr($name, $pos+1,4); }
+								}
+							if ($pos = strpos($name,','))
+								{
+									$name1 = trim(substr($name,$pos+2,strlen($name)));
+									if (strpos($name1,','))
+										{
+											$name1 = substr($name1,0,strpos($name1,','));
+										}
+									$name2 = substr($name,0,strpos($name,','));
+									$name = trim($name1).' '.trim($name2);
+									
+								}
+							$dt['authors'] = array($name);
+						}			
+				} else {
+					$dt['authors'] = array();
+				}
+
 			for($r=0;$r < count($dt['authors']);$r++)
 				{
 					$name = trim($dt['authors'][$r]);
+					$prop = 'brapci:hasAuthor';
+					if (strpos($name,'[') > 0)
+						{
+							$prop = trim(substr($name,strpos($name,'['),strlen($name)));
+							$name = substr($name,0,strpos($name,'['));
+							switch($prop)
+								{
+									case '[Translator]':
+										$prop = 'brapci:hasTranslator';
+										break;
+									default:
+										echo "OPS - ".$prop;
+										exit;
+										break;
+								}
+						}
+					$name = nbr_author($name,7);
 					$IDA = $RDF->rdf_concept($name,'Person');
-					$RDF->propriety($IDW,'brapci:hasAuthor',$IDA);
+					$RDF->propriety($IDW,$prop,$IDA);
 				}
 
 			/************************** EXPRESSAO */
-			$language = $dt['expressao']['idioma'];
+			if ($language == '')
+				{
+					$language = $dt['expressao']['idioma'];
+				}			
 			
 			$name = 'ISBN:'.$isbn.':book';
-			$IDE = $RDF->rdf_concept($name,'frbr:Expression');
+			$IDE = $RDF->rdf_concept($name,'frbr:Expression');			
 			$IDL = $RDF->rdf_concept($language,'brapci:Linguage');
-			$RDF->propriety($IDE,'brapci:hasFormExpression',$IDL);
 
 			$prop = 'brapci:hasFormExpression';
+			$prop = 'isAppellationOfExpression';
 			$RDF->propriety($IDW,$prop,$IDE);
 
-					//$prop = 'skos:prefLabel';
-					//$RDF->propriety($IDW,$prop,$title);
-				
+			/************************* Language */			
+			$RDF->propriety($IDE,'brapci:hasFormExpression',$IDL);
+			$sx .= '<p>Language: '.$language.'</p>';				
 							
-			echo anchor(PATH.MODULE.'/v/'.$IDW,'Link');
-			pre($dt);				
+			$sx .= '<p>Work:'.anchor(PATH.MODULE.'/v/'.$IDW,'Link').'</p>';
+
+			/************************** MANIFESTATION */
+			$name = 'ISBN:'.$isbn;
+			$IDM = $RDF->rdf_concept($name,'frbr:Manifestation');	
+			$prop = 'isAppellationOfManifestation';
+			$RDF->propriety($IDE,$prop,$IDM);
+			$sx .= '<p>Expression:'.anchor(PATH.MODULE.'/v/'.$IDE,'Link').'</p>';
+			$sx .= '<p>Manifestation:'.anchor(PATH.MODULE.'/v/'.$IDM,'Link').'</p>';
+
+			/****************************** ISBN */
+			$IDISBN = $IDM = $RDF->rdf_concept($name,'brapci:ISBN');
+			$RDF->propriety($IDM,'brapci:hasISBN',$IDISBN);
+
+			return $sx;		
 		}		
 
 	function process_metadata($hv,$id)
 		{
-			$sx = '';
-			/********************************************************* METADATA */			
+			$sx = h('find.metadata_proceesing',3);			
+
+			/********************************************************* METADATA - FIND */			
 			if (count($hv['FIND']) > 0)
 				{
 					$Find = new \App\Models\API\Find();
-					$sx = $Find->process($hv['FIND'],$id);
+					$sx .= 'FIND '. $Find->process($hv['FIND'],$id).'<br>';
+				} else {
+					$sx .= 'FIND '.lang('find.metadata_not_found').'<br>';
 				}
-				if (count($hv['OCLC']) > 0)
+
+			/********************************************* METADATA - MercadoEditorial */			
+			if (count($hv['MERCA']) > 0)
 				{
 					$Find = new \App\Models\API\Find();
-					$sx = $this->save_metadata($hv['OCLC'],$id);
-				}	
+					$sx .= 'MercadoEditorial '. $this->save_metadata($hv['MERCA'],$id).'<br>';
+				} else {
+					$sx .= 'MercadoEditorial '.lang('find.metadata_not_found').'<br>';
+				}					
+			
+			/********************************************************* METADATA - OCLC */			
+			if (count($hv['OCLC']) > 0)
+				{
+					$Find = new \App\Models\API\Find();
+					$sx .= 'OCLC '.$this->save_metadata($hv['OCLC'],$id).'<br>';
+				} else {
+					$sx .= 'OCLC '.lang('find.metadata_not_found').'<br>';
+				}
+
+				/********************************************************* GOOGLE - OCLC */					
 				if (count($hv['GOOGLE']) > 0)
 				{
 					$Find = new \App\Models\API\Find();
-					$sx = $this->save_metadata($hv['GOOGLE'],$id);
-				}	
-				if (count($hv['MERCA']) > 0)
-				{
-					$Find = new \App\Models\API\Find();
-					$sx = $this->save_metadata($hv['MERCA'],$id);
-				}										
+					$sx .= 'GOOGLE '. $this->save_metadata($hv['GOOGLE'],$id).'<br>';
+				} else {
+					$sx .= 'GOOGLE '.lang('find.metadata_not_found').'<br>';
+				}
 			return $sx;
 		}
 
@@ -189,7 +333,7 @@ class Itens extends Model
 					$sx .= '<ul>';
 					foreach ($menu as $link=>$label)
 						{
-							$sx .= '<li><a href="'.(PATH.'find/tech/item_status/'.$id.'/'.$link).'">'.$label.'</a></li>';
+							$sx .= '<li><a href="'.(PATH.MODULE.'tech/item_status/'.$id.'/'.$link).'">'.$label.'</a></li>';
 						}
 					$sx .= '</ul>';
 				} else {
@@ -378,7 +522,7 @@ class Itens extends Model
 
 			default:
 				$sx .= bsc(lang('find.tech_IA'), 2, 'text-end small');
-				$link = '<a href="' . PATH . MODULE . '/tech/prepare_I/isbn/edit/0' . '">';
+				$link = '<a href="' . PATH . MODULE . 'tech/prepare_I/isbn/edit/0' . '">';
 				$linka = '</a>';
 				$sx .= bsc($link . '<b>' . lang('find.tech_IA1') . '</b>' . $linka, 10);
 
@@ -415,7 +559,7 @@ class Itens extends Model
 		$this->table = '*';
 		$this->id = 0;
 		$this->pre = 'find.';
-		$this->path = PATH . MODULE . '/tech/prepare_I/isbn';
+		$this->path = PATH . MODULE . 'tech/prepare_I/isbn';
 		$sx .= h(lang('find.tech_IA'), 2);
 		$sx .= h(lang('find.tech_IA1'), 4);
 

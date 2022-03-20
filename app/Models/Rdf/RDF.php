@@ -60,7 +60,9 @@ class RDF extends Model
 		switch ($d1) {
 			case 'ontology':
 				$RDFOntology = new \App\Models\Rdf\RDFOntology();
-				$sx .= $RDFOntology->index($d2, $d3, $d4, $d5, $cab);
+				$sx = $cab;
+				$sx .= breadcrumbs();
+				$sx .= bs(bsc($RDFOntology->index($d2, $d3, $d4, $d5, $cab),12));
 				break;
 			case 'export':
 				$RDFExport = new \App\Models\Rdf\RDFExport();
@@ -179,22 +181,22 @@ class RDF extends Model
 					}		
 				$sa .= h('rdf.MainMenu');
 				$sa .= '<ul>';
-				$sa .= '<li><a href="' . base_url(PATH . 'rdf/inport?type=prefix') . '">' . lang('Inport Prefix') . '</a></li>';
-				$sa .= '<li><a href="' . base_url(PATH . 'rdf/inport?type=class') . '">' . lang('Inport Class') . '</a></li>';
+				$sa .= '<li><a href="' . (PATH . 'rdf/inport?type=prefix') . '">' . lang('Inport Prefix') . '</a></li>';
+				$sa .= '<li><a href="' . (PATH . 'rdf/inport?type=class') . '">' . lang('Inport Class') . '</a></li>';
 				$sa .= h(lang('rdf.check_do'),3);
-				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/check') . '">' . lang('rdf.Check_class_duplicate') . '</a></li>';
-				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/check_loop') . '">' . lang('rdf.Check_loop') . '</a></li>';
-				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/check_authors') . '">' . lang('rdf.Check_authors') . '</a></li>';				
-				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/check_corporate_body') . '">' . lang('rdf.Check_corporate_body') . '</a></li>';
-				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/check_subject') . '">' . lang('rdf.Check_subject') . '</a></li>';
+				$sa .= '<li><a href="' . (PATH . MODULE. 'rdf/check') . '">' . lang('rdf.Check_class_duplicate') . '</a></li>';
+				$sa .= '<li><a href="' . (PATH . MODULE. 'rdf/check_loop') . '">' . lang('rdf.Check_loop') . '</a></li>';
+				$sa .= '<li><a href="' . (PATH . MODULE. 'rdf/check_authors') . '">' . lang('rdf.Check_authors') . '</a></li>';				
+				$sa .= '<li><a href="' . (PATH . MODULE. 'rdf/check_corporate_body') . '">' . lang('rdf.Check_corporate_body') . '</a></li>';
+				$sa .= '<li><a href="' . (PATH . MODULE. 'rdf/check_subject') . '">' . lang('rdf.Check_subject') . '</a></li>';
 				$sa .= h(lang('brapci.export_rdf'),4);
-				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/export/index_authors') . '">' . lang('rdf.Export_authors.index') . '</a></li>';
-				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/export/index_subject') . '">' . lang('rdf.Export_subject.index') . '</a></li>';
-				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/export/index_corporatebody') . '">' . lang('rdf.Export_corporatebody.index') . '</a></li>';
-				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/export/index_journal') . '">' . lang('rdf.Export_journal.index') . '</a></li>';
-				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/export/index_proceeding') . '">' . lang('rdf.Export_proceeding.index') . '</a></li>';
+				$sa .= '<li><a href="' . (PATH . MODULE. 'rdf/export/index_authors') . '">' . lang('rdf.Export_authors.index') . '</a></li>';
+				$sa .= '<li><a href="' . (PATH . MODULE. 'rdf/export/index_subject') . '">' . lang('rdf.Export_subject.index') . '</a></li>';
+				$sa .= '<li><a href="' . (PATH . MODULE. 'rdf/export/index_corporatebody') . '">' . lang('rdf.Export_corporatebody.index') . '</a></li>';
+				$sa .= '<li><a href="' . (PATH . MODULE. 'rdf/export/index_journal') . '">' . lang('rdf.Export_journal.index') . '</a></li>';
+				$sa .= '<li><a href="' . (PATH . MODULE. 'rdf/export/index_proceeding') . '">' . lang('rdf.Export_proceeding.index') . '</a></li>';
 				$sa .= h(lang('brapci.ontology'),4);
-				$sa .= '<li><a href="' . base_url(PATH . MODULE. 'rdf/ontology') . '">' . lang('rdf.ontology') . '</a></li>';
+				$sa .= '<li><a href="' . (PATH . MODULE. 'rdf/ontology') . '">' . lang('rdf.ontology') . '</a></li>';
 				$sa .= '</ul>';
 				$sx .= bs(bsc($sa,12));
 		}		
@@ -746,7 +748,7 @@ class RDF extends Model
 				$flx = $upper;
 				$fi[$flx] = '';
 			}
-			$link = '<a href="' . base_url(URL . 'v/' . $line['id_cc']) . '">';
+			$link = '<a href="' . (URL . 'v/' . $line['id_cc']) . '">';
 			$linka = '</a>';
 			$fi[$flx] .= $link . $name . $linka . '<br>';
 		}
@@ -800,7 +802,7 @@ class RDF extends Model
 		}
 		$sx .= '</ul>';
 		if (count($dt) > 0) {
-			$sx .= metarefresh(base_url(PATH . 'export/rdf/' . (round($d2) + 1)), 2);
+			$sx .= metarefresh((PATH . 'export/rdf/' . (round($d2) + 1)), 2);
 		} else {
 			$sx .= bsmessage(lang('Export_Finish'));
 		}

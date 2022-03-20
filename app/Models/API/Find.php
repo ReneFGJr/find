@@ -15,7 +15,9 @@ class Find extends Model
 	protected $useSoftDeletes       = false;
 	protected $protectFields        = true;
 	protected $allowedFields        = [
-		'i_identifier'
+		'i_identifier','i_manitestation','i_titulo',
+		'i_ln1','i_ln2','i_ln3','i_ln4',
+		'i_year','i_work','i_library_classification'
 	];
 
 	// Dates
@@ -60,6 +62,7 @@ class Find extends Model
 			$Tombo->set($dd)->where('id_i',$id)->update();
 			$Itens->status($id,2);
 			$sx = bsmessage(lang('find.recover_other_items'),1);
+
 			return $sx;
 		}
 

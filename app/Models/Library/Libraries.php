@@ -52,7 +52,7 @@ class Libraries extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
-	function index($d1='',$d2='')
+	function index($d1='',$d2='',$d3='',$d4='')
 	{
 		$tela = '';
 		switch($d1)
@@ -102,15 +102,15 @@ class Libraries extends Model
 	function edit($id)
 		{
 			$this->id = $id;
-			$this->path = PATH.'config';
-			$this->path_back = PATH.'config';
+			$this->path = PATH.MODULE.'admin/Library';
+			$this->path_back = PATH.MODULE.'admin/Library';
 			$tela = form($this);
 			return $tela;
 		}
 
 	function tableview()
 		{
-			$this->path = PATH.'config';
+			$this->path = PATH.MODULE.'admin/Library';
 			$tela = tableview($this);
 			return $tela;
 		}

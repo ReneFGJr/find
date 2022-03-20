@@ -10,8 +10,7 @@ helper(['boostrap', 'url', 'graphs', 'sisdoc_forms', 'form', 'nbr','sessions']);
 $session = \Config\Services::session();
 
 $this->Socials = new \App\Models\Socials();
-
-define("PATH", $_SERVER['app.baseURL']);
+define("PATH", $_SERVER['app.baseURL'].$_SERVER['app.prefix']);
 define("MODULE", 'find/');
 define("URL", $_SERVER['app.baseURL']);
 define('PREFIX', 'find.');
@@ -32,7 +31,7 @@ class Find extends BaseController
 		helper('form');
 	}
 
-	function admin($d1='',$d2='',$d3='',$d4='')
+	function admin($d1='',$d2='',$d3='',$d4='',$d5='')
 		{
 			$sx = '';
 			$sx .= $this->cab();
@@ -41,7 +40,7 @@ class Find extends BaseController
 			$sx .= breadcrumbs();
 
 			$Admin = new \App\Models\Admin\Index();
-			$sx .= $Admin->index($d1,$d2,$d3,$d4);
+			$sx .= $Admin->index($d1,$d2,$d3,$d4,$d5);
 
 			return $sx;
 		}

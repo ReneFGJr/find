@@ -42,6 +42,12 @@ class TechPreparation extends Model
 
 	function index($d1,$d2,$d3,$d4)
 		{
+			if (!perfil("#CAT#ADM"))
+				{
+					echo metarefresh(PATH.MODULE);
+					exit;
+				}
+			
 			$sx = '';
 			if ($d1=='prepare_0') { $d1 = 'prepare'; $st = '0'; }
 			if ($d1=='prepare_1') { $d1 = 'prepare'; $st = '1';  }
@@ -62,17 +68,21 @@ class TechPreparation extends Model
 							{
 								$sx .= bsc($Itens->prepare($d2,$d3,$st),10);
 							} else {
-								echo '==>'.$st;
 								switch($st)
 									{
 										case '0':
 										/**************************************** HARVESTING */
 											$harvesting = $Itens->harvesting_metadata($d2,$d3,$d4);
+
+											/* Processamento */
 											$sa = $Itens->process_metadata($harvesting,$d2,$d3);
+											
+											/* Cabecalho */
 											$sa .= $Itens->header($d2);
 											
 											/**************************** Status */
 											$sa .= $Itens->actions($d2,$st);
+											
 
 											$sx .= bsc($sa,10);
 											break;
@@ -91,7 +101,6 @@ class TechPreparation extends Model
 							}
 						
 						$sx = bs($sx);
-						break;						
 						break;
 					case 'prepare_I':
 						/* Novos Itens */

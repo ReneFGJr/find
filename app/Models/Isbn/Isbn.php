@@ -65,12 +65,12 @@ class Isbn extends Model
 		switch ($type) {
 			case 'OCLC':
 				$code = 999;
-				$url = 'http://classify.oclc.org/classify2/Classify?isbn=' . $isbn . '&summary=true';
-				//$url = 'http://classify.oclc.org/classify2/Classify?isbn=' . $isbn;
+				$url = 'http://classify.oclc.org/classify2/Classify?isbn=' . $isbn . '&summary=false';
 				$json = read_link($url);
-				$xml = simplexml_load_string($json);
+				$xml = simplexml_load_string($json);				
 
 				$json = json_encode($xml);
+				
 				$array = (array)json_decode($json, TRUE);
 
 				if (isset($array['response'])) {
@@ -79,7 +79,7 @@ class Isbn extends Model
 					$code = round($att['code']);
 				}
 
-				if ($code == 0) {
+				if (($code == 0) or ($code == 2)) {
 					file_put_contents($file, $json);
 				} else {
 					$array = array();

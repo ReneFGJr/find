@@ -42,7 +42,7 @@ class Language extends Model
 
 	function form()
 	{
-		$o = array('pt' => 'Português', 'en' => 'Inglês', 'es' => 'Espanhol', 'fr' => 'Frances', 'ge' => 'Alemão');
+		$o = array('pt' => 'Português','es'=>'Espanhol', 'en' => 'Inglês', 'es' => 'Espanhol', 'fr' => 'Frances', 'ge' => 'Alemão');
 		$sx = '';
 		foreach ($o as $key => $value) {
 			if ($sx != '') {
@@ -55,7 +55,7 @@ class Language extends Model
 	function code($l)
 	{
 		$l = trim($l);
-		$o = array('Português' => 'pt', 'pt_BR' => 'pt', 'en' => 'en', 'por' => 'pt', 'português' => 'pt', 'portugues' => 'pt');
+		$o = array('Espanhol' => 'es', 'Português' => 'pt', 'pt_BR' => 'pt', 'en' => 'en', 'por' => 'pt', 'português' => 'pt', 'portugues' => 'pt');
 		foreach ($o as $key => $value) {
 			if ($l == $key) {
 				return ($value);
