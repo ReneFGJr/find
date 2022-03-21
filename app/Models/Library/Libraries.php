@@ -73,6 +73,38 @@ class Libraries extends Model
 	//http://find/public/index.php/index.php/find/config/edit/2
 	//http://find/public/index.php/find/config//edit/2
 
+	function logos($dt)
+		{
+			$Logos = new \App\Models\Library\Logos();
+			$sx = '';
+			$sx .= '<hr>';
+			
+			
+			/****************************************************** Logo 150px */
+			$link = onclick(PATH.MODULE.'admin/Library/Logos/1',800,400);
+			$sa = '';
+			$sa1 = h('Logo 150px',6);
+			$sa1 .= $Logos->logo($dt);
+			$sa1 .= '<br>';
+			$sa1 .= $link.bsicone('upload').'</span>';
+			$sa = bsc($sa1,6);
+			
+			/****************************************************** Logo 50px */
+			$link = onclick(PATH.MODULE.'admin/Library/Logos/1',800,400);
+			$sa1 = h('Logo 50px',6);
+			$sa1 .= $Logos->logo_mini($dt);
+			$sa1 .= '<br>';
+			$sa1 .= $link.bsicone('upload').'</span>';
+			$sa .= bsc('',2);
+
+			/******************************************************** Mount */
+			$sa .= bsc($sa1,4);
+
+			$sx .= bs($sa);
+
+			return $sx;					
+		}
+
 	function viewid($id)
 		{
 			$Logos = new \App\Models\Library\Logos();
@@ -87,10 +119,12 @@ class Libraries extends Model
 
 			$tela1 .= $Places->view_library($dt['l_code']);
 
+			$tela1 .= $this->logos($dt);
+
 			$tela2 .= '<hr>';
 			if ($dt['l_visible'] == 1)
 				{
-					$tela2 .= bsmessage(lang('find.library_actiove'),1);
+					$tela2 .= bsmessage(lang('find.library_active'),1);
 				} else {
 					$tela2 .= bsmessage(lang('find.library_inative'),3);
 				}

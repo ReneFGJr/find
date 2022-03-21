@@ -60,7 +60,7 @@ class Logos extends Model
 				} else {
 					$file = URL.('img/logo/no_logo.png');
 				}
-			$file = '<img src="'.$file.'" class="img-fluid"/>';			
+			$file = '<img src="'.$file.'" class="img-fluid" style="max-height: 150px;"/>';			
 			$tela = $file;
 
 			return $tela;
