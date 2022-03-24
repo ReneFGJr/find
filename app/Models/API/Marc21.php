@@ -60,7 +60,7 @@ function manual($id)
 				$dt['item'] = $id;
 				$this->marc_api->save_marc($isbn,$marc);
 				$d = $this->books->process_register($isbn,$dt,'MARC2');
-				redirect(base_url(PATH.'v/'.$d));
+				redirect(base_url(PATH.MODULE.'v/'.$d));
 			}
 		}
 		return($sx);

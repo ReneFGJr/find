@@ -40,21 +40,31 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    function index($d1='',$d2='',$d3='',$d4='',$d5='')
+    function index($d1='',$d2='',$d3='',$d4='',$d5='',$cab='')
         {
             $sx = '';
             switch($d1)
                 {
+                    case 'Banner':
+                            $Logos = new \App\Models\Library\Logos();
+                            $sx = $Logos->upload($d1,$d2,$d3,$d4,$d5);
+                        break;
+                    case 'Logos':
+                            $Logos = new \App\Models\Library\Logos();
+                            $sx = $Logos->upload($d1,$d2,$d3,$d4,$d5);
+                        break;                        
         			case 'Library':
                         $Library = new \App\Models\Library\Libraries();
+                        $sx .= $cab;
                         $sx .= $Library->index($d2,$d3,$d4,$d5);
                         break;                        
                     case 'PlaceBookshelf':
                         $PlaceBookshelf = new \App\Models\Bookself\PlaceBookshelf();
-                        $sx = $PlaceBookshelf->index($d2,$d3,$d4);
+                        $sx .= $cab;
+                        $sx .= $PlaceBookshelf->index($d2,$d3,$d4);
                         break;
                     default:
-                        $sx .= '==>'.$d1;
+                        $sx .= $cab;
                         $menu[URL.MODULE.'admin/PlaceBookshelf'] = 'find.PlaceBookshelf';
                         $menu[URL.MODULE.'admin/Library'] = 'find.Library';
                         $sx .= h('find.adminPlaceBookshelf');

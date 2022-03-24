@@ -219,7 +219,7 @@ class RDFExport extends Model
 		$sx = '';
 		$name = $dt['concept']['n_name'];
 		$name = nbr_author($name, 1);
-		$name = '<a href="' . (URL . 'v/' . $id) . '" class="author">' . $name . '</a>';
+		$name = '<a href="' . (URL . MODULE . 'v/' . $id) . '" class="author">' . $name . '</a>';
 		$this->saveRDF($id, $name, 'name.nm');
 		return $sx;
 	}
@@ -229,7 +229,7 @@ class RDFExport extends Model
 		$sx = 'JOURNAL';
 		$name = $dt['concept']['n_name'];
 		$name = nbr_author($name, 7);
-		$name = '<a href="' . (URL . 'v/' . $id) . '" class="author">' . $name . '</a>';
+		$name = '<a href="' . (URL . MODULE .'v/' . $id) . '" class="author">' . $name . '</a>';
 		$this->saveRDF($id, $name, 'name.nm');
 		return $sx;
 	}
@@ -420,6 +420,10 @@ class RDFExport extends Model
 		//echo '<br>'.$name.'-->'.$class;
 
 		switch ($class) {
+				/*************************************** SERIE NAME */
+			case 'brapci:hasSerieName':
+				$this->export_geral($dt, $id);
+				break;			
 				/*************************************** ARTICLE */
 			case 'brapci:Article':
 				$this->export_article($dt, $id, 'A');
@@ -508,7 +512,7 @@ class RDFExport extends Model
 				break;
 
 			default:
-				echo '<br> Exportando ====>' . $name;
+				//echo '<br> Exportando ====>' . $name;
 				$this->export_geral($dt, $id);
 				break;
 		}

@@ -329,6 +329,7 @@ class Itens extends Model
 					if ($st == 0)
 						{
 							$menu['1'] = lang('find.set_status_to').' <b>'.lang('find.tech_1').'</b>';
+							$menu['9'] = lang('find.exlude_item').' <b>'.lang('find.exclude_item').'</b>';
 						}
 					$sx .= '<ul>';
 					foreach ($menu as $link=>$label)
@@ -407,7 +408,7 @@ class Itens extends Model
 		}
 		$sx = '';
 		for ($r = 0; $r < count($wh); $r++) {
-			$sx .= bsc('<a href="' . PATH . 'v/' . $wh[$r] . '">' . $Covers->get_Nail($wh[$r]) . '</a>', 2);
+			$sx .= bsc('<a href="' . PATH . MODULE. 'v/' . $wh[$r] . '">' . $Covers->get_Nail($wh[$r]) . '</a>', 2);
 		}
 		$sx = bs($sx);
 		return $sx;
@@ -646,7 +647,7 @@ class Itens extends Model
 				$isbn = $line['i_identifier'];
 				$cover = $Cover->get_cover($isbn);
 				$img = '<img src="' . $cover . '" class="img-fluid shadow-lg p-1 mb-2 bg-body rounded">';
-				$tela .= '<a href="' . PATH . 'v/' . $mani . '">';
+				$tela .= '<a href="' . PATH . MODULE. 'v/' . $mani . '">';
 				$tela .= $img;
 				$tela .= '</a>';
 			}

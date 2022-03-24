@@ -125,20 +125,20 @@ class Books extends Model
 					switch($class)
 					{
 					case 'hasIllustrator':
-						if (strlen($ilus) > 0) { $pre_ilus .= 'es'; }
+						if (strlen($ilus) > 0) { $pre_ilus = 'es'; }
 						$ilus .= $this->link($line).' ';
 						break;
 					case 'hasAuthor':
-						if (strlen($auth) > 0) { $pre_auth .= 'es'; }
+						if (strlen($auth) > 0) { $pre_auth = 'es'; }
 						$auth .= $this->link($line).' ';
 						break;	
 					case 'hasOrganizator':
-						if (strlen($org) > 0) { $pre_org .= 'es'; }
+						if (strlen($org) > 0) { $pre_org = 'es'; }
 						$org .= $this->link($line).' ';
 						break;							
 
 					case 'hasTranslator':
-						if (strlen($trad) > 0) { $pre_trad .= 'es'; }
+						if (strlen($trad) > 0) { $pre_trad = 'es'; }
 						$trad .= $this->link($line).' ';;
 						break;
 					case 'isAppellationOfExpression':
@@ -204,6 +204,8 @@ class Books extends Model
 					$dli = $line['d_literal'];
 					$lib = $line['d_library'];
 
+					echo '<br>===>'.$line['c_class'].'=>'.$line['d_library'];
+
 					$class2 = $class;
 					if ((substr($class,3,14) == 'Classification') or (substr($class,3,13) == 'Classificacao'))
 						{
@@ -216,7 +218,7 @@ class Books extends Model
 								$cutter .= '<div class="find.cutter">'.$this->link($line).'</div>';
 							break;
 
-							case 'Classification':
+							case 'Classification':								
 								$classificationf .= '<div>'.lang('find.'.$class).': '.$this->link($line).'</div>';
 							break;
 
@@ -454,14 +456,16 @@ class Books extends Model
 
 	function card($dt,$img='')
 		{
-			$title = $dt['i_titulo'];
-			$st = '<a href="'.PATH.MODULE.'v/'.$dt['i_manitestation'].'">';
+			$title = trim($dt['i_titulo']);
+			if ($title == '') { $title = lang('find.no_title'); }
+			$st = '<a href="'.PATH.MODULE.'v/'.$dt['i_manitestation'].'" title="'.$title.'">';
 			$st .= '<img class="card-img-top" src="'.$img.'" alt="Card image cap">';
 			$st .= '</a>';
 
 			$sx = bsc(				 
 						bscard($st,
 									'<span class="book_title">'.$title.'</span>',
+									'mb-3'
 					)
 				,3);			
 			return $sx;

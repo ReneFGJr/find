@@ -23,8 +23,9 @@ class Find extends BaseController
 		$this->Books = new \App\Models\Book\Books();
 		$this->Socials = new \App\Models\Socials();
 		$this->FindSearch = new \App\Models\FindSearch();
+		$this->Logos = new \App\Models\Library\Logos();
 
-		define("LIBRARY", "1003");
+		define("LIBRARY", "1000");
 		define("LIBRARY_NAME", "FIND");
 
 		helper('URL');
@@ -32,15 +33,15 @@ class Find extends BaseController
 	}
 
 	function admin($d1='',$d2='',$d3='',$d4='',$d5='')
-		{
+		{			
 			$sx = '';
-			$sx .= $this->cab();
-			$sx .= $this->navbar();
-			$sx .= $this->FindSearch->banner();
-			$sx .= breadcrumbs();
+			$cab = $this->cab();
+			$cab .= $this->navbar();
+			$cab .= $this->Logos->banner();
+			$cab .= breadcrumbs();
 
 			$Admin = new \App\Models\Admin\Index();
-			$sx .= $Admin->index($d1,$d2,$d3,$d4,$d5);
+			$sx .= $Admin->index($d1,$d2,$d3,$d4,$d5,$cab);
 
 			return $sx;
 		}
@@ -54,7 +55,7 @@ class Find extends BaseController
 		$sx .= $this->cab();
 		$sx .= $this->navbar();
 
-		$sx .= $this->FindSearch->banner();
+		$sx .= $this->Logos->banner();
 		$sx .= $this->FindSearch->search();
 
 
@@ -91,6 +92,7 @@ class Find extends BaseController
 		$sx .= ' ' . cr();
 		$sx .= '  <!-- CSS -->' . cr();
 		$sx .= '  <script src="' . URL . ('/js/bootstrap.js?v=5.0.2') . '"></script>' . cr();
+		
 		$sx .= '<style>
 					@font-face {font-family: "Handel Gothic";
 					src: url("' . URL . ('css/fonts/HandelGothic/handel_gothic.eot') . '"); /* IE9*/
@@ -111,14 +113,13 @@ class Find extends BaseController
 
 	private function navbar($dt = array())
 	{
-		$Logo = new \App\Models\Library\Logos();
 		$title = 'Find';
 		if (isset($dt['title'])) {
 			$title = $dt['title'];
 		}
 		$sx = '<nav class="navbar navbar-expand-lg navbar-light ">' . cr();
 		$sx .= '  <div class="container-fluid">' . cr();
-		$sx .= '    <a class="navbar-brand" href="' . PATH . '">' . $Logo->logo_mini(LIBRARY) . '</a>' . cr();
+		$sx .= '    <a class="navbar-brand" href="' . PATH . MODULE. '">' . $this->Logos->logo_mini(LIBRARY) . '</a>' . cr();
 		$sx .= '    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">' . cr();
 		$sx .= '      <span class="navbar-toggler-icon"></span>' . cr();
 		$sx .= '    </button>' . cr();
@@ -129,15 +130,23 @@ class Find extends BaseController
 		$sx .= '          ' . lang('find.index') . cr();
 		$sx .= '          </a>' . cr();
 		$sx .= '          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">' . cr();
-		$sx .= '            <li><a class="dropdown-item" href="' . PATH . 'events/' . '">' . lang('proceedings.Menu.events') . '</a></li>' . cr();
+		$sx .= '            <li><a class="dropdown-item" href="' . PATH . MODULE. 'events/' . '">' . lang('proceedings.Menu.events') . '</a></li>' . cr();
 		$sx .= '          </ul>' . cr();
 		$sx .= '        </li>' . cr();
 
 		$sx .= '
 							<li class="nav-item">
-								<a class="nav-link" href="' . PATH . 'users/' . '">' . lang('find.users') . '</a>
+								<a class="nav-link" href="' . PATH . MODULE. 'libraries/' . '">' . lang('find.libraries_select') . '</a>
 							</li>			
-			';
+			';		
+
+		if ((perfil("#ADM#CAT")) or (isset($_SESSION['access']))) {
+			$sx .= '
+								<li class="nav-item">
+									<a class="nav-link" href="' . PATH . MODULE. 'users/' . '">' . lang('find.users') . '</a>
+								</li>			
+				';
+		}
 
 		if ((perfil("#ADM#CAT")) or (isset($_SESSION['access']))) {
 			$sx .= '
@@ -174,6 +183,17 @@ class Find extends BaseController
 		$sx .= '</nav>' . cr();
 		return $sx;
 	}
+
+	function libraries($d1='')
+		{
+			$Libraries = new \App\Models\Library\Libraries();
+			$sx = '';
+			$sx .= $this->cab();
+			$sx .= $this->navbar();
+			$sx .= $Libraries->libraries($d1);
+			$sx .= $this->footer();
+			return $sx;
+		}
 
 	function tech($d1 = '', $d2 = '', $d3 = '', $d4 = '', $d5 = '')
 	{
@@ -324,6 +344,7 @@ class Find extends BaseController
 
 					</footer>
 					<!-- Footer -->';
+				$sx .= cookies_acept();
 		return $sx;
 	}
 
@@ -333,7 +354,7 @@ class Find extends BaseController
 		if ($isbn == 'check') {
 			$sx = $this->cab();
 			$sx .= $this->navbar();
-			$sx .= $this->FindSearch->banner();
+			$sx .= $this->Logos->banner();
 
 			$dir = '../_covers/image/';
 			$sx .= bs(bsc($IMG->check($dir), 12));
@@ -355,7 +376,7 @@ class Find extends BaseController
 	{
 		$cab  = $this->cab();
 		$cab .= $this->navbar();
-		$cab .= $this->FindSearch->banner();
+		$cab .= $this->Logos->banner();
 
 		$dt = array();
 		$sx = '' . $this->Socials->index($d1, $id, $dt, $cab);
@@ -367,7 +388,7 @@ class Find extends BaseController
 	{
 		$sx = $this->cab();
 		$sx .= $this->navbar();
-		$sx .= $this->FindSearch->banner();
+		$sx .= $this->Logos->banner();
 
 		$Books = new \App\Models\Book\Books();
 		$sx .= $Books->view_item($id);
@@ -379,7 +400,7 @@ class Find extends BaseController
 	{
 		$sx = $this->cab();
 		$sx .= $this->navbar();
-		$sx .= $this->FindSearch->banner();
+		$sx .= $this->Logos->banner();
 
 		$Books = new \App\Models\Book\Books();
 		$sx .= $Books->v($id);
@@ -393,7 +414,7 @@ class Find extends BaseController
 	{
 		$sx = $this->cab();
 		$sx .= $this->navbar();
-		$sx .= $this->FindSearch->banner();
+		$sx .= $this->Logos->banner();
 
 		$Books = new \App\Models\Book\Books();
 		$sx .= bs(bsc($Books->a($id), 12));
@@ -409,7 +430,7 @@ class Find extends BaseController
 
 		$sx = $this->cab();
 		$sx .= $this->navbar();
-		$sx .= $this->FindSearch->banner();
+		$sx .= $this->Logos->banner();
 
 		/* Export Command */
 		$sx .= $User->index($d1, $d2, $d3, $d4);
@@ -423,7 +444,7 @@ class Find extends BaseController
 	{
 		$tela = $this->cab();
 		$tela .= $this->navbar();
-		$tela .= $this->FindSearch->banner();
+		$tela .= $this->Logos->banner();
 
 		$Libraries = new \App\Models\Library\Libraries();
 		$tela .= $Libraries->index($d1, $d2);
@@ -455,7 +476,7 @@ class Find extends BaseController
 
 		$sx = $this->cab();
 		$sx .= $this->navbar();
-		$sx .= $this->FindSearch->banner();
+		$sx .= $this->Logos->banner();
 
 		/* Export Command */
 		$sx .= $RDF->export($d1, $d2);

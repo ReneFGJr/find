@@ -258,9 +258,15 @@ function edit($d1,$d2,$d3,$d4,$d5)
 						$id = $dt['id_sc'];
 						$sx = metarefresh(PATH.MODULE.'rdf/form_ed/'.$id.'?msg=range_not_found',0);
 						return $sx;
-					} else {
+					} else {						
 						echo bsmessage("RANGE not defined",3);
-						exit;
+						if (perfil("#ADM"))
+							{
+								$sx = '<a href="'.PATH.MODULE.'rdf/form_ed/'.$id.'?msg=range_not_found">';
+								$sx .= 'EDIT';
+								$sx .= '</a>';
+							}
+						return $sx;
 					}
 			}
 

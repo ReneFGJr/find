@@ -81,7 +81,7 @@ class Libraries extends Model
 			
 			
 			/****************************************************** Logo 150px */
-			$link = onclick(PATH.MODULE.'admin/Library/Logos/1',800,400);
+			$link = onclick(PATH.MODULE.'admin/Logos/normal',800,400);
 			$sa = '';
 			$sa1 = h('Logo 150px',6);
 			$sa1 .= $Logos->logo($dt);
@@ -90,18 +90,29 @@ class Libraries extends Model
 			$sa = bsc($sa1,6);
 			
 			/****************************************************** Logo 50px */
-			$link = onclick(PATH.MODULE.'admin/Library/Logos/1',800,400);
+			$link = onclick(PATH.MODULE.'admin/Logos/mini',800,400);
 			$sa1 = h('Logo 50px',6);
 			$sa1 .= $Logos->logo_mini($dt);
 			$sa1 .= '<br>';
 			$sa1 .= $link.bsicone('upload').'</span>';
 			$sa .= bsc('',2);
-
 			/******************************************************** Mount */
 			$sa .= bsc($sa1,4);
-
 			$sx .= bs($sa);
 
+			$sx .= h(lang('find.banners'),3);
+			$sx .= '<p>'.lang('find.banners_info').'</p>';
+
+			/****************************************************** Logo 50px */
+			for ($r=1;$r <= 3;$r++)
+				{
+					$link = onclick(PATH.MODULE.'admin/Banner/'.$r,800,400);
+					$sa1 = h('Banner '.$r.' - 2048px',6,'mt-5');
+					$sa1 .= '<img src="'.URL.$Logos->banner_nr(LIBRARY,$r).'" width="100%" border=1>';
+					$sa1 .= '<br>';
+					$sa1 .= $link.bsicone('upload').'</span>';
+					$sx .= bsc($sa1,12);			
+				}	
 			return $sx;					
 		}
 
@@ -147,6 +158,41 @@ class Libraries extends Model
 			$this->path = PATH.MODULE.'admin/Library';
 			$tela = tableview($this);
 			return $tela;
+		}
+	function setLibrary($id)
+		{
+			$dt = $this->find($id);
+			$_COOKIE['library'] = $dt['l_code'];
+			$sx = metarefresh(PATH.MODULE);
+			return $sx;
+		}
+	function libraries($d1='')
+		{
+			if ($d1 != '')
+				{
+					$d1 = round($d1);
+					if ($d1 > 0)
+						{
+							$sx = $this->setLibrary($d1);
+							return $sx;
+						}
+				}
+			$Logos = new \App\Models\Library\Logos();
+			$dt = $this->where('l_visible',1)->orderBy('l_name')->findAll();
+			$sx = '';
+			for ($r=0;$r < count($dt);$r++)
+				{
+					$line = $dt[$r];
+					$link = '<a href="'.PATH.MODULE.'/libraries/'.$line['id_l'].'">';
+					$linka = '</a>';
+					$sa = $link;
+					$sa .= h($line['l_name'],6);
+					$sa .= $Logos->logo($line);
+					$sa .= $linka;
+					$sx .= bsc($sa,4,'p-3 text-center');
+				}
+			$sx = bs($sx);
+			return $sx;
 		}
 
 }
