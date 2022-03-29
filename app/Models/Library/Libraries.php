@@ -162,12 +162,12 @@ class Libraries extends Model
 	function setLibrary($id)
 		{
 			$dt = $this->find($id);
-			$_COOKIE['library'] = $dt['l_code'];
+			set_cookie('find_library',$dt['l_code']);
 			$sx = metarefresh(PATH.MODULE);
 			return $sx;
 		}
 	function libraries($d1='')
-		{
+		{			
 			if ($d1 != '')
 				{
 					$d1 = round($d1);

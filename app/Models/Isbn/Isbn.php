@@ -201,6 +201,7 @@ class Isbn extends Model
 		}
 		return ($t);
 	}
+	
 	function file_locate($isbn, $type)
 	{
 		/* 978-8585-7461-62 */

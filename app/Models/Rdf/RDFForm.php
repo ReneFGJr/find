@@ -187,6 +187,7 @@ function form_ed($id)
 	{
 		$this->id = $id;
 		$this->path = PATH.MODULE.'rdf/form_ed/'.$id;
+		$this->path_back = 'wclose';
 		$sx = form($this);
 		return $sx;
 	}

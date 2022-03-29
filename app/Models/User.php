@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class User extends Model
 {
 	protected $DBGroup              = 'default';
-	protected $table                = 'users';
+	protected $table                = 'users2';
 	protected $primaryKey           = 'id_us';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
@@ -302,7 +302,7 @@ class User extends Model
 						$img = 'genere_none.png';
 						break;
 				}
-			$sx = URL.'img/genere/'.$img);
+			$sx = URL.'img/genere/'.$img;
 			return $sx;
 		}
 
@@ -330,7 +330,7 @@ class User extends Model
 						$img = 'breed_none.png';
 						break;
 				}
-			$sx = URL.'img/breed/'.$img);				
+			$sx = URL.'img/breed/'.$img;				
 			return $sx;
 		}
 	function show_phone($dt)

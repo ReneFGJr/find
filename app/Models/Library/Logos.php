@@ -40,7 +40,7 @@ class Logos extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
-	function upload($d1,$d2,$d3,$d4,$d5)
+	function upload($d1,$d2='')
 		{
 			$sx = form_open_multipart('',array('name' => 'form_upload','id' => 'form_upload'));
 			$sx .= form_upload("logo", "logo");

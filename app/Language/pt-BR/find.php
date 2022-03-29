@@ -66,4 +66,11 @@ return [
     'set_status_to'=>'Alterar status para',
 
     'itens'=>'Item(ns)',
+    'places'=>'Local(is) das Biblioteca',
+    'logo'=>'Logo(s)',
+    'banners'=>'Banner(s)',
+    'banner'=>'Banner',
+    'bookshelf'=>'Localização Estante',
+    ''=>'',
+    ''=>'',
 ];

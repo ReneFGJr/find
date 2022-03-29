@@ -543,6 +543,7 @@ class Itens extends Model
 
 	function item_new_form()
 	{
+		$ISBN = new \App\Models\Isbn\Isbn();
 		$sx = '';
 		$this->allowedFields = array(
 			'',
@@ -585,9 +586,14 @@ class Itens extends Model
 
 			for ($r = 0; $r < count($isbn); $r++) {
 			/******************************** Exemplares */
-				$ex = $Tombo->exemplar($isbn[$r]);
+				$nisbn = trim($isbn[$r]);
 
-				$dd['i_identifier'] = $isbn[$r];
+				/* Valida ISBN */
+				
+				$nisbn = $ISBN->format($isbn[$r]);
+				$ex = $Tombo->exemplar($nisbn);
+
+				$dd['i_identifier'] = $nisbn;
 				$dd['i_library_place'] = $place;
 				$dd['i_library'] = LIBRARY;
 				$dd['i_type'] = 0;
