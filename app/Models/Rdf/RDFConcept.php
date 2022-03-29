@@ -117,9 +117,9 @@ class RDFConcept extends Model
 
 	function le($id)
 		{
-			$this->join(PREFIX.'rdf_name', 'cc_pref_term = rdf_name.id_n', 'LEFT');
-			$this->join(PREFIX.'rdf_class', 'rdf_concept.cc_class = rdf_class.id_c', 'LEFT');
-			$this->join(PREFIX.'rdf_prefix', 'rdf_class.c_prefix = rdf_prefix.id_prefix', 'LEFT');
+			$this->join('rdf_name', 'cc_pref_term = rdf_name.id_n', 'LEFT');
+			$this->join('rdf_class', 'rdf_concept.cc_class = rdf_class.id_c', 'LEFT');
+			$this->join('rdf_prefix', 'rdf_class.c_prefix = rdf_prefix.id_prefix', 'LEFT');
 
 			$this->select('rdf_class.c_class, rdf_class.id_c, rdf_class.c_type, rdf_class.c_url, rdf_class.c_equivalent');
     		$this->select('rdf_name.n_name, rdf_name.n_lang');    		
