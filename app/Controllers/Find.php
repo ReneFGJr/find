@@ -13,7 +13,7 @@ $this->Socials = new \App\Models\Socials();
 define("PATH", $_SERVER['app.baseURL'].$_SERVER['app.prefix']);
 define("MODULE", 'find/');
 define("URL", $_SERVER['app.baseURL']);
-define('PREFIX', 'find.');
+define('PREFIX', $_SERVER['PREFIX']);
 
 class Find extends BaseController
 {
