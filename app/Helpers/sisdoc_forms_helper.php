@@ -14,8 +14,10 @@ require('sisdoc_form_1.php');
 require('sisdoc_form_2.php');
 require('sisdoc_form_3.php');
 require('sisdoc_date.php');
+require('sisdoc_cookies.php');
 require('sisdoc_form_js.php');
 require('sisdoc_drag_drop.php');
+require('sisdoc_cookies.php');
 
     function clog($msg)
         {

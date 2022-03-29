@@ -316,7 +316,7 @@ class RDF extends Model
 
 	function link($dt,$class='')
 		{
-			$sx = '<a href="'.(URL.'v/'.$dt['id_cc']).'" class="'.$class.'">';
+			$sx = '<a href="'.(URL.MODULE . 'v/'.$dt['id_cc']).'" class="'.$class.'">';
 			return $sx;
 		}
 
@@ -748,7 +748,7 @@ class RDF extends Model
 				$flx = $upper;
 				$fi[$flx] = '';
 			}
-			$link = '<a href="' . (URL . 'v/' . $line['id_cc']) . '">';
+			$link = '<a href="' . (PATH . MODULE. 'v/' . $line['id_cc']) . '">';
 			$linka = '</a>';
 			$fi[$flx] .= $link . $name . $linka . '<br>';
 		}
