@@ -42,19 +42,41 @@ class RDFClass extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
+	function view($id)
+		{			
+			$RDF = new \App\Models\Rdf\RDF();			
+			$RDFForm = new \App\Models\Rdf\RDFForm();
+			$dt=$RDF->le_class($id);
+			$sx = h($RDF->show_class($dt[0]));
+
+			$sx = bsc($sx,12);
+
+			$dt=$RDF->le_class($id);
+			$sa = $RDFForm->form_class_edit($id,$id);
+			$sx .= bsc($sa,12);
+			$sx = bs($sx);
+			return $sx;
+		}	
+
+	function edit($id)
+		{
+
+		}
+
 	function list($lb='')
 		{
 			$sx = h('rdf.classes');
 			$dt = $this
 				->join('rdf_prefix', 'c_prefix = id_prefix', 'left')
 				->where('c_type','C')
+				->orderBy("c_class")
 				->findAll();
 
 			$sx .= '<ul>';
 			for ($r=0;$r < count($dt);$r++)
 				{
 					$line = $dt[$r];
-					$link = '<a href="'.PATH.MODULE.'rdf/class_edit/'.$line['id_c'].'">';
+					$link = '<a href="'.PATH.MODULE.'rdf/class_view/'.$line['id_c'].'">';
 					$linka = '</a>';
 					$sx .= '<li>'.$link.$line['c_class'].$linka.'</li>';
 				}

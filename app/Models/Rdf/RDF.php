@@ -63,6 +63,16 @@ class RDF extends Model
 				$RDFClass = new \App\Models\Rdf\RDFClass();
 				$sx .= $RDFClass->list($d2, $d3, $d4, $d5);
 				break;
+			case 'class_view':
+				$sx = $cab;
+				$RDFClass = new \App\Models\Rdf\RDFClass();
+				$sx .= $RDFClass->view($d2, $d3, $d4, $d5);
+				break;				
+			case 'class_edit':
+				$sx = $cab;
+				$RDFClass = new \App\Models\Rdf\RDFClass();
+				$sx .= $RDFClass->edit($d2, $d3, $d4, $d5);
+				break;				
 			case 'ontology':
 				$RDFOntology = new \App\Models\Rdf\RDFOntology();
 				$sx = $cab;
