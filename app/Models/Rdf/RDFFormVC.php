@@ -94,11 +94,11 @@ class RdfFormVC extends Model
 		$path = PATH.MODULE.'rdf/form/edit/'.$d1.'/'.$d2.'/'.$d3;
 		$dd['name'] = 'RDFFORM';
 		$sx .= form_open($path,$dd);
-		$sx .= '<span class="small">'.lang('find.filter_to').' '.lang('find.'.$range).'</span>';
+		$sx .= '<span class="small">'.lang('rdf.filter_to').' '.lang('rdf.'.$range).'</span>';
 		$sx .= '<input type="text" id="dd50" name="dd50" class="form-control">';
 
 		/* Select */
-		$sx .= '<span class="small mt-1">'.lang('find.select_an').' '.lang('find.'.$range).'</span>';
+		$sx .= '<span class="small mt-1">'.lang('find.select_an').' '.lang('rdf.'.$range).'</span>';
 		$sx .= '<div id="dd51a"><select class="form-control" size="5" name="dd51" id="dd51"></select></div>';		
 
 		$bts = '';

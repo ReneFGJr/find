@@ -40,20 +40,32 @@ class WordMatch extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
-	function analyse($txt,$vc)
+	function show($txt)
+		{
+			$ln = explode(chr(10),$txt);
+			$txt = '';
+			for ($r=0;$r < count($ln);$r++)
+				{
+					if (strpos($txt,'<b'))
+						{
+							$txt .= $ln[$r]."\n";
+						}
+				}
+			return $txt;
+		}
+
+	function analyse($txt,$vc=array())
 		{
 			$TextPrepare = new \App\Models\AI\NLP\TextPrepare();
 			$rst = array();
 			$txt = $TextPrepare->Text($txt);
 
-
 			$w = array();
 			foreach($vc as $t1=>$t2)
 				{			
-					$txt = troca($txt,' '.$t1.' ',' <b style="color: blue;">'.$t2.'</b> ');
+					$txt = troca($txt,' '.$t1.' ',' <b style="color: blue; font-size=5">'.$t2.'</b> ');
 					$w[$t2] = 0;
 				}
-
 			$wt = array();
 			foreach($w as $t1=>$v)
 				{
@@ -64,10 +76,7 @@ class WordMatch extends Model
 						$wt[$t1] = $ocorrencia;
 						//echo $t1.'-['.$ocorrencia.']<br>';
 					}	
-				}
-			
-			$txt = troca($txt,chr(13),'<hr>');
-			$rst = array($txt,'keys'=>$wt);
-			return $rst;
+				}			
+			return $txt;
 		}
 }

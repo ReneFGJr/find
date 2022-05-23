@@ -38,7 +38,7 @@ class TextPrepare extends Model
 	protected $beforeFind           = [];
 	protected $afterFind            = [];
 	protected $beforeDelete         = [];
-	protected $afterDelete          = [];
+	protected $afterDelete          = [];	
 
 	function removeHttp($txt)
 	{
@@ -86,6 +86,48 @@ class TextPrepare extends Model
 		}
 		return $txt;
 	}
+
+function JoinSentences($file)
+	{
+		$txtd = '';
+		$ln = '';
+		if (file_exists($file))
+			{
+				$handle = fopen($file, "r");
+				if ($handle) {
+					while (($line = fgets($handle)) !== false) {
+						$line = trim($line);
+						$line = troca($line,'',chr(13));
+
+						$lastChar = substr($line,strlen($line)-1,1);
+						$line = troca($line,chr(255),' ');
+						$line = troca($line,chr(10),' ');
+						
+
+						//echo $lastChar;
+
+						switch($lastChar)
+							{
+								case '-':
+									$line = substr($line,0,strlen($line)-1);	
+									$ln = $ln.trim($line);
+									break;
+								case '.';
+									$txtd .= trim($ln.trim($line)).cr();
+									$ln = '';
+									break;
+								default:
+									$ln = trim($ln).trim($line).' ';
+									break;									
+							} 								
+						}
+					}					
+					fclose($handle);
+					return $txtd;
+			} else {
+				return bsmessage("File not found - ".$file,3);
+			}
+	}	
 
 	function Text($txt)
 		{

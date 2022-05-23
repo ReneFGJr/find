@@ -48,3 +48,9 @@ a:hover
         font-size: font-size: 60%;
     }
 
+.form-control
+    {
+        border: 3px solid #3333;
+        border-radius: 5px;
+    }
+

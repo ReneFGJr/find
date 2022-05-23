@@ -148,7 +148,8 @@ class Libraries extends Model
 		{
 			$this->id = $id;
 			$this->path = PATH.MODULE.'admin/Library';
-			$this->path_back = PATH.MODULE.'admin/Library';
+			$this->path = PATH.MODULE.'admin/'.LIBRARY.'/description';
+			$this->path_back = PATH.MODULE.'admin/'.LIBRARY;
 			$tela = form($this);
 			return $tela;
 		}

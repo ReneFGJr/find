@@ -204,7 +204,7 @@ class Books extends Model
 					$dli = $line['d_literal'];
 					$lib = $line['d_library'];
 
-					echo '<br>===>'.$line['c_class'].'=>'.$line['d_library'];
+					//echo '<br>=MANIFESTATION==>'.$line['c_class'].'=Library=>'.$line['d_library'];
 
 					$class2 = $class;
 					if ((substr($class,3,14) == 'Classification') or (substr($class,3,13) == 'Classificacao'))
@@ -226,10 +226,17 @@ class Books extends Model
 								$classification .= $this->color($line);
 							break;
 
-							case 'dateOfPublication':
-								$year .= $this->link($line);
+							case 'hasPage':
+								$page = $this->link($line);
 								break;
 
+							/******************************** DESCRITIVA - PUBLICAÇÃO */
+							case 'dateOfPublication':
+								$line['n_name2'] = substr($line['n_name2'],0,4);
+								$year = $this->link($line). ' ';
+								break;
+							
+		
 							case 'hasPage':
 								$page = $this->link($line);
 								break;
@@ -256,7 +263,7 @@ class Books extends Model
 
 							case 'isAppellationOfExpression':
 								/* none */
-								break;
+								break;							
 
 							case 'prefLabel':
 								/* none */
@@ -267,7 +274,7 @@ class Books extends Model
 								break;
 
 							default:
-								echo '====>'.$prefix.':'.$class.'--'.$dr1.'-'.$dr2.'-'.$dr3.'<br>';
+								echo '=MANIFESTATION===>'.$prefix.':'.$class.'--'.$dr1.'-'.$dr2.'-'.$dr3.'<br>';
 								echo '<hr>';							
 								break;
 						}
@@ -376,7 +383,12 @@ class Books extends Model
 //						$dt = $Itens->le($id);
 //						pre($dt);
 //						$sx .= $Itens->header($dt);
-						$sx .= bsc($RDF->btn_return($id),12);
+						$sx .= bsc(
+									$RDF->btn_return($id).
+									' '.
+									//$Itens->btn_to_($id).
+									''
+								,12);
 						$sx .= $sw;
 						$sx .= $se;
 						$sx .= $RDF->form($id);
@@ -395,25 +407,28 @@ class Books extends Model
 			$RDF->DBGroup = 'default';
 			$dt = $RDF->le($id);
 
-			$sx = '';			
+			$sx = '';	
+
+					
 			$RDFData = new \App\Models\Rdf\RDFData();
 			$class = $dt['concept']['prefix_ref'].':'.$dt['concept']['c_class'];
 
 			if ($class == ':Expression') { $class = 'frbr:Expression'; }
+
 			switch($class)
 				{
 					case 'brapci:Editora':
 					$Publisher = new \App\Models\Book\Publisher();
-						$sx = $Publisher->viewManifestations($dt);
+						$sx .= $Publisher->viewManifestations($dt);
 					break;
 
 					case 'frbr:Work':
-						$sx = $this->viewWork($dt);
+						$sx .= $this->viewWork($dt);
 						$sx .= $RDFData->view_data($dt);						
 					break;
 
 					case 'frbr:Manifestation':
-						$sx = 'MANIFESTATION';			
+						$sx = '';			
 						//pre($dt);
 						$expre = $RDF->recover($dt,'isAppellationOfManifestation');
 						$expre = $expre[0];
@@ -428,7 +443,7 @@ class Books extends Model
 						$d['expression'] = $expre;
 						$d['manifestattion'] = $dt;
 
-						$sx = $this->viewItem($d,$id);
+						$sx .= $this->viewItem($d,$id);
 					break;
 
 					case 'frbr:Expression':
@@ -438,7 +453,7 @@ class Books extends Model
 					break;					
 
 					default:
-					$sx = $this->viewWork($dt);
+					$sx .= $this->viewWork($dt);
 					$sx .= $RDFData->view_data($dt);
 				}
 			return $sx;
@@ -482,18 +497,25 @@ class Books extends Model
 		{
 			// security
 			$sx = '
-			<div style="float:left; width: 180px;">
-			<span style="position: fixed; left: 5px; top: 140px;" class="btn btn-outline-primary p-1">
-			<a href="'.PATH.MODULE.'/a/'.$id.'">
+			<a href="'.PATH.MODULE.'/a/'.$id.'" class="btn btn-outline-primary mb-3" style="width: 100%;">
 			'.lang('find.edit').'
-			</a>
-			</span>
-			</div>';
+			</a>';
 			return $sx;
 		}
 
+	function bt_image($id)
+		{
+			// security
+			$sx = '
+			<a href="'.PATH.MODULE.'/a/'.$id.'" class="btn btn-outline-primary mb-3" style="width: 100%;">
+			'.lang('find.image_send').'
+			</a>';
+			return $sx;
+		}		
+
 	function viewItem($d,$idc)
 		{
+			$Social = new \App\Models\Socials();
 			$tela1 = '';
 			$tela2 = '';
 			$tela3 = '';
@@ -506,7 +528,13 @@ class Books extends Model
 			$m = $d['manifestattion'];
 
 			$isbn = $this->isbn($m);
-			$cover = '<img src="'.$Cover->get_cover($isbn).'" class="img-fluid shadow-lg mb-5 bg-body rounded">';			
+			$cover = '<img src="'.$Cover->get_cover($isbn).'" style="width: 100%;" class="img-fluid shadow-lg mb-5 bg-body rounded">';
+			
+			if (perfil("#ADM#CAT"))
+				{
+					$cover .= $this->bt_edit($idc);
+					$cover .= $this->bt_image($idc);
+				}
 
 			$tela1 .= bsc($cover,2);
 
@@ -521,7 +549,6 @@ class Books extends Model
 
 
 			$tela = bs($tela1.$tela2.$tela3);
-			$tela .= $this->bt_edit($idc);
 			return $tela;
 		}	
 

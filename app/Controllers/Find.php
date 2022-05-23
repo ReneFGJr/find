@@ -176,15 +176,6 @@ class Find extends BaseController
 		$sx .= '    </button>' . cr();
 		$sx .= '    <div class="collapse navbar-collapse" id="navbarSupportedContent">' . cr();
 		$sx .= '      <ul class="navbar-nav me-auto mb-2 mb-lg-0">' . cr();
-		$sx .= '        <li class="nav-item dropdown">' . cr();
-		$sx .= '          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">' . cr();
-		$sx .= '          ' . lang('find.index') . cr();
-		$sx .= '          </a>' . cr();
-		$sx .= '          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">' . cr();
-		$sx .= '            <li><a class="dropdown-item" href="' . PATH . MODULE. 'events/' . '">' . lang('proceedings.Menu.events') . '</a></li>' . cr();
-		$sx .= '          </ul>' . cr();
-		$sx .= '        </li>' . cr();
-
 		$sx .= '
 							<li class="nav-item">
 								<a class="nav-link" href="' . PATH . MODULE. 'libraries/' . '">' . lang('find.libraries_select') . '</a>
@@ -212,7 +203,7 @@ class Find extends BaseController
 			$sx .= '          </a>' . cr();
 			$sx .= '          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">' . cr();
 			$sx .= '            <li><a class="dropdown-item" href="' . PATH . MODULE . 'rdf">' . lang('find.rdf.row') . '</a></li>' . cr();
-			$sx .= '            <li><a class="dropdown-item" href="' . PATH . MODULE . 'admin">' . lang('find.admin') . '</a></li>' . cr();
+			$sx .= '            <li><a class="dropdown-item" href="' . PATH . MODULE . 'admin">' . bsicone('gear').' '. lang('find.admin') . '</a></li>' . cr();
 			$sx .= '            <li><a class="dropdown-item" href="' . PATH . MODULE . 'config">' . lang('find.config') . '</a></li>' . cr();
 			$sx .= '          </ul>' . cr();
 			$sx .= '        </li>' . cr();
@@ -223,7 +214,7 @@ class Find extends BaseController
 		$sx .= '            ' . lang('find.Index') . cr();
 		$sx .= '          </a>' . cr();
 		$sx .= '          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">' . cr();
-		$sx .= '            <li><a class="dropdown-item" href="' . URL . (PATH . 'indexes/authors') . '">' . lang('find.Indexes.Authors') . '</a></li>' . cr();
+		$sx .= '            <li><a class="dropdown-item" href="' . (PATH . MODULE.'indexes/authors') . '">' . lang('find.Indexes.Authors') . '</a></li>' . cr();
 		$sx .= '          </ul>' . cr();
 		$sx .= '        </li>' . cr();
 
@@ -431,7 +422,7 @@ class Find extends BaseController
 		$cab .= $this->Logos->banner();
 
 		$dt = array();
-		$sx = '' . $this->Socials->index($d1, $id, $dt, $cab);
+		$sx = $this->Socials->index($d1, $id, $dt, $cab);
 		//$sx .= $this->footer();
 		return $sx;
 	}
@@ -516,10 +507,15 @@ class Find extends BaseController
 		
 	function rdf($d1 = '', $d2 = '', $d3 = '', $d4 = '', $d5 = '')
 	{
-		$cab = $this->cab('head');
+		$cab = $this->cab();
 		$RDF = new \App\Models\Rdf\RDF();
-		$tela = $RDF->index($d1, $d2, $d3, $d4, $d5, $cab);
-		return $tela;
+		$sa = bs(bsc($RDF->index($d1, $d2, $d3, $d4, $d5, $cab),12));
+
+		$sx = $this->navbar();
+		$sx .= $this->Logos->banner();		
+		$sx .= $sa;
+
+		return $sx;
 	}
 
 	function export($d1 = '', $d2 = '', $d3 = '', $d4 = '')

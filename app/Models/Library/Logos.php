@@ -91,7 +91,8 @@ class Logos extends Model
 
 	function banner()
 		{
-		$sx = '<div id="libraryBanners" class="carousel slide carousel-fade mb-5" data-bs-touch="false" data-bs-interval="false">
+			$hd = 'd-none d-lg-block';
+		$sx = '<div id="libraryBanners" class="'.$hd.' carousel slide carousel-fade mb-5" data-bs-touch="false" data-bs-interval="false">
 				<div class="carousel-inner">
 					<div class="carousel-item active">
 					<img src="'.URL.$this->banner_nr(LIBRARY,1).'" class="d-block w-100" alt="Banner one (1)">

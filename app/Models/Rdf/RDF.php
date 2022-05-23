@@ -148,6 +148,11 @@ class RDF extends Model
 				$sx = $cab;				
 				$sx .= $RDFForm->edit($d1,$d2,$d3,$d4,$d5);
 				break;
+			case 'forms':
+				$RDFForm = new \App\Models\Rdf\RDFForm();
+				$sx = $cab;				
+				$sx .= $RDFForm->forms($d1,$d2,$d3,$d4,$d5);
+				break;				
 			case 'text':
 				$RDFFormText = new \App\Models\Rdf\RDFFormText();
 				$sx = $cab;

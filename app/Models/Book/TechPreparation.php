@@ -40,6 +40,29 @@ class TechPreparation extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
+	function banner($fs='')
+		{
+			switch($fs)
+				{
+					case 'prepare_0':
+						$tit = h('Catalogação de um Item');
+						break;					
+					case 'prepare_I':
+						$tit = h('Incluir no acervo');
+						break;
+					default:
+						$tit = h('Preparo técnico');
+				}
+			$sx = '';
+			$sx = bsc('<img src="'.URL.'img/task/cataloging.png" class="img-fluid">',2,'bg-secondary');
+			$sx .= bsc($tit,10,'bg-secondary text-center p-4 text-light');
+			$sx .= bsc($fs,12,'mb-3');
+			$par = array('fluid' => true);
+			$sx = bs($sx,$par);
+
+			return $sx;
+		}
+
 	function index($d1,$d2,$d3,$d4)
 		{
 			if (!perfil("#CAT#ADM"))
@@ -49,6 +72,7 @@ class TechPreparation extends Model
 				}
 			
 			$sx = '';
+			$sx .= $this->banner($d1);
 			if ($d1=='prepare_0') { $d1 = 'prepare'; $st = '0'; }
 			if ($d1=='prepare_1') { $d1 = 'prepare'; $st = '1';  }
 			if ($d1=='prepare_2') { $d1 = 'prepare'; $st = '2';  }
@@ -58,60 +82,58 @@ class TechPreparation extends Model
 						$Itens = new \App\Models\Book\Itens();
 						$Itens->status($d2,$d3);
 						$link = PATH.MODULE.'tech/prepare_'.$d3.'/'.$d2;
-						$sx = metarefresh($link,0);
+						$sx .= metarefresh($link,0);
 						break;
 					case 'prepare':
 						/* Novos Itens */
 						$Itens = new \App\Models\Book\Itens();
-						$sx .= bsc($this->image_left(2),2);
+						$sz = bsc($this->image_left(2),2);
 						if ($d2=='')
 							{
-								$sx .= bsc($Itens->prepare($d2,$d3,$st),10);
+								$sz .= bsc($Itens->prepare($d2,$d3,$st),10);
 							} else {
 								switch($st)
 									{
 										case '0':
 										/**************************************** HARVESTING */
+											$sa = '';
 											$harvesting = $Itens->harvesting_metadata($d2,$d3,$d4);
-
 											/* Processamento */
-											$sa = $Itens->process_metadata($harvesting,$d2,$d3);
-											
-											/* Cabecalho */
-											$sa .= $Itens->header($d2);
-											
+											$sa .= $Itens->process_metadata($harvesting,$d2,$d3);
+																					
 											/**************************** Status */
-											$sa .= $Itens->actions($d2,$st);
-											
-
-											$sx .= bsc($sa,10);
+											$sa .= $Itens->actions($d2,$st);	
+											$sz .= bsc($sa,10);
 											break;
 
 										case '1':
 										/******************************************* CATALOG */
 											$IDM = $Itens->create_rdf_work($d2);
 											$Books = new \App\Models\Book\Books();
-											$sx .= bsc($Books->a($IDM),10);
+											$sz .= bsc($Books->a($IDM),10);
 											break;
 										default:
-											$sx .= bsc(bsmessage('Tech '.$st.' not implemented'),10);
+											$sz .= bsc(bsmessage('Tech '.$st.' not implemented'),10);
 											break;
 
 									}
 							}
 						
-						$sx = bs($sx);
+						$sx .= bs($sz);
+						$sx .= '</div>';
+						$sx .= '</div>';
 						break;
 					case 'prepare_I':
 						/* Novos Itens */
 						$Itens = new \App\Models\Book\Itens();
-						$sx .= bsc($this->image_left(1),2);
-						$sx .= bsc($Itens->new($d2,$d3,$d4),10);
-						$sx = bs($sx);
+						$sa = '';
+						$sa .= bsc($this->image_left(1),2);
+						$sa .= bsc($Itens->new($d2,$d3,$d4),10);
+						$sx .= bs($sa);
 						break;
 																		
 					default:
-						$sx = $this->resume();
+						$sx .= bs($this->resume());
 						break;
 				}
 			return $sx;
@@ -154,7 +176,7 @@ class TechPreparation extends Model
 						}
 					if ($tot > 0)
 						{
-							$sa .= '<sup class="pe-2 ps-2">'.$tot.' '.lang('find.itens').'</sup>';
+							$sa .= '&nbsp;<span class="pe-2 ps-2 btn-primary p-1 small rounded-3">'.$tot.'</span>';
 						}
 					
 					$sa .= '</li>';

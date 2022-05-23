@@ -116,6 +116,12 @@ class Itens extends Model
 					$editons = $dt['editions'];
 					$editons = $editons['edition'];
 					$tit = array();
+					if (isset($editons[0]))
+						{
+							
+						} else {
+							$editons = array($editons);
+						}
 					for($r=0;$r < count($editons);$r++)
 						{
 							$line = $editons[$r];
@@ -163,7 +169,6 @@ class Itens extends Model
 					$title = trim($dt['title']);
 					$dd['i_titulo'] = $title;
 					$this->set($dd)->where('id_i',$id)->where('i_titulo','')->update();
-					$sx .= '<hr><span>Title: <b>'.$title.'</b></span><br>';
 				} else {
 					
 				}
@@ -173,6 +178,11 @@ class Itens extends Model
 					return lang('find.title_not_proceess');
 				}
 			$IDW = $RDF->rdf_concept($title,'Work');
+			if (isset($dt['i_titulo']))
+				{
+					$ttt = trim($dt['i_titulo']);
+					$RDF->propriety($IDW,'hasTitle',$ttt);
+				}
 
 			/************************** AUTHORES */
 			/************************************ OCLS */
@@ -256,65 +266,110 @@ class Itens extends Model
 
 			/************************* Language */			
 			$RDF->propriety($IDE,'brapci:hasFormExpression',$IDL);
-			$sx .= '<p>Language: '.$language.'</p>';				
-							
-			$sx .= '<p>Work:'.anchor(PATH.MODULE.'/v/'.$IDW,'Link').'</p>';
-
 			/************************** MANIFESTATION */
 			$name = 'ISBN:'.$isbn;
 			$IDM = $RDF->rdf_concept($name,'frbr:Manifestation');	
 			$prop = 'isAppellationOfManifestation';
 			$RDF->propriety($IDE,$prop,$IDM);
-			$sx .= '<p>Expression:'.anchor(PATH.MODULE.'/v/'.$IDE,'Link').'</p>';
-			$sx .= '<p>Manifestation:'.anchor(PATH.MODULE.'/v/'.$IDM,'Link').'</p>';
-
 			/****************************** ISBN */
 			$IDISBN = $IDM = $RDF->rdf_concept($name,'brapci:ISBN');
 			$RDF->propriety($IDM,'brapci:hasISBN',$IDISBN);
 
-			return $sx;		
+			return 1;		
 		}		
 
 	function process_metadata($hv,$id)
 		{
-			$sx = h('find.metadata_proceesing',3);			
-
+			$dt = $this->find($id);
+			$sx = '';
+			$sx = $this->header_item($dt);
+			$sx .= h(lang('find.metadata_proceesing'),3);	
+			$sn = '<span class="label label-info btn-danger rounded ps-2 pe-2">&nbsp;X&nbsp;</span> ';		
+			$ss = '<span class="label label-info btn-success rounded ps-2 pe-2">&nbsp;V&nbsp;</span> ';		
+			$rst = 0;
 			/********************************************************* METADATA - FIND */			
 			if (count($hv['FIND']) > 0)
 				{
 					$Find = new \App\Models\API\Find();
-					$sx .= 'FIND '. $Find->process($hv['FIND'],$id).'<br>';
+					$rst = $this->save_metadata($hv['FIND'],$id);
+					$sx .= $ss.'FIND<br>';
 				} else {
-					$sx .= 'FIND '.lang('find.metadata_not_found').'<br>';
+					$sx .= $sn.'FIND '.lang('find.metadata_not_found').'<br>';
 				}
 
 			/********************************************* METADATA - MercadoEditorial */			
 			if (count($hv['MERCA']) > 0)
 				{
 					$Find = new \App\Models\API\Find();
-					$sx .= 'MercadoEditorial '. $this->save_metadata($hv['MERCA'],$id).'<br>';
+					$rst = $this->save_metadata($hv['MERCA'],$id);
+					$sx .= $ss.'MercadoEditorial<br>';
 				} else {
-					$sx .= 'MercadoEditorial '.lang('find.metadata_not_found').'<br>';
+					$sx .= $sn.'MercadoEditorial '.lang('find.metadata_not_found').'<br>';
 				}					
 			
 			/********************************************************* METADATA - OCLC */			
 			if (count($hv['OCLC']) > 0)
 				{
 					$Find = new \App\Models\API\Find();
-					$sx .= 'OCLC '.$this->save_metadata($hv['OCLC'],$id).'<br>';
+					$rst = $this->save_metadata($hv['OCLC'],$id);
+					$sx .= $ss.'OCLC<br>';
 				} else {
-					$sx .= 'OCLC '.lang('find.metadata_not_found').'<br>';
+					$sx .= $sn.'OCLC '.lang('find.metadata_not_found').'<br>';
 				}
 
 				/********************************************************* GOOGLE - OCLC */					
 				if (count($hv['GOOGLE']) > 0)
 				{
 					$Find = new \App\Models\API\Find();
-					$sx .= 'GOOGLE '. $this->save_metadata($hv['GOOGLE'],$id).'<br>';
+					$rst = $this->save_metadata($hv['GOOGLE'],$id);
+					$sx .= $ss.'GOOGLE<br>';
 				} else {
-					$sx .= 'GOOGLE '.lang('find.metadata_not_found').'<br>';
+					$sx .= $sn.'GOOGLE '.lang('find.metadata_not_found').'<br>';
+				}
+			$sx .= '<br>&nbsp;<br>';
+
+			if ($rst > 0)
+				{
+					$this->status($id,1);
+					$sx = metarefresh(PATH.MODULE.'tech/prepare_1/'.$id);
 				}
 			return $sx;
+		}
+
+	function btn_action($id,$st)
+		{
+			$sx = '';
+			$sx .= '<a href="'.base_url(PATH.'tech/item_status/'.$id.'/'.$st).'" class="btn btn-primary btn-sm">';
+			$sx .= lang('find.tech_'.$st);
+			$sx .= '</a>';
+			return($sx);
+		}
+
+	function header_item($dt)
+		{
+			$title = trim($dt['i_titulo']);
+			if ($title == '') { $title = lang('find.unknow'); }
+			$isbn = $dt['i_identifier'];
+			$tombo = $dt['i_tombo'];
+			$date = stodbr(sonumero($dt['i_created']));
+			$sx = '';
+			$sx .= '<div class="row">';
+			$sx .= '	<div class="col-md-12">';
+			$sx .= '		<div class="card">';
+			$sx .= '			<div class="card-header">';
+			$sx .= '			<span class="small">'.lang('find.title').'</span>';
+			$sx .= '			<h2 class="card-title">'.$title.'</h2>';			
+			$sx .= '		</div>';
+			$sx .= '	<div class="card-body">';
+			$sx .= '		<div class="row">';
+			$sx .= 			bsc('ISBN: <b>'.$isbn.'</b>',6);
+			$sx .= 			bsc(lang('find.created_at').': <b>'.$date.'</b>',6);
+			$sx .= 			bsc('',6);
+			$sx .= 			bsc(lang('find.registration_number').': <b>'.$tombo.'</b>',6);
+			$sx .= '		</div>';
+			$sx .= '	</div>';
+			$sx .= '</div>';			
+			return($sx);
 		}
 
 	function actions($id,$or=0)
@@ -324,17 +379,18 @@ class Itens extends Model
 			$st = $dt['i_status'];
 			if ($st == $or)
 				{
-					$sx = bsmessage('Não foi possível processar a operação',3);
+					$sx = bsmessage(lang('find.metadata_not_found'),3);
 
 					if ($st == 0)
 						{
+							$sx .= h(lang('find.metadata_proceesing_actions'),3);
 							$menu['1'] = lang('find.set_status_to').' <b>'.lang('find.tech_1').'</b>';
 							$menu['9'] = lang('find.exlude_item').' <b>'.lang('find.exclude_item').'</b>';
 						}
-					$sx .= '<ul>';
+					$sx .= '<ul style="list-style:none;">';
 					foreach ($menu as $link=>$label)
 						{
-							$sx .= '<li><a href="'.(PATH.MODULE.'tech/item_status/'.$id.'/'.$link).'">'.$label.'</a></li>';
+							$sx .= '<li><a class="btn btn-outline-primary mb-2" href="'.(PATH.MODULE.'tech/item_status/'.$id.'/'.$link).'">'.$label.'</a></li>';
 						}
 					$sx .= '</ul>';
 				} else {
@@ -523,16 +579,23 @@ class Itens extends Model
 
 			default:
 				$sx .= bsc(lang('find.tech_IA'), 2, 'text-end small');
-				$link = '<a href="' . PATH . MODULE . 'tech/prepare_I/isbn/edit/0' . '">';
+				$link = '<a href="' . PATH . MODULE . 'tech/prepare_I/isbn/edit/0' . '" class="btn btn-outline-primary">';
 				$linka = '</a>';
 				$sx .= bsc($link . '<b>' . lang('find.tech_IA1') . '</b>' . $linka, 10);
 
 				$sx .= bsc('<center><hr style="width: 50%;"/></center>', 12);
 
 				$sx .= bsc(lang('find.tech_IB'), 2, 'text-end small');
-				$link = '<a href="' . PATH . MODULE . '//marc' . '">';
+				$link = '<a href="' . PATH . MODULE . '//marc' . '" class="btn btn-outline-primary">';
 				$linka = '</a>';
 				$sx .= bsc($link . '<b>' . lang('find.tech_IB1') . '</b>' . $linka, 10);
+
+				$sx .= bsc('<center><hr style="width: 50%;"/></center>', 12);
+
+				$sx .= bsc('', 2, 'text-end small');
+				$link = '<a href="' . PATH . MODULE . '/tech' . '" class="btn btn-outline-warning">';
+				$linka = '</a>';
+				$sx .= bsc($link . '<b>' . lang('find.return') . '</b>' . $linka, 10);
 
 				$sx .= bsc('<center><hr style="width: 50%;"/></center><div style="height: 400px;"', 12, 'mb-5');
 		}

@@ -50,6 +50,41 @@ class RdfForm extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
+function forms()
+	{
+		$dt = $this->select("*")
+			->Join('rdf_class','sc_propriety = id_c','left')
+			->where('sc_library', LIBRARY)
+			->OrWhere('sc_library', 0)
+			->orderBy('sc_class, sc_group, c_class','asc')
+			->FindAll();
+
+		$sx = '';
+		$xgr = '';
+		for ($r=0;$r < count($dt);$r++)
+			{
+				$line = $dt[$r];
+				$id = $line['sc_class'];
+				$gr = $line['sc_group'];
+				if ($gr != $xgr)
+					{
+						$sx .= '<h3>Grupo: '.lang('rdf.'.$gr).'</h3>';
+						$xgr = $gr;
+					}
+				$link = onclick(PATH.MODULE.'rdf/form_ed/'.$line['id_sc'],800,600);
+				$linka = '</span>';
+				$act = '';
+				$acta = '';
+				if ($line['sc_ativo'] = 0)
+					{
+						$act = '<s>';
+						$acta = '</s>';
+					}
+				$sx .= '<li>'.$act.$link.$line['c_class'].$linka.$acta. ' ('.$line['sc_library'].')</li>';
+			}
+		return $sx;
+	}
+
 function form($id, $dt) {
 		$RDF = new \App\Models\Rdf\RDF();
 		$class = $dt['cc_class'];
@@ -115,7 +150,7 @@ function form($id, $dt) {
 				{
 					$sx .= '<tr>';
 					$sx .= '<td colspan=3 class="middle" style="border-top: 1px solid #000000; border-bottom: 1px solid #000000;" align="center">';
-					$sx .= msg($grp);
+					$sx .= lang('rdf.'.$grp);
 					$sx .= '</td>';
 					$sx .= '</tr>';
 					$xgrp = $grp;
@@ -136,7 +171,7 @@ function form($id, $dt) {
 				$sx .= '<td width="25%" align="right" valign="top">';
 
 				if ($xcap != $cap) {
-					$sx .= '<nobr><i>' . msg($line['c_class']) . '</i></nobr>';
+					$sx .= '<nobr><i>' . lang('rdf.'.$line['c_class']) . '</i></nobr>';
 					$sx .= '<td width="1%" valign="top">' . $link . '[+]' . $linka . '</td>';
 					$xcap = $cap;
 				} else {
@@ -187,7 +222,6 @@ function form_ed($id)
 	{
 		$this->id = $id;
 		$this->path = PATH.MODULE.'rdf/form_ed/'.$id;
-		$this->path_back = 'wclose';
 		$sx = form($this);
 		return $sx;
 	}
@@ -311,14 +345,14 @@ function exclude($id,$ac='')
 			{
 				$RDFConcept = new \App\Models\Rdf\RDFConcept();
 				$dd = $RDFConcept->le($dt['d_r2']);
-				$sx .= '<div class="mt-2">'.lang('find.concept').'</div>';
+				$sx .= '<div class="mt-2">'.lang('rdf.concept').'</div>';
 			}
 		/* Text */
 		if (($dt['d_r2'] == 0) and ($dt['d_literal'] > 0))
 			{
 				$RDFLiteral = new \App\Models\Rdf\RDFLiteral();
 				$dd = $RDFLiteral->find($dt['d_literal']);
-				$sx .= '<div class="mt-2">'.lang('find.term').'</div>';
+				$sx .= '<div class="mt-2">'.lang('rdf.term').'</div>';
 			}
 		/* Mostra Nome */
 
