@@ -58,6 +58,11 @@ class RDF extends Model
 		$sx .= h($d1);
 
 		switch ($d1) {
+			case 'class':
+				$sx = $cab;
+				$RDFClass = new \App\Models\Rdf\RDFClass();
+				$sx .= $RDFClass->list($d2, $d3, $d4, $d5);
+				break;
 			case 'ontology':
 				$RDFOntology = new \App\Models\Rdf\RDFOntology();
 				$sx = $cab;
@@ -186,8 +191,10 @@ class RDF extends Model
 					}		
 				$sa .= h('rdf.MainMenu');
 				$sa .= '<ul>';
-				$sa .= '<li><a href="' . (PATH . 'rdf/inport?type=prefix') . '">' . lang('Inport Prefix') . '</a></li>';
-				$sa .= '<li><a href="' . (PATH . 'rdf/inport?type=class') . '">' . lang('Inport Class') . '</a></li>';
+				$sa .= '<li><a href="' . (PATH . MODULE.'rdf/class') . '">' . lang('rdf.classes') . '</a></li>';
+				$sa .= h(lang('rdf.import'),3);
+				$sa .= '<li><a href="' . (PATH . MODULE. 'rdf/inport?type=prefix') . '">' . lang('Inport Prefix') . '</a></li>';
+				$sa .= '<li><a href="' . (PATH . MODULE. 'rdf/inport?type=class') . '">' . lang('Inport Class') . '</a></li>';
 				$sa .= h(lang('rdf.check_do'),3);
 				$sa .= '<li><a href="' . (PATH . MODULE. 'rdf/check') . '">' . lang('rdf.Check_class_duplicate') . '</a></li>';
 				$sa .= '<li><a href="' . (PATH . MODULE. 'rdf/check_loop') . '">' . lang('rdf.Check_loop') . '</a></li>';
@@ -484,6 +491,15 @@ class RDF extends Model
 			$sx .= '</ul>';
 			$sx = bs(bsc($sx,12));
 			return $sx;
+		}
+
+	function btn_checkform($id)
+		{
+			$sx = '';
+			$sx .= '<a href="'.PATH.MODULE.'rdf/form_check/'.$id.'" class="btn btn-outline-primary">';
+			$sx .= lang('rdf.form_check');
+			$sx .= '</a>';
+			return($sx);
 		}
 
 	function btn_return($id='',$class='')

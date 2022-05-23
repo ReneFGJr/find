@@ -53,9 +53,7 @@ class RDFOntology extends Model
 					$sx = $this->index($d1,$dt['c_equivalent'],$d3,$d4);
 				} else {
 					$dt['equivalent'] = $this->where('c_equivalent',$d2)->findAll();
-					$sx .= view('setspec/class',$dt);
-
-					
+					$sx .= view('setspec/class',$dt);					
 				}			
 		} else {
 			$this->check();

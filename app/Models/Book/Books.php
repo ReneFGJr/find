@@ -386,7 +386,7 @@ class Books extends Model
 						$sx .= bsc(
 									$RDF->btn_return($id).
 									' '.
-									//$Itens->btn_to_($id).
+									$RDF->btn_checkform($id).
 									''
 								,12);
 						$sx .= $sw;

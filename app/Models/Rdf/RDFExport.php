@@ -77,7 +77,7 @@ class RDFExport extends Model
 
 	function recover_title($dt)
 	{
-		$title = $this->RDF->recovery($dt['data'], ''hasTitle'');
+		$title = $this->RDF->recovery($dt['data'], 'hasTitle');
 		if (isset($title[0][2])) {
 			$title = nbr_title($title[0][2]);
 		} else {
