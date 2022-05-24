@@ -58,10 +58,17 @@ class RDF extends Model
 		$sx .= h($d1);
 
 		switch ($d1) {
+			case 'form_check':
+				$sx = $cab;	
+				$RDFFormCheck = new \App\Models\Rdf\RDFFormCheck();
+				$sx .= $RDFFormCheck->check($d2, $d3, $d4, $d5);
+				$sx .= '<a href="'.PATH.MODULE.'rdf/class_view/'.$d2.'">'.lang('rdf.return').'</a>';
+				$sx .= metarefresh(PATH.MODULE.'rdf/class_view/'.$d2);
+				break;
 			case 'class':
 				$sx = $cab;
 				$RDFClass = new \App\Models\Rdf\RDFClass();
-				$sx .= $RDFClass->list($d2, $d3, $d4, $d5);
+				$sx .= $RDFClass->list($d2, $d3, $d4, $d5);		
 				break;
 			case 'class_view':
 				$sx = $cab;
@@ -72,7 +79,12 @@ class RDF extends Model
 				$sx = $cab;
 				$RDFClass = new \App\Models\Rdf\RDFClass();
 				$sx .= $RDFClass->edit($d2, $d3, $d4, $d5);
-				break;				
+				break;
+			case 'formss':
+				$sx = $cab;
+				$RDFClassProperty = new \App\Models\Rdf\RDFClassProperty();
+				$sx .= $RDFClassProperty->edit($d2, $d3, $d4, $d5);
+				break;							
 			case 'ontology':
 				$RDFOntology = new \App\Models\Rdf\RDFOntology();
 				$sx = $cab;

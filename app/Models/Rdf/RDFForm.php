@@ -17,14 +17,16 @@ class RdfForm extends Model
 	protected $allowedFields        = [
 		'id_sc','sc_class','sc_propriety',
 		'sc_range','sc_ativo','sc_library',
-		'sc_global','sc_group'
+		'sc_global','sc_group','sc_ord'
 	];
 
 	protected $typeFields        = [
-		'hidden','string:100','string:100',
-		'sql:id_c:c_class:rdf_class','sn','string:100',
-		'string:100','string:100'
-	];	
+		'hidden',
+		'sql:id_c:c_class:rdf_class:c_type=\'C\' order by c_class',
+		'sql:id_c:c_class:rdf_class:c_type=\'P\' order by c_class',
+		'sql:id_c:c_class:rdf_class:c_type=\'C\' order by c_class',
+		'sn','string:100',
+		'string:100','string:100','[1-99]'	];	
 
 	// Dates
 	protected $useTimestamps        = false;
@@ -165,7 +167,8 @@ function form($id, $dt) {
 				$furl = (PATH.MODULE.'rdf/form/'.$class.'/'.$line['id_sc'].'/'.$id);
 
 				$class = trim($line['c_class']);
-				$link = onclick(PATH.MODULE.'rdf/form/edit/'.$class.'/'.$line['id_sc'].'/'.$id,800,400);
+				//$link = onclick(PATH.MODULE.'rdf/form/edit/'.$class.'/'.$line['id_sc'].'/'.$id,800,400);
+				$link = onclick(PATH.MODULE.'rdf/form_ed/'.$line['id_sc'],800,600);
 				$linka = '</span>';
 				$sx .= '<tr>';
 				$sx .= '<td width="25%" align="right" valign="top">';
@@ -271,6 +274,7 @@ function le($id)
 function edit_form($id)
 	{
 		$this->id = $id;
+		$this->path_back = 'close';
 		$sx = form($this);
 		return $sx;
 	}
@@ -410,8 +414,8 @@ function form_class_edit($id,$class='')
 			for ($r=0;$r < count($rlt);$r++)			
 			{
 				$line = (array)$rlt[$r];
-				$link = '<a href="#" onclick="newxy(\''.base_url(PATH.MODULE.'rdf/class/formss/'.$line['sc_class'].'/'.$line['id_sc']).'\',800,600);">';
-				$linka = '</a>';
+				$link = onclick(PATH.MODULE.'rdf/form_ed/'.$line['id_sc'],800,600);
+				$linka = '</span>';
 				$sx .= '<tr>';
 
 				$sx .= '<td align="center">';
@@ -445,9 +449,16 @@ function form_class_edit($id,$class='')
 			$sx .= '</table>';
 			$sx .= '</div>';
 
-			$link = '<a href="#" onclick="newxy(\''.base_url(PATH.MODULE.'rdf/config/class/formss/'.$id.'/0').'\',800,600);">';
+			//$link = onclick(PATH.MODULE.'rdf/formss/'.$id.'/0',800,600,"btn btn-outline-primary");
+			$link = onclick(PATH.MODULE.'rdf/form_ed/'.$line['sc_class'],800,600,"btn btn-outline-primary");
+			$linka = '</span>';
+			$sx .= $link.lang('rdf.nova_propriedade2').$linka;
+
+			$sx .= ' &nbsp; ';
+
+			$link = '<a href="'.PATH.MODULE.'rdf/form_check/'.$id.'" class="btn btn-outline-primary">';
 			$linka = '</a>';
-			$sx .= $link.'novo'.$linka;
+			$sx .= $link.lang('rdf.check_form').$linka;
 
 			return($sx);
 		}	

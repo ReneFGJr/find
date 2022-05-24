@@ -43,6 +43,16 @@ class RDFClassProperty extends Model
 	protected $afterDelete          = [];
 
 
+	function edit($d1,$d2)
+		{
+			$sx = '';
+			$sx .= form_open();
+			$sx .= '<table class="table">';
+			$sx .= '<tr><td>'.msg('d_r1').'</td><td>'.$d1.'</td></tr>';
+			$sx .= '</table>';
+			$sx .= form_close();
+			return $sx;
+		}
 
 	function relation($data)
 		{

@@ -163,10 +163,10 @@ class Itens extends Model
 						}
 
 				}
-			
-			if (isset($dt['title']))
+		
+			if (isset($dt['i_titulo']))
 				{					
-					$title = trim($dt['title']);
+					$title = trim($dt['i_titulo']);
 					$dd['i_titulo'] = $title;
 					$this->set($dd)->where('id_i',$id)->where('i_titulo','')->update();
 				} else {
@@ -253,7 +253,13 @@ class Itens extends Model
 			/************************** EXPRESSAO */
 			if ($language == '')
 				{
-					$language = $dt['expressao']['idioma'];
+					if (isset($dt['expressao']['idioma']))
+						{
+							$language = $dt['expressao']['idioma'];
+						} else {
+							$language = 'pt';
+						}
+					
 				}			
 			
 			$name = 'ISBN:'.$isbn.':book';
