@@ -15,12 +15,18 @@
 #--------------------------------------------------------------------
 
 # CI_ENVIRONMENT = production
+CI_ENVIRONMENT = development
+PREFIX = 'find.'
+
+# APIS
+api_key_mercadoeditorial='532738d6a093653cef40b5be714557cedae#FAKE'
 
 #--------------------------------------------------------------------
 # APP
 #--------------------------------------------------------------------
 
-# app.baseURL = ''
+app.baseURL = 'http://find/'
+app.prefix = 'index.php/'
 # app.forceGlobalSecureRequests = false
 
 # app.sessionDriver = 'CodeIgniter\Session\Handlers\FileHandler'
@@ -38,14 +44,14 @@
 #--------------------------------------------------------------------
 
 database.default.hostname = localhost
-database.default.database = ci4
+database.default.database = find2
 database.default.username = root
-database.default.password = root
+database.default.password = 
 database.default.DBDriver = MySQLi
 database.default.DBPrefix =
 
 database.rdf.hostname = localhost
-database.rdf.database = find
+database.rdf.database = find2
 database.rdf.username = root
 database.rdf.password = 
 database.rdf.DBDriver = MySQLi

@@ -101,14 +101,21 @@ class Isbn extends Model
 				/* Link produção */
 				$url = 'https://api.mercadoeditorial.org/api/v1/requisitar_livro_unico';
 				$url .= '?isbn=' . $isbn;
+				echo $url;
+				exit;
 				$json = read_link($url);
 				$rsp = json_decode($json, true);
-				if ($rsp['status_code'] != '101') {
-					file_put_contents($file, $json);
+				if ($rsp != '')
+				{
+					if ($rsp['status_code'] != '101') {
+						file_put_contents($file, $json);
+					} else {
+						$json = json_encode(array('status_code' => '101'));
+					}
+					return $json;
 				} else {
-					$json = json_encode(array('status_code' => '101'));
+					return "";
 				}
-				return $json;
 				break;
 
 			default:

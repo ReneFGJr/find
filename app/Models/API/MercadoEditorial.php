@@ -40,9 +40,15 @@ class MercadoEditorial extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
-	var $api_key = '1a0e9c158963e5afa858d552091225e3';
+	var $api_key = 'chaveAPI';
 	/* Link para testes */
 	//var $url = 'https://sandbox.mercadoeditorial.org/api/v1/requisitar_livro_unico';
+	//https://api.mercadoeditorial.org/documentacao/v1.2
+
+	function __construct()
+	{
+		$this->api_key = getenv("api_key_mercadoeditorial");
+	}
 
 	function book($isbn,$id) {
 
@@ -69,7 +75,8 @@ class MercadoEditorial extends Model
 		$rsp['editora'] = '';
 		$rsp['subject']= array();
 		$rsp['item'] = $id;
-		$rsp['url'] = 'https://mercadoeditorial.org/books/view/'.$isbn;
+		//$rsp['url'] = 'https://mercadoeditorial.org/books/view/'.$isbn;
+		$rsp['url'] = 'https://api.mercadoeditorial.org/api/v1.2/book?isbn='.$isbn;
 		/*******************************************************************************/
 
 		$rsp['expressao']['genere'] = (string)$w['formato'];
