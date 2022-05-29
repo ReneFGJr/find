@@ -98,11 +98,11 @@ class Isbn extends Model
 				break;
 
 			case 'MERCA':
+				//Documentação: https://api.mercadoeditorial.org/documentacao/
 				/* Link produção */
-				$url = 'https://api.mercadoeditorial.org/api/v1/requisitar_livro_unico';
+					$url = 'https://api.mercadoeditorial.org/api/v1.2/book';
 				$url .= '?isbn=' . $isbn;
-				echo $url;
-				exit;
+
 				$json = read_link($url);
 				$rsp = json_decode($json, true);
 				if ($rsp != '')

@@ -101,6 +101,16 @@ class Itens extends Model
 			return $dt;
 		}
 
+		function duplicate_metadata($dt,$id)
+			{
+				if ($id == $dt['id_i'])
+					{
+						return lang('find.duplicate_metadata');
+					}
+				echo h($id);
+				pre($dt);
+			}
+
 		function save_metadata($dt,$id)	
 		{
 			$sx = '';
@@ -239,8 +249,11 @@ class Itens extends Model
 									case '[Translator]':
 										$prop = 'brapci:hasTranslator';
 										break;
+									case '[Author]':
+										$prop = 'brapci:hasAuthor';
+										break;										
 									default:
-										echo "OPS - ".$prop;
+										echo "OPS Itens - ".$prop;
 										exit;
 										break;
 								}
@@ -297,7 +310,7 @@ class Itens extends Model
 			if (count($hv['FIND']) > 0)
 				{
 					$Find = new \App\Models\API\Find();
-					$rst = $this->save_metadata($hv['FIND'],$id);
+					$rst = $this->duplicate_metadata($hv['FIND'],$id);
 					$sx .= $ss.'FIND<br>';
 				} else {
 					$sx .= $sn.'FIND '.lang('find.metadata_not_found').'<br>';
@@ -337,7 +350,7 @@ class Itens extends Model
 			if ($rst > 0)
 				{
 					$this->status($id,1);
-					$sx = metarefresh(PATH.MODULE.'tech/prepare_1/'.$id);
+					//$sx = metarefresh(PATH.MODULE.'tech/prepare_1/'.$id);
 				}
 			return $sx;
 		}
