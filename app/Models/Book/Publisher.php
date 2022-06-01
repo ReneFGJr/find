@@ -42,7 +42,7 @@ class Publisher extends Model
 
 	function viewManifestations($dt)
 		{
-			$Itens = new \App\Models\Book\Itens();
+			$Itens = new \App\Models\Library\Itens();
 			$tela1 = '';
 			$tela2 = $this->showPublishers($dt);
 			$tela2 .= $Itens->showItens($dt);

@@ -1,53 +1,56 @@
 <?php
 
-namespace App\Models\Book;
+namespace App\Models\Library;
 
-use CodeIgniter\Entity\Cast\ObjectCast;
 use CodeIgniter\Model;
 
 class Itens extends Model
 {
-	protected $DBGroup              = 'default';
-	protected $table                = 'find_item';
-	protected $primaryKey           = 'id_i';
-	protected $useAutoIncrement     = true;
-	protected $insertID             = 0;
-	protected $returnType           = 'array';
-	protected $useSoftDeletes       = false;
-	protected $protectFields        = true;
-	protected $allowedFields        = [
-		'id_i', 'i_tombo', 'i_manifestation', 'i_identifier',
-		'i_type', 'i_library_classification', 'i_aquisicao',
-		'i_year', 'i_status', 'i_usuario',
-		'i_titulo', 'i_status', 'i_library', 'i_library_place',
-		'i_exemplar'
-	];
+    protected $DBGroup          = 'default';
+    protected $table            = 'itens';
+    protected $primaryKey       = 'id_i';
+    protected $useAutoIncrement = true;
+    protected $insertID         = 0;
+    protected $returnType       = 'array';
+    protected $useSoftDeletes   = false;
+    protected $protectFields    = true;
+    protected $allowedFields    = [
+        'id_i','i_tombo','i_manitestation',
+        'i_work','i_titulo','i_status',
+        'i_aquisicao','i_year','i_localization',
+        'i_ln1','i_ln2','i_ln3','i_ln4',
+        'i_type','i_identifier','i_uri',
+        'i_library','i_library_place','i_library_classification',
+        'i_created','i_ip','i_usuario',
+        'i_dt_emprestimo','i_dt_prev','i_dt_renovavao',
+        'i_exemplar'
+    ];
 
-	// Dates
-	protected $useTimestamps        = false;
-	protected $dateFormat           = 'datetime';
-	protected $createdField         = 'created_at';
-	protected $updatedField         = 'updated_at';
-	protected $deletedField         = 'deleted_at';
+    // Dates
+    protected $useTimestamps = false;
+    protected $dateFormat    = 'datetime';
+    protected $createdField  = 'created_at';
+    protected $updatedField  = 'updated_at';
+    protected $deletedField  = 'deleted_at';
 
-	// Validation
-	protected $validationRules      = [];
-	protected $validationMessages   = [];
-	protected $skipValidation       = false;
-	protected $cleanValidationRules = true;
+    // Validation
+    protected $validationRules      = [];
+    protected $validationMessages   = [];
+    protected $skipValidation       = false;
+    protected $cleanValidationRules = true;
 
-	// Callbacks
-	protected $allowCallbacks       = true;
-	protected $beforeInsert         = [];
-	protected $afterInsert          = [];
-	protected $beforeUpdate         = [];
-	protected $afterUpdate          = [];
-	protected $beforeFind           = [];
-	protected $afterFind            = [];
-	protected $beforeDelete         = [];
-	protected $afterDelete          = [];
+    // Callbacks
+    protected $allowCallbacks = true;
+    protected $beforeInsert   = [];
+    protected $afterInsert    = [];
+    protected $beforeUpdate   = [];
+    protected $afterUpdate    = [];
+    protected $beforeFind     = [];
+    protected $afterFind      = [];
+    protected $beforeDelete   = [];
+    protected $afterDelete    = [];
 
-	function le($id)
+function le($id)
 	{
 		$dt = $this->Find($id);
 		return $dt;
@@ -115,7 +118,7 @@ class Itens extends Model
 		{
 			$sx = '';
 			$RDF = new \App\Models\Rdf\RDF();
-			$Item = new \App\Models\Book\Itens();
+			$Item = new \App\Models\Library\Itens();
 			$di = $Item->find($id);
 			$isbn = $di['i_identifier'];	
 			$language = '';
@@ -251,7 +254,10 @@ class Itens extends Model
 										break;
 									case '[Author]':
 										$prop = 'brapci:hasAuthor';
-										break;										
+										break;	
+									case '[Translator; Author]':
+										$prop = 'brapci:hasAuthor';
+										break;																			
 									default:
 										echo "OPS Itens - ".$prop;
 										exit;
@@ -623,22 +629,63 @@ class Itens extends Model
 		return $sx;
 	}
 
+	function show_item_link($line)
+		{
+			$sx = '';
+			switch($line['i_status'])
+				{
+					case '0':
+						$link = '<a href="' . (PATH . MODULE . 'tech/prepare_0/' . $line['id_i']) . '">';
+						break;
+					default:
+						$link = '<a href="'.PATH.MODULE.'/'.$line['id_i'].'">';
+						break;
+				}
+			$linka = '</a>';
+			$sx .= $link.$line['i_identifier'].$linka;
+			return $sx;
+		}
+
+	function last_aquisitions()
+		{
+			$sx = h(lang('find.last_aquisitions'), 6);
+			$dt = $this->where('i_status',0)->limit(10)->findAll();
+			$sx .= '<ul>';
+			for($r=0;$r < count($dt);$r++)
+				{
+					$line = $dt[$r];
+					$sx .= '<li>'.$this->show_item_link($line).'</li>';
+				}
+			$sx .= '</ul>';
+			return $sx;
+		}	
+
 	function item_new_form()
 	{
 		$ISBN = new \App\Models\Isbn\Isbn();
+		$ItensHistorico = new \App\Models\Library\ItensHistorico();
 		$sx = '';
 		$this->allowedFields = array(
 			'',
-			'tech_IA1_form1' . '*',
-			'',
+			'tech_IA1_form1',
+			'',	
 			'tech_IA1_form2',
 			'',
-			'tech_IA1_form3' . '*',
+			'tech_IA1_form3',
 			'tech_IA1_form4',
 		);
 
 		$sql = 'sql:id_bs:bs_name:library_place_bookshelf:bs_LIBRARY = \'' . LIBRARY . '\'';
-		$this->typeFields = array('hidden', $sql, 'hr', 'checkbox', 'hr', 'text:5', 'string:50');
+		$this->typeFields = 
+			array('hidden', 
+			$sql.'*', 
+			'hidden', 
+			'hidden', 			
+			'hidden', 
+			'text:5'.'*', 
+			'string:50'
+			);
+
 		$this->path_back = 'none';
 		$this->table = '*';
 		$this->id = 0;
@@ -648,18 +695,18 @@ class Itens extends Model
 		$sx .= h(lang('find.tech_IA1'), 4);
 
 		/* Regra se não for automático */
-		$auto = get("tech_IA1_form2");
-		if ($auto != 1) {
-			$this->allowedFields[6] = 'tech_IA1_form4*';
-		}
 		$sx .= form($this);
 
-		if ($this->saved == 1) {
-			$place = get("tech_IA1_form1");
+		$place = get("tech_IA1_form1");
 
+		if ($this->saved == 1) 
+			{	
 			$isbn = explode(chr(10), get("tech_IA1_form3"));
-			$tomboNr = (get("tech_IA1_form5"));
+			$tomboNr = (get("tech_IA1_form4"));
 			$Tombo = new \App\Models\Book\Tombo();
+
+			/* Atribuição automática de tombo */
+			if ($tomboNr == '') { $auto = 1; } else { $auto = 0; }
 
 			$sx .= '<table class="table">';
 			$sx .= '<tr>';
@@ -670,8 +717,7 @@ class Itens extends Model
 			/******************************** Exemplares */
 				$nisbn = trim($isbn[$r]);
 
-				/* Valida ISBN */
-				
+				/* Valida ISBN */				
 				$nisbn = $ISBN->format($isbn[$r]);
 				$ex = $Tombo->exemplar($nisbn);
 
@@ -696,7 +742,11 @@ class Itens extends Model
 					$dd['i_tombo'] = $tomboNr;
 					$tomboNr++;
 				}
+
+				if (($dd['i_tombo'] == '') or ($dd['i_tombo'] == 0)) { $dd['i_tombo'] = 1; }
+
 				$Tombo->insert($dd);
+				$ItensHistorico->add_historicy($tomboNr,1);
 
 				$sx .= '<tr>';
 				$sx .= '<td>' . ($r + 1) . '</td>';
@@ -717,7 +767,7 @@ class Itens extends Model
 		$tela = '';
 		$offset = round(date("s"));
 		$limit = 6;
-		$Item = new \App\Models\Book\Itens();
+		$Item = new \App\Models\Library\Itens();
 		$sql = "select i_manitestation,i_titulo,i_identifier";
 		$sql .= " from " . $this->table . " ";
 		$sql .= "where i_library = " . LIBRARY . " ";
@@ -743,4 +793,5 @@ class Itens extends Model
 		$tela .= '</div>';
 		return $tela;
 	}
+
 }

@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class Find_Item extends Model
 {
 	protected $DBGroup              = 'default';
-	protected $table                = 'find_item';
+	protected $table                = 'itens';
 	protected $primaryKey           = 'id_i';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;

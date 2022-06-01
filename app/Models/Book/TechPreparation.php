@@ -79,14 +79,14 @@ class TechPreparation extends Model
 			switch($d1)
 				{
 					case 'item_status':
-						$Itens = new \App\Models\Book\Itens();
+						$Itens = new \App\Models\Library\Itens();
 						$Itens->status($d2,$d3);
 						$link = PATH.MODULE.'tech/prepare_'.$d3.'/'.$d2;
 						$sx .= metarefresh($link,0);
 						break;
 					case 'prepare':
 						/* Novos Itens */
-						$Itens = new \App\Models\Book\Itens();
+						$Itens = new \App\Models\Library\Itens();
 						$sz = bsc($this->image_left(2),2);
 						if ($d2=='')
 							{
@@ -125,9 +125,10 @@ class TechPreparation extends Model
 						break;
 					case 'prepare_I':
 						/* Novos Itens */
-						$Itens = new \App\Models\Book\Itens();
+						$Itens = new \App\Models\Library\Itens();
 						$sa = '';
-						$sa .= bsc($this->image_left(1),2);
+						$last = $Itens->last_aquisitions();
+						$sa .= bsc($this->image_left(1).$last,2);
 						$sa .= bsc($Itens->new($d2,$d3,$d4),10);
 						$sx .= bs($sa);
 						break;
@@ -148,10 +149,10 @@ class TechPreparation extends Model
 
 	function resume()
 		{
-			$Itens = new \App\Models\Book\Itens();
+			$Itens = new \App\Models\Library\Itens();
 			$dt = $Itens->resume();
 
-			$sx = '';
+			$sx = '';			
 			$sx .= bsc($this->image_left(0),2);
 
 			/****************************************** ITEMS */

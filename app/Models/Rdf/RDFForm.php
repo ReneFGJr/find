@@ -16,8 +16,9 @@ class RdfForm extends Model
 	protected $protectFields        = true;
 	protected $allowedFields        = [
 		'id_sc','sc_class','sc_propriety',
-		'sc_range','sc_ativo','sc_library',
-		'sc_global','sc_group','sc_ord'
+		'sc_range','sc_ativo','sc_visible',
+		'sc_library', 'sc_global','sc_group',
+		'sc_ord'
 	];
 
 	protected $typeFields        = [
@@ -25,7 +26,7 @@ class RdfForm extends Model
 		'sql:id_c:c_class:rdf_class:c_type=\'C\' order by c_class',
 		'sql:id_c:c_class:rdf_class:c_type=\'P\' order by c_class',
 		'sql:id_c:c_class:rdf_class:c_type=\'C\' order by c_class',
-		'sn','string:100',
+		'sn','sn','string:100',
 		'string:100','string:100','[1-99]'	];	
 
 	// Dates
@@ -136,7 +137,7 @@ function form($id, $dt) {
 			INNER JOIN rdf_class as t0 ON id_c = sc_propriety
 			LEFT JOIN (" . $sqla . ") as t1 ON id_c = prop 
 			LEFT JOIN rdf_class as t2 ON sc_propriety = t2.id_c
-			where sc_class = $class and (sc_library = ".LIBRARY." OR sc_library = 0)
+			where sc_class = $class and (sc_library = ".LIBRARY." OR sc_library = 0) and (sc_visible = 1)
 			order by sc_ord, id_sc, t0.c_order";
 
 			$rlt =  (array)$this->db->query($sql)->getResult();
@@ -167,15 +168,15 @@ function form($id, $dt) {
 				$furl = (PATH.MODULE.'rdf/form/'.$class.'/'.$line['id_sc'].'/'.$id);
 
 				$class = trim($line['c_class']);
-				//$link = onclick(PATH.MODULE.'rdf/form/edit/'.$class.'/'.$line['id_sc'].'/'.$id,800,400);
-				$link = onclick(PATH.MODULE.'rdf/form_ed/'.$line['id_sc'],800,600);
+				$link = onclick(PATH.MODULE.'rdf/form/edit/'.$class.'/'.$line['id_sc'].'/'.$id,800,400,'btn-primary rounded');
+				//$link = onclick(PATH.MODULE.'rdf/form/'.$line['id_sc'],800,600,'btn-primary round');
 				$linka = '</span>';
 				$sx .= '<tr>';
 				$sx .= '<td width="25%" align="right" valign="top">';
 
 				if ($xcap != $cap) {
 					$sx .= '<nobr><i>' . lang('rdf.'.$line['c_class']) . '</i></nobr>';
-					$sx .= '<td width="1%" valign="top">' . $link . '[+]' . $linka . '</td>';
+					$sx .= '<td width="1%" valign="top">' . $link . '&nbsp;+&nbsp;' . $linka . '</td>';
 					$xcap = $cap;
 				} else {
 					$sx .= '&nbsp;';
@@ -225,6 +226,7 @@ function form_ed($id)
 	{
 		$this->id = $id;
 		$this->path = PATH.MODULE.'rdf/form_ed/'.$id;
+		$this->path_back = 'wclose';
 		$sx = form($this);
 		return $sx;
 	}
@@ -370,7 +372,7 @@ function exclude($id,$ac='')
 		$sx .= h($dd['n_name'],3).'<hr>';
 
 		/* Mostra mensagem de exclusão */
-		$sx .= '<center>'.h(msg('find.rdf_exclude_confirm'),4,'text-danger').'</center>';
+		$sx .= '<center>'.h(lang('rdf.find.rdf_exclude_confirm'),4,'text-danger').'</center>';
 		$sx .= '
 			</div>		
 			<div class="modal-footer">
@@ -389,7 +391,7 @@ function form_class_edit($id,$class='')
 			SELECT id_sc, sc_class, sc_propriety, sc_ord, id_sc,
 			t1.c_class as c_class, t2.prefix_ref as prefix_ref,
 			t3.c_class as pc_class, t4.prefix_ref as pc_prefix_ref,
-			sc_group, sc_library
+			sc_group, sc_library, sc_visible
 			FROM rdf_form_class
 			INNER JOIN rdf_class as t1 ON t1.id_c = sc_propriety
 			LEFT JOIN rdf_prefix as t2 ON t1.c_prefix = t2.id_prefix
@@ -407,9 +409,10 @@ function form_class_edit($id,$class='')
 			$sx .= '<h4>'.msg("Form").'</h4>';
 			$sx .= '<table class="table">';
 			$sx .= '<tr><th width="4%">#</th>';
-			$sx .= '<th width="47%">'.msg('propriety').'</th>';
-			$sx .= '<th width="42%">'.msg('range').'</th>';
-			$sx .= '<th width="5%">'.msg('group').'</th>';
+			$sx .= '<th width="47%">'.lang('rdf.propriety').'</th>';
+			$sx .= '<th width="42%">'.lang('rdf.range').'</th>';
+			$sx .= '<th width="42%">'.lang('rdf.visible').'</th>';
+			$sx .= '<th width="5%">'.lang('rdf.group').'</th>';
 			$sx .= '</tr>';
 			for ($r=0;$r < count($rlt);$r++)			
 			{
@@ -438,6 +441,17 @@ function form_class_edit($id,$class='')
 				$sx .= $RDFPrefix->prefixn($dt);
 				$sx .= '</td>';
 
+				/* RANGE */
+				$dt = array();
+				$sx .= '<td>';
+				if ($line['sc_visible'] == 1)
+					{
+						$sx .= bsicone('eye');
+					} else {
+						$sx .= bsicone('eye-closed');
+					}					
+				$sx .= '</td>';				
+
 				/* GROUP */
 				$dt = array();
 				$sx .= '<td>';
@@ -449,12 +463,15 @@ function form_class_edit($id,$class='')
 			$sx .= '</table>';
 			$sx .= '</div>';
 
-			//$link = onclick(PATH.MODULE.'rdf/formss/'.$id.'/0',800,600,"btn btn-outline-primary");
-			$link = onclick(PATH.MODULE.'rdf/form_ed/'.$line['sc_class'],800,600,"btn btn-outline-primary");
-			$linka = '</span>';
-			$sx .= $link.lang('rdf.nova_propriedade2').$linka;
+			if (isset($line['sc_class']))
+			{
+				//$link = onclick(PATH.MODULE.'rdf/formss/'.$id.'/0',800,600,"btn btn-outline-primary");
+				$link = onclick(PATH.MODULE.'rdf/form_ed/'.$line['sc_class'],800,600,"btn btn-outline-primary");
+				$linka = '</span>';
+				$sx .= $link.lang('rdf.nova_propriedade2').$linka;
 
-			$sx .= ' &nbsp; ';
+				$sx .= ' &nbsp; ';
+			}
 
 			$link = '<a href="'.PATH.MODULE.'rdf/form_check/'.$id.'" class="btn btn-outline-primary">';
 			$linka = '</a>';

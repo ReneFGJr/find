@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class Tombo extends Model
 {
 	protected $DBGroup              = 'default';
-	protected $table                = 'find_item';
+	protected $table                = 'itens';
 	protected $primaryKey           = 'id_i';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
@@ -77,6 +77,7 @@ class Tombo extends Model
 				} else {
 					$max = 1;
 				}
+			if ($max == 0) { $max = 1; }
 			return $max;
 		}
 

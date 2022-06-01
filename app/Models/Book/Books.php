@@ -48,7 +48,7 @@ class Books extends Model
 			$url = 'https://ufrgs.br/find/_covers/image/';
 			$url = 'http://find/_covers/image/';
 			$sx = '';
-			$Find_Item = new \App\Models\Find_Item();
+			$Find_Item = new \App\Models\Library\Itens();
 			$Cover = new \App\Models\Book\Covers();
 
 			$Find_Item->select('i_library, id_i, i_titulo, i_identifier,i_manitestation');
@@ -337,7 +337,7 @@ class Books extends Model
 
 	function viewItem2($d)
 		{
-			$Item = new \App\Models\Book\Itens();
+			$Item = new \App\Models\Library\Itens();
 			$tela = $this->view_manifestation($d);
 			return $tela;
 		}
@@ -346,7 +346,7 @@ class Books extends Model
 		{		
 			$sx = '';
 			$RDF = new \App\Models\Rdf\RDF();
-			$Itens = new \App\Models\Book\Itens();
+			$Itens = new \App\Models\Library\Itens();
 
 			$dt = $RDF->le($id);
 			switch ($dt['concept']['c_class'])
@@ -521,7 +521,7 @@ class Books extends Model
 			$tela3 = '';
 
 			$Cover = new \App\Models\Book\Covers();
-			$Items = new \App\Models\Book\Itens();
+			$Items = new \App\Models\Library\Itens();
 
 			$w = $d['work'];
 			$e = $d['expression'];

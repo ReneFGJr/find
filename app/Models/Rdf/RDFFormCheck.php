@@ -106,7 +106,6 @@ class RDFFormCheck extends Model
 					$line = (array)$dt[$r];
 					$class = $line['cc_class'];
 					$prop = $line['d_p'];
-					unset($data['id_sc']);
 					$da = $this->where('sc_class',$class)->where('sc_propriety',$prop)->FindAll();
 					if (count($da) == 0)
 						{

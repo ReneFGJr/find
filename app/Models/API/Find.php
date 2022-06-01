@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class Find extends Model
 {
 	protected $DBGroup              = 'default';
-	protected $table                = 'find_item';
+	protected $table                = 'itens';
 	protected $primaryKey           = 'id_i';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
@@ -46,8 +46,8 @@ class Find extends Model
 
 	function process($hv,$id)
 		{
-			$Tombo = new \App\Models\Book\Tombo();
-			$Itens = new \App\Models\Book\Itens();
+			$Tombo = new \App\Models\Library\Tombo();
+			$Itens = new \App\Models\Library\Itens();
 			
 			$dd['i_manitestation'] = $hv['i_manitestation'];
 			$dd['i_titulo'] = $hv['i_titulo'];
