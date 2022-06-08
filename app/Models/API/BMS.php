@@ -1,14 +1,13 @@
 <?php
-// http://classify.oclc.org/classify2/Classify?isbn=9781501110368&summary=true
 
 namespace App\Models\API;
 
 use CodeIgniter\Model;
 
-class OCLC extends Model
+class BMS extends Model
 {
 	protected $DBGroup              = 'default';
-	protected $table                = 'oclcs';
+	protected $table                = 'googles';
 	protected $primaryKey           = 'id';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
@@ -41,18 +40,22 @@ class OCLC extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
-	function book($isbn,$id) {
+function book($isbn,$id) {
 		$rsp = array('count' => 0);
+
+		$endPoint = 'http://brapci3/api/book/' . $isbn . '/' . $id;
 
 		$ISBN = new \App\Models\Isbn\Isbn();
 		$Language = new \App\Models\Languages\Language();		
-		
-		$type = 'OCLC';
-		$t = $ISBN->get($isbn,$type);
-		
-		if (count($t) == 0) {
-			return array();
-		}
-		return $t;
+
+		/************************ Busca */
+		echo $endPoint;
+		if (($data = @file_get_contents($endPoint)) === false) {
+			$error = error_get_last();
+			echo "HTTP request failed. Error was: " . $error['message'];
+	  	} else {
+			$rsp = json_decode($data, true);
+	  	}		
+		return ($rsp);
 	}	
 }

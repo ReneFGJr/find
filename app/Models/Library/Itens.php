@@ -323,35 +323,14 @@ function le($id)
 				}
 
 			/********************************************* METADATA - MercadoEditorial */			
-			if (count($hv['MERCA']) > 0)
-				{
+			if ($hv['BMS']['count'] > 0)
+				{					
 					$Find = new \App\Models\API\Find();
-					$rst = $this->save_metadata($hv['MERCA'],$id);
-					$sx .= $ss.'MercadoEditorial<br>';
+					$rst = $this->save_metadata($hv['BMS'],$id);
+					$sx .= $ss.'BrapciMetadataSource<br>';
 				} else {
-					$sx .= $sn.'MercadoEditorial '.lang('find.metadata_not_found').'<br>';
-				}					
-			
-			/********************************************************* METADATA - OCLC */			
-			if (count($hv['OCLC']) > 0)
-				{
-					$Find = new \App\Models\API\Find();
-					$rst = $this->save_metadata($hv['OCLC'],$id);
-					$sx .= $ss.'OCLC<br>';
-				} else {
-					$sx .= $sn.'OCLC '.lang('find.metadata_not_found').'<br>';
-				}
-
-				/********************************************************* GOOGLE - OCLC */					
-				if (count($hv['GOOGLE']) > 0)
-				{
-					$Find = new \App\Models\API\Find();
-					$rst = $this->save_metadata($hv['GOOGLE'],$id);
-					$sx .= $ss.'GOOGLE<br>';
-				} else {
-					$sx .= $sn.'GOOGLE '.lang('find.metadata_not_found').'<br>';
-				}
-			$sx .= '<br>&nbsp;<br>';
+					$sx .= $sn.'BrapciMetadataSource '.lang('find.metadata_not_found').'<br>';
+				}						
 
 			if ($rst > 0)
 				{
@@ -436,23 +415,16 @@ function le($id)
 		/* Find */
 		$Find = new \App\Models\API\Find();
 		$dd['FIND'] = $Find->book($isbn, $id);
-		$dd['OCLC'] = array();
-		$dd['GOOGLE'] = array();
-		$dd['MERCA'] = array();
 
 		if ($isbn_ok == 1)
 		{
-		/* OCLC */
-		$OCLC = new \App\Models\API\OCLC();
-		$dd['OCLC'] = $OCLC->book($isbn, $id);
-
-		/* Google */
-		$Google = new \App\Models\API\Google();
-		$dd['GOOGLE'] = $Google->book($isbn, $id);
-
-		/* Mercado Editorial */
-		$MecadoEditorial = new \App\Models\API\MercadoEditorial();
-		$dd['MERCA'] = $MecadoEditorial->book($isbn, $id);
+		/* BMS */
+		$BMS = new \App\Models\API\BMS();
+		$dd['BMS'] = $BMS->book($isbn, $id);
+		$dd['status'] = '200';
+		} else {
+			$dd['status'] = '400';
+			$dd['error'] = 'ISBN inválido';
 		}
 		return $dd;
 	}
