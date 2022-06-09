@@ -94,13 +94,26 @@ function le($id)
 			return $sx;
 		}
 
+	function update_title($title,$id)
+		{
+			$dd['i_titulo'] = $title;
+			$dt = $this
+			->set($dd)
+			->where('id_i',$id)
+			->update();
+			return true;
+		}
+
 	function status($id,$st)
 		{
+			$historic = new \App\Models\Library\ItensHistorico();
 			$dd['i_status'] = $st;
 			$dt = $this
 			->set($dd)
 			->where('id_i',$id)
 			->update();
+
+			$historic->add_historicy($id,700+$st);
 			return $dt;
 		}
 
@@ -110,8 +123,8 @@ function le($id)
 					{
 						return lang('find.duplicate_metadata');
 					}
-				echo h($id);
-				pre($dt);
+				echo h("Duplicate ".$id);
+				///pre($dt);
 			}
 
 		function save_metadata($dt,$id)	
@@ -306,9 +319,7 @@ function le($id)
 	function process_metadata($hv,$id)
 		{
 			$dt = $this->find($id);
-			$sx = '';
-			$sx = $this->header_item($dt);
-			$sx .= h(lang('find.metadata_proceesing'),3);	
+			$sh = '';
 			$sn = '<span class="label label-info btn-danger rounded ps-2 pe-2">&nbsp;X&nbsp;</span> ';		
 			$ss = '<span class="label label-info btn-success rounded ps-2 pe-2">&nbsp;V&nbsp;</span> ';		
 			$rst = 0;
@@ -317,19 +328,26 @@ function le($id)
 				{
 					$Find = new \App\Models\API\Find();
 					$rst = $this->duplicate_metadata($hv['FIND'],$id);
-					$sx .= $ss.'FIND<br>';
+					$sh .= $ss.'FIND<br>';
 				} else {
-					$sx .= $sn.'FIND '.lang('find.metadata_not_found').'<br>';
+					$sh .= $sn.'FIND '.lang('find.metadata_not_found').'<br>';
 				}
 
 			/********************************************* METADATA - MercadoEditorial */			
 			if ($hv['BMS']['count'] > 0)
-				{					
+				{			
 					$Find = new \App\Models\API\Find();
 					$rst = $this->save_metadata($hv['BMS'],$id);
-					$sx .= $ss.'BrapciMetadataSource<br>';
+					/************ Atualiza titulo */
+					$this->update_title($hv['BMS']['title'],$id);
+					$sh .= $ss.'BrapciMetadataSource<br>';
+
+					$this->status($id,1);
+					
+					$dt['i_titulo'] = $hv['BMS']['title'];					
+					$this->save_metadata($hv['BMS'],$id);
 				} else {
-					$sx .= $sn.'BrapciMetadataSource '.lang('find.metadata_not_found').'<br>';
+					$sh .= $sn.'BrapciMetadataSource '.lang('find.metadata_not_found').'<br>';
 				}						
 
 			if ($rst > 0)
@@ -337,6 +355,11 @@ function le($id)
 					$this->status($id,1);
 					//$sx = metarefresh(PATH.MODULE.'tech/prepare_1/'.$id);
 				}
+			$sx = $this->header_item($dt);
+			/*************** Busca nos Metadados */
+			$sx .= h(lang('find.metadata_proceesing'),3);	
+			$sx .= $sh;			
+
 			return $sx;
 		}
 
@@ -351,6 +374,7 @@ function le($id)
 
 	function header_item($dt)
 		{
+			$ISBN = new \App\Models\Isbn\Isbn();
 			$title = trim($dt['i_titulo']);
 			if ($title == '') { $title = lang('find.unknow'); }
 			$isbn = $dt['i_identifier'];
@@ -366,9 +390,9 @@ function le($id)
 			$sx .= '		</div>';
 			$sx .= '	<div class="card-body">';
 			$sx .= '		<div class="row">';
-			$sx .= 			bsc('ISBN: <b>'.$isbn.'</b>',6);
+			$sx .= 			bsc('ISBN: <b>'.$ISBN->format($isbn).'</b>',6);
 			$sx .= 			bsc(lang('find.created_at').': <b>'.$date.'</b>',6);
-			$sx .= 			bsc('',6);
+			$sx .= 			bsc('ISBN: <b>'.$ISBN->isbn13to10($isbn).'</b>',6);
 			$sx .= 			bsc(lang('find.registration_number').': <b>'.$tombo.'</b>',6);
 			$sx .= '		</div>';
 			$sx .= '	</div>';
@@ -383,7 +407,7 @@ function le($id)
 			$st = $dt['i_status'];
 			if ($st == $or)
 				{
-					$sx = bsmessage(lang('find.metadata_not_found'),3);
+					$sx =  bsmessage(lang('find.metadata_not_found'),3);
 
 					if ($st == 0)
 						{
@@ -405,11 +429,15 @@ function le($id)
 
 	function harvesting_metadata($id, $id2)
 	{
+		$ISBN = new \App\Models\Isbn\Isbn();
 		$dt = $this->Find($id);
 		$isbn = $dt['i_identifier'];
-		$isbn_ok = 0;
+		$isbn_ok = 1;
 		if (substr($isbn, 0, 3) == '978') {
-			$isbn_ok = 1;
+			
+		} else {
+			$ISBN = $ISBN->isbns($isbn);
+			$isbn = $ISBN['isbn13'];
 		}
 
 		/* Find */
@@ -418,10 +446,10 @@ function le($id)
 
 		if ($isbn_ok == 1)
 		{
-		/* BMS */
-		$BMS = new \App\Models\API\BMS();
-		$dd['BMS'] = $BMS->book($isbn, $id);
-		$dd['status'] = '200';
+			/* BMS */
+			$BMS = new \App\Models\API\BMS();
+			$dd['BMS'] = $BMS->book($isbn, $id);
+			$dd['status'] = '200';
 		} else {
 			$dd['status'] = '400';
 			$dd['error'] = 'ISBN inválido';
@@ -566,6 +594,7 @@ function le($id)
 	/******************************************************************************** NOVO ITEM */
 	function new($d1, $d2, $d3)
 	{
+		$Style = new \App\Models\Style\MenuBtn();
 		$sx = h(lang('find.tech_I'), 2);
 
 		switch ($d1) {
@@ -575,26 +604,17 @@ function le($id)
 				break;
 
 			default:
-				$sx .= bsc(lang('find.tech_IA'), 2, 'text-end small');
-				$link = '<a href="' . PATH . MODULE . 'tech/prepare_I/isbn/edit/0' . '" class="btn btn-outline-primary">';
-				$linka = '</a>';
-				$sx .= bsc($link . '<b>' . lang('find.tech_IA1') . '</b>' . $linka, 10);
+			$its = array(
+					'find.tech_IA1'=> PATH . MODULE . 'tech/prepare_I/isbn/edit/0',
+					'find.tech_IB1'=> PATH . MODULE . 'tech/prepare_I/isbn/edit/0',
+					'find.tech_IC1'=> PATH . MODULE . 'tech/prepare_I/isbn/edit/0',
+					);
+			$sx .= $Style->menuBtn($its);
 
-				$sx .= bsc('<center><hr style="width: 50%;"/></center>', 12);
+			/******** Return */
+			$url = PATH . MODULE . 'tech';
+			$sx .= $Style->btnReturn($url);			
 
-				$sx .= bsc(lang('find.tech_IB'), 2, 'text-end small');
-				$link = '<a href="' . PATH . MODULE . '//marc' . '" class="btn btn-outline-primary">';
-				$linka = '</a>';
-				$sx .= bsc($link . '<b>' . lang('find.tech_IB1') . '</b>' . $linka, 10);
-
-				$sx .= bsc('<center><hr style="width: 50%;"/></center>', 12);
-
-				$sx .= bsc('', 2, 'text-end small');
-				$link = '<a href="' . PATH . MODULE . '/tech' . '" class="btn btn-outline-warning">';
-				$linka = '</a>';
-				$sx .= bsc($link . '<b>' . lang('find.return') . '</b>' . $linka, 10);
-
-				$sx .= bsc('<center><hr style="width: 50%;"/></center><div style="height: 400px;"', 12, 'mb-5');
 		}
 
 		$sx = bs($sx);
@@ -621,7 +641,7 @@ function le($id)
 	function last_aquisitions()
 		{
 			$sx = h(lang('find.last_aquisitions'), 6);
-			$dt = $this->where('i_status',0)->limit(10)->findAll();
+			$dt = $this->where('i_status',0)->orderBy('id_i desc')->limit(10)->findAll();
 			$sx .= '<ul>';
 			for($r=0;$r < count($dt);$r++)
 				{

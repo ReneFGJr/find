@@ -56,24 +56,42 @@ class Covers extends Model
 					file_put_contents($file, $sx);
 				}
 			return ($sx);
+		}
 
+	function upload_cover($isbn='',$endPoint='')
+		{
+			/************************ Busca */
+			if (($data = @file_get_contents($endPoint)) === false) {
+				$error = error_get_last();
+				echo "HTTP request failed. Error was: " . $error['message'];
+			} else {
+				$file = '_covers/image/'.$isbn.'.jpg';
+				file_put_contents($file, $data);
+			}	
+		}
+
+	function btn_cover($isbn)
+		{
+			$sx = '';
+			$sx .= '<a href="'.base_url('covers/upload/'.$isbn).'" class="btn btn-primary btn-sm">';
+			return $sx;
 		}
 
 	function get_cover($id)
 		{
-					$file = '_covers/image/'.$id.'.jpg';
+			$file = '_covers/image/'.$id.'.jpg';
+			if (file_exists($file))
+				{
+					$img = URL.$file;
+				} else {
+					$file = '../../_covers/image/'.$id.'.jpg';
 					if (file_exists($file))
-						{
-							$img = URL.$file;
-						} else {
-							$file = '../../_covers/image/'.$id.'.jpg';
-							if (file_exists($file))
-							{
-								$img = URL.$file;
-							} else {
-								$img = URL.('img/book/no_cover.jpg');
-							}
-						}
-					return $img;
+					{
+						$img = URL.$file;
+					} else {
+						$img = URL.('img/book/no_cover.jpg');
+					}
+				}
+			return $img;
 		}
 }

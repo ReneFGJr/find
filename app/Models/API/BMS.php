@@ -41,6 +41,7 @@ class BMS extends Model
 	protected $afterDelete          = [];
 
 function book($isbn,$id) {
+	$Cover = new \App\Models\Book\Covers();
 		$rsp = array('count' => 0);
 
 		$endPoint = 'http://brapci3/api/book/' . $isbn . '/' . $id;
@@ -49,12 +50,17 @@ function book($isbn,$id) {
 		$Language = new \App\Models\Languages\Language();		
 
 		/************************ Busca */
-		echo $endPoint;
 		if (($data = @file_get_contents($endPoint)) === false) {
 			$error = error_get_last();
 			echo "HTTP request failed. Error was: " . $error['message'];
 	  	} else {
 			$rsp = json_decode($data, true);
+			if (isset($rsp['cover']) and ($rsp['cover'] != ''))
+			{
+				$endPoint = $rsp['cover'];
+				$Cover->upload_cover($rsp['isbn13'],$endPoint);
+			}
+			
 	  	}		
 		return ($rsp);
 	}	

@@ -56,7 +56,7 @@ class TechPreparation extends Model
 			$sx = '';
 			$sx = bsc('<img src="'.URL.'img/task/cataloging.png" class="img-fluid">',2,'bg-secondary');
 			$sx .= bsc($tit,10,'bg-secondary text-center p-4 text-light');
-			$sx .= bsc($fs,12,'mb-3');
+			$sx .= bsc($fs.'&nbsp;',12,'mb-3');
 			$par = array('fluid' => true);
 			$sx = bs($sx,$par);
 
@@ -65,6 +65,8 @@ class TechPreparation extends Model
 
 	function index($d1,$d2,$d3,$d4)
 		{
+			$Cover = new \App\Models\Book\Covers();
+			$Style = new \App\Models\Style\MenuBtn();
 			if (!perfil("#CAT#ADM"))
 				{
 					echo metarefresh(PATH.MODULE);
@@ -87,7 +89,10 @@ class TechPreparation extends Model
 					case 'prepare':
 						/* Novos Itens */
 						$Itens = new \App\Models\Library\Itens();
-						$sz = bsc($this->image_left(2),2);
+						$dt = $Itens->find($d2);						
+						//$sz = bsc($this->image_left(2),2);
+						$img = '<img id="cover" src="'.$Cover->get_cover($dt['i_identifier']).'" class="img-fluid">';
+						$sz = bsc($img,2);
 						if ($d2=='')
 							{
 								$sz .= bsc($Itens->prepare($d2,$d3,$st),10);
@@ -102,7 +107,28 @@ class TechPreparation extends Model
 											$sa .= $Itens->process_metadata($harvesting,$d2,$d3);
 																					
 											/**************************** Status */
-											$sa .= $Itens->actions($d2,$st);	
+											$dt = $Itens->find($d2);
+											$sa .= ''.$Itens->actions($d2,$st);	
+
+											$itz = array();
+											switch($dt['i_status'])
+											{
+												case '0':
+													$itz['find.tech_0'] = PATH.MODULE.'tech/item_status/'.$d2.'/1';
+												break;
+
+												case '1':
+													$itz['find.tech_1'] = PATH.MODULE.'tech/item_status/'.$d2.'/1';
+													$itz['find.tech_2'] = PATH.MODULE.'tech/item_status/'.$d2.'/2';
+												break;
+											}
+
+											if (count($itz) > 0)
+												{
+													$sa .= h(lang('find.send_to'),3);
+													$sa .= $Style->menuBtn($itz);
+												}
+											
 											$sz .= bsc($sa,10);
 											break;
 
@@ -110,7 +136,10 @@ class TechPreparation extends Model
 										/******************************************* CATALOG */
 											$IDM = $Itens->create_rdf_work($d2);
 											$Books = new \App\Models\Book\Books();
-											$sz .= bsc($Books->a($IDM),10);
+											$dt = $Itens->find($d2);
+											$sz .= bsc(
+												$Itens->header_item($dt).
+												$Books->a($IDM),10);
 											break;
 										default:
 											$sz .= bsc(bsmessage('Tech '.$st.' not implemented'),10);
@@ -150,24 +179,20 @@ class TechPreparation extends Model
 	function resume()
 		{
 			$Itens = new \App\Models\Library\Itens();
+			$Style = new \App\Models\Style\MenuBtn();
 			$dt = $Itens->resume();
 
 			$sx = '';			
 			$sx .= bsc($this->image_left(0),2);
 
 			/****************************************** ITEMS */
-			$sa = h(msg('find.techpreparation'),2,'mb-4');
-			$st = array('I',0,1,2,3,4,9);
-			$sa .= '<ul>';
+			$st = array('I',0,1,2);					
+			$its = array();
 			
 			for ($r=0;$r < count($st);$r++)
 				{
-					$sa .= '<li class="h5 mb-4">';
-					$sa .= '<a href="'.PATH.MODULE.'tech/prepare_'.$st[$r].'" style="border-bottom: 2px solid #AAA; width: 100%;">';
-					$sa .= lang('find.tech_'.$st[$r]);
-					$sa .= '</a>';
-
 					$tot = 0;
+					$se = '';
 					for ($q=0;$q < count($dt);$q++)
 						{
 							if ($dt[$q]['i_status'] == $st[$r])
@@ -177,15 +202,17 @@ class TechPreparation extends Model
 						}
 					if ($tot > 0)
 						{
-							$sa .= '&nbsp;<span class="pe-2 ps-2 btn-primary p-1 small rounded-3">'.$tot.'</span>';
+							$se = '<br><span class="pe-2 ps-2 btn-danger p-1 small rounded-3">'.$tot.'</span>';
+						} else {
+							$se .= '<br>&nbsp;</span>';
 						}
-					
-					$sa .= '</li>';
+
+					$mn = lang('find.tech_'.$st[$r]).$se;
+					$its[$mn] = PATH.MODULE.'tech/prepare_'.$st[$r];
 				}
-			$sa .= '</ul>';
-			$sx .= bsc('',1);
-			$sx .= bsc($sa,9);
-			$sx = bs($sx);
+			$url = PATH.MODULE;
+			$sm = h(lang('find.techpreparation'),3);	
+			$sx .= bsc($sm.$Style->menuBtn($its,$url),10);
 			return $sx;
 		}
 }

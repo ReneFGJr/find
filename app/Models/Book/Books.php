@@ -458,6 +458,34 @@ class Books extends Model
 				}
 			return $sx;
 		}
+	function view_item($id)
+		{
+			$Item = new \App\Models\Library\Itens();
+			$Cover = new \App\Models\Book\Covers();
+			$Label = new \App\Models\Book\Labels();
+
+			$dt = $Item->le($id);
+			$isbn = $dt['i_identifier'];		
+
+			$img = '<img src="'.$Cover->get_cover($isbn).'" class="img-fluid img_cover">';
+
+			$sa = bsc($img,2);
+			//$sb = $Item->header($id);
+			$sb = $Item->header_item($dt);
+			
+			/********************** Label */
+			$sc = '';
+			$sc .= $Label->label($dt);
+
+			/********************** Manifestation */
+
+			$sc = bs(bsc('',8).bsc($sc,4,'text-end'));
+
+
+			$sb = bsc($sb.$sc,10);
+			$sx = bs($sa.$sb);
+			return $sx;
+		}
 
 	function viewWork($dt)
 		{
@@ -473,16 +501,16 @@ class Books extends Model
 		{
 			$title = trim($dt['i_titulo']);
 			if ($title == '') { $title = lang('find.no_title'); }
-			$st = '<a href="'.PATH.MODULE.'v/'.$dt['i_manitestation'].'" title="'.$title.'">';
+			$st = '<a href="'.PATH.MODULE.'item/'.$dt['id_i'].'" title="'.$title.'">';
 			$st .= '<img class="card-img-top" src="'.$img.'" alt="Card image cap">';
 			$st .= '</a>';
+			$limit = 80;
+			if (strlen($title) > $limit)
+				{
+					$title = substr($title,0,$limit).'...';
+				}
 
-			$sx = bsc(				 
-						bscard($st,
-									'<span class="book_title">'.$title.'</span>',
-									'mb-3'
-					)
-				,3);			
+			$sx = bsc(bscard($st,'<span class="book_title">'.$title.'</span>','mb-3'),4);			
 			return $sx;
 		}
 

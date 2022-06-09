@@ -139,7 +139,7 @@ class Find extends BaseController
 		$sx .= '  <link rel="icon" type="image/png" sizes="16x16" href="' . URL . ('img/favicon.png') . '" />' . cr();
 		$sx .= '  <!-- CSS -->' . cr();
 		$sx .= '  <link rel="stylesheet" href="' . URL . ('/css/bootstrap.css') . '" />' . cr();
-		$sx .= '  <link rel="stylesheet" href="' . URL . ('/css/style.css?v=0.0.6') . '" />' . cr();
+		$sx .= '  <link rel="stylesheet" href="' . URL . ('/css/style.css?v=0.0.7') . '" />' . cr();
 		$sx .= ' ' . cr();
 		$sx .= '  <!-- CSS -->' . cr();
 		$sx .= '  <script src="' . URL . ('/js/bootstrap.js?v=5.0.2') . '"></script>' . cr();
