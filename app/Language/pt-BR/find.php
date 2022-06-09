@@ -43,7 +43,6 @@ return [
     'serie' => 'Série',
     'hasClassificationCountry' => 'Pais',
     'hasClassificacaoAssunto' => 'Assunto',
-    'last_aquisitions'=>'Últimas aquisições',
     'return'=>'Voltar',
 
     'tech'=>'Preparo Técnico',

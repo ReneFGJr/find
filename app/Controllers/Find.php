@@ -67,6 +67,11 @@ class Find extends BaseController
 			$sx = $this->cab();
 			switch($act)
 				{
+					case 'logo':
+						$Logo = new \App\Models\Library\Logos();
+						$sx .= h('find'.$act,2);
+						$sx .= bs(bsc($Logo->upload($id,$act2,$id2),12));
+						break;					
 					case 'bookshelf':
 						$PlaceBookshelf = new \App\Models\Bookself\PlaceBookshelf();
 						$sx .= h('find'.$act,2);
