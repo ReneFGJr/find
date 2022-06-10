@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class Index extends Model
 {
 	protected $DBGroup              = 'default';
-	protected $table                = 'itens';
+	protected $table                = 'find_item';
 	protected $primaryKey           = 'id_i';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;

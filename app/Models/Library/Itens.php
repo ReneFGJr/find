@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class Itens extends Model
 {
     protected $DBGroup          = 'default';
-    protected $table            = 'itens';
+    protected $table            = 'find_item';
     protected $primaryKey       = 'id_i';
     protected $useAutoIncrement = true;
     protected $insertID         = 0;
@@ -124,7 +124,6 @@ function le($id)
 						return lang('find.duplicate_metadata');
 					}
 				echo h("Duplicate ".$id);
-				///pre($dt);
 			}
 
 		function save_metadata($dt,$id)	

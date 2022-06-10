@@ -50,15 +50,16 @@ class Books extends Model
 			$sx = '';
 			$Find_Item = new \App\Models\Library\Itens();
 			$Cover = new \App\Models\Book\Covers();
-
-			$Find_Item->select('i_library, id_i, i_titulo, i_identifier,i_manitestation');
-			//$Find_Item->select('*');
-			$Find_Item->distinct();
-			$Find_Item->where('i_library',LIBRARY);
-			$Find_Item->orderBy('id_i DESC');
-			$Find_Item->limit(20);
-			$result = $Find_Item->Find();
-
+			echo "OK";
+			//$Find_Item->select('i_library, id_i, i_titulo, i_identifier,i_manitestation');
+			$result = $Find_Item
+				->select('*')
+				->distinct()
+				->where('i_library',LIBRARY)
+				->orderBy('id_i DESC')
+				->limit(20)
+				->FindAll();
+			
 			for($r=0;$r < count($result);$r++)
 				{
 					$line = $result[$r];

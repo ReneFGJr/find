@@ -45,7 +45,7 @@ class ItemHistoric extends Model
 	function history($id)
 		{
 			$this->select("i_titulo, i_manitestation, i_tombo, hl_date, hl_status, hl_ip, hl_created");
-			$this->join('itens', 'hl_item = i_tombo', 'LEFT');
+			$this->join('find_item', 'hl_item = i_tombo', 'LEFT');
 			$this->where('hl_user',$id);
 			$this->where('hl_library',LIBRARY);
 			$this->orderBy('hl_created DESC');
