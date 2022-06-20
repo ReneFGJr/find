@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class Tombo extends Model
 {
 	protected $DBGroup              = 'default';
-	protected $table                = 'itens';
+	protected $table                = 'find_item';
 	protected $primaryKey           = 'id_i';
 	protected $useAutoIncrement     = true;
 	protected $insertID             = 0;
@@ -17,7 +17,7 @@ class Tombo extends Model
 	protected $allowedFields        = [
 		'id_i','i_tombo','i_manitestation','i_identifier',
 		'i_type','i_library_classification','i_aquisicao',
-		'i_year','i_status','i_usuario',
+		'i_year','i_status','i_usuario','i_indexer',
 		'i_titulo','i_status','i_library','i_library_place',
 		'i_exemplar'
 	];

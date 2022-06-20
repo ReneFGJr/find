@@ -15,9 +15,9 @@ class Itens extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'id_i','i_tombo','i_manitestation',
+        'id_i','i_tombo','i_manitestation','i_expression',
         'i_work','i_titulo','i_status',
-        'i_aquisicao','i_year','i_localization',
+        'i_aquisicao','i_year','i_localization','i_indexer',
         'i_ln1','i_ln2','i_ln3','i_ln4',
         'i_type','i_identifier','i_uri',
         'i_library','i_library_place','i_library_classification',
@@ -25,6 +25,18 @@ class Itens extends Model
         'i_dt_emprestimo','i_dt_prev','i_dt_renovavao',
         'i_exemplar'
     ];
+
+    protected $typeFields    = [
+        'hidden','hidden','hidden','hidden',
+        'hidden','text','hidden',
+        'hidden','hidden','hidden','hidden',
+        'string:50','string:50','string:50','string:50',
+        'hidden','hidden','hidden',
+        'hidden','hidden','hidden',
+        'hidden','hidden','hidden',
+        'hidden','hidden','hidden',
+        'hidden'
+    ];	
 
     // Dates
     protected $useTimestamps = false;
@@ -56,22 +68,64 @@ function le($id)
 		return $dt;
 	}
 
+	function check_rdf($id)
+		{
+			$RDF = new \App\Models\Rdf\RDF();
+			$dt = $this->le($id);
+
+			$man = $dt['i_manitestation'];
+			$work = $dt['i_work'];
+
+			if (($man > 0) and ($work == 0))
+				{
+					/******************************* WORK */
+					$expression = $RDF->le_data($man);
+					$rst = $RDF->recovery((array)$expression['data'],'isAppellationOfManifestation');
+					$expression = $rst[0][0];
+
+					$work = $RDF->le_data($expression);
+					$rst = $RDF->recovery((array)$work['data'],'isAppellationOfExpression');
+					$work = $rst[0][0];
+
+					$dd['i_work'] = $work;
+					$dd['i_expression'] = $expression;
+					$dd['i_manitestation'] = $man;
+
+					$this->set($dd)->where('id_i',$id)->update();
+					return true;
+				}
+		}
+
 	function create_rdf_work($id)
 	{
 		$sx = '';
 		$RDF = new \App\Models\Rdf\RDF();
 		$Tombo = new \App\Models\Book\Tombo();
 		$dt = $this->Find($id);
-		$work_title = 'work-'.$dt['i_identifier'];
-		$expression_title = 'expression-'.$dt['i_identifier'];
-		$manifestation_title = 'manifestation-'.$dt['i_identifier'];
-		$IDW = $RDF->conecpt($work_title,'frbr:Work');
-		$IDE = $RDF->conecpt($expression_title,'frbr:Expression');
-		$IDM = $RDF->conecpt($manifestation_title,'frbr:Manifestation');
-		$RDF->propriety($IDW,'isAppellationOfExpression',$IDE);
-		$RDF->propriety($IDE,'isAppellationOfManifestation',$IDM);
-		$dd['i_manitestation'] = $IDM;
-		$Tombo->set($dd)->where('id_i',$id)->update();
+	
+
+		if ($dt['i_work'] == 0)
+		{
+			$this->check_rdf($id);
+			$dt = $this->Find($id);
+		}
+
+		if ($dt['i_work'] == 0)
+		{
+			$work_title = 'work-'.$dt['i_identifier'];
+			$expression_title = 'expression-'.$dt['i_identifier'];
+			$manifestation_title = 'manifestation-'.$dt['i_identifier'];
+
+			$IDW = $RDF->conecpt($work_title,'frbr:Work');
+			$IDE = $RDF->conecpt($expression_title,'frbr:Expression');
+			$IDM = $RDF->conecpt($manifestation_title,'frbr:Manifestation');
+			$RDF->propriety($IDW,'isAppellationOfExpression',$IDE);
+			$RDF->propriety($IDE,'isAppellationOfManifestation',$IDM);
+			$dd['i_manitestation'] = $IDM;
+			$Tombo->set($dd)->where('id_i',$id)->update();
+		} else {
+			$IDM = $dt['i_manitestation'];
+		}
 
 		return $IDM;
 	}
@@ -123,7 +177,26 @@ function le($id)
 					{
 						return lang('find.duplicate_metadata');
 					}
+
+				/*************************************************** Duplicate */
 				echo h("Duplicate ".$id);
+				if ($dt['i_work'] == 0)
+					{
+						$this->check_rdf($dt['id_i']);
+						$dt = $this->find($dt['id_i']);
+					}
+				$dd['i_manitestation'] = $dt['i_manitestation'];
+				$dd['i_titulo'] = $dt['i_titulo'];
+				$dd['i_ln1'] = $dt['i_ln1'];
+				$dd['i_ln2'] = $dt['i_ln2'];
+				$dd['i_ln3'] = $dt['i_ln3'];
+				$dd['i_ln4'] = $dt['i_ln4'];
+				$dd['i_work'] = $dt['i_work'];
+				$dd['i_expression'] = $dt['i_expression'];
+				$this->set($dd)->where('id_i',$id)->update();
+
+				//pre($dd);
+				
 			}
 
 		function save_metadata($dt,$id)	
@@ -362,6 +435,16 @@ function le($id)
 			return $sx;
 		}
 
+	function edit($id)
+		{
+			$this->path = PATH.MODULE.'item/ed/'.$id;
+			$this->path_back = PATH.MODULE.'item/'.$id;
+			$this->id = $id;
+			$sx = form($this);
+			$sx = bs(bsc($sx,12));
+			return $sx;
+		}
+
 	function btn_action($id,$st)
 		{
 			$sx = '';
@@ -373,9 +456,27 @@ function le($id)
 
 	function header_item($dt)
 		{
+			/* Update Data */
+			$id = $dt['id_i'];
+			if ($dt['i_work'] == 0) { $this->check_rdf($id); echo "UPDATE"; }
+			echo '<br>===>WORK:'.$dt['i_work'];
+			echo '<br>===>EXPRESSION:'.$dt['i_expression'];
+			echo '<br>===>MANIFESTATION:'.$dt['i_manitestation'];
+
+			$Socials = new \App\Models\Socials();
 			$ISBN = new \App\Models\Isbn\Isbn();
 			$title = trim($dt['i_titulo']);
 			if ($title == '') { $title = lang('find.unknow'); }
+
+			$exemplar = $dt['i_exemplar'];
+
+			$pg = $_SERVER['REQUEST_URI'];
+			$ed = 0;			
+			if ($Socials->getAccess("#ADM#GER"))
+				{
+					$ed = 1;
+				}
+
 			$isbn = $dt['i_identifier'];
 			$tombo = $dt['i_tombo'];
 			$date = stodbr(sonumero($dt['i_created']));
@@ -385,18 +486,109 @@ function le($id)
 			$sx .= '		<div class="card">';
 			$sx .= '			<div class="card-header">';
 			$sx .= '			<span class="small">'.lang('find.title').'</span>';
-			$sx .= '			<h2 class="card-title">'.$title.'</h2>';			
+			$sx .= '			<h2 id="card_title" class="card-title">'.$title.'</h2>';
+			if ($ed==1)
+				{
+					$path = $_SERVER['PATH_INFO'];
+					if (!strpos($path,'prepare_1'))
+					{
+						$sx  .= '<a href="'.PATH.MODULE.'tech/prepare_1/'.$dt['id_i'].'" class="btn btn-outline-primary ps-4 pe-4">'.lang('find.edit').'</a>';
+					} else {
+						$sx .= $this->title_form($dt);
+					}				
+				}	
 			$sx .= '		</div>';
-			$sx .= '	<div class="card-body">';
+			$sx .= '	<div class="card-body container">';
 			$sx .= '		<div class="row">';
-			$sx .= 			bsc('ISBN: <b>'.$ISBN->format($isbn).'</b>',6);
-			$sx .= 			bsc(lang('find.created_at').': <b>'.$date.'</b>',6);
-			$sx .= 			bsc('ISBN: <b>'.$ISBN->isbn13to10($isbn).'</b>',6);
-			$sx .= 			bsc(lang('find.registration_number').': <b>'.$tombo.'</b>',6);
+			$sx .= 			bsc('ISBN: <b>'.$ISBN->format($isbn).'</b>',5);
+			$sx .= 			bsc(lang('find.created_at').': <b>'.$date.'</b>',5);
+			$sx .= 			bsc(lang('find.exemplar').': <b>'.$exemplar.'</b>',2);
+			$sx .= 			bsc('ISBN: <b>'.$ISBN->isbn13to10($isbn).'</b>',5);
+			$sx .= 			bsc(lang('find.registration_number').': <b>'.$tombo.'</b>',7);
 			$sx .= '		</div>';
 			$sx .= '	</div>';
 			$sx .= '</div>';			
 			return($sx);
+		}
+
+	function ajax($act='')
+		{
+			$title = get("title");
+			$id = get("id");
+			$dd['i_titulo'] = $title;
+
+			if (get("all") == "true")
+				{
+					$dt = $this->le($id);
+					$mani = $dt['i_manitestation'];
+					if ($mani > 0)
+						{
+							$this->set($dd)->where('i_manitestation',$mani)->update();		
+						} else {
+							$this->set($dd)->where('id_i',$id)->update();
+						}
+				} else {
+					$this->set($dd)->where('id_i',$id)->update();
+				}
+			echo $title;
+		}
+
+	function title_form($dt)
+		{
+			$sx = '';
+			$id = $dt['id_i'];
+			//$sx .= '<span onclick="jquery(\'#form_title\').toggle();">'.bsicone('edit').'</span>';
+			$sx .= '<a class="" data-bs-toggle="collapse" href="#form_title" role="button" aria-expanded="false" aria-controls="form_title">'.bsicone('edit').'</a>';
+			$sx .= '<div class="collapse" id="form_title">
+					<textarea id="title_new" class="form-control">'.$dt['i_titulo'].'</textarea>
+					<input type="checkbox" id="all_title"> '.lang('find.all_title').'
+					<br>
+					<button onclick="save_form();" id="form_title_save" type="text" class=" btn btn-primary" id="basic-url" aria-describedby="basic-addon3">'.lang('find.save').'</button>
+					<button onclick="cancel_form();" id="form_title_cancel" type="text" class=" btn btn-danger" id="basic-url" aria-describedby="basic-addon3">'.lang('find.cancel').'</button>					
+
+					</div>';
+
+			$sx .= '<script>
+						function cancel_form()
+							{
+								$txt = $("#card_title").html();
+								$("#title_new").val($txt);
+								$( "#form_title" ).even().removeClass( "show" );
+							}
+
+						function save_form()
+							{
+								var title = $("#title_new").val();
+								var all = $("#all_title").is(":checked");
+								$.ajax({
+									type: \'POST\',
+									url: \''.PATH.MODULE.'ajax/item_title\',
+									data: {"title":title, "id": "'.$id.'","all":all},
+									success: function(data) {
+										$("#card_title").html(data);
+									}
+								});	
+								$( "#form_title" ).even().removeClass( "show" );
+							}
+					</script>';
+
+			return $sx;
+		}
+
+	function search($isbn)
+		{
+			$sx = '';
+			/******* Google */
+			$sx .= h(lang('find.search_in'),4);
+			$sx .= '<a href="https://www.google.com/search?q='.$isbn.'+ISBN" target="_blank">';
+			$sx .= '<img src="'.URL.'img/logo/logo_google.png" style="height: 50px" class="me-5 mb-5">';
+			$sx .= '</a>';
+
+			$sx .= '<a href="https://www.bing.com/search?q='.$isbn.'+ISBN" target="_blank">';
+			$sx .= '<img src="'.URL.'img/logo/logo_bing.png" style="height: 50px" class="me-5 mb-5">';
+			$sx .= '</a>';			
+
+			return $sx;
 		}
 
 	function actions($id,$or=0)
@@ -407,6 +599,9 @@ function le($id)
 			if ($st == $or)
 				{
 					$sx =  bsmessage(lang('find.metadata_not_found'),3);
+
+					$isbn = $dt['i_identifier'];
+					$sx .= $this->search($isbn);
 
 					if ($st == 0)
 						{
@@ -591,7 +786,7 @@ function le($id)
 	}
 
 	/******************************************************************************** NOVO ITEM */
-	function new($d1, $d2, $d3)
+	function novo_item($d1, $d2, $d3)
 	{
 		$Style = new \App\Models\Style\MenuBtn();
 		$sx = h(lang('find.tech_I'), 2);
@@ -639,8 +834,16 @@ function le($id)
 
 	function last_aquisitions()
 		{
+			$Socials = new \App\Models\Socials();
+			$us = $Socials->loged();
 			$sx = h(lang('find.last_aquisitions'), 6);
-			$dt = $this->where('i_status',0)->orderBy('id_i desc')->limit(10)->findAll();
+			if ($us > 0)
+				{
+					$dt = $this->where('i_status',0)->where('i_indexer',$us)->orderBy('id_i desc')->limit(10)->findAll();
+				} else {
+					$dt = $this->where('i_status',0)->orderBy('id_i desc')->limit(10)->findAll();
+				}
+			
 			$sx .= '<ul>';
 			for($r=0;$r < count($dt);$r++)
 				{
@@ -654,6 +857,7 @@ function le($id)
 	function item_new_form()
 	{
 		$ISBN = new \App\Models\Isbn\Isbn();
+		$Socials = new \App\Models\Socials();
 		$ItensHistorico = new \App\Models\Library\ItensHistorico();
 		$sx = '';
 		$this->allowedFields = array(
@@ -709,10 +913,12 @@ function le($id)
 				$nisbn = trim($isbn[$r]);
 
 				/* Valida ISBN */				
-				$nisbn = $ISBN->format($isbn[$r]);
-				$ex = $Tombo->exemplar($nisbn);
+				$xisbn = $ISBN->isbns($isbn[$r]);
 
-				$dd['i_identifier'] = $nisbn;
+				$xisbn = $xisbn['isbn13'];				
+				$ex = $Tombo->exemplar($xisbn);
+
+				$dd['i_identifier'] = $xisbn;
 				$dd['i_library_place'] = $place;
 				$dd['i_library'] = LIBRARY;
 				$dd['i_type'] = 0;
@@ -723,6 +929,7 @@ function le($id)
 				$dd['i_year'] = 0;
 				$dd['i_status'] = 0;
 				$dd['i_usuario'] = 0;
+				$dd['i_indexer'] = $Socials->loged();
 				$dd['i_ip'] = ip();
 				$dd['i_manitestation'] = 0;
 

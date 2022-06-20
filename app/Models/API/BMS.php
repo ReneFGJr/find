@@ -40,28 +40,47 @@ class BMS extends Model
 	protected $beforeDelete         = [];
 	protected $afterDelete          = [];
 
-function book($isbn,$id) {
-	$Cover = new \App\Models\Book\Covers();
+	var $endpoint = 'http://brapci3/api/book/';
+
+	function cutter($name = '')
+	{
+		$endPoint =  $this->endpoint . 'cutter/?q='.$name;
+		echo $endPoint;
+	}
+
+	function cover($isbn = '')
+	{
+		$endPoint =  $this->endpoint . 'cover/150/?q='.$name;
+		echo $endPoint;
+	}	
+
+	function status()
+	{
+
+		$endPoint =  $this->endpoint . $isbn . '/' . $id;
+	}
+
+	function book($isbn, $id)
+	{
+		$Cover = new \App\Models\Book\Covers();
 		$rsp = array('count' => 0);
 
-		$endPoint = 'http://brapci3/api/book/' . $isbn . '/' . $id;
+		$endPoint = $this->endpoint  . $isbn . '/' . $id;
 
 		$ISBN = new \App\Models\Isbn\Isbn();
-		$Language = new \App\Models\Languages\Language();		
+		$Language = new \App\Models\Languages\Language();
 
 		/************************ Busca */
 		if (($data = @file_get_contents($endPoint)) === false) {
 			$error = error_get_last();
 			echo "HTTP request failed. Error was: " . $error['message'];
-	  	} else {
+		} else {
 			$rsp = json_decode($data, true);
-			if (isset($rsp['cover']) and ($rsp['cover'] != ''))
-			{
+			if (isset($rsp['cover']) and ($rsp['cover'] != '')) {
 				$endPoint = $rsp['cover'];
-				$Cover->upload_cover($rsp['isbn13'],$endPoint);
+				$Cover->upload_cover($rsp['isbn13'], $endPoint);
 			}
-			
-	  	}		
+		}
 		return ($rsp);
-	}	
+	}
 }

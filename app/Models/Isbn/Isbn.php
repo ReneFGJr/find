@@ -67,6 +67,8 @@ class Isbn extends Model
 		}
 		$isbn = troca($isbn, '-', '');
 		$isbn = troca($isbn, '.', '');
+		$isbn = trim($isbn);
+		echo '=A1===>'.$isbn.'<br>';
 		if (substr($isbn, 0, 3) == '978') {
 			$isbn = substr($isbn, 0, 13);
 		}
@@ -74,7 +76,7 @@ class Isbn extends Model
 			$isbn = substr($isbn, 0, 10);
 		}
 		$rsp = array();
-
+		echo '=A2===>'.$isbn.'<br>';
 		if (strlen($isbn) == 13) {
 			$rsp['isbn13'] = $isbn;
 			$rsp['isbn10'] = $this->isbn13to10($isbn);

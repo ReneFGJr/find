@@ -50,7 +50,7 @@ class Books extends Model
 			$sx = '';
 			$Find_Item = new \App\Models\Library\Itens();
 			$Cover = new \App\Models\Book\Covers();
-			echo "OK";
+
 			//$Find_Item->select('i_library, id_i, i_titulo, i_identifier,i_manitestation');
 			$result = $Find_Item
 				->select('*')
@@ -343,6 +343,12 @@ class Books extends Model
 			return $tela;
 		}
 
+	function edit_rdf_item($id)
+		{
+			echo h($id);
+			return $this->a($id);
+		}
+
 	function a($id)
 		{		
 			$sx = '';
@@ -350,6 +356,7 @@ class Books extends Model
 			$Itens = new \App\Models\Library\Itens();
 
 			$dt = $RDF->le($id);
+
 			switch ($dt['concept']['c_class'])
 				{
 					case 'Manifestation':
@@ -459,14 +466,20 @@ class Books extends Model
 				}
 			return $sx;
 		}
+
+
 	function view_item($id)
 		{
+			$Social = new \App\Models\Socials();
 			$Item = new \App\Models\Library\Itens();
 			$Cover = new \App\Models\Book\Covers();
 			$Label = new \App\Models\Book\Labels();
 
 			$dt = $Item->le($id);
-			$isbn = $dt['i_identifier'];		
+			$isbn = $dt['i_identifier'];
+
+			/* Update Data */
+			if ($dt['i_work'] == 0) { $Item->check_rdf($id); }
 
 			$img = '<img src="'.$Cover->get_cover($isbn).'" class="img-fluid img_cover">';
 
@@ -485,6 +498,21 @@ class Books extends Model
 
 			$sb = bsc($sb.$sc,10);
 			$sx = bs($sa.$sb);
+
+			/************************************************************************************* DEV */
+
+			if ($Social->getAccess("#DEV"))
+			{		
+				$work = 'W:'.$dt['i_work'];
+				$expression = 'W:'.$dt['i_expression'];
+				$manifestation = 'M:'.$dt['i_manitestation'];
+				$item = 'I:'.$id;
+				$tombo = 'T: '.$dt['i_tombo'];
+				$sx .= bs(
+					bsc(h('Development'),12).
+					bsc($work,2).bsc($expression,2).bsc($manifestation,2).bsc($item,2).bsc($tombo,2));
+			}
+
 			return $sx;
 		}
 
@@ -541,6 +569,13 @@ class Books extends Model
 			</a>';
 			return $sx;
 		}		
+
+	function item_edit($act='',$id='')
+		{
+			$Itens = new \App\Models\Library\Itens();
+			$sx = $Itens->edit($id);
+			return $sx;
+		}
 
 	function viewItem($d,$idc)
 		{

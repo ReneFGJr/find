@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
@@ -6,11 +7,11 @@ use App\Controllers\BaseController;
 $this->session = \Config\Services::session();
 $language = \Config\Services::language();
 
-helper(['boostrap', 'url', 'graphs', 'sisdoc_forms', 'form', 'nbr','sessions','cookie']);
+helper(['boostrap', 'url', 'graphs', 'sisdoc_forms', 'form', 'nbr', 'sessions', 'cookie']);
 $session = \Config\Services::session();
 
 $this->Socials = new \App\Models\Socials();
-define("PATH", $_SERVER['app.baseURL'].$_SERVER['app.prefix']);
+define("PATH", $_SERVER['app.baseURL'] . $_SERVER['app.prefix']);
 define("MODULE", 'find/');
 define("URL", $_SERVER['app.baseURL']);
 define('PREFIX', $_SERVER['PREFIX']);
@@ -25,79 +26,77 @@ class Find extends BaseController
 		$this->FindSearch = new \App\Models\FindSearch();
 		$this->Logos = new \App\Models\Library\Logos();
 
-		if (!isset($_COOKIE['find_library']))
-			{
-				define("LIBRARY", "0000");
-			} else {
-				$LIBRARY = $_COOKIE['find_library'];
-				define("LIBRARY", $LIBRARY);			
-			}
-		define("LIBRARY_NAME", "FIND");		
+		if (!isset($_COOKIE['find_library'])) {
+			define("LIBRARY", "0000");
+		} else {
+			$LIBRARY = $_COOKIE['find_library'];
+			define("LIBRARY", $LIBRARY);
+		}
+		define("LIBRARY_NAME", "FIND");
 
 		helper('url');
 		helper('form');
 
 		if (file_exists('.install')) {
-			
+
 			if ((!isset($_SERVER['PATH_INFO']) or (strpos($_SERVER['PATH_INFO'], 'install') === false))) {
-				echo metarefresh(PATH.MODULE.'install');
+				echo metarefresh(PATH . MODULE . 'install');
 				exit;
-			}		
+			}
 		}
 	}
 
-	function admin($d1='',$d2='',$d3='',$d4='',$d5='')
-		{			
-			$sx = '';
-			$cab = $this->cab();
-			$cab .= $this->navbar();
-			$cab .= $this->Logos->banner();
-			$cab .= breadcrumbs();
+	function admin($d1 = '', $d2 = '', $d3 = '', $d4 = '', $d5 = '')
+	{
+		$sx = '';
+		$cab = $this->cab();
+		$cab .= $this->navbar();
+		$cab .= $this->Logos->banner();
+		$cab .= breadcrumbs();
 
-			$Admin = new \App\Models\Admin\Index();
-			$sx .= $cab;
-			$sx .= $Admin->index($d1,$d2,$d3,$d4,$d5);
-			$sx .= $this->footer();
+		$Admin = new \App\Models\Admin\Index();
+		$sx .= $cab;
+		$sx .= $Admin->index($d1, $d2, $d3, $d4, $d5);
+		$sx .= $this->footer();
 
-			return $sx;
+		return $sx;
+	}
+
+	function popup($act, $id, $act2 = '', $id2 = 0)
+	{
+		$sx = $this->cab();
+		switch ($act) {
+			case 'logo':
+				$Logo = new \App\Models\Library\Logos();
+				$sx .= h('find' . $act, 2);
+				$sx .= bs(bsc($Logo->upload($id, $act2, $id2), 12));
+				break;
+			case 'bookshelf':
+				$PlaceBookshelf = new \App\Models\Bookself\PlaceBookshelf();
+				$sx .= h('find' . $act, 2);
+				$sx .= bs(bsc($PlaceBookshelf->edit($id, $act2, $id2), 12));
+				break;
+			case 'place':
+				$Places = new \App\Models\Library\Places();
+				$sx .= h('find' . $act, 2);
+				$sx .= bs(bsc($Places->edit($id, $act2, $id2), 12));
+				break;
+			default:
+				$sx .= bsmessage('Not found action: ' . $act);
 		}
-
-	function popup($act,$id,$act2='',$id2=0)
-		{
-			$sx = $this->cab();
-			switch($act)
-				{
-					case 'logo':
-						$Logo = new \App\Models\Library\Logos();
-						$sx .= h('find'.$act,2);
-						$sx .= bs(bsc($Logo->upload($id,$act2,$id2),12));
-						break;					
-					case 'bookshelf':
-						$PlaceBookshelf = new \App\Models\Bookself\PlaceBookshelf();
-						$sx .= h('find'.$act,2);
-						$sx .= bs(bsc($PlaceBookshelf->edit($id,$act2,$id2),12));
-						break;
-					case 'place':
-						$Places = new \App\Models\Library\Places();
-						$sx .= h('find'.$act,2);
-						$sx .= bs(bsc($Places->edit($id,$act2,$id2),12));
-						break;
-					default:
-						$sx .= bsmessage('Not found action: '.$act);
-				}
-			return $sx;
-		}
+		return $sx;
+	}
 
 	function install()
-		{
-			helper('sisdoc_sql');
-			$sx = '';
-			$cab = $this->cab();
-			$sx .= $cab;
-			$sx .= install($this);
-			
-			return $sx;
-		}
+	{
+		helper('sisdoc_sql');
+		$sx = '';
+		$cab = $this->cab();
+		$sx .= $cab;
+		$sx .= install($this);
+
+		return $sx;
+	}
 
 
 	public function index()
@@ -108,23 +107,22 @@ class Find extends BaseController
 		$sx .= $this->cab();
 		$sx .= $this->navbar();
 
-		if (LIBRARY == '0000')
-			{
-				$sx .= metarefresh(PATH.MODULE.'libraries/');
-			} else {
-				$sx .= $this->Logos->banner();
-				$sx .= $this->FindSearch->search();
-		
-		
-				$st = '<h2>' . lang('find.latest_acquisitions') . '</h2>';
-				$st .= $this->Books->latest_acquisitions();
-		
-				$sc = '<h2>' . lang('find.classifications') . '</h2>';
-				$sc .= $Classification->sections();
-				$sx .= bs(bsc($sc, 3) . bsc($st, 9));		
-		
-				$sx .= $this->footer();
-			}
+		if (LIBRARY == '0000') {
+			$sx .= metarefresh(PATH . MODULE . 'libraries/');
+		} else {
+			$sx .= $this->Logos->banner();
+			$sx .= $this->FindSearch->search();
+
+
+			$st = '<h2>' . lang('find.latest_acquisitions') . '</h2>';
+			$st .= $this->Books->latest_acquisitions();
+
+			$sc = '<h2>' . lang('find.classifications') . '</h2>';
+			$sc .= $Classification->sections();
+			$sx .= bs(bsc($sc, 3) . bsc($st, 9));
+
+			$sx .= $this->footer();
+		}
 		return $sx;
 	}
 
@@ -148,7 +146,9 @@ class Find extends BaseController
 		$sx .= ' ' . cr();
 		$sx .= '  <!-- CSS -->' . cr();
 		$sx .= '  <script src="' . URL . ('/js/bootstrap.js?v=5.0.2') . '"></script>' . cr();
+		$sx .= '  <script src="' . URL . ('/js/jquery-3.6.0.min.js?v=3.6.0') . '"></script>' . cr();
 		
+
 		$sx .= '<style>
 					@font-face {font-family: "Handel Gothic";
 					src: url("' . URL . ('css/fonts/HandelGothic/handel_gothic.eot') . '"); /* IE9*/
@@ -175,7 +175,7 @@ class Find extends BaseController
 		}
 		$sx = '<nav class="navbar navbar-expand-lg navbar-light ">' . cr();
 		$sx .= '  <div class="container-fluid">' . cr();
-		$sx .= '    <a class="navbar-brand" href="' . PATH . MODULE. '">' . $this->Logos->logo_mini(LIBRARY) . '</a>' . cr();
+		$sx .= '    <a class="navbar-brand" href="' . PATH . MODULE . '">' . $this->Logos->logo_mini(LIBRARY) . '</a>' . cr();
 		$sx .= '    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">' . cr();
 		$sx .= '      <span class="navbar-toggler-icon"></span>' . cr();
 		$sx .= '    </button>' . cr();
@@ -183,14 +183,14 @@ class Find extends BaseController
 		$sx .= '      <ul class="navbar-nav me-auto mb-2 mb-lg-0">' . cr();
 		$sx .= '
 							<li class="nav-item">
-								<a class="nav-link" href="' . PATH . MODULE. 'libraries/' . '">' . lang('find.libraries_select') . '</a>
+								<a class="nav-link" href="' . PATH . MODULE . 'libraries/' . '">' . lang('find.libraries_select') . '</a>
 							</li>			
-			';		
+			';
 
 		if ((perfil("#ADM#CAT")) or (isset($_SESSION['access']))) {
 			$sx .= '
 								<li class="nav-item">
-									<a class="nav-link" href="' . PATH . MODULE. 'users/' . '">' . lang('find.users') . '</a>
+									<a class="nav-link" href="' . PATH . MODULE . 'users/' . '">' . lang('find.users') . '</a>
 								</li>			
 				';
 		}
@@ -208,7 +208,8 @@ class Find extends BaseController
 			$sx .= '          </a>' . cr();
 			$sx .= '          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">' . cr();
 			$sx .= '            <li><a class="dropdown-item" href="' . PATH . MODULE . 'rdf">' . lang('find.rdf.row') . '</a></li>' . cr();
-			$sx .= '            <li><a class="dropdown-item" href="' . PATH . MODULE . 'admin">' . bsicone('gear').' '. lang('find.admin') . '</a></li>' . cr();
+			$sx .= '            <li><a class="dropdown-item" href="' . PATH . MODULE . 'admin">' . bsicone('gear') . ' ' . lang('find.admin') . '</a></li>' . cr();
+			$sx .= '            <li><a class="dropdown-item" href="' . PATH . MODULE . 'social/group">' . bsicone('group') . ' ' . lang('find.users_groups') . '</a></li>' . cr();
 			$sx .= '            <li><a class="dropdown-item" href="' . PATH . MODULE . 'config">' . lang('find.config') . '</a></li>' . cr();
 			$sx .= '          </ul>' . cr();
 			$sx .= '        </li>' . cr();
@@ -219,7 +220,7 @@ class Find extends BaseController
 		$sx .= '            ' . lang('find.Index') . cr();
 		$sx .= '          </a>' . cr();
 		$sx .= '          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">' . cr();
-		$sx .= '            <li><a class="dropdown-item" href="' . (PATH . MODULE.'indexes/authors') . '">' . lang('find.Indexes.Authors') . '</a></li>' . cr();
+		$sx .= '            <li><a class="dropdown-item" href="' . (PATH . MODULE . 'indexes/authors') . '">' . lang('find.Indexes.Authors') . '</a></li>' . cr();
 		$sx .= '          </ul>' . cr();
 		$sx .= '        </li>' . cr();
 
@@ -232,16 +233,16 @@ class Find extends BaseController
 		return $sx;
 	}
 
-	function libraries($d1='')
-		{
-			$Libraries = new \App\Models\Library\Libraries();
-			$sx = '';
-			$sx .= $this->cab();
-			$sx .= $this->navbar();
-			$sx .= $Libraries->libraries($d1);
-			$sx .= $this->footer();
-			return $sx;
-		}
+	function libraries($d1 = '')
+	{
+		$Libraries = new \App\Models\Library\Libraries();
+		$sx = '';
+		$sx .= $this->cab();
+		$sx .= $this->navbar();
+		$sx .= $Libraries->libraries($d1);
+		$sx .= $this->footer();
+		return $sx;
+	}
 
 	function tech($d1 = '', $d2 = '', $d3 = '', $d4 = '', $d5 = '')
 	{
@@ -392,7 +393,7 @@ class Find extends BaseController
 
 					</footer>
 					<!-- Footer -->';
-				$sx .= cookies_acept();
+		$sx .= cookies_acept();
 		return $sx;
 	}
 
@@ -412,13 +413,13 @@ class Find extends BaseController
 		return $sx;
 	}
 
-	function labels($d1='',$d2='',$d3='',$d4='')
-		{
-			$Labels = new \App\Models\Labels\Index();
-			$sx = $this->cab();
-			$sx .= $Labels->index($d1,$d2,$d3,$d4);
-			return $sx;
-		}
+	function labels($d1 = '', $d2 = '', $d3 = '', $d4 = '')
+	{
+		$Labels = new \App\Models\Labels\Index();
+		$sx = $this->cab();
+		$sx .= $Labels->index($d1, $d2, $d3, $d4);
+		return $sx;
+	}
 
 	public function social($d1 = '', $id = '')
 	{
@@ -432,18 +433,53 @@ class Find extends BaseController
 		return $sx;
 	}
 
-	function item($id)
+	function ajax($action,$id='')
+		{
+			$dd = array();
+			$dd['erro'] = '200';
+			$dd['action'] = $action;
+
+			switch ($action)
+				{
+					case 'item_title':
+						$Itens = new \App\Models\Library\Itens();
+						$Itens->ajax($action);
+						exit;
+					break;
+
+					default:
+						$dd['erro'] = '404';
+						break;
+
+				}
+			return json_encode($dd);
+		}
+
+	function item($act='',$id='')
 	{
 		$sx = $this->cab();
 		$sx .= $this->navbar();
 		$sx .= $this->Logos->banner();
 
-		$Books = new \App\Models\Book\Books();
-		$sx .= $Books->view_item($id);
+		switch($act)
+			{
+				case 'ed':
+				$Items = new \App\Models\Library\Itens();
+				$sx .= $Items->edit($id);
+				break;
+
+				default:
+				$id = $act;
+				$Books = new \App\Models\Book\Books();
+				$sx .= $Books->view_item($id);
+				break;
+			}
+
 		$sx .= $this->footer();
 
 		return $sx;
 	}
+
 	function v($id)
 	{
 		$sx = $this->cab();
@@ -501,23 +537,23 @@ class Find extends BaseController
 		return $tela;
 	}
 
-	function ontology($d1='',$d2='',$d3='',$d4='')
+	function ontology($d1 = '', $d2 = '', $d3 = '', $d4 = '')
 	{
 		$Ontology = new \App\Models\Rdf\RDFOntology();
-		$tela = $this->cab();		
-		$tela .= bs($Ontology->index($d1,$d2,$d3,$d4));
-		$tela .= $this->cab("footer");		
+		$tela = $this->cab();
+		$tela .= bs($Ontology->index($d1, $d2, $d3, $d4));
+		$tela .= $this->cab("footer");
 		return $tela;
 	}
-		
+
 	function rdf($d1 = '', $d2 = '', $d3 = '', $d4 = '', $d5 = '')
 	{
 		$cab = $this->cab();
 		$RDF = new \App\Models\Rdf\RDF();
-		$sa = bs(bsc($RDF->index($d1, $d2, $d3, $d4, $d5, $cab),12));
+		$sa = bs(bsc($RDF->index($d1, $d2, $d3, $d4, $d5, $cab), 12));
 
 		$sx = $this->navbar();
-		$sx .= $this->Logos->banner();		
+		$sx .= $this->Logos->banner();
 		$sx .= $sa;
 
 		return $sx;

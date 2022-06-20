@@ -171,6 +171,16 @@ class Socials extends Model
 				$sx .= $cab;
 				$sx .= $this->users();
 				break;
+			/********************************************* GROUPS */
+			case 'groups':
+				$sx .= $cab;
+				$sx .= $this->groups();
+				break;			
+			case 'group_useredit':
+				$sx .= $cab;
+				$sx .= $this->group_user_edit($id);
+				break;			
+
 			/********************************************* PERFIS */
 			case 'perfis':
 				$sx .= $cab;
@@ -218,7 +228,7 @@ class Socials extends Model
 				$sx .= breadcrumbs();
 				$st =  h(lang('Social'), 1);
 				$access = $this->getAccess('#ADM#GER');
-
+				
 				if (!$access) {
 					$sx .= $this->access_denied();
 					return $sx;
@@ -272,6 +282,15 @@ class Socials extends Model
 	function getAccess($t = '')
 	{
 		if (isset($_SESSION['id'])) {
+			/************************************************************* Checa Admin */
+			$user = round($_SESSION['email']);
+			if ($user == 'admin')
+				{
+					return 1;
+				}	
+
+
+			/********************************************* Check */
 			$tp = explode('#', $t);
 			for ($i = 0; $i < count($tp); $i++) {
 				$ta = $this->calcMD5('#'.$tp[$i]);
@@ -611,7 +630,6 @@ class Socials extends Model
 					);
 			$sx .= view('Pages/profile.php', $dt);
 		} else {
-			echo "OK";
 			$sx = metarefresh(base_url());
 		}
 		return bs($sx);
@@ -643,6 +661,182 @@ class Socials extends Model
             		<p class="text-sm">'.lang('Social.Access_info').'</p>
           		</div>			
 			';
+			return $sx;
+		}
+
+	function group_user_add($gr=0)
+		{
+			$id = get("id");
+			$act = get("act");
+			$chk = get("chk");
+
+			if (($id != '') and ($act == 'add'))
+				{
+					$chk2 = md5($id.$_SESSION['id']);
+
+					$sql = "select * from users_group_members 
+							where grm_library = ".LIBRARY." and grm_group = $gr 
+							and grm_user = $id";
+					$db = $this->db->query($sql);
+					$us = $db->getResult();
+
+					if (count($us) == 0)
+						{
+							$sql = "insert users_group_members 
+										(grm_group, grm_user, grm_library) 
+										values 
+										($gr, $id, ".LIBRARY.")";
+							$db = $this->db->query($sql);
+							return '';
+						}
+				}
+
+			$sx = '';
+			$sx .= '<hr>';
+			$sx .= h(lang('social.group_user_add'),1);
+			$sx .= form_open();
+			$sx .= '<label for="exampleInputEmail1">'.lang('social.user_name').'</label>';
+			$sx .= '<div class="input-group mb-3">';			
+			$sx .= form_input(array('name'=>'search','class'=>'form-control','placeholder'=>lang('social.group_user_add_name')));
+			$sx .= form_submit(array('name'=>'action','value'=>lang('social.user_find'),'class'=>'btn btn-primary'));
+			$sx .= '</div>';
+			$sx .= form_close();
+
+			$act = get("action");
+			$search = get("search");
+			if (($act != '') and ($search != ''))
+				{
+					$sx .= h(lang('social.users_found'),5);
+					$sql = "select * from users 
+								left join users_group_members ON grm_group = $gr AND grm_user = id_us
+								where us_nome like '%$search%' 
+								order by us_nome";
+					$db = $this->db->query($sql);
+					$us = $db->getResult();
+
+					$sx .= '<table class="table table-sm table-striped">';
+					$sx .= '<tr>';
+					$sx .= '<th width="45%">'.lang('social.user').'</th>';
+					$sx .= '<th width="45%">'.lang('social.email').'</th>';
+					$sx .= '<th width="10%">#</th>';
+					$sx .= '</tr>';
+
+					for ($r=0;$r < count($us);$r++)
+						{
+							$line = (array)$us[$r];
+
+							$pre = 'id='.$line['id_us'].'&act=add&chk='.md5($line['id_us'].$_SESSION['id']);
+							$remove = '<a href="'.PATH.MODULE.'social/group_useredit/'.$gr.'/'.$line['id_us'].'?'.$pre.'" class="btn-outline-primary ps-2 pe-2 rounded">';
+							$remove .= lang('social.user_add');
+							$remove .= '</a>';
+							$sx .= '<tr>';
+							$sx .= '<td>'.$line['us_nome'].'</td>';
+							$sx .= '<td>'.$line['us_email'].'</td>';
+							if ($line['grm_group'] == '')
+								{
+									$sx .= '<td>'.$remove.'</td>';
+								} else {
+									$sx .= '<td><span class="text-primary">'.lang('social.already').'</span></td>';
+								}
+							
+							$sx .= '</tr>';
+						}
+					$sx .= '</table>';					
+				}
+			return $sx;
+		}
+
+	function group_user_edit($gr=0)
+		{
+			$user_add = $this->group_user_add($gr);
+
+			$sx = '';
+			$sx .= breadcrumbs();
+			$sql = "select * from users_group
+						where id_gr = $gr
+						and gr_library = ".LIBRARY;
+			$db = $this->db->query($sql);
+			$dt = $db->getResult();
+
+			$line = (array)$dt[0];
+
+			$sx .= h($line['gr_name'],2);
+			$tp = $line['gr_hash'];
+
+			/************************ Usuarios */			
+			$sql = "select * from users_group_members
+						INNER JOIN users ON grm_user = id_us
+						where grm_group = $gr
+						and grm_library = ".LIBRARY."
+						order by us_nome";
+			$db = $this->db->query($sql);
+			$us = $db->getResult();	
+
+			$sx .= '<table class="table table-sm table-striped">';
+			$sx .= '<tr>';
+			$sx .= '<th width="45%">'.lang('Social.user').'</th>';
+			$sx .= '<th width="45%">'.lang('Social.email').'</th>';
+			$sx .= '<th width="10%">'.$tp.'</th>';
+			$sx .= '</tr>';
+
+			for ($r=0;$r < count($us);$r++)
+				{
+					$line = (array)$us[$r];
+
+					$pre = 'id='.$line['id_grm'].'act=delete&chk='.md5($line['id_grm'].$_SESSION['id']);
+					$remove = '<a href="'.PATH.MODULE.'social/group_useredit/'.$gr.'/'.$line['id_us'].'?'.$pre.'" class="btn-outline-danger ps-2 pe-2 rounded">';
+					$remove .= lang('social.remove');
+					$remove .= '</a>';
+					$sx .= '<tr>';
+					$sx .= '<td>'.$line['us_nome'].'</td>';
+					$sx .= '<td>'.$line['us_email'].'</td>';
+					$sx .= '<td>'.$remove.'</td>';
+					$sx .= '</tr>';
+				}
+			$sx .= '</table>';
+
+			$sx .= $user_add;
+			
+			$sx .= '<div class="mt-5 mb-5" style="height: 100px;"></div>';
+
+			$sx = bs(bsc($sx,12));
+			return $sx;
+		}
+
+	function groups($id=0)
+		{
+			$sql = "select * from users_group
+						LEFT JOIN users_group_members ON id_gr = grm_group
+						LEFT JOIN users ON grm_user = id_us
+						where gr_library = ".LIBRARY."
+						order by gr_name, us_nome";
+			$db = $this->db->query($sql);
+			$dt = $db->getResult();
+
+			$sx = '';
+			$xgr = '';
+			$ed = $this->getAccess("#ADM");
+			for ($r=0;$r < count($dt);$r++)
+				{
+					$line = (array)$dt[$r];
+					$gr = $line['gr_name'];
+					if ($gr != $xgr)
+						{
+							$link = '<a href="'.PATH.MODULE.'social/group_useredit/'.$line['id_gr'].'" title="'.lang("social.group_user_edit").'">';
+							$linka = '</a>';
+							$edi = ' '.$link.bsicone('user+',32).$linka;
+							$sx .= h($gr.$edi,3,'mt-3');
+							$xgr = $gr;
+						}
+					$name = $line['us_nome'];
+					if (strlen($name) > 0)
+						{
+							$link = '<a href="'.PATH.MODULE.'social/perfil/'.$line['id_us'].'">';
+							$linka = '</a>';
+							$sx .= $link.$name.$linka.'. ';
+						}
+				}
+			$sx = bs(bsc($sx,12));			
 			return $sx;
 		}
 		

@@ -78,6 +78,7 @@ class TechPreparation extends Model
 			if ($d1=='prepare_0') { $d1 = 'prepare'; $st = '0'; }
 			if ($d1=='prepare_1') { $d1 = 'prepare'; $st = '1';  }
 			if ($d1=='prepare_2') { $d1 = 'prepare'; $st = '2';  }
+
 			switch($d1)
 				{
 					case 'item_status':
@@ -114,7 +115,7 @@ class TechPreparation extends Model
 											switch($dt['i_status'])
 											{
 												case '0':
-													$itz['find.tech_0'] = PATH.MODULE.'tech/item_status/'.$d2.'/1';
+													$itz['find.tech_1'] = PATH.MODULE.'tech/item_status/'.$d2.'/1';
 												break;
 
 												case '1':
@@ -139,7 +140,7 @@ class TechPreparation extends Model
 											$dt = $Itens->find($d2);
 											$sz .= bsc(
 												$Itens->header_item($dt).
-												$Books->a($IDM),10);
+												$Books->edit_rdf_item($IDM),10);
 											break;
 										default:
 											$sz .= bsc(bsmessage('Tech '.$st.' not implemented'),10);
@@ -158,7 +159,7 @@ class TechPreparation extends Model
 						$sa = '';
 						$last = $Itens->last_aquisitions();
 						$sa .= bsc($this->image_left(1).$last,2);
-						$sa .= bsc($Itens->new($d2,$d3,$d4),10);
+						$sa .= bsc($Itens->novo_item($d2,$d3,$d4),10);
 						$sx .= bs($sa);
 						break;
 																		

@@ -43,13 +43,18 @@ class Labels extends Model
     function label($dt)
         {
 
-            $sx = '<div class="p-2" style="width: 300px; height: 100px; background-color: #f0f0f0; border: 2px solid #000; border-radius: 10px;">';
+            $sx = '<div class="text-start" style="padding: 0px 0px 0px 0px; width: 300px; background-color: #f0f0f0; border: 2px solid #000; border-radius: 10px;">';
             for ($r=1;$r <= 4;$r++)
-                {
-                    $sx .= '<tt>'.$dt['i_ln'.$r].'</tt><br>';
+                {                    
+                    $bg = '#f0f0ff';
+                    $label = $dt['i_ln'.$r];
+                    if ($r==4)
+                        {
+                            $label .= '[cutter]';
+                        }
+                    $sx .= '<div id="label'.$r.'" style="padding-left: 20px; border-radius: 10px; width: 100%; background-color: '.$bg.'" ><tt>&nbsp;'.$label.'</tt></div>';
                 }            
             $sx .= '</div>';
-            $sx .= '<a href="#">'.lang('find.edit_label').'</a>';
             return $sx;
         }
 }
