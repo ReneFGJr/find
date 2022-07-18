@@ -40,17 +40,20 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    function index($id, $ac = '',$d3='',$d4='',$d5='')
-        {
-            if ($id==0) { $id = LIBRARY; }
-            $sa = $this->submenu($id, $ac);
-            $sb = $this->config_itens($id, $ac);
+    function index($id, $ac = '', $d3 = '', $d4 = '', $d5 = '')
+    {
 
-            $sx = bsc($sa,3);
-            $sx .= bsc($sb,9);
-            $sx = bs($sx);
-            return $sx;
+        if (($id == 0) or ($id == '')) {
+            $id = LIBRARY;
         }
+        $sa = $this->submenu($id, $ac);
+        $sb = $this->config_itens($id, $ac);
+
+        $sx = bsc($sa, 3);
+        $sx .= bsc($sb, 9);
+        $sx = bs($sx);
+        return $sx;
+    }
     function submenu($id, $ac)
     {
         $sx = '';
@@ -74,21 +77,20 @@ class Index extends Model
     }
 
     function le_library($id)
-        {
-            $dt = $this->where('l_code',$id)->findAll();
-            if (count($dt) > 0)
-                {
-                    $dt = $dt[0];
-                } 
-            return $dt;
+    {
+        $dt = $this->where('l_code', $id)->findAll();
+        if (count($dt) > 0) {
+            $dt = $dt[0];
         }
+        return $dt;
+    }
 
     function config_itens($id, $ac = '')
     {
         if ($ac == '') {
             $ac = 'description';
         }
-        $sx = h(lang('find.' . $ac),2);
+        $sx = h(lang('find.' . $ac), 2);
         switch ($ac) {
             default:
                 $sx .= 'ERROR';
@@ -103,17 +105,16 @@ class Index extends Model
                 break;
             case 'logo':
                 $dt = $this->le_library($id);
-                if (count($dt) > 0)
-                {
+                if (count($dt) > 0) {
                     $sx .= $this->logo($dt);
-                    $sx .= '<div class="mt-5">'.lang('find.library').': '.LIBRARY.'</div>';
+                    $sx .= '<div class="mt-5">' . lang('find.library') . ': ' . LIBRARY . '</div>';
                 } else {
-                    $sx .= bsmessage('find.error_library').' #LOGO';
+                    $sx .= bsmessage('find.error_library') . ' #LOGO';
                 }
                 break;
             case 'banners':
                 $sx .= $this->banners($id);
-                $sx .= '<div class="mt-5">'.lang('find.library').': '.LIBRARY.'</div>';
+                $sx .= '<div class="mt-5">' . lang('find.library') . ': ' . LIBRARY . '</div>';
                 break;
             case 'description':
                 $sx .= $this->description($id);
@@ -121,11 +122,15 @@ class Index extends Model
         }
         return ($sx);
     }
-    function description($library,$d3='',$d4='')
+    function description($library, $d3 = '', $d4 = '')
     {
+        if ($library == '') {
+            $sx = metarefresh(PATH . MODULE . 'libraries');
+            return $sx;
+        }
         $sx = '';
-        $Th = new \App\Models\Library\Libraries(); 
-        $dt = $Th->where('l_code',$library)->findAll();
+        $Th = new \App\Models\Library\Libraries();
+        $dt = $Th->where('l_code', $library)->findAll();
         $id = $dt[0]['id_l'];
         $PlaceBookshelf = new \App\Models\Bookself\PlaceBookshelf();
 
@@ -152,63 +157,60 @@ class Index extends Model
         $sx = '';
         $Th = new \App\Models\Library\Logos();
 
-        $sx .= h(lang('find.logo'),4,'mt-5');
+        $sx .= h(lang('find.logo'), 4, 'mt-5');
         $sx .= $Th->logo($id);
-        $sx .= onclick(PATH.MODULE.'popup/logo/logo','800','400');
+        $sx .= onclick(PATH . MODULE . 'popup/logo/logo', '800', '400');
         $sx .= bsicone('upload');
-        $sx .= '</span>';        
+        $sx .= '</span>';
 
-        $sx .= h(lang('find.logo'),4,'mt-5');
+        $sx .= h(lang('find.logo'), 4, 'mt-5');
         $sx .= $Th->logo_mini($id);
-        $sx .= onclick(PATH.MODULE.'popup/logo/mini/','800','400');
+        $sx .= onclick(PATH . MODULE . 'popup/logo/mini/', '800', '400');
         $sx .= bsicone('upload');
-        $sx .= '</span>';        
+        $sx .= '</span>';
 
         return $sx;
     }
     function banners($id)
     {
         $sx = '';
-        $Th = new \App\Models\Library\Logos();        
-        for ($r=1;$r <= 3;$r++)
-        {
-            $sx .= h(lang('find.banner').' #'.$r,4,'mt-5');
-            $sx .= '<img src="'.URL.$Th->banner_nr($id,$r).'" width="100%" class="img-fluid p-2 border">';
-            $sx .= onclick(PATH.MODULE.'popup/logo/'.$id.'/'.$r,'800','400');
+        $Th = new \App\Models\Library\Logos();
+        for ($r = 1; $r <= 3; $r++) {
+            $sx .= h(lang('find.banner') . ' #' . $r, 4, 'mt-5');
+            $sx .= '<img src="' . URL . $Th->banner_nr($id, $r) . '" width="100%" class="img-fluid p-2 border">';
+            $sx .= onclick(PATH . MODULE . 'popup/logo/' . $id . '/' . $r, '800', '400');
             $sx .= bsicone('upload');
             $sx .= '</span>';
-        }        
+        }
         return $sx;
     }
 
 
-    function index2($d1='',$d2='',$d3='',$d4='',$d5='',$cab='')
-        {
-            $sx = '';
-            switch($d1)
-                {
-                    case 'Banner':
-                            $Logos = new \App\Models\Library\Logos();
-                            $sx = $Logos->upload($d1,$d2,$d3,$d4,$d5);
-                        break;
-                    case 'Logos':
-                            $Logos = new \App\Models\Library\Logos();
-                            $sx = $Logos->upload($d1,$d2,$d3,$d4,$d5);
-                        break;                        
-        			case 'Library':
-                        $Library = new \App\Models\Library\Libraries();
-                        $sx .= $cab;
-                        $sx .= $Library->index($d2,$d3,$d4,$d5);
-                        break;                        
-                    case 'PlaceBookshelf':
-                        $PlaceBookshelf = new \App\Models\Bookself\PlaceBookshelf();
-                        $sx .= $cab;
-                        $sx .= $PlaceBookshelf->index($d2,$d3,$d4);
-                        break;
-     
-                }
-
-            
-            return $sx;
+    function index2($d1 = '', $d2 = '', $d3 = '', $d4 = '', $d5 = '', $cab = '')
+    {
+        $sx = '';
+        switch ($d1) {
+            case 'Banner':
+                $Logos = new \App\Models\Library\Logos();
+                $sx = $Logos->upload($d1, $d2, $d3, $d4, $d5);
+                break;
+            case 'Logos':
+                $Logos = new \App\Models\Library\Logos();
+                $sx = $Logos->upload($d1, $d2, $d3, $d4, $d5);
+                break;
+            case 'Library':
+                $Library = new \App\Models\Library\Libraries();
+                $sx .= $cab;
+                $sx .= $Library->index($d2, $d3, $d4, $d5);
+                break;
+            case 'PlaceBookshelf':
+                $PlaceBookshelf = new \App\Models\Bookself\PlaceBookshelf();
+                $sx .= $cab;
+                $sx .= $PlaceBookshelf->index($d2, $d3, $d4);
+                break;
         }
+
+
+        return $sx;
+    }
 }
