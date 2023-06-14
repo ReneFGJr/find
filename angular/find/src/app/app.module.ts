@@ -12,6 +12,14 @@ import { BookShowComponent } from './base/book-show/book-show.component';
 import { ColorComponent } from './base/classification/color/color.component';
 import { CddComponent } from './base/classification/cdd/cdd.component';
 import { CduComponent } from './base/classification/cdu/cdu.component';
+import { AppRoutingModule } from './app-routing.module';
+import { IndexComponent } from './admin/index/index.component';
+import { Error404Component } from './pages/error404/error404.component';
+import { HomeIndexComponent } from './pages/home-index/home-index.component';
+import { AdminMenuComponent } from './admin/admin-menu/admin-menu.component';
+import { SocialsMenuComponent } from './socials/socials-menu/socials-menu.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { BooksInsertIsbnComponent } from './form/books/books-insert-isbn/books-insert-isbn.component';
 
 @NgModule({
   declarations: [
@@ -23,11 +31,19 @@ import { CduComponent } from './base/classification/cdu/cdu.component';
     BookShowComponent,
     ColorComponent,
     CddComponent,
-    CduComponent
+    CduComponent,
+    IndexComponent,
+    Error404Component,
+    HomeIndexComponent,
+    AdminMenuComponent,
+    SocialsMenuComponent,
+    BooksInsertIsbnComponent,
   ],
   imports: [
     BrowserModule,
-    NgbModule
+    NgbModule,
+    AppRoutingModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

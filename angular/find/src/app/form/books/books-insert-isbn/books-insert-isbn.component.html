@@ -1,0 +1,13 @@
+<form [formGroup]="isbnAddForm" (ngSubmit)="submitForm()">
+<label>Informe o número do ISBN
+    <span *ngIf="isbnAddForm.get('isbn')?.errors && isbnAddForm.get('isbn')?.touched" class="text-danger"><sup>*obrigatório</sup></span>
+</label>
+<input type="text" id="isbn" formControlName="isbn" maxlength=13 style="width: 400px;"  class="form-control border border-secondary isbn">
+<button class="btn btn-outline-primary mt-2" [disabled]="!isbnAddForm.valid">Cadastrar</button>
+<br>
+ISBN: <b>{{ isbnAddForm.get('isbn')?.value }}</b>
+
+<p>
+{{ isbnAddForm.get('isbn')?.errors | json }}</p>
+</form>
+{{ statusForm }}
