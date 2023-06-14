@@ -1,0 +1,12 @@
+<app-head></app-head>
+<app-navbar></app-navbar>
+<app-admin-menu></app-admin-menu>
+<div class="container">
+    <div class="row">
+        <div class="col-3 p-4" *ngFor="let Library of LibraryData; let i = index">
+            <img src="https://www.ufrgs.br/find/{{Library.lb_logo}}" class="img-fluid">
+            <br>{{Library.lb_name}}
+        </div>
+    </div>
+</div>
+<app-foot></app-foot>

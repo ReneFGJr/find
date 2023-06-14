@@ -20,6 +20,10 @@ import { AdminMenuComponent } from './admin/admin-menu/admin-menu.component';
 import { SocialsMenuComponent } from './socials/socials-menu/socials-menu.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BooksInsertIsbnComponent } from './form/books/books-insert-isbn/books-insert-isbn.component';
+import { HttpClientModule } from '@angular/common/http';
+import { IsbnComponent } from './data/isbn/isbn.component';
+import { IsbnApiService } from './service/Api/isbn-api.service';
+import { LibraryAdminComponent } from './admin/library-admin/library-admin.component';
 
 @NgModule({
   declarations: [
@@ -38,14 +42,17 @@ import { BooksInsertIsbnComponent } from './form/books/books-insert-isbn/books-i
     AdminMenuComponent,
     SocialsMenuComponent,
     BooksInsertIsbnComponent,
+    IsbnComponent,
+    LibraryAdminComponent,
   ],
   imports: [
     BrowserModule,
     NgbModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [HttpClientModule, IsbnApiService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
