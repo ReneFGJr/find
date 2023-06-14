@@ -24,6 +24,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { IsbnComponent } from './data/isbn/isbn.component';
 import { IsbnApiService } from './service/Api/isbn-api.service';
 import { LibraryAdminComponent } from './admin/library-admin/library-admin.component';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [
@@ -50,9 +51,9 @@ import { LibraryAdminComponent } from './admin/library-admin/library-admin.compo
     NgbModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
   ],
-  providers: [HttpClientModule, IsbnApiService],
+  providers: [HttpClientModule, IsbnApiService, CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
