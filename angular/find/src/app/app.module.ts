@@ -25,6 +25,8 @@ import { IsbnComponent } from './data/isbn/isbn.component';
 import { IsbnApiService } from './service/Api/isbn-api.service';
 import { LibraryAdminComponent } from './admin/library-admin/library-admin.component';
 import { CookieService } from 'ngx-cookie-service';
+import { SocialsComponent } from './socials/socials.component';
+import { LoginComponent } from './socials/login/login.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +47,8 @@ import { CookieService } from 'ngx-cookie-service';
     BooksInsertIsbnComponent,
     IsbnComponent,
     LibraryAdminComponent,
+    SocialsComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
