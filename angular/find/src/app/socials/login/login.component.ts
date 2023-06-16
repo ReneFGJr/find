@@ -42,8 +42,10 @@ export class LoginComponent {
   showContactUs() {  alert("showContactUs"); }
 
   signIn() {
+    alert("HELLO");
     let user_login = this.userForm.get('user_login')?.value;
     let user_password = this.userForm.get('user_password')?.value;
+    alert(user_login + " "+ user_password);
     }
 
 

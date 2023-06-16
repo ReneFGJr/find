@@ -4,8 +4,21 @@
         <div class="face face-front">
             <div class="content">
                 <h2>{{label_social_message}} 1</h2>
-                <small>{{label_social_message_inf}}</small>
                 <h3 style="color: red;">{{erro}}</h3>
+                <div class="field-wrapper">
+                    <input type="text" formControlName="user_login" name="user_login" id="user_login" placeholder="{{label_user_login}}"
+                        value="{{user_login}}">
+                    <label>{{label_social_type_login}}</label>
+                </div>
+                <div class="field-wrapper">
+                    <input type="password" formControlName="user_password" id="user_password" placeholder="{{label_user_password}}"
+                        autocomplete="new-password">
+                    <label>{{label_social_type_password}}</label>
+                </div>
+                <div class="field-wrapper">
+                    <button (click)="signIn();">Login</button>
+                </div>
+
                 <span class="singin" onclick="showLogin()">{{label_return}}</span>
             </div>
         </div>
