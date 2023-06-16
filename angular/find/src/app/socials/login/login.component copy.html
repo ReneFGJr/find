@@ -1,0 +1,175 @@
+<div class="wrapper">
+    <div >
+        <!--- BOARD ----------------------------------------------->
+        <div class="face face-top class.face-top">
+            <div class="content">
+                <h2>{{label_social_message}}</h2>
+                <small>{{label_social_message_inf}}</small>
+                <h3 style="color: red;">' . $err . '</h3>
+
+                <span class="singin" onclick="showLogin()">{{label_return}}</span>
+            </div>
+        </div>
+        <!---- SIGN IN-------------------------------------------->
+        <div class="face face-front">
+            <div class="content">
+                <h2>{{label_social_sign_in}}</h2>
+                <form [formGroup]="userForm">
+                <div class="field-wrapper">
+                    <input type="text" formControlName="user_login" name="user_login" id="user_login" placeholder="{{label_user_login}}" value="{{user_login}}">
+					<label>{{label_social_type_login}}</label>
+				  </div>
+				  <div class="field-wrapper">
+					<input type="password" formControlName="user_password" id="user_password" placeholder="{{label_user_password}}" autocomplete="new-password">
+					<label>{{label_social_type_password}}</label>
+				  </div>
+				  <div class="field-wrapper">
+				    <button class="btn btn-primary" style="width: 100%;" (click)="signIn()">{{social_enter}}</button>
+                </div>
+                </form>
+                <span class="psw" (click)="showForgotPassword()">{{label_social_forgot_password}}</span>
+                <span class="signup" (click)="showSignup()">{{label_social_not_user}} ' .
+                    {{social_social_sign_up}}</span>
+                <span class="signup" (click)="showContactUs()">{{label_social_questions}}</span>
+            </div>
+        </div>
+
+        <!-- FORGOT --------------------------------------------->
+        <div class="face" [class.face-back]>
+            <div class="content">
+                <h2>{{label_social_forgot_password}}</h2>
+                <small>{{label_social_forgot_password_info}}</small>
+                <form onsubmit="event.preventDefault()">
+                    <div class="field-wrapper">
+                        <input type="text" name="email" id="email" placeholder="email">
+                        <label>e-mail</label>
+                    </div>
+                    <div class="field-wrapper">
+                        <button class="btn btn-primary" style="width: 100%;" onclick="action_ajax(\'forgout\');">' .
+                            {{social_enter}}</button>
+                    </div>
+                    <span class="singin" (click)="showLogin()">{{label_social_alread_user}} ' .
+                        {{social_social_sign_in}}</span>
+                </form>
+            </div>
+        </div>
+
+        <!-- SIGN UP -------------------------------------------->
+        <div class="face" [class.face-right]>
+            <div class="content">
+                <h2>{{label_social_sign_up}}</h2>
+                <div class="field-wrapper">
+                    <input type="text" id="signup_name" placeholder="name">
+                    <label>{{label_user_name}}</label>
+                </div>
+                <div class="field-wrapper">
+                    <input type="text" id="signup_email" placeholder="name">
+                    <label>{{label_signup_email}}</label>
+                </div>
+                <div class="field-wrapper">
+                    <input type="text" id="signup_institution" placeholder="name">
+                    <label>{{label_signup_institution}}</label>
+                </div>
+                <div class="field-wrapper">
+                    <button class="btn btn-primary" style="width: 100%;" onclick="action_ajax(\'signup\');">{{social_signup}}</button>
+                </div>
+                <span class="singin" onclick="showLogin()">{{label_social_alread_user}}{{social_social_sign_in}}</span>
+            </div>
+        </div>
+
+        <!-- Contact US ------------------------------------------>
+        <div class="face" [class.face-left]>
+            <div class="content">
+                <h2>{{label_social_contact_us}}</h2>
+                <form onsubmit="event.preventDefault()">
+                    <div class="field-wrapper">
+                        <input type="text" name="name" placeholder="name">
+                        <label>{{label_social_name}}</label>
+                    </div>
+                    <div class="field-wrapper">
+                        <input type="text" name="email" placeholder="email">
+                        <label>e-mail</label>
+                    </div>
+                    <div class="field-wrapper">
+                        <textarea placeholder="{{label_social_yourmessage}}" rows=3></textarea>
+                        <label>{{label_social_yourmessage}}</label>
+                    </div>
+                    <div class="field-wrapper">
+                        <input type="submit" onclick="showThankYou()">
+                    </div>
+                    <span class="singin" onclick="showLogin()">{{label_social_alread_user}} ' .
+                        {{social_social_sign_in}}</span>
+                </form>
+            </div>
+        </div>
+
+        <!-- Contact US ------------------------------------------>
+        <div class="face" [class.face-bottom]>
+            <div class="content">
+                <div id="board">
+                    <h2>{{label_conecting}}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script id="rendered-js">
+    let prism = document.querySelector(".rec-prism");
+
+    function await(ms) {
+        var start = new Date().getTime();
+        var end = start;
+        while (end < start + ms) {
+            end = new Date().getTime();
+        }
+    }
+
+    function ajax(cmd) {
+        var data = new FormData();
+        var url = "' . PATH . MODULE . '/social/ajax/" + cmd;
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("POST", url, false);
+        xhttp.send(data);
+
+        document.getElementById("board").innerHTML = xhttp.responseText;
+        console.log(this.responseText);
+    }
+
+    function showSignup() {
+        prism.style.transform = "translateZ(-100px) rotateY( -90deg)";
+    }
+    function showLogin() {
+        prism.style.transform = "translateZ(-100px)";
+    }
+    function showForgotPassword() {
+        prism.style.transform = "translateZ(-100px) rotateY( -180deg)";
+    }
+
+    function showSubscribe() {
+        prism.style.transform = "translateZ(-100px) rotateX( -90deg)";
+    }
+
+    function showContactUs() {
+        prism.style.transform = "translateZ(-100px) rotateY( 90deg)";
+    }
+
+    function showThankYou() {
+        prism.style.transform = "translateZ(-100px) rotateX( 90deg)";
+    }
+
+    function action_ajax($cmd) {
+        prism.style.transform = "translateZ(-100px) rotateX( 90deg)";
+        ajax($cmd);
+    }
+    //# sourceURL=pen.js
+    ';
+    if (strlen($err) > 0) {
+        $sx.= '
+            (function () {
+                await(500); showSubscribe();
+            })();
+        ';
+    }
+    </script>

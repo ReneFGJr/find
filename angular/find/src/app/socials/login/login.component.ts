@@ -1,37 +1,52 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SocialService } from '../../service/Api/social.service';
+import { trigger, state, style, animate, transition, keyframes } from '@angular/animations';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
+
 export class LoginComponent {
+  public rec_prism = "color: red";
+  public condition:number = 1;
+  public erro = "OK";
 
   constructor(private fb: FormBuilder, private SocialService:SocialService) {
   }
 
   public user: Array<string> = [];
+  user_password = 'xx';
 
   ngOnInit() { }
 
   public userForm: FormGroup = this.fb.group(
     {
-      user_login: ['',[Validators.required, Validators.minLength(2), Validators.maxLength(30)]]
+      user_login: ['',[Validators.required, Validators.minLength(2), Validators.maxLength(30)]],
+      user_password: ['',[Validators.required, Validators.minLength(2), Validators.maxLength(30)]]
     }
   )
 
-  showLogin() { }
-  showSignup() { }
-  showForgotPassword() { }
-  showSubscribe() { }
-  showContactUs() { }
+  showLogin() {
+          alert("Login");
+           }
+  showSignup() { alert("showSignup"); }
+  showForgotPassword()
+    {
+      //this.rec_prism = "translateZ(-200px) rotateY( -180deg)";
+      this.rec_prism = "translateZ(-200px) rotateY( -180deg)";
+    }
+  showSubscribe() {  alert("showSubscribe"); }
+  showContactUs() {  alert("showContactUs"); }
 
   signIn() {
-    alert(this.user_login);
-    alert("LOGIN");
+    let user_login = this.userForm.get('user_login')?.value;
+    let user_password = this.userForm.get('user_password')?.value;
     }
+
+
 
   public label_user_login='Login';
   public user_login='';

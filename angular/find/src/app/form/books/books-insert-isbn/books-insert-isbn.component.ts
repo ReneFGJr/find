@@ -16,7 +16,9 @@ export class BooksInsertIsbnComponent {
   public statusForm = '';
   public isbnAddForm: FormGroup = this.fb.group(
     {
-      isbn: ['',[Validators.required, Validators.minLength(10), Validators.maxLength(13)]]
+      isbn: ['',[Validators.required, Validators.minLength(10), Validators.maxLength(13)]],
+      nrpat: [''],
+      autoNumber: ['1']
     }
   )
 
