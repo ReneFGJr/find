@@ -9,3 +9,6 @@ import { ReactiveFormsModule } from '@angular/forms';
   ],
 
 ng g c forms/books/
+
+----------------------------
+npm install ngx-cookie-service --save
