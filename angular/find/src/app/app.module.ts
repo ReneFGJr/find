@@ -26,7 +26,10 @@ import { IsbnApiService } from './service/Api/isbn-api.service';
 import { LibraryAdminComponent } from './admin/library-admin/library-admin.component';
 import { CookieService } from 'ngx-cookie-service';
 import { SocialsComponent } from './socials/socials.component';
-import { LoginComponent } from './socials/login/login.component';
+import { ForgetComponent } from './socials/forget/forget.component';
+import { SingupComponent } from './socials/singup/singup.component';
+import { SinginComponent } from './socials/singin/singin.component';
+import { LocalStorageService } from './local-storage.service';
 
 @NgModule({
   declarations: [
@@ -48,7 +51,9 @@ import { LoginComponent } from './socials/login/login.component';
     IsbnComponent,
     LibraryAdminComponent,
     SocialsComponent,
-    LoginComponent,
+    ForgetComponent,
+    SingupComponent,
+    SinginComponent,
   ],
   imports: [
     BrowserModule,
@@ -57,7 +62,7 @@ import { LoginComponent } from './socials/login/login.component';
     ReactiveFormsModule,
     HttpClientModule,
   ],
-  providers: [HttpClientModule, IsbnApiService, CookieService],
+  providers: [HttpClientModule, IsbnApiService, CookieService, LocalStorageService, ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

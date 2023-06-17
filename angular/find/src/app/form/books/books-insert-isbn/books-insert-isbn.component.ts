@@ -40,8 +40,6 @@ export class BooksInsertIsbnComponent {
             } else {
               this.statusForm = 'Número do ISBN Inválido';
             }
-
-
         },
         (error)=>{
           console.log(error);
@@ -54,7 +52,5 @@ export class BooksInsertIsbnComponent {
 
     }
 
-  constructor(private fb: FormBuilder, private IsbnApiService:IsbnApiService) {
-
-  }
+  constructor(private fb: FormBuilder, private IsbnApiService:IsbnApiService) {}
 }
