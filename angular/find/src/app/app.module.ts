@@ -23,13 +23,15 @@ import { BooksInsertIsbnComponent } from './form/books/books-insert-isbn/books-i
 import { HttpClientModule } from '@angular/common/http';
 import { IsbnComponent } from './data/isbn/isbn.component';
 import { IsbnApiService } from './service/Api/isbn-api.service';
-import { LibraryAdminComponent } from './admin/library-admin/library-admin.component';
 import { CookieService } from 'ngx-cookie-service';
 import { SocialsComponent } from './socials/socials.component';
 import { ForgetComponent } from './socials/forget/forget.component';
 import { SingupComponent } from './socials/singup/singup.component';
 import { SinginComponent } from './socials/singin/singin.component';
 import { LocalStorageService } from './local-storage.service';
+import { LibraryComponent } from './find/library/library.component';
+import { SelectComponent } from './find/library/select/select.component';
+import { SelectedComponent } from './find/library/selected/selected.component';
 
 @NgModule({
   declarations: [
@@ -49,11 +51,13 @@ import { LocalStorageService } from './local-storage.service';
     SocialsMenuComponent,
     BooksInsertIsbnComponent,
     IsbnComponent,
-    LibraryAdminComponent,
     SocialsComponent,
     ForgetComponent,
     SingupComponent,
     SinginComponent,
+    LibraryComponent,
+    SelectComponent,
+    SelectedComponent,
   ],
   imports: [
     BrowserModule,

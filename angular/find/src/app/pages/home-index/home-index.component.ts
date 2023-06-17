@@ -14,10 +14,9 @@ export class HomeIndexComponent {
 
   public ngOnInit(): void
     {
-      if (this.CookieService.check('library'))
+    if (this.CookieService.check('lib-sel'))
         {
-          this.CookieService.set('library','1');
-          console.log(this.CookieService.getAll());
+          console.log('====COOKIE===='+this.CookieService.getAll());
         } else {
 
         }
