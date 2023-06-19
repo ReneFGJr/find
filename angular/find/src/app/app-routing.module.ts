@@ -7,7 +7,6 @@ import { BookShowComponent } from './base/book-show/book-show.component';
 import { SocialsComponent } from './socials/socials.component';
 import { BooksInsertIsbnComponent } from './form/books/books-insert-isbn/books-insert-isbn.component';
 import { SinginComponent } from './socials/singin/singin.component';
-import { authGuard } from './socials/auth.guard';
 import { libraryGuard } from './find/library.guard';
 import { SingupComponent } from './socials/singup/singup.component';
 import { LibraryComponent } from './find/library/library.component';
@@ -17,6 +16,16 @@ import { SelectedComponent } from './find/library/selected/selected.component';
 const routes: Routes = [
   { path: 'library', component: SelectComponent },
   { path: 'library/:id', component: SelectedComponent},
+
+  /****************************************** LOGIN */
+  {
+    path: 'social', component: SocialsComponent,
+    children:
+      [
+        { path: '', component: SinginComponent },
+        { path: 'signup', component: SingupComponent },
+      ]
+  },
 
 
   /*************************************************** HOME */
@@ -52,7 +61,6 @@ const rela =[
         { path: 'add', component: BooksInsertIsbnComponent },
         { path: '**', redirectTo: 'signIn', pathMatch: 'full' },
       ],
-    canActivate: [authGuard]
   },
   /****************************************** BIBLIOTECA */
   {
@@ -66,15 +74,7 @@ const rela =[
     canActivate: [libraryGuard]
   },
 
-  /****************************************** LOGIN */
-  {
-    path: 'social', component: SocialsComponent,
-    children:
-      [
-        { path: '', component: SinginComponent },
-        { path: 'signup', component: SingupComponent },
-      ]
-  },
+
   /****************************************** ERRO DE PAGINA */
   { path: '**', component: Error404Component },
 ];

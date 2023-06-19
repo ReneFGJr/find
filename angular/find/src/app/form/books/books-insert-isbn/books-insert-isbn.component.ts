@@ -11,7 +11,7 @@ export class BooksInsertIsbnComponent {
 
   public dataIsbn: Array<string> = [];
 
-  ngOnInit() { }
+  ngOnInit(): void { }
 
   public statusForm = '';
   public isbnAddForm: FormGroup = this.fb.group(
