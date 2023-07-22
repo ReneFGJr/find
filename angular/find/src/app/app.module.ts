@@ -1,37 +1,20 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { HeadComponent } from './headers/head/head.component';
-import { FootComponent } from './headers/foot/foot.component';
-import { NavbarComponent } from './headers/navbar/navbar.component';
-import { BookItemComponent } from './base/book-item/book-item.component';
-import { BookShowComponent } from './base/book-show/book-show.component';
-import { ColorComponent } from './base/classification/color/color.component';
-import { CddComponent } from './base/classification/cdd/cdd.component';
-import { CduComponent } from './base/classification/cdu/cdu.component';
-import { AppRoutingModule } from './app-routing.module';
-import { IndexComponent } from './admin/index/index.component';
-import { Error404Component } from './pages/error404/error404.component';
-import { HomeIndexComponent } from './pages/home-index/home-index.component';
-import { AdminMenuComponent } from './admin/admin-menu/admin-menu.component';
-import { SocialsMenuComponent } from './socials/socials-menu/socials-menu.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { BooksInsertIsbnComponent } from './form/books/books-insert-isbn/books-insert-isbn.component';
-import { HttpClientModule } from '@angular/common/http';
-import { IsbnComponent } from './data/isbn/isbn.component';
-import { IsbnApiService } from './service/Api/isbn-api.service';
-import { CookieService } from 'ngx-cookie-service';
-import { SocialsComponent } from './socials/socials.component';
-import { ForgetComponent } from './socials/forget/forget.component';
-import { SingupComponent } from './socials/singup/singup.component';
-import { SinginComponent } from './socials/singin/singin.component';
-import { LocalStorageService } from './local-storage.service';
-import { LibraryComponent } from './find/library/library.component';
-import { SelectComponent } from './find/library/select/select.component';
-import { SelectedComponent } from './find/library/selected/selected.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { HeadComponent } from './000_core/header/head/head.component';
+import { FootComponent } from './000_core/header/foot/foot.component';
+import { NavbarComponent } from './000_core/header/navbar/navbar.component';
+import { WelcomeComponent } from './000_core/page/welcome/welcome.component';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { LibrariesComponent } from './000_core/page/libraries/libraries.component';
+import { MainFindComponent } from './000_core/page/main/main.component';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { VitrineComponent } from './000_core/page/vitrine/vitrine.component';
+import { BookComponent } from './000_core/page/book/book.component';
 
 @NgModule({
   declarations: [
@@ -39,34 +22,21 @@ import { SelectedComponent } from './find/library/selected/selected.component';
     HeadComponent,
     FootComponent,
     NavbarComponent,
-    BookItemComponent,
-    BookShowComponent,
-    ColorComponent,
-    CddComponent,
-    CduComponent,
-    IndexComponent,
-    Error404Component,
-    HomeIndexComponent,
-    AdminMenuComponent,
-    SocialsMenuComponent,
-    BooksInsertIsbnComponent,
-    IsbnComponent,
-    SocialsComponent,
-    ForgetComponent,
-    SingupComponent,
-    SinginComponent,
-    LibraryComponent,
-    SelectComponent,
-    SelectedComponent,
-  ],
+    WelcomeComponent,
+    LibrariesComponent,
+    MainFindComponent,
+    VitrineComponent,
+    BookComponent,
+    ],
   imports: [
     BrowserModule,
-    NgbModule,
     AppRoutingModule,
-    ReactiveFormsModule,
-    HttpClientModule,
+    NgbModule,
+    BrowserAnimationsModule,
+    RouterModule,
+    HttpClientModule
   ],
-  providers: [HttpClientModule, IsbnApiService, CookieService, LocalStorageService, ],
+  providers: [HttpClient],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

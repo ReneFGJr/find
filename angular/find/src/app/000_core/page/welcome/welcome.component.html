@@ -1,0 +1,10 @@
+<div class="container mt-5 mb-5">
+  <div class="row">
+    <!-- Vitrine -->
+    <app-find-vitrine *ngIf="bookRow" [books]="bookRow"></app-find-vitrine>
+    <!-- Vitrine Vazia -->
+    <div *ngIf="!bookRow" class="alert alert-secondary col-12" role="alert">
+      Nenhuma obra inserida no catálogo da biblioteca
+    </div>
+  </div>
+</div>
