@@ -50,6 +50,26 @@ export class FindService {
     }
   }
 
+  public validISBN(isbn:string): Observable<Array<any>> {
+    let url = `${this.url}isbn/`+isbn;
+    var formData: any = new FormData();
+
+    return this.HttpClient.post<Array<any>>(url, formData).pipe(
+      res => res,
+      error => error
+    );
+  }
+
+  public getISBN(isbn: string): Observable<Array<any>> {
+    let url = `${this.url}find/getISBN/` + isbn;
+    var formData: any = new FormData();
+
+    return this.HttpClient.post<Array<any>>(url, formData).pipe(
+      res => res,
+      error => error
+    );
+  }
+
   /******************************************************************** */
   public libraries(): Observable<Array<any>> {
     let url = `${this.url}find/libraries/all`;
