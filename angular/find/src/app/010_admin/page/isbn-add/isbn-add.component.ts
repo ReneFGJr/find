@@ -38,9 +38,10 @@ export class IsbnAddComponent {
               if (this.book.valid)
                 {
                   this.valid = true;
-                  this.findService.validISBN(isbn).subscribe(
+                  this.findService.addISBN(isbn).subscribe(
                     res=>{
                       this.book = res
+                      console.log(res)
                       this.isbn = this.book.isbn13
                     }
                   )

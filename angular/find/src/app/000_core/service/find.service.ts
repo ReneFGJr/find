@@ -14,8 +14,8 @@ export class FindService {
     private CookieService: CookieService,
   ) { }
 
-  //private url: string = 'https://cip.brapci.inf.br/api/';
-  private url: string = 'http://brp/api/';
+  private url: string = 'https://cip.brapci.inf.br/api/';
+  //private url: string = 'http://brp/api/';
 
   /******************************************************************** */
   public vitrine() {
@@ -61,8 +61,22 @@ export class FindService {
   }
 
   public getISBN(isbn: string): Observable<Array<any>> {
-    let url = `${this.url}find/getISBN/` + isbn;
+    let url = `${this.url}isbn/` + isbn;
     var formData: any = new FormData();
+
+    return this.HttpClient.post<Array<any>>(url, formData).pipe(
+      res => res,
+      error => error
+    );
+  }
+
+  public addISBN(isbn: string): Observable<Array<any>> {
+    let url = `${this.url}find/isbn/` + isbn+'/add';
+    console.log(url);
+    var formData: any = new FormData();
+
+    formData.append('library', '1');
+    formData.append('apikey', 'ff63a314d1ddd425517550f446e4175e');
 
     return this.HttpClient.post<Array<any>>(url, formData).pipe(
       res => res,

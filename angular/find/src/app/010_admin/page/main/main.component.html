@@ -1,7 +1,12 @@
-<ul class="mt-2">
-    <li>
-        <a [routerLink]="['/admin/isbn/add']">ADD ISBN</a>
-    </li>
-</ul>
-
-<router-outlet></router-outlet>
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <ul class="mt-2">
+        <li>
+          <a [routerLink]="['/admin/isbn/add']">ADD ISBN</a>
+        </li>
+      </ul>
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
