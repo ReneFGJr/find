@@ -21,6 +21,7 @@ import { BookComponent } from './000_core/page/book/book.component';
 
 import { MainAdminComponent } from './010_admin/page/main/main.component';
 import { IsbnAddComponent } from './010_admin/page/isbn-add/isbn-add.component';
+import { PreviewComponent } from './010_admin/page/preview/preview.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { IsbnAddComponent } from './010_admin/page/isbn-add/isbn-add.component';
     BookComponent,
     MainAdminComponent,
     IsbnAddComponent,
+    PreviewComponent,
     ],
   imports: [
     BrowserModule,

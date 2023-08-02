@@ -1,0 +1,23 @@
+XXXXXXXXXXXXX
+<div *ngIf="book">
+
+<img [src]="book.be_cover" class="" style="width: 100px;">
+<h1>{{book.bk_title}}</h1>
+
+<ul>
+<li *ngFor="let item of book.data">
+  {{ item.c_class }}: <b>{{ item.n_name }}</b>
+</li>
+</ul>
+
+<span>Ano: <b>{{book.be_year}}</b></span>
+{{ book | json }}
+
+
+
+<ul>
+<li *ngFor="let item of book.data">
+  {{ item.c_class }}: <b>{{ item.n_name }}</b>
+</li>
+</ul>
+</div>
