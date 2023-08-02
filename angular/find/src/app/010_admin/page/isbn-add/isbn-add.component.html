@@ -1,6 +1,6 @@
 <div class="container">
   <div class="row">
-    <div class="col-3">
+    <div class="col-12 col-lg-3">
       <form [formGroup]="isbnForm" class="mt-3" (ngSubmit)="submitISBN()">
         <label for="first-name">Informe o ISBN da obra: </label>
         <br />
@@ -13,7 +13,8 @@
         />
 
         <br />
-        <button class="btn btn-outline-primary">Inserir >></button>
+        <button class="btn btn-outline-primary me-2">Inserir >></button>
+        <button class="btn btn-outline-primary " (click)="limpar_isbn()">limpar</button>
         <br />
         <br />
         <span class="text-danger">{{ message }}</span>
@@ -21,7 +22,7 @@
       <h1>{{ isbn }}</h1>
     </div>
 
-    <div class="col-9">
+    <div class="col-12 col-lg-9">
     <app-preview *ngIf="book" [book]="book"></app-preview>
     </div>
   </div>

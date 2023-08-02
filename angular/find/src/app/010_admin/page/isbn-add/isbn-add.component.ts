@@ -21,6 +21,16 @@ export class IsbnAddComponent {
     isbn: new FormControl('', Validators.required),
   });
 
+  limpar_isbn()
+    {
+    this.isbnForm = new FormGroup({
+      isbn: new FormControl('', Validators.required),
+    });
+    this.book = null;
+    this.isbn = '';
+    this.valid = false;
+    }
+
   submitISBN()
     {
 
@@ -43,6 +53,7 @@ export class IsbnAddComponent {
                       this.book = res
                       console.log(res)
                       this.isbn = this.book.isbn13
+                      this.isbnForm.value.isbn = ''
                     }
                   )
                 } else {

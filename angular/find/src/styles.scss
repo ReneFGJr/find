@@ -62,3 +62,15 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.edit, .edit a
+  {
+    color: red;
+    cursor: pointer;
+  }
+
+.cancel,
+.cancel a {
+  color: rgb(158, 105, 8);
+  cursor: pointer;
+}

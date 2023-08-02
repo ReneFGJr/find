@@ -1,23 +1,36 @@
 XXXXXXXXXXXXX
-<div *ngIf="book">
+<div *ngIf="book" class="container">
+  <div class="row">
+    <div class="col-12 col-sm-8">
+      <div *ngIf="edit_title === false">
+      <h1 class="p-0 m-0">{{book.bk_title}}</h1>
+      <span class="small edit" (click)="edit('title')">editar</span>
+      </div>
 
-<img [src]="book.be_cover" class="" style="width: 100px;">
-<h1>{{book.bk_title}}</h1>
+      <div *ngIf="edit_title == true">
+        <textarea class="form-control border border-secondary" style="height: 130px; font-size: 1.6em;">{{book.bk_title}}</textarea>
+        <span class="small edit me-2" (click)="save('title')">salvar</span>
+        <span class="small cancel me-2" (click)="cancel('title')">cancelar</span>
+      </div>
 
-<ul>
-<li *ngFor="let item of book.data">
-  {{ item.c_class }}: <b>{{ item.n_name }}</b>
-</li>
-</ul>
+      <ul>
+        <li *ngFor="let item of book.be_authors">
+          {{ item.c_class }}: <b>{{ item.n_name }}</b>
+        </li>
+      </ul>
 
-<span>Ano: <b>{{book.be_year}}</b></span>
-{{ book | json }}
+      <span>Ano: <b>{{book.be_year}}</b></span>
+      {{ book | json }}
 
+      <ul>
+        <li *ngFor="let item of book.data">
+          {{ item.c_class }}: <b>{{ item.n_name }}</b>
+        </li>
+      </ul>
 
-
-<ul>
-<li *ngFor="let item of book.data">
-  {{ item.c_class }}: <b>{{ item.n_name }}</b>
-</li>
-</ul>
+    </div>
+    <div class="col-12 col-sm-4">
+      <img [src]="book.be_cover" class="img-fluid float-end rounded" style="width:200px;">
+    </div>
+  </div>
 </div>
