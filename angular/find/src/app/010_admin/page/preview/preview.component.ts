@@ -11,11 +11,13 @@ export class PreviewComponent {
 
   constructor(
     private findService: FindService,
-    private router: Router
+    private router: Router,
   ) { }
 
 
   edit_title:boolean = false;
+  bk_title: string = '';
+  isbn: string = '';
   @Input() public book:Array<any>|any
 
   edit(field:string)
@@ -29,8 +31,8 @@ export class PreviewComponent {
   save(field: string) {
     if (field == 'title') {
       this.edit_title = false;
-      alert(this.book.bk_title);
-      this.findService.saveData(this.book.isbn, 'bk_title', this.book.bk_title).subscribe(
+      alert(this.bk_title);
+      this.findService.saveData(this.book.isbn, 'bk_title', this.bk_title).subscribe(
         res=>
           {
             this.book = res;

@@ -27,13 +27,11 @@ export class IsbnAddComponent {
 
   limpar_isbn()
     {
-      alert("Voltar")
     this.router.navigate(["/admin/isbn/add"]);
     }
 
   submitISBN()
     {
-      alert(this.isbnForm.valid);
       if (this.isbnForm.valid)
         {
           this.message = '';

@@ -8,7 +8,7 @@ XXXXXXXXXXXXX
       </div>
 
       <div *ngIf="edit_title == true">
-        <textarea class="form-control border border-secondary" style="height: 130px; font-size: 1.6em;">{{book.bk_title}}</textarea>
+        <textarea id="title" name="title" class="form-control border border-secondary" style="height: 130px; font-size: 1.6em;">{{book.bk_title}}</textarea>
         <span class="small edit me-2" (click)="save('title')">salvar</span>
         <span class="small cancel me-2" (click)="cancel('title')">cancelar</span>
       </div>
