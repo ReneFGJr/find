@@ -1,5 +1,6 @@
-XXXXXXXXXXXXX
-<div *ngIf="book" class="container">
+<div *ngIf="!book.be_isbn13">Loading...</div>
+
+<div *ngIf="book.be_isbn13" class="container mt-2">
   <div class="row">
     <div class="col-12 col-sm-8">
       <div *ngIf="edit_title === false">
@@ -13,21 +14,19 @@ XXXXXXXXXXXXX
         <span class="small cancel me-2" (click)="cancel('title')">cancelar</span>
       </div>
 
-      ISBN> {{ book.be_isbn13 }}
+      ISBN: {{ book.be_isbn13 }} - {{ book.be_isbn10 }}
       <hr>
-      {{ book.be_authors }}
+      <h3>Autor(es):</h3>
       <ul>
         <li *ngFor="let item of book.authors">
-          {{ item.c_class }}: <b>{{ item.n_name }}</b>
+          {{ item.n_name }}
         </li>
       </ul>
 
-      <span>Ano: <b>{{book.be_year}}</b></span>
-      {{ book | json }}
-
+      <h3>Descritor(es):</h3>
       <ul>
         <li *ngFor="let item of book.data">
-          {{ item.c_class }}: <b>{{ item.n_name }}</b>
+          <b>{{ item.c_class }}</b>: {{ item.n_name }}
         </li>
       </ul>
 
