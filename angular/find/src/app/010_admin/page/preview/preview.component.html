@@ -13,8 +13,11 @@ XXXXXXXXXXXXX
         <span class="small cancel me-2" (click)="cancel('title')">cancelar</span>
       </div>
 
+      ISBN> {{ book.be_isbn13 }}
+      <hr>
+      {{ book.be_authors }}
       <ul>
-        <li *ngFor="let item of book.be_authors">
+        <li *ngFor="let item of book.authors">
           {{ item.c_class }}: <b>{{ item.n_name }}</b>
         </li>
       </ul>
@@ -30,7 +33,7 @@ XXXXXXXXXXXXX
 
     </div>
     <div class="col-12 col-sm-4">
-      <img [src]="book.be_cover" class="img-fluid float-end rounded" style="width:200px;">
+      <img [src]="book.be_cover" class="img-fluid float-end rounded cover" style="width:200px;">
     </div>
   </div>
 </div>

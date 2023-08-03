@@ -40,7 +40,7 @@ export class FindService {
   }
 
   public getLibrary(): string {
-
+    console.log('getLibrary');
     if (this.CookieService.check('library')) {
       let lib = this.CookieService.get('library');
       console.log('=lib==>', lib)
@@ -53,7 +53,7 @@ export class FindService {
   public validISBN(isbn:string): Observable<Array<any>> {
     let url = `${this.url}isbn/`+isbn;
     var formData: any = new FormData();
-
+    console.log('validSBN' + url);
     return this.HttpClient.post<Array<any>>(url, formData).pipe(
       res => res,
       error => error
@@ -61,9 +61,10 @@ export class FindService {
   }
 
   public getISBN(isbn: string): Observable<Array<any>> {
+    if (isbn == '') { isbn = 'ERROR'; }
     let url = `${this.url}isbn/` + isbn;
     var formData: any = new FormData();
-
+    console.log('getISBN' + url);
     return this.HttpClient.post<Array<any>>(url, formData).pipe(
       res => res,
       error => error
@@ -71,12 +72,32 @@ export class FindService {
   }
 
   public addISBN(isbn: string): Observable<Array<any>> {
+    alert(isbn)
     let url = `${this.url}find/isbn/` + isbn+'/add';
-    console.log(url);
+    console.log('addISBN'+url);
     var formData: any = new FormData();
 
     formData.append('library', '1');
     formData.append('apikey', 'ff63a314d1ddd425517550f446e4175e');
+
+    return this.HttpClient.post<Array<any>>(url, formData).pipe(
+      res => res,
+      error => error
+    );
+  }
+
+  public saveData(isbn: string, field: string, value: string): Observable<Array<any>> {
+    alert("+++"+isbn)
+    let url = `${this.url}find/saveField/`;
+    console.log('addISBN' + url);
+    var formData: any = new FormData();
+
+    formData.append('library', '1');
+    formData.append('apikey', 'ff63a314d1ddd425517550f446e4175e');
+
+    formData.append('item', );
+    formData.append('field', field);
+    formData.append('value', value);
 
     return this.HttpClient.post<Array<any>>(url, formData).pipe(
       res => res,

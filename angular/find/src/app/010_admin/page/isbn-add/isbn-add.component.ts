@@ -1,6 +1,7 @@
 import { FindService } from './../../../000_core/service/find.service';
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-isbn-add',
@@ -9,7 +10,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class IsbnAddComponent {
 
-  constructor(private findService:FindService) {}
+  constructor(
+      private findService:FindService,
+      private router: Router
+      ) {}
 
   name = new FormControl('');
   message: string = '';
@@ -23,23 +27,19 @@ export class IsbnAddComponent {
 
   limpar_isbn()
     {
-    this.isbnForm = new FormGroup({
-      isbn: new FormControl('', Validators.required),
-    });
-    this.book = null;
-    this.isbn = '';
-    this.valid = false;
+      alert("Voltar")
+    this.router.navigate(["/admin/isbn/add"]);
     }
 
   submitISBN()
     {
-
+      alert(this.isbnForm.valid);
       if (this.isbnForm.valid)
         {
           this.message = '';
           let isbn = this.isbnForm.value.isbn!
 
-          console.log(isbn);
+          console.log('*********'+isbn);
           this.findService.validISBN(isbn).subscribe(
           res=>
             {
@@ -53,7 +53,6 @@ export class IsbnAddComponent {
                       this.book = res
                       console.log(res)
                       this.isbn = this.book.isbn13
-                      this.isbnForm.value.isbn = ''
                     }
                   )
                 } else {
