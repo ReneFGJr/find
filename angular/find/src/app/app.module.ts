@@ -22,6 +22,9 @@ import { BookComponent } from './000_core/page/book/book.component';
 import { MainAdminComponent } from './010_admin/page/main/main.component';
 import { IsbnAddComponent } from './010_admin/page/isbn-add/isbn-add.component';
 import { PreviewComponent } from './010_admin/page/preview/preview.component';
+import { ClassificationColorComponent } from './000_core/gadget/classification-color/classification-color.component';
+import { ClassificationCddComponent } from './000_core/gadget/classification-cdd/classification-cdd.component';
+import { ClassificationCduComponent } from './000_core/gadget/classification-cdu/classification-cdu.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +40,9 @@ import { PreviewComponent } from './010_admin/page/preview/preview.component';
     MainAdminComponent,
     IsbnAddComponent,
     PreviewComponent,
+    ClassificationColorComponent,
+    ClassificationCddComponent,
+    ClassificationCduComponent,
     ],
   imports: [
     BrowserModule,

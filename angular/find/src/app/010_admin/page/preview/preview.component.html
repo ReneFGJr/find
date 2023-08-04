@@ -4,12 +4,13 @@
   <div class="row">
     <div class="col-12 col-sm-8">
       <div *ngIf="edit_title === false">
-      <h1 class="p-0 m-0">{{book.bk_title}}</h1>
-      <span class="small edit" (click)="edit('title')">editar</span>
+        <h1 class="p-0 m-0">{{book.bk_title}}</h1>
+        <span class="small edit" (click)="edit('title')">editar</span>
       </div>
 
       <div *ngIf="edit_title == true">
-        <textarea id="title" name="title" class="form-control border border-secondary" style="height: 130px; font-size: 1.6em;">{{book.bk_title}}</textarea>
+        <textarea id="title" name="title" class="form-control border border-secondary"
+          style="height: 130px; font-size: 1.6em;">{{book.bk_title}}</textarea>
         <span class="small edit me-2" (click)="save('title')">salvar</span>
         <span class="small cancel me-2" (click)="cancel('title')">cancelar</span>
       </div>
@@ -33,6 +34,22 @@
     </div>
     <div class="col-12 col-sm-4">
       <img [src]="book.be_cover" class="img-fluid float-end rounded cover" style="width:200px;">
+    </div>
+  </div>
+</div>
+
+<div *ngIf="book.be_isbn13" class="container mt-2">
+  <div class="row">
+    <div class="col-12 col-sm-4">
+      <app-classification-color></app-classification-color>
+    </div>
+
+    <div class="col-12 col-sm-4">
+      <app-classification-cdd></app-classification-cdd>
+    </div>
+
+    <div class="col-12 col-sm-4">
+      <app-classification-cdu></app-classification-cdu>
     </div>
   </div>
 </div>
