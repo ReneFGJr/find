@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./classification-color.component.scss']
 })
 export class ClassificationColorComponent {
-
+  public cutter:string = ''
 }

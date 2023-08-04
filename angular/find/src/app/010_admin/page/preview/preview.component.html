@@ -38,6 +38,12 @@
   </div>
 </div>
 
+<div *ngIf="book.be_isbn13">
+<app-subject></app-subject>
+<app-subject-thesa></app-subject-thesa>
+<app-subject-skos></app-subject-skos>
+</div>
+
 <div *ngIf="book.be_isbn13" class="container mt-2">
   <div class="row">
     <div class="col-12 col-sm-4">

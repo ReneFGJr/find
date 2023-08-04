@@ -25,6 +25,9 @@ import { PreviewComponent } from './010_admin/page/preview/preview.component';
 import { ClassificationColorComponent } from './000_core/gadget/classification-color/classification-color.component';
 import { ClassificationCddComponent } from './000_core/gadget/classification-cdd/classification-cdd.component';
 import { ClassificationCduComponent } from './000_core/gadget/classification-cdu/classification-cdu.component';
+import { SubjectComponent } from './000_core/gadget/subject/subject.component';
+import { SubjectThesaComponent } from './000_core/gadget/subject-thesa/subject-thesa.component';
+import { SubjectSkosComponent } from './000_core/gadget/subject-skos/subject-skos.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +46,9 @@ import { ClassificationCduComponent } from './000_core/gadget/classification-cdu
     ClassificationColorComponent,
     ClassificationCddComponent,
     ClassificationCduComponent,
+    SubjectComponent,
+    SubjectThesaComponent,
+    SubjectSkosComponent,
     ],
   imports: [
     BrowserModule,
