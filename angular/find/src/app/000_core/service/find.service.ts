@@ -73,7 +73,7 @@ export class FindService {
 
   public addISBN(isbn: string): Observable<Array<any>> {
     let url = `${this.url}find/isbn/` + isbn+'/add';
-    console.log('addISBN'+url);
+    console.log(url);
     var formData: any = new FormData();
 
     formData.append('library', '1');

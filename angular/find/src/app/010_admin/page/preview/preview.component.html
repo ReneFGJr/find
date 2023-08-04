@@ -57,5 +57,9 @@
     <div class="col-12 col-sm-4">
       <app-classification-cdu></app-classification-cdu>
     </div>
+
+    <div class="col-12" *ngIf="book.be_isbn13">
+      <app-item-list-isbn [isbn]="book.be_isbn13"></app-item-list-isbn>
+    </div>
   </div>
 </div>

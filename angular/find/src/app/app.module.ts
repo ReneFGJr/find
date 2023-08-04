@@ -28,6 +28,8 @@ import { ClassificationCduComponent } from './000_core/gadget/classification-cdu
 import { SubjectComponent } from './000_core/gadget/subject/subject.component';
 import { SubjectThesaComponent } from './000_core/gadget/subject-thesa/subject-thesa.component';
 import { SubjectSkosComponent } from './000_core/gadget/subject-skos/subject-skos.component';
+import { ItemAddIsbnComponent } from './000_core/page/item-add-isbn/item-add-isbn.component';
+import { ItemListIsbnComponent } from './000_core/page/item-list-isbn/item-list-isbn.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +51,8 @@ import { SubjectSkosComponent } from './000_core/gadget/subject-skos/subject-sko
     SubjectComponent,
     SubjectThesaComponent,
     SubjectSkosComponent,
+    ItemAddIsbnComponent,
+    ItemListIsbnComponent,
     ],
   imports: [
     BrowserModule,
