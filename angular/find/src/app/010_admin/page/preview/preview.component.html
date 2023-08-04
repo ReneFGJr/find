@@ -60,6 +60,7 @@
 
     <div class="col-12" *ngIf="book.be_isbn13">
       <app-item-list-isbn [isbn]="book.be_isbn13"></app-item-list-isbn>
+      <app-item-add-isbn  [isbn]="book.be_isbn13" [book]="book"></app-item-add-isbn>
     </div>
   </div>
 </div>
