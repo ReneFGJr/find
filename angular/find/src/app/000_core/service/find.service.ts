@@ -18,6 +18,22 @@ export class FindService {
   //private url: string = 'http://brp/api/';
 
   /******************************************************************** */
+  public saveCover(isbn:string,file:string)
+    {
+        let url = `${this.url}find/cover/` + isbn + '/upload';
+        console.log(url);
+        var formData: any = new FormData();
+
+        formData.append('library', '1');
+        formData.append('apikey', 'ff63a314d1ddd425517550f446e4175e');
+        formData.append('data', file);
+
+        return this.HttpClient.post<Array<any>>(url, formData).pipe(
+          res => res,
+          error => error
+        );
+    }
+  /******************************************************************** */
   public vitrine() {
     let lib = this.getLibrary();
     //if (lib !== '0')

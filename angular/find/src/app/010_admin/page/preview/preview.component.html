@@ -34,6 +34,9 @@
     </div>
     <div class="col-12 col-sm-4">
       <img [src]="book.be_cover" class="img-fluid float-end rounded cover" style="width:200px;">
+      <div>
+        <app-upload-image [isbn]="book.be_isbn13"></app-upload-image>
+      </div>
     </div>
   </div>
 </div>

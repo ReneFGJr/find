@@ -30,6 +30,7 @@ import { SubjectThesaComponent } from './000_core/gadget/subject-thesa/subject-t
 import { SubjectSkosComponent } from './000_core/gadget/subject-skos/subject-skos.component';
 import { ItemAddIsbnComponent } from './000_core/page/item-add-isbn/item-add-isbn.component';
 import { ItemListIsbnComponent } from './000_core/page/item-list-isbn/item-list-isbn.component';
+import { UploadImageComponent } from './000_core/gadget/upload-image/upload-image.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { ItemListIsbnComponent } from './000_core/page/item-list-isbn/item-list-
     SubjectSkosComponent,
     ItemAddIsbnComponent,
     ItemListIsbnComponent,
+    UploadImageComponent,
     ],
   imports: [
     BrowserModule,
