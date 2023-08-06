@@ -1,6 +1,20 @@
 <div class="full">
-<label>Número tombo:</label>
-<input id="tombo" value="{{tombo}}">
-<button class="btn btn-outline-primary">Novo Item no acervo</button>
+  <form [formGroup]="tomboForm">
+    <label>Número tombo:</label>
+    <input
+      id="bl_tombo"
+      formControlName="bl_tombo"
+      class="form-control"
+      style="width: 100px"
+    />
+    <button class="btn btn-outline-primary" (click)="newItem()">
+      Novo Item no acervo
+    </button>
+    {{ tomboForm.value.bl_tombo | json }}
 
+    <label *ngFor="let item of place">
+      <input type="radio" value="{{ item.id_lp }}" formControlName="bl_place" />
+      <span class="ms-1">{{ item.lp_name }}</span>
+    </label>
+  </form>
 </div>

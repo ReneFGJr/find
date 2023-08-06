@@ -1,5 +1,13 @@
 <div class="container mt-5 mb-5">
   <div class="row">
+    <div class="col-9 col-sm-9"></div>
+    <div class="col-3 col-sm-3">
+      <img
+        [src]="'assets/img/logo/logo_find.png'"
+        class="img-fluid  mb-3"
+        alt="image"
+      />
+    </div>
     <!-- Vitrine -->
     <app-find-vitrine *ngIf="bookRow" [books]="bookRow"></app-find-vitrine>
     <!-- Vitrine Vazia -->

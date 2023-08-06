@@ -7,4 +7,5 @@ import { Component, Input } from '@angular/core';
 })
 export class ItemListIsbnComponent {
   @Input() public isbn:string = '';
+  @Input() public book: Array<any>|any
 }

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControlDirective, FormGroupDirective, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 
@@ -69,7 +69,7 @@ import { ItemListIsbnComponent } from './000_core/page/item-list-isbn/item-list-
     ReactiveFormsModule,
     RouterModule
   ],
-  providers: [HttpClient],
+  providers: [HttpClient, FormControlDirective, FormGroupDirective],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

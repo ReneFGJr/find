@@ -35,7 +35,6 @@ export class FindService {
 
   /******************************************************************** */
   public setLibrary(id: string) {
-
     this.CookieService.set('library', id, 365);
   }
 
@@ -50,8 +49,8 @@ export class FindService {
     }
   }
 
-  public validISBN(isbn:string): Observable<Array<any>> {
-    let url = `${this.url}isbn/`+isbn;
+  public validISBN(isbn: string): Observable<Array<any>> {
+    let url = `${this.url}isbn/` + isbn;
     var formData: any = new FormData();
     console.log('validSBN' + url);
     return this.HttpClient.post<Array<any>>(url, formData).pipe(
@@ -62,9 +61,9 @@ export class FindService {
 
   public getISBN(isbn: string): Observable<Array<any>> {
     if (isbn == '') { isbn = 'ERROR'; }
-    let url = `${this.url}isbn/` + isbn;
+    let url = `${this.url}find/isbn/` + isbn;
     var formData: any = new FormData();
-    console.log('getISBN' + url);
+    console.log(url);
     return this.HttpClient.post<Array<any>>(url, formData).pipe(
       res => res,
       error => error
@@ -72,13 +71,42 @@ export class FindService {
   }
 
   public addISBN(isbn: string): Observable<Array<any>> {
-    let url = `${this.url}find/isbn/` + isbn+'/add';
+    let url = `${this.url}find/isbn/` + isbn + '/add';
     console.log(url);
     var formData: any = new FormData();
 
     formData.append('library', '1');
     formData.append('apikey', 'ff63a314d1ddd425517550f446e4175e');
 
+    return this.HttpClient.post<Array<any>>(url, formData).pipe(
+      res => res,
+      error => error
+    );
+  }
+
+  public register_item(isbn: string, place: string, tombo: string) {
+    let lib = this.getLibrary();
+    let url = `${this.url}find/putItemLibrary`;
+    console.log(url)
+    var formData: any = new FormData();
+    formData.append('library', lib);
+    formData.append('isbn', isbn);
+    formData.append('place', place);
+    formData.append('tombo', tombo);
+    formData.append('apikey', 'ff63a314d1ddd425517550f446e4175e');
+
+    return this.HttpClient.post<Array<any>>(url, formData).pipe(
+      res => res,
+      error => error
+    );
+  }
+
+  public getPlace(): Observable<Array<any>> {
+    let lib = this.getLibrary();
+    let url = `${this.url}find/getPlace/` + lib;
+    console.log(url)
+    var formData: any = new FormData();
+    formData.append('library', lib);
     return this.HttpClient.post<Array<any>>(url, formData).pipe(
       res => res,
       error => error
@@ -93,7 +121,7 @@ export class FindService {
     formData.append('library', '1');
     formData.append('apikey', 'ff63a314d1ddd425517550f446e4175e');
 
-    formData.append('item', );
+    formData.append('item',);
     formData.append('field', field);
     formData.append('value', value);
 
