@@ -1,4 +1,4 @@
-export class Book {
+export class uBook {
   title: string = '';
   isbn: string = '';
 }

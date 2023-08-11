@@ -19,6 +19,7 @@ export class IsbnAddComponent {
   message: string = '';
   isbn: string = '';
   book: Array<any> | any
+  vBook: Array<any> | any
   valid: boolean = false;
 
   isbnForm = new FormGroup({
@@ -37,7 +38,6 @@ export class IsbnAddComponent {
           this.message = '';
           let isbn = this.isbnForm.value.isbn!
 
-          console.log('*********'+isbn);
           this.findService.validISBN(isbn).subscribe(
           res=>
             {
@@ -49,6 +49,7 @@ export class IsbnAddComponent {
                   this.findService.addISBN(isbn).subscribe(
                     res=>{
                       this.book = res
+                      this.vBook = res;
                       console.log(res)
                       this.isbn = this.book.isbn13
                     }

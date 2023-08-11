@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FindService } from 'src/app/000_core/service/find.service';
-import { Book } from "../../../units/books";
+import { uBook } from "../../../units/books";
 
 @Component({
   selector: 'app-preview',
@@ -10,32 +10,28 @@ import { Book } from "../../../units/books";
   styleUrls: ['./preview.component.scss']
 })
 export class PreviewComponent {
-  formBook?: FormGroup;
+  @Input() public book:Array<any>|any
 
   constructor(
     private findService: FindService,
     private router: Router,
-    private fb: FormBuilder
-  ) { }
+    private formBuilder: FormBuilder
+  ) {}
 
+  formBook = new FormGroup({
+    title: new FormControl('', Validators.required),
+    isbn: new FormControl(''),
+  });
 
   edit_title:boolean = false;
-  bk_title: string = '';
+  title: string = '';
   isbn: string = '';
-  @Input() public book:Array<any>|any
 
+  /************************* */
   ngOnInit()
     {
-      this.createForm(new Book());
+        this.formBook.setValue({title:this.book.bk_title,isbn:'0123'});
     }
-
-  createForm(book: Book) {
-    this.formBook = this.fb.group({
-      title: new FormControl(book.title),
-      isbn: new FormControl(book.isbn),
-
-    })
-  }
 
   edit(field:string)
     {
@@ -48,11 +44,12 @@ export class PreviewComponent {
   save(field: string) {
     if (field == 'title') {
       this.edit_title = false;
-      alert(this.bk_title);
-      this.findService.saveData(this.book.isbn, 'bk_title', this.bk_title).subscribe(
+      let value = this.formBook.value.title as string;
+      this.findService.saveData(this.book.isbn, field, value).subscribe(
         res=>
           {
-            this.book = res;
+            console.log("OK")
+            //this.book = res;
           }
       )
     }

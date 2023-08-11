@@ -9,18 +9,24 @@
       </div>
 
       <div *ngIf="edit_title == true">
+        <form [formGroup]="formBook">
         <textarea
           id="title"
           name="title"
           class="form-control border border-secondary"
-          formControlName="bk_title"
+          formControlName="title"
           style="height: 130px; font-size: 1.6em"
         ></textarea>
+
         <span class="small edit me-2" (click)="save('title')">salvar</span>
         <span class="small cancel me-2" (click)="cancel('title')"
           >cancelar</span
         >
+        </form>
       </div>
+      [[{{formBook.value.title}}]]
+      [[Valid: {{formBook.valid}}]]
+
 
       ISBN: {{ book.be_isbn13 }} - {{ book.be_isbn10 }}
       <hr />

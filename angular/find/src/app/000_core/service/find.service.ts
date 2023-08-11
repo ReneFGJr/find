@@ -15,7 +15,7 @@ export class FindService {
   ) { }
 
   private url: string = 'https://cip.brapci.inf.br/api/';
-  //private url: string = 'http://brp/api/';
+  private urlt: string = 'http://brp/api/';
 
   /******************************************************************** */
   public saveCover(isbn:string,file:string)
@@ -130,8 +130,8 @@ export class FindService {
   }
 
   public saveData(isbn: string, field: string, value: string): Observable<Array<any>> {
-    let url = `${this.url}find/saveField/`;
-    console.log('addISBN' + url);
+    let url = `${this.urlt}find/saveField/`;
+    console.log(url);
     var formData: any = new FormData();
 
     formData.append('library', '1');
