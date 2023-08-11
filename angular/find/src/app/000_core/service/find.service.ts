@@ -130,14 +130,15 @@ export class FindService {
   }
 
   public saveData(isbn: string, field: string, value: string): Observable<Array<any>> {
-    let url = `${this.urlt}find/saveField/`;
+    let url = `${this.url}find/saveField`;
     console.log(url);
+
     var formData: any = new FormData();
 
     formData.append('library', '1');
     formData.append('apikey', 'ff63a314d1ddd425517550f446e4175e');
 
-    formData.append('item',);
+    formData.append('isbn',isbn);
     formData.append('field', field);
     formData.append('value', value);
 

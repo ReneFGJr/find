@@ -36,9 +36,9 @@ export class IsbnAddComponent {
       if (this.isbnForm.valid)
         {
           this.message = '';
-          let isbn = this.isbnForm.value.isbn!
+          this.isbn = this.isbnForm.value.isbn!
 
-          this.findService.validISBN(isbn).subscribe(
+          this.findService.validISBN(this.isbn).subscribe(
           res=>
             {
               console.log(res)
@@ -46,7 +46,7 @@ export class IsbnAddComponent {
               if (this.book.valid)
                 {
                   this.valid = true;
-                  this.findService.addISBN(isbn).subscribe(
+                  this.findService.addISBN(this.isbn).subscribe(
                     res=>{
                       this.book = res
                       this.vBook = res;

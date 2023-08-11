@@ -24,8 +24,9 @@
         >
         </form>
       </div>
-      [[{{formBook.value.title}}]]
-      [[Valid: {{formBook.valid}}]]
+      <div *ngIf="!formBook.valid" class="text-danger">
+        <B>*Título é obrigatório</B>
+        </div>
 
 
       ISBN: {{ book.be_isbn13 }} - {{ book.be_isbn10 }}
@@ -59,6 +60,8 @@
 </div>
 
 <div *ngIf="book.be_isbn13">
+  <app-rdf-fields></app-rdf-fields>
+  XXXXXXXXXX
   <app-subject></app-subject>
   <app-subject-thesa></app-subject-thesa>
   <app-subject-skos></app-subject-skos>

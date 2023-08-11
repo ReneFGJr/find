@@ -11,6 +11,7 @@ import { uBook } from "../../../units/books";
 })
 export class PreviewComponent {
   @Input() public book:Array<any>|any
+  @Input() public isbn:string = ''
 
   constructor(
     private findService: FindService,
@@ -25,7 +26,6 @@ export class PreviewComponent {
 
   edit_title:boolean = false;
   title: string = '';
-  isbn: string = '';
 
   /************************* */
   ngOnInit()
@@ -45,10 +45,14 @@ export class PreviewComponent {
     if (field == 'title') {
       this.edit_title = false;
       let value = this.formBook.value.title as string;
-      this.findService.saveData(this.book.isbn, field, value).subscribe(
+      console.log("Enviando dados de gravação")
+      console.log('ISBN '+this.book.be_isbn13)
+      console.log('FIELD '+field)
+      console.log('Value: '+value)
+      this.findService.saveData(this.book.be_isbn13, field, value).subscribe(
         res=>
           {
-            console.log("OK")
+            console.log(res)
             //this.book = res;
           }
       )
