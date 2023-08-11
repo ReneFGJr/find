@@ -31,6 +31,7 @@ import { SubjectSkosComponent } from './000_core/gadget/subject-skos/subject-sko
 import { ItemAddIsbnComponent } from './000_core/page/item-add-isbn/item-add-isbn.component';
 import { ItemListIsbnComponent } from './000_core/page/item-list-isbn/item-list-isbn.component';
 import { UploadImageComponent } from './000_core/gadget/upload-image/upload-image.component';
+import { SearchComponent } from './020_search/page/search/search.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { UploadImageComponent } from './000_core/gadget/upload-image/upload-imag
     ItemAddIsbnComponent,
     ItemListIsbnComponent,
     UploadImageComponent,
+    SearchComponent,
     ],
   imports: [
     BrowserModule,
