@@ -1,6 +1,8 @@
 import { Component, Input } from '@angular/core';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { FindService } from 'src/app/000_core/service/find.service';
+import { Book } from "../../../units/books";
 
 @Component({
   selector: 'app-preview',
@@ -8,10 +10,12 @@ import { FindService } from 'src/app/000_core/service/find.service';
   styleUrls: ['./preview.component.scss']
 })
 export class PreviewComponent {
+  formBook?: FormGroup;
 
   constructor(
     private findService: FindService,
     private router: Router,
+    private fb: FormBuilder
   ) { }
 
 
@@ -19,6 +23,19 @@ export class PreviewComponent {
   bk_title: string = '';
   isbn: string = '';
   @Input() public book:Array<any>|any
+
+  ngOnInit()
+    {
+      this.createForm(new Book());
+    }
+
+  createForm(book: Book) {
+    this.formBook = this.fb.group({
+      title: new FormControl(book.title),
+      isbn: new FormControl(book.isbn),
+
+    })
+  }
 
   edit(field:string)
     {

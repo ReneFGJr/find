@@ -1,10 +1,13 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-search',
+  selector: 'app-form-search',
   templateUrl: './search.component.html',
   styleUrls: ['./search.component.scss']
 })
 export class SearchComponent {
-
+  search()
+    {
+      alert("pesquisar")
+    }
 }

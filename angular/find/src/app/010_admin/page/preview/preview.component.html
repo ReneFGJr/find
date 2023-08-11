@@ -4,19 +4,26 @@
   <div class="row">
     <div class="col-12 col-sm-8">
       <div *ngIf="edit_title === false">
-        <h1 class="p-0 m-0">{{book.bk_title}}</h1>
+        <h1 class="p-4 m-0">{{ book.bk_title }}</h1>
         <span class="small edit" (click)="edit('title')">editar</span>
       </div>
 
       <div *ngIf="edit_title == true">
-        <textarea id="title" name="title" class="form-control border border-secondary"
-          style="height: 130px; font-size: 1.6em;">{{book.bk_title}}</textarea>
+        <textarea
+          id="title"
+          name="title"
+          class="form-control border border-secondary"
+          formControlName="bk_title"
+          style="height: 130px; font-size: 1.6em"
+        ></textarea>
         <span class="small edit me-2" (click)="save('title')">salvar</span>
-        <span class="small cancel me-2" (click)="cancel('title')">cancelar</span>
+        <span class="small cancel me-2" (click)="cancel('title')"
+          >cancelar</span
+        >
       </div>
 
       ISBN: {{ book.be_isbn13 }} - {{ book.be_isbn10 }}
-      <hr>
+      <hr />
       <h3>Autor(es):</h3>
       <ul>
         <li *ngFor="let item of book.authors">
@@ -27,13 +34,17 @@
       <h3>Descritor(es):</h3>
       <ul>
         <li *ngFor="let item of book.data">
-          <b>{{ item.c_class }}</b>: {{ item.n_name }}
+          <b>{{ item.c_class }}</b
+          >: {{ item.n_name }}
         </li>
       </ul>
-
     </div>
     <div class="col-12 col-sm-4">
-      <img [src]="book.be_cover" class="img-fluid float-end rounded cover" style="width:200px;">
+      <img
+        [src]="book.be_cover"
+        class="img-fluid float-end rounded cover"
+        style="width: 200px"
+      />
       <div>
         <app-upload-image [isbn]="book.be_isbn13"></app-upload-image>
       </div>
@@ -42,9 +53,9 @@
 </div>
 
 <div *ngIf="book.be_isbn13">
-<app-subject></app-subject>
-<app-subject-thesa></app-subject-thesa>
-<app-subject-skos></app-subject-skos>
+  <app-subject></app-subject>
+  <app-subject-thesa></app-subject-thesa>
+  <app-subject-skos></app-subject-skos>
 </div>
 
 <div *ngIf="book.be_isbn13" class="container mt-2">
@@ -62,8 +73,14 @@
     </div>
 
     <div class="col-12" *ngIf="book.be_isbn13">
-      <app-item-list-isbn [isbn]="book.be_isbn13" [book]="book"></app-item-list-isbn>
-      <app-item-add-isbn  [isbn]="book.be_isbn13" [book]="book"></app-item-add-isbn>
+      <app-item-list-isbn
+        [isbn]="book.be_isbn13"
+        [book]="book"
+      ></app-item-list-isbn>
+      <app-item-add-isbn
+        [isbn]="book.be_isbn13"
+        [book]="book"
+      ></app-item-add-isbn>
     </div>
   </div>
 </div>

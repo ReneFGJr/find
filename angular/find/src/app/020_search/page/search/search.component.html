@@ -1,1 +1,21 @@
-<p>search works!</p>
+<form>
+  <div class="input-group mb-3">
+    <input
+      type="text"
+      class="form-control border border-primary"
+      placeholder="O que você está procurando?"
+      aria-label="caixa de busca"
+      aria-describedby="button-addon2"
+      style="font-size: 1.8em; box-shadow: 5px 5px 10px #777;"
+    />
+    <button
+      class="btn btn-outline-primary ms-2"
+      type="button"
+      id="button-addon2"
+      style="font-size: 1.8em; box-shadow: 5px 5px 10px #777;"
+      (click)="search()"
+    >
+      Pesquisar
+    </button>
+  </div>
+</form>
