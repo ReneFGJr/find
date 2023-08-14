@@ -33,6 +33,7 @@ import { ItemListIsbnComponent } from './000_core/page/item-list-isbn/item-list-
 import { UploadImageComponent } from './000_core/gadget/upload-image/upload-image.component';
 import { SearchComponent } from './020_search/page/search/search.component';
 import { FieldsComponent } from './010_admin/page/fields/fields.component';
+import { SearchGoogleComponent } from './000_core/gadget/google/search/search.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { FieldsComponent } from './010_admin/page/fields/fields.component';
     UploadImageComponent,
     SearchComponent,
     FieldsComponent,
+    SearchGoogleComponent,
     ],
   imports: [
     BrowserModule,

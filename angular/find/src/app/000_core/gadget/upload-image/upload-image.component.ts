@@ -3,6 +3,7 @@ import { Component, Input } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UploadService } from '../../service/upload.service';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-upload-image',
@@ -11,6 +12,7 @@ import { HttpEventType, HttpResponse } from '@angular/common/http';
 })
 export class UploadImageComponent {
   @Input() public isbn:string = '';
+  @Output() newItemEvent = new EventEmitter<string>();
 
   /***************************/
   selectedFiles?: FileList;
@@ -18,6 +20,7 @@ export class UploadImageComponent {
   progress = 0;
   message = '';
   preview = '';
+  temp:Array<any> | any
 
   imageInfos?: Observable<any>;
 
@@ -37,7 +40,6 @@ export class UploadImageComponent {
 
       if (file) {
         this.currentFile = file;
-
         this.uploadService.upload(this.currentFile).subscribe({
           next: (event: any) => {
             if (event.type === HttpEventType.UploadProgress) {
@@ -45,6 +47,7 @@ export class UploadImageComponent {
             } else if (event instanceof HttpResponse) {
               this.message = event.body.message;
             }
+
           },
           error: (err: any) => {
             console.log(err);
@@ -55,12 +58,10 @@ export class UploadImageComponent {
             } else {
               this.message = 'Could not upload the image!';
             }
-
             this.currentFile = undefined;
           },
         });
       }
-
       this.selectedFiles = undefined;
     }
   }
@@ -82,12 +83,14 @@ export class UploadImageComponent {
 
         reader.onload = (e: any) => {
           console.log("Realizando Carga")
-          this.preview = e.target.result;
-          this.findService.saveCover(this.isbn,this.preview).subscribe(
+          //this.preview = e.target.result;
+          this.findService.saveCover(this.isbn,e.target.result).subscribe(
             res=>{
-              console.log("Carga Finalizadas")
-              console.log(res);
               this.message = 'Arquivo salvo';
+              this.temp = res
+              console.log('===============')
+              console.log(this.temp.cover);
+              this.newItemEvent.emit(this.temp.cover);
             }
           )
         };

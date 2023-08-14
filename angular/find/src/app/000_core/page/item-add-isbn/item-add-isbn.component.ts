@@ -35,7 +35,6 @@ export class ItemAddIsbnComponent {
             bl_tombo: String(tombo)
           })
         }
-        console.log('++++++++' + lp)
       }
     );
   }

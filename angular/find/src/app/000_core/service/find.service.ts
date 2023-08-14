@@ -58,11 +58,20 @@ export class FindService {
     console.log('getLibrary');
     if (this.CookieService.check('library')) {
       let lib = this.CookieService.get('library');
-      console.log('=lib==>', lib)
       return String(lib)
     } else {
       return '0'
     }
+  }
+
+  public search(term: string, c:string): Observable<Array<any>> {
+    let url = `${this.url}find/search/` + term + '/'+c;
+    var formData: any = new FormData();
+    console.log(url);
+    return this.HttpClient.post<Array<any>>(url, formData).pipe(
+      res => res,
+      error => error
+    );
   }
 
   public validISBN(isbn: string): Observable<Array<any>> {
@@ -85,6 +94,25 @@ export class FindService {
       error => error
     );
   }
+
+  /********************************** Autentication */
+
+  public createConcept(name: string, classe:string): Observable<Array<any>> {
+    let url = `${this.url}find/concept/add`;
+    console.log(url);
+    var formData: any = new FormData();
+
+    formData.append('library', '1');
+    formData.append('apikey', 'ff63a314d1ddd425517550f446e4175e');
+    formData.append('term', name);
+    formData.append('class', classe);
+
+    return this.HttpClient.post<Array<any>>(url, formData).pipe(
+      res => res,
+      error => error
+    );
+  }
+
 
   public addISBN(isbn: string): Observable<Array<any>> {
     let url = `${this.url}find/isbn/` + isbn + '/add';
@@ -141,6 +169,26 @@ export class FindService {
     formData.append('isbn',isbn);
     formData.append('field', field);
     formData.append('value', value);
+
+    return this.HttpClient.post<Array<any>>(url, formData).pipe(
+      res => res,
+      error => error
+    );
+  }
+
+public saveRDF(r1: string, prop: string, r2: string, lit:string): Observable<Array<any>> {
+    let url = `${this.url}find/saveRDF`;
+    console.log(url);
+
+    var formData: any = new FormData();
+
+    formData.append('library', '1');
+    formData.append('apikey', 'ff63a314d1ddd425517550f446e4175e');
+
+    formData.append('r1',r1);
+    formData.append('p', prop);
+    formData.append('r2', r2);
+    formData.append('literal',lit);
 
     return this.HttpClient.post<Array<any>>(url, formData).pipe(
       res => res,

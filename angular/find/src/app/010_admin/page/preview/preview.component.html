@@ -1,10 +1,12 @@
-<div *ngIf="!book.be_isbn13">Loading...</div>
+<div *ngIf="!book.be_isbn13">
+  <div *ngIf="book.be_isbn13===''">XX</div>
+</div>
 
 <div *ngIf="book.be_isbn13" class="container mt-2">
   <div class="row">
     <div class="col-12 col-sm-8">
       <div *ngIf="edit_title === false">
-        <h1 class="p-4 m-0">{{ book.bk_title }}</h1>
+        <h1 class="p-0 m-0">{{ book.bk_title }}</h1>
         <span class="small edit" (click)="edit('title')">editar</span>
       </div>
 
@@ -30,6 +32,9 @@
 
 
       ISBN: {{ book.be_isbn13 }} - {{ book.be_isbn10 }}
+      <br><br>
+
+      <app-google-search [term]="book.be_isbn13"></app-google-search>
       <hr />
       <h3>Autor(es):</h3>
       <ul>
@@ -53,14 +58,14 @@
         style="width: 200px"
       />
       <div>
-        <app-upload-image [isbn]="book.be_isbn13"></app-upload-image>
+        <app-upload-image [isbn]="book.be_isbn13" (newItemEvent)="chageCover($event)"></app-upload-image>
       </div>
     </div>
   </div>
 </div>
 
 <div *ngIf="book.be_isbn13">
-  <app-rdf-fields></app-rdf-fields>
+  <app-rdf-fields-form [isbn]="book.be_isbn13" [resource]="book.be_rdf"></app-rdf-fields-form>
   XXXXXXXXXX
   <app-subject></app-subject>
   <app-subject-thesa></app-subject-thesa>

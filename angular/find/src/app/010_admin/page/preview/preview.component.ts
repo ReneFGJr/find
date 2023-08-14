@@ -38,7 +38,13 @@ export class PreviewComponent {
       if (field=='title')
         {
           this.edit_title = true;
+          this.formBook.setValue({title:this.book.bk_title,isbn:this.book.be_isbn13});
         }
+    }
+
+  chageCover(newCover: string)
+    {
+      this.book.be_cover = newCover
     }
 
   save(field: string) {
@@ -52,8 +58,8 @@ export class PreviewComponent {
       this.findService.saveData(this.book.be_isbn13, field, value).subscribe(
         res=>
           {
-            console.log(res)
-            //this.book = res;
+            this.book = res;
+            this.formBook.setValue({title:this.book.bk_title,isbn:'0123'});
           }
       )
     }

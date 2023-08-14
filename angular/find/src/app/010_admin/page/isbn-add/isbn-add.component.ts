@@ -28,7 +28,14 @@ export class IsbnAddComponent {
 
   limpar_isbn()
     {
-    this.router.navigate(["/admin/isbn/add"]);
+    this.isbnForm.setValue({isbn:''});
+    this.book = [];
+    this.vBook = [];
+    }
+
+  ngOnInit()
+    {
+      this.isbnForm.setValue({isbn:'9788571933422'});
     }
 
   submitISBN()

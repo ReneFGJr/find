@@ -1,22 +1,99 @@
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+<button
+  type="button"
+  class="btn btn-primary"
+  data-bs-toggle="modal"
+  data-bs-target="#geralModal"
+>
   +
 </button>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+<div
+  class="modal modal-lg fade"
+  id="geralModal"
+  tabindex="-1"
+  aria-labelledby="geralModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog scrollable">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h3 class="modal-title" id="geralModalLabel">Pontos de Acesso</h3>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
       </div>
       <div class="modal-body">
-        ...
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-3">
+              <ul>
+                <li
+                  *ngFor="let item of groups"
+                  class="m-0 p-0 link"
+                  (click)="area(item.type, item.name, item.form, item.class)"
+                >
+                  {{ item.name }}
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-9 ms-auto">
+              <span *ngIf="!class">Selecione o tipo de entrada</span>
+              <div *ngIf="class">
+                <h1>{{ label }}</h1>
+                <form [formGroup]="rdfForm">
+                  <label>Termo de busca</label>
+                  <input
+                    formControlName="term"
+                    class="form-control border border-secondary rounded"
+                    (keyup)="onKeyUp($event)"
+                  />
+                  <hr />
+                </form>
+                {{ rdfForm.value.term }}
+                <select
+                  class="form-control border border-secondary rounded"
+                  size="7"
+                  #device
+                  (change)="onChange($event)"
+                >
+                  <option *ngFor="let item of items" [value]="item.id">
+                    {{ item.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          PROP: {{ resource }} {{ prop }} {{ idRec }}
+
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-3"></div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button
+          [ngClass]="createRDF"
+          type="button"
+          (click)="createRDFItem()"
+          class="btn btn-outline-danger"
+        >
+          Criar autoridade
+        </button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+        type="button"
+        (click)="saveRDF()"
+        class="btn btn-primary">Salvar</button>
       </div>
     </div>
   </div>
