@@ -17,18 +17,19 @@ export class FieldsComponent {
 
   public items:Array<any> | any
   public data:Array<any> | any
+  public temp:Array<any> | any
 
   public groups:Array<any> = [
       {name:'Autor',type:'hasAuthor',class:'Person',form:'rdf'},
-      {name:'Organizador',type:'organization',class:'Person',form:'rdf'},
-      {name:'Ilustrador',type:'illustrator',class:'Person',form:'rdf'},
-      {name:'Tradutor',type:'translator',class:'Person',form:'rdf'},
-      {name:'Editora',type:'isPublisher',class:'Person',form:'rdf'},
-      {name:'Publicacao',type:'description',class:'Person',form:'rdf'},
+      {name:'Organizador',type:'hasOrganizator',class:'Person',form:'rdf'},
+      {name:'Ilustrador',type:'hasIllustrator',class:'Person',form:'rdf'},
+      {name:'Tradutor',type:'hasTranslator',class:'Person',form:'rdf'},
+      {name:'Editora',type:'isPublisher',class:'CorporateBody',form:'rdf'},
+      {name:'Resumo',type:'hasAbstract',class:'Text',form:'rdf'},
       {name:'Ano publicação',type:'dateOfPublication',class:'Person',form:'rdf'},
       {name:'Idioma',type:'hasLanguageExpression',class:'Person',form:'rdf'},
-      {name:'Paginas',type:'hasPage',class:'Person',form:'rdf'},
-      {name:'Edição',type:'isEdition',class:'Person',form:'rdf'},
+      {name:'Paginas',type:'hasPage',class:'Page',form:'rdf'},
+      {name:'Edição',type:'isEdition',class:'Edition',form:'rdf'},
 
   ];
   @Input() public isbn:string = '';
@@ -57,7 +58,6 @@ export class FieldsComponent {
         this.findService.saveRDF(r1,prop,r2,lit).subscribe(
           res=>{
             console.log(res);
-
           }
         )
     }
@@ -65,11 +65,15 @@ export class FieldsComponent {
   createRDFItem()
     {
         let name = this.rdfForm.value.term as string;
-        alert(name);
-        alert(this.class);
         this.findService.createConcept(name,this.class).subscribe(
           res=>{
             console.log(res);
+            this.temp = res;
+            this.idRec = this.temp.rdf;
+            this.saveRDFData(this.resource,this.prop,this.idRec,'');
+            this.rdfForm.setValue({term:''});
+            this.items = []
+
           }
         )
     }
