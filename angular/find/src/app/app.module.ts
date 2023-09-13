@@ -34,6 +34,7 @@ import { UploadImageComponent } from './000_core/gadget/upload-image/upload-imag
 import { SearchComponent } from './020_search/page/search/search.component';
 import { FieldsComponent } from './010_admin/page/fields/fields.component';
 import { SearchGoogleComponent } from './000_core/gadget/google/search/search.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { SearchGoogleComponent } from './000_core/gadget/google/search/search.co
     RouterModule,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule
   ],
   exports: [
     CommonModule,
