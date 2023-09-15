@@ -35,6 +35,7 @@ import { SearchComponent } from './020_search/page/search/search.component';
 import { FieldsComponent } from './010_admin/page/fields/fields.component';
 import { SearchGoogleComponent } from './000_core/gadget/google/search/search.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BookSearchComponent } from './010_admin/page/book-search/book-search.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +63,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     SearchComponent,
     FieldsComponent,
     SearchGoogleComponent,
+    BookSearchComponent,
     ],
   imports: [
     BrowserModule,
