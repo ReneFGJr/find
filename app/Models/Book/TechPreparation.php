@@ -72,6 +72,7 @@ class TechPreparation extends Model
 		}
 
 		$sx = '';
+		$sa = '';
 		$sx .= $this->banner($d1);
 		if ($d1 == 'prepare_0') {
 			$d1 = 'prepare';
@@ -84,9 +85,14 @@ class TechPreparation extends Model
 		if ($d1 == 'prepare_2') {
 			$d1 = 'prepare';
 			$st = '2';
+			$sa .= '<a href="'.PATH.'/find/tech/labels/all'.'" class="btn btn-outline-primary mt-2 full">Imprimir</a>';
 		}
 
 		switch ($d1) {
+			case 'labels':
+				$Itens = new \App\Models\Library\Itens();
+				$Itens->labels($d2);
+				break;
 			case 'item_status':
 				$Itens = new \App\Models\Library\Itens();
 				$Itens->status($d2, $d3);
@@ -104,7 +110,7 @@ class TechPreparation extends Model
 					$i_identifier = $dt['i_identifier'];
 				}
 				$img = '<img id="cover" src="' . $Cover->get_cover($i_identifier) . '" class="img-fluid">';
-
+				$img .= $sa;
 				$sz = bsc($img, 2);
 				if ($d2 == '') {
 					$sz .= bsc($Itens->prepare($d2, $d3, $st), 10);

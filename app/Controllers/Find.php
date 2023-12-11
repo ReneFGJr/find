@@ -147,7 +147,7 @@ class Find extends BaseController
 		$sx .= '  <!-- CSS -->' . cr();
 		$sx .= '  <script src="' . URL . ('/js/bootstrap.js?v=5.0.2') . '"></script>' . cr();
 		$sx .= '  <script src="' . URL . ('/js/jquery-3.6.0.min.js?v=3.6.0') . '"></script>' . cr();
-		
+
 
 		$sx .= '<style>
 					@font-face {font-family: "Handel Gothic";
@@ -184,14 +184,14 @@ class Find extends BaseController
 		$sx .= '
 							<li class="nav-item">
 								<a class="nav-link" href="' . PATH . MODULE . 'libraries/' . '">' . lang('find.libraries_select') . '</a>
-							</li>			
+							</li>
 			';
 
 		if ((perfil("#ADM#CAT")) or (isset($_SESSION['access']))) {
 			$sx .= '
 								<li class="nav-item">
 									<a class="nav-link" href="' . PATH . MODULE . 'users/' . '">' . lang('find.users') . '</a>
-								</li>			
+								</li>
 				';
 		}
 
@@ -199,7 +199,7 @@ class Find extends BaseController
 			$sx .= '
 				<li class="nav-item">
 				<a class="nav-link" href="' . PATH . MODULE . 'tech/' . '">' . lang('find.tech') . '</a>
-				</li>			
+				</li>
 				';
 
 			$sx .= '        <li class="nav-item dropdown">' . cr();
@@ -415,7 +415,7 @@ class Find extends BaseController
 
 	function labels($d1 = '', $d2 = '', $d3 = '', $d4 = '')
 	{
-		$Labels = new \App\Models\Labels\Index();
+		$Labels = new \App\Models\Book\Labels();
 		$sx = $this->cab();
 		$sx .= $Labels->index($d1, $d2, $d3, $d4);
 		return $sx;

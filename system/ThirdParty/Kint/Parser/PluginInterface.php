@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * The MIT License (MIT)
  *
@@ -27,29 +29,16 @@ namespace Kint\Parser;
 
 use Kint\Zval\Value;
 
-abstract class Plugin
+interface PluginInterface
 {
-    protected $parser;
+    public function setParser(Parser $p): void;
 
-    public function setParser(Parser $p)
-    {
-        $this->parser = $p;
-    }
+    public function getTypes(): array;
+
+    public function getTriggers(): int;
 
     /**
-     * An array of types (As returned by gettype) for all data this plugin can operate on.
-     *
-     * @return array List of types
+     * @psalm-param mixed &$var
      */
-    public function getTypes()
-    {
-        return [];
-    }
-
-    public function getTriggers()
-    {
-        return Parser::TRIGGER_NONE;
-    }
-
-    abstract public function parse(&$var, Value &$o, $trigger);
+    public function parse(&$var, Value &$o, int $trigger): void;
 }

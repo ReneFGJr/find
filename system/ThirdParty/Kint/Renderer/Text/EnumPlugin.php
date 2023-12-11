@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * The MIT License (MIT)
  *
@@ -23,48 +25,14 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace Kint\Renderer\Rich;
+namespace Kint\Renderer\Text;
 
-use Kint\Kint;
-use Kint\Zval\Representation\DocstringRepresentation;
-use Kint\Zval\Representation\Representation;
+use Kint\Zval\Value;
 
-class DocstringPlugin extends Plugin implements TabPluginInterface
+class EnumPlugin extends AbstractPlugin
 {
-    public function renderTab(Representation $r)
+    public function render(Value $o): string
     {
-        if (!($r instanceof DocstringRepresentation)) {
-            return;
-        }
-
-        $docstring = [];
-        foreach (\explode("\n", $r->contents) as $line) {
-            $docstring[] = \trim($line);
-        }
-
-        $docstring = \implode("\n", $docstring);
-
-        $location = [];
-
-        if ($r->class) {
-            $location[] = 'Inherited from '.$this->renderer->escape($r->class);
-        }
-        if ($r->file && $r->line) {
-            $location[] = 'Defined in '.$this->renderer->escape(Kint::shortenPath($r->file)).':'.((int) $r->line);
-        }
-
-        $location = \implode("\n", $location);
-
-        if ($location) {
-            if (\strlen($docstring)) {
-                $docstring .= "\n\n";
-            }
-
-            $location = '<small>'.$location.'</small>';
-        } elseif (0 === \strlen($docstring)) {
-            return '';
-        }
-
-        return '<pre>'.$this->renderer->escape($docstring).$location.'</pre>';
+        return $this->renderLockedHeader($o);
     }
 }

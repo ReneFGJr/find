@@ -36,7 +36,7 @@ class Itens extends Model
         'hidden','hidden','hidden',
         'hidden','hidden','hidden',
         'hidden'
-    ];	
+    ];
 
     // Dates
     protected $useTimestamps = false;
@@ -81,7 +81,13 @@ function le($id)
 					/******************************* WORK */
 					$expression = $RDF->le_data($man);
 					$rst = $RDF->recovery((array)$expression['data'],'isAppellationOfManifestation');
-					$expression = $rst[0][0];
+					if (isset($rst[0][0]))
+					{
+						$expression = $rst[0][0];
+					} else {
+						$expression = 0;
+					}
+
 
 					$work = $RDF->le_data($expression);
 					$rst = $RDF->recovery((array)$work['data'],'isAppellationOfExpression');
@@ -102,7 +108,7 @@ function le($id)
 		$RDF = new \App\Models\Rdf\RDF();
 		$Tombo = new \App\Models\Book\Tombo();
 		$dt = $this->Find($id);
-	
+
 
 		if ($dt['i_work'] == 0)
 		{
@@ -196,16 +202,16 @@ function le($id)
 				$this->set($dd)->where('id_i',$id)->update();
 
 				//pre($dd);
-				
+
 			}
 
-		function save_metadata($dt,$id)	
+		function save_metadata($dt,$id)
 		{
 			$sx = '';
 			$RDF = new \App\Models\Rdf\RDF();
 			$Item = new \App\Models\Library\Itens();
 			$di = $Item->find($id);
-			$isbn = $di['i_identifier'];	
+			$isbn = $di['i_identifier'];
 			$language = '';
 
 			/****************************************** OCLC */
@@ -216,7 +222,7 @@ function le($id)
 					$tit = array();
 					if (isset($editons[0]))
 						{
-							
+
 						} else {
 							$editons = array($editons);
 						}
@@ -232,7 +238,7 @@ function le($id)
 							if (isset($attr['author']))
 								{
 									$author = $attr['author'];
-								}							
+								}
 						}
 					if (isset($tit['por']))
 						{
@@ -254,21 +260,21 @@ function le($id)
 											$dt['title'] = $tit['fre'];
 											$language = 'fr';
 										} else {
-											
+
 										}
 									}
 								}
 						}
 
 				}
-		
+
 			if (isset($dt['i_titulo']))
-				{					
+				{
 					$title = trim($dt['i_titulo']);
 					$dd['i_titulo'] = $title;
 					$this->set($dd)->where('id_i',$id)->where('i_titulo','')->update();
 				} else {
-					
+
 				}
 			/************************** WORK ******/
 			if (!isset($title))
@@ -316,10 +322,10 @@ function le($id)
 										}
 									$name2 = substr($name,0,strpos($name,','));
 									$name = trim($name1).' '.trim($name2);
-									
+
 								}
 							$dt['authors'] = array($name);
-						}			
+						}
 				} else {
 					$dt['authors'] = array();
 				}
@@ -339,10 +345,10 @@ function le($id)
 										break;
 									case '[Author]':
 										$prop = 'brapci:hasAuthor';
-										break;	
+										break;
 									case '[Translator; Author]':
 										$prop = 'brapci:hasAuthor';
-										break;																			
+										break;
 									default:
 										echo "OPS Itens - ".$prop;
 										exit;
@@ -363,39 +369,39 @@ function le($id)
 						} else {
 							$language = 'pt';
 						}
-					
-				}			
-			
+
+				}
+
 			$name = 'ISBN:'.$isbn.':book';
-			$IDE = $RDF->rdf_concept($name,'frbr:Expression');			
+			$IDE = $RDF->rdf_concept($name,'frbr:Expression');
 			$IDL = $RDF->rdf_concept($language,'brapci:Linguage');
 
 			$prop = 'brapci:hasFormExpression';
 			$prop = 'isAppellationOfExpression';
 			$RDF->propriety($IDW,$prop,$IDE);
 
-			/************************* Language */			
+			/************************* Language */
 			$RDF->propriety($IDE,'brapci:hasFormExpression',$IDL);
 			/************************** MANIFESTATION */
 			$name = 'ISBN:'.$isbn;
-			$IDM = $RDF->rdf_concept($name,'frbr:Manifestation');	
+			$IDM = $RDF->rdf_concept($name,'frbr:Manifestation');
 			$prop = 'isAppellationOfManifestation';
 			$RDF->propriety($IDE,$prop,$IDM);
 			/****************************** ISBN */
 			$IDISBN = $IDM = $RDF->rdf_concept($name,'brapci:ISBN');
 			$RDF->propriety($IDM,'brapci:hasISBN',$IDISBN);
 
-			return 1;		
-		}		
+			return 1;
+		}
 
 	function process_metadata($hv,$id)
 		{
 			$dt = $this->find($id);
 			$sh = '';
-			$sn = '<span class="label label-info btn-danger rounded ps-2 pe-2">&nbsp;X&nbsp;</span> ';		
-			$ss = '<span class="label label-info btn-success rounded ps-2 pe-2">&nbsp;V&nbsp;</span> ';		
+			$sn = '<span class="label label-info btn-danger rounded ps-2 pe-2">&nbsp;X&nbsp;</span> ';
+			$ss = '<span class="label label-info btn-success rounded ps-2 pe-2">&nbsp;V&nbsp;</span> ';
 			$rst = 0;
-			/********************************************************* METADATA - FIND */			
+			/********************************************************* METADATA - FIND */
 			if (count($hv['FIND']) > 0)
 				{
 					$Find = new \App\Models\API\Find();
@@ -405,9 +411,9 @@ function le($id)
 					$sh .= $sn.'FIND '.lang('find.metadata_not_found').'<br>';
 				}
 
-			/********************************************* METADATA - MercadoEditorial */			
+			/********************************************* METADATA - MercadoEditorial */
 			if ($hv['BMS']['count'] > 0)
-				{			
+				{
 					$Find = new \App\Models\API\Find();
 					$rst = $this->save_metadata($hv['BMS'],$id);
 					/************ Atualiza titulo */
@@ -415,12 +421,12 @@ function le($id)
 					$sh .= $ss.'BrapciMetadataSource<br>';
 
 					$this->status($id,1);
-					
-					$dt['i_titulo'] = $hv['BMS']['title'];					
+
+					$dt['i_titulo'] = $hv['BMS']['title'];
 					$this->save_metadata($hv['BMS'],$id);
 				} else {
 					$sh .= $sn.'BrapciMetadataSource '.lang('find.metadata_not_found').'<br>';
-				}						
+				}
 
 			if ($rst > 0)
 				{
@@ -429,8 +435,8 @@ function le($id)
 				}
 			$sx = $this->header_item($dt);
 			/*************** Busca nos Metadados */
-			$sx .= h(lang('find.metadata_proceesing'),3);	
-			$sx .= $sh;			
+			$sx .= h(lang('find.metadata_proceesing'),3);
+			$sx .= $sh;
 
 			return $sx;
 		}
@@ -471,7 +477,7 @@ function le($id)
 			$exemplar = $dt['i_exemplar'];
 
 			$pg = $_SERVER['REQUEST_URI'];
-			$ed = 0;			
+			$ed = 0;
 			if ($Socials->getAccess("#ADM#GER"))
 				{
 					$ed = 1;
@@ -495,8 +501,8 @@ function le($id)
 						$sx  .= '<a href="'.PATH.MODULE.'tech/prepare_1/'.$dt['id_i'].'" class="btn btn-outline-primary ps-4 pe-4">'.lang('find.edit').'</a>';
 					} else {
 						$sx .= $this->title_form($dt);
-					}				
-				}	
+					}
+				}
 			$sx .= '		</div>';
 			$sx .= '	<div class="card-body container">';
 			$sx .= '		<div class="row">';
@@ -507,7 +513,7 @@ function le($id)
 			$sx .= 			bsc(lang('find.registration_number').': <b>'.$tombo.'</b>',7);
 			$sx .= '		</div>';
 			$sx .= '	</div>';
-			$sx .= '</div>';			
+			$sx .= '</div>';
 			return($sx);
 		}
 
@@ -523,7 +529,7 @@ function le($id)
 					$mani = $dt['i_manitestation'];
 					if ($mani > 0)
 						{
-							$this->set($dd)->where('i_manitestation',$mani)->update();		
+							$this->set($dd)->where('i_manitestation',$mani)->update();
 						} else {
 							$this->set($dd)->where('id_i',$id)->update();
 						}
@@ -544,7 +550,7 @@ function le($id)
 					<input type="checkbox" id="all_title"> '.lang('find.all_title').'
 					<br>
 					<button onclick="save_form();" id="form_title_save" type="text" class=" btn btn-primary" id="basic-url" aria-describedby="basic-addon3">'.lang('find.save').'</button>
-					<button onclick="cancel_form();" id="form_title_cancel" type="text" class=" btn btn-danger" id="basic-url" aria-describedby="basic-addon3">'.lang('find.cancel').'</button>					
+					<button onclick="cancel_form();" id="form_title_cancel" type="text" class=" btn btn-danger" id="basic-url" aria-describedby="basic-addon3">'.lang('find.cancel').'</button>
 
 					</div>';
 
@@ -567,7 +573,7 @@ function le($id)
 									success: function(data) {
 										$("#card_title").html(data);
 									}
-								});	
+								});
 								$( "#form_title" ).even().removeClass( "show" );
 							}
 					</script>';
@@ -586,7 +592,7 @@ function le($id)
 
 			$sx .= '<a href="https://www.bing.com/search?q='.$isbn.'+ISBN" target="_blank">';
 			$sx .= '<img src="'.URL.'img/logo/logo_bing.png" style="height: 50px" class="me-5 mb-5">';
-			$sx .= '</a>';			
+			$sx .= '</a>';
 
 			return $sx;
 		}
@@ -628,7 +634,7 @@ function le($id)
 		$isbn = $dt['i_identifier'];
 		$isbn_ok = 1;
 		if (substr($isbn, 0, 3) == '978') {
-			
+
 		} else {
 			$ISBN = $ISBN->isbns($isbn);
 			$isbn = $ISBN['isbn13'];
@@ -749,7 +755,7 @@ function le($id)
 			case '3':
 				$link = '<a href="' . (PATH . MODULE . 'tech/prepare_3/' . $dt['id_i']) . '">';
 				$linka = '</a>';
-				break;												
+				break;
 		}
 
 
@@ -768,7 +774,7 @@ function le($id)
 				case '0':
 					$sx .= '<td>'.$link.bsicone('process').$linka.'</td>';
 					break;
-			}		
+			}
 		$sx .= '</tr>';
 		return $sx;
 	}
@@ -807,7 +813,7 @@ function le($id)
 
 			/******** Return */
 			$url = PATH . MODULE . 'tech';
-			$sx .= $Style->btnReturn($url);			
+			$sx .= $Style->btnReturn($url);
 
 		}
 
@@ -843,7 +849,7 @@ function le($id)
 				} else {
 					$dt = $this->where('i_status',0)->orderBy('id_i desc')->limit(10)->findAll();
 				}
-			
+
 			$sx .= '<ul>';
 			for($r=0;$r < count($dt);$r++)
 				{
@@ -852,7 +858,7 @@ function le($id)
 				}
 			$sx .= '</ul>';
 			return $sx;
-		}	
+		}
 
 	function item_new_form()
 	{
@@ -863,7 +869,7 @@ function le($id)
 		$this->allowedFields = array(
 			'',
 			'tech_IA1_form1',
-			'',	
+			'',
 			'tech_IA1_form2',
 			'',
 			'tech_IA1_form3',
@@ -871,13 +877,13 @@ function le($id)
 		);
 
 		$sql = 'sql:id_bs:bs_name:library_place_bookshelf:bs_LIBRARY = \'' . LIBRARY . '\'';
-		$this->typeFields = 
-			array('hidden', 
-			$sql.'*', 
-			'hidden', 
-			'hidden', 			
-			'hidden', 
-			'text:5'.'*', 
+		$this->typeFields =
+			array('hidden',
+			$sql.'*',
+			'hidden',
+			'hidden',
+			'hidden',
+			'text:5'.'*',
 			'string:50'
 			);
 
@@ -894,8 +900,8 @@ function le($id)
 
 		$place = get("tech_IA1_form1");
 
-		if ($this->saved == 1) 
-			{	
+		if ($this->saved == 1)
+			{
 			$isbn = explode(chr(10), get("tech_IA1_form3"));
 			$tomboNr = (get("tech_IA1_form4"));
 			$Tombo = new \App\Models\Book\Tombo();
@@ -912,10 +918,10 @@ function le($id)
 			/******************************** Exemplares */
 				$nisbn = trim($isbn[$r]);
 
-				/* Valida ISBN */				
+				/* Valida ISBN */
 				$xisbn = $ISBN->isbns($isbn[$r]);
 
-				$xisbn = $xisbn['isbn13'];				
+				$xisbn = $xisbn['isbn13'];
 				$ex = $Tombo->exemplar($xisbn);
 
 				$dd['i_identifier'] = $xisbn;
@@ -991,5 +997,19 @@ function le($id)
 		$tela .= '</div>';
 		return $tela;
 	}
+
+	function labels($p)
+		{
+			switch($p)
+				{
+					case 'all':
+						$dompdf = new \Dompdf\Dompdf();
+						$dompdf->loadHtml(view('pdf_view'));
+						$dompdf->setPaper('A4', 'landscape');
+						$dompdf->render();
+						$dompdf->stream();
+
+				}
+		}
 
 }
