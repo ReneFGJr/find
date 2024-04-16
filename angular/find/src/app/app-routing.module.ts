@@ -7,6 +7,7 @@ import { BookComponent } from './000_core/page/book/book.component';
 import { MainAdminComponent } from './010_admin/page/main/main.component';
 import { IsbnAddComponent } from './010_admin/page/isbn-add/isbn-add.component';
 import { BookSearchComponent } from './010_admin/page/book-search/book-search.component';
+import { SelectLibaryComponent } from './030_library/page/select/select.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,7 @@ const routes: Routes = [
       { path: 'admin', component: MainAdminComponent },
       { path: 'admin/isbn/add', component: IsbnAddComponent },
       { path: 'admin/isbn/search', component: BookSearchComponent },
+      { path: 'library', component: SelectLibaryComponent },
     ],
   },
 ];

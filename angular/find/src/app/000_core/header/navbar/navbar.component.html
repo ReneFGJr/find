@@ -1,16 +1,13 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#"><img [src]="'assets/img/logo/logo_find_w.png'" style="height: 20px;" alt="image"></a>
+    <a class="navbar-brand" href="#"><img [src]="logo" style="height: 40px;" alt="image"></a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" [routerLink]="['']" routerLinkActive="router-link-active">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" [routerLink]="['libraries']" routerLinkActive="router-link-active">Bibliotecas</a>
+          <a class="nav-link" [routerLink]="['library']" routerLinkActive="router-link-active">Bibliotecas</a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -25,6 +22,17 @@
         </li>
         <li class="nav-item">
           <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Sobre
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" [routerLink]="['about']" routerLinkActive="router-link-active">Sobre o FIND</a></li>
+            <li><a class="dropdown-item" href="#">Sobre a Biblioteca</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Como se cadastrar</a></li>
+          </ul>
         </li>
       </ul>
       <form class="d-flex">

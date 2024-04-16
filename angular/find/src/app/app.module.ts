@@ -36,6 +36,7 @@ import { FieldsComponent } from './010_admin/page/fields/fields.component';
 import { SearchGoogleComponent } from './000_core/gadget/google/search/search.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BookSearchComponent } from './010_admin/page/book-search/book-search.component';
+import { SelectLibaryComponent } from './030_library/page/select/select.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { BookSearchComponent } from './010_admin/page/book-search/book-search.co
     FieldsComponent,
     SearchGoogleComponent,
     BookSearchComponent,
-    ],
+    SelectLibaryComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -73,15 +75,10 @@ import { BookSearchComponent } from './010_admin/page/book-search/book-search.co
     HttpClientModule,
     ReactiveFormsModule,
     FormsModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
   ],
-  exports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    RouterModule
-  ],
+  exports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
   providers: [HttpClient, FormControlDirective, FormGroupDirective],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
