@@ -20,6 +20,7 @@ export class FindService {
 
   public api_post(type: string, dt: Array<any> = []): Observable<Array<any>> {
     let url = `${this.url}` + type;
+    console.log("==="+url)
     var formData: any = new FormData();
     let apikey = this.cookieService.get('section');
     formData.append('user', apikey);
@@ -48,21 +49,6 @@ export class FindService {
       (res) => res,
       (error) => error
     );
-  }
-  /******************************************************************** */
-  public vitrine() {
-    let lib = this.getLibrary();
-    //if (lib !== '0')
-    {
-      let url = `${this.url}find/vitrine?library=` + lib;
-      console.log(`Bibliotecas: ${url}`);
-      var formData: any = new FormData();
-
-      return this.HttpClient.post<Array<any>>(url, formData).pipe(
-        (res) => res,
-        (error) => error
-      );
-    }
   }
 
   /******************************************************************** */

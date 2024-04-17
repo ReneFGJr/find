@@ -1,21 +1,31 @@
+import { Router } from '@angular/router';
 import { FindService } from './../../../000_core/service/find.service';
 import { Component } from '@angular/core';
+import { LocalStorageService } from 'src/app/000_core/service/local-storage.service';
 
 @Component({
   selector: 'app-select',
-  templateUrl: './select.component.html'
+  templateUrl: './select.component.html',
 })
 export class SelectLibaryComponent {
-  constructor(private findService: FindService) {}
+  constructor(
+    private findService: FindService,
+    private router: Router,
+    private localStorageService: LocalStorageService
+  ) {}
 
   public libraries: Array<any> | any;
 
   ngOnInit() {
-    console.log('Seleção de Biblioteca');
-    this.findService.api_post('library',[]).subscribe((res) => {
+    this.findService.api_post('library', []).subscribe((res) => {
       this.libraries = res;
-      this.libraries = this.libraries.data;
-      console.log(res)
+      console.log(res);
     });
+  }
+
+  selectLibrary(idLib: string = '') {
+    this.findService.setLibrary(idLib);
+    this.localStorageService.set('library',idLib)
+    this.router.navigate(['/']);
   }
 }

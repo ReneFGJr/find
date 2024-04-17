@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 helper(['boostrap', 'url', 'sessions', 'cookie','sisdoc']);
 $session = \Config\Services::session();
+define("PATH",'https://www.ufrgs.br/find/');
 
 class Api extends BaseController
 {
@@ -25,6 +26,19 @@ class Api extends BaseController
 
         switch($verb)
             {
+                case 'getIsbn':
+                    $Book = new \App\Models\Find\Items\Index();
+                    $isbn = get("isbn");
+                    $lib = get("lib");
+                    $RSP = $Book->getISBN($isbn,$lib);
+                    break;
+
+                case 'vitrine':
+                    $lib = trim(get("library").$d2);
+                    $Items = new \App\Models\Find\Items\Index();
+                    $RSP['items'] = $Items->vitrine($lib);
+                    break;
+
                 case 'library':
                     $Library = new \App\Models\Find\Library\Index();
                     $RSP = $this->version();

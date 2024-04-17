@@ -1,0 +1,24 @@
+<table width="100%" class="table">
+  <tr class="small">
+    <th>Tombo</th>
+    <th>Local</th>
+    <th>Localização</th>
+    <th>Situação</th>
+    <th>Empréstimo</th>
+  </tr>
+  <tr
+    class=""
+    *ngFor="let it of book.items"
+    class="border-top border-secondary"
+  >
+    <td>{{ it.tombo }}</td>
+    <td>{{ it.place }}</td>
+    <td>
+      <span style="font-family: 'Courier New', Courier, monospace">{{
+        it.local
+      }}</span>
+    </td>
+    <td>{{ it.status }}</td>
+    <td>{{ it.loan }}</td>
+  </tr>
+</table>

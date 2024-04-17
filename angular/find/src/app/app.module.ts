@@ -37,6 +37,7 @@ import { SearchGoogleComponent } from './000_core/gadget/google/search/search.co
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BookSearchComponent } from './010_admin/page/book-search/book-search.component';
 import { SelectLibaryComponent } from './030_library/page/select/select.component';
+import { ItemPlacesComponent } from './000_core/widgat/item-places/item-places.component';
 
 @NgModule({
   declarations: [
@@ -66,6 +67,7 @@ import { SelectLibaryComponent } from './030_library/page/select/select.componen
     SearchGoogleComponent,
     BookSearchComponent,
     SelectLibaryComponent,
+    ItemPlacesComponent,
   ],
   imports: [
     BrowserModule,

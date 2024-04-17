@@ -16,20 +16,19 @@ export class WelcomeComponent {
 
   public lib:string = '';
   public bookRow:Array<any> |any
+  public total: number = 0
 
   ngOnInit() {
     let lib = this.findService.getLibrary();
     if (lib === '' || lib === '0')
       {
-        this.router.navigate(['libraries']);
+        this.router.navigate(['library']);
       }
     this.lib = lib;
-
-    this.findService.vitrine().subscribe(
-      res => {
-        this.bookRow = res;
-        console.log(res)
-      }
-    );
+    let dt = [[]]
+    this.findService.api_post('vitrine/'+lib,dt).subscribe((res) => {
+      this.bookRow = res;
+      this.total = this.bookRow.items.length;
+    });
   }
 }

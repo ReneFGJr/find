@@ -12,10 +12,11 @@
       />
     </div>
     <!-- Vitrine -->
-    <app-find-vitrine *ngIf="bookRow" [books]="bookRow"></app-find-vitrine>
+    <app-find-vitrine *ngIf="total != 0" [books]="bookRow.items"></app-find-vitrine>
     <!-- Vitrine Vazia -->
-    <div *ngIf="!bookRow" class="alert alert-secondary col-12" role="alert">
+    <div *ngIf="total == 0" class="alert alert-secondary col-12" role="alert">
       Nenhuma obra inserida no catálogo da biblioteca
     </div>
   </div>
 </div>
+{{ total }}

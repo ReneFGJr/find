@@ -17,7 +17,7 @@ const routes: Routes = [
       { path: '', component: WelcomeComponent },
       { path: 'libraries', component: LibrariesComponent },
       { path: 'libraries/:id', component: LibrariesComponent },
-      { path: 'book/:id', component: BookComponent },
+      { path: 'book/:id/:lib', component: BookComponent },
       { path: 'admin', component: MainAdminComponent },
       { path: 'admin/isbn/add', component: IsbnAddComponent },
       { path: 'admin/isbn/search', component: BookSearchComponent },
