@@ -3,20 +3,9 @@
 namespace App\Models\Find\Labels;
 
 use CodeIgniter\Model;
-use TCPDF;
+#use TCPDF;
 
-class MYPDF extends TCPDF
-{
-    public function Header()
-    {
-        // Deixar vazio para não adicionar nada
-    }
 
-    public function Footer()
-    {
-        // Deixar vazio para não adicionar nada
-    }
-}
 
 class Index extends Model
 {

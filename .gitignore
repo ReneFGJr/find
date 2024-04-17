@@ -135,3 +135,5 @@ nb-configuration.xml
 *.google
 *.oclc
 app/Models/Book/Itens.php
+/v2/writable
+/v2/writable
