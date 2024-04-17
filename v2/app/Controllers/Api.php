@@ -26,6 +26,10 @@ class Api extends BaseController
 
         switch($verb)
             {
+                case 'label':
+                    $Labels = new \App\Models\Find\Labels\Index();
+                    $RSP = $Labels->print($d2,$d3);
+                    break;
                 case 'getIsbn':
                     $Book = new \App\Models\Find\Items\Index();
                     $isbn = get("isbn");
