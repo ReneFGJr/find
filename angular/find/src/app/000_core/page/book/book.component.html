@@ -6,19 +6,23 @@
     <div class="col-12 col-sm-9">
       <h1 class="title ps-5 pe-5 mt-0 mb-3">{{ book.title }}</h1>
       <ul>
-        <li *ngFor="let author of book.authors" class="author">
-          <h5>Autor(es):</h5>
-          {{ author.n_name }}
-          <hr />
-        </li>
+        <li><b>Autor(es):</b></li>
+        <span *ngFor="let author of book.meta.Authors" class="authors">
+          <a [routerLink]="['/v/'+author.ID]" class="link">{{author.name }}</a>
+        </span>
       </ul>
 
       <!--------------- Meta -->
       <ul *ngIf="book.meta.Publisher">
         <li *ngFor="let meta of book.meta.Publisher">
-          Editora: {{ meta.name }}
+          <b>Editora</b>:
+          <a [routerLink]="['/v/'+meta.ID]" class="link">
+          {{ meta.name }}
+          </a>
         </li>
-        <li *ngFor="let meta of book.meta.Place">Local: {{ meta.name }}</li>
+        <li *ngFor="let meta of book.meta.Place"><b>Local</b>:
+        <a [routerLink]="['/v/'+meta.ID]" class="link">{{ meta.name }}</a>
+        </li>
       </ul>
 
       <ul>
@@ -32,20 +36,22 @@
       <!---- Assuntos-->
       <ul *ngIf="book.meta.Subject">
         <li><b>Assuntos:</b></li>
-        <span class="subject" *ngFor="let meta of book.meta.Subject">
-          {{ meta.name }}
+        <span class="" *ngFor="let meta of book.meta.Subject">
+          <a [routerLink]="['/v/'+meta.ID]" class="link subject">{{ meta.name }}</a>
         </span>
       </ul>
 
       <!---- Classificação-->
       <ul *ngIf="book.meta.CDD">
         <li class="classification" *ngFor="let meta of book.meta.CDD">
-          <b>CDD:</b> {{ meta.name }}
+          <b>CDD: </b>
+          <a [routerLink]="['/v/'+meta.ID]" class="link">{{ meta.name }}</a>
         </li>
       </ul>
       <ul *ngIf="book.meta.CDU">
         <li class="classification" *ngFor="let meta of book.meta.CDU">
-          <b>CDU:</b> {{ meta.name }}
+          <b>CDU: </b>
+          <a [routerLink]="['/v/'+meta.ID]" class="link">{{ meta.name }}</a>
         </li>
       </ul>
 

@@ -40,22 +40,31 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    function metadata($dt)
+    function metadata($dt, $RSP = [])
     {
-        $RSP = [];
-        $RSP['authors'] = [];
-        $RSP['Publisher'] = [];
-        $RSP['Place'] = [];
-        $RSP['CDD'] = [];
-        $RSP['CDU'] = [];
-        $RSP['Subject'] = [];
-        $RSP['Langage'] = [];
+        $fld = ['Title','Authors', 'Publisher', 'Place', 'CDD', 'CDU', 'Subject', 'Langage','',''];
+
+        foreach($fld as $name)
+            {
+                if (!isset($RSP[$name]))
+                    {
+                        $RSP[$name] = [];
+                    }
+            }
+
+
 
         foreach ($dt['data'] as $id => $line) {
             $Class = $line['Class'];
             $Prop = $line['Property'];
             $value = $this->getValue($line);
             switch ($Prop) {
+                case 'prefLabel':
+                    array_push($RSP['Title'], $value);
+                    break;
+                case 'hasAuthor':
+                    array_push($RSP['Authors'], $value);
+                    break;
                 case 'isPlacePublisher':
                     array_push($RSP['Place'], $value);
                     break;

@@ -86,7 +86,9 @@ class Index extends Model
                 ->where('i_library', $lib)
                 ->first();
 
-            $RSP = [];
+             $META = [];
+             $RSP = [];
+
             if ($dt != [])
                 {
                     $RSP['title'] = $dt['i_titulo'];
@@ -101,23 +103,27 @@ class Index extends Model
                     $dtR = $RDF->le($dt['i_manitestation']);
 
                     $Metadata = new \App\Models\Find\Metadata\Index();
-                    $META = $Metadata->metadata($dtR);
+                    $META = $Metadata->metadata($dtR, $META);
 
                     /*********** Expression */
                     $expression = $RDF->extract($dtR, 'isAppellationOfManifestation', 'A');
                     foreach($expression as $ide=>$expr)
                         {
                             $dtR = $RDF->le($expr);
-                            $meta = $Metadata->metadata($dtR);
+                            $meta = $Metadata->metadata($dtR, $META);
                             $META = array_merge($META,$meta);
                         }
-                    $WORK = $RDF->extract($dtR, 'isAppellationOfExpression','A');
-                    $WORK = $WORK[0];
+
+                    /*********** Work */
+                    $Work = $RDF->extract($dtR, 'isAppellationOfExpression','A');
+                    foreach ($Work as $ide => $expr) {
+                        $dtR = $RDF->le($expr);
+                        $meta = $Metadata->metadata($dtR, $META);
+                        $META = array_merge($META, $meta);
+                    }
 
 
                     $RSP['meta'] = $META;
-
-                    pre($expression);
                 }
             return $RSP;
         }
