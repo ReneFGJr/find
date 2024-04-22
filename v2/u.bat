@@ -1,0 +1,1 @@
+copy ..\..\Brapci3.1\app\Models\RDF2\* app\models\Find\RDF2\*

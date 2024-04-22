@@ -138,7 +138,20 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   padding: 0px 0px 0px 0px;
   }
 
-
+.subject:hover
+  {
+    background-color: #eee;
+  }
+.subject, a.subject
+  {
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 1px 3px;
+    margin-right: 10px;
+    line-height: 2em;
+    text-decoration: none;
+    cursor: pointer;
+  }
 
 .link
   {

@@ -94,6 +94,30 @@ class Index extends Model
 
                     $RSP['items'] = $this->exemplares($isbn,$lib);
                     $RSP['cover'] = $Cover->cover($isbn);
+
+                    $RSP['ID'] = $dt['i_manitestation'];
+
+                    $RDF = new \App\Models\RDF2\RDF();
+                    $dtR = $RDF->le($dt['i_manitestation']);
+
+                    $Metadata = new \App\Models\Find\Metadata\Index();
+                    $META = $Metadata->metadata($dtR);
+
+                    /*********** Expression */
+                    $expression = $RDF->extract($dtR, 'isAppellationOfManifestation', 'A');
+                    foreach($expression as $ide=>$expr)
+                        {
+                            $dtR = $RDF->le($expr);
+                            $meta = $Metadata->metadata($dtR);
+                            $META = array_merge($META,$meta);
+                        }
+                    $WORK = $RDF->extract($dtR, 'isAppellationOfExpression','A');
+                    $WORK = $WORK[0];
+
+
+                    $RSP['meta'] = $META;
+
+                    pre($expression);
                 }
             return $RSP;
         }
@@ -111,8 +135,8 @@ class Index extends Model
                 {
                     $dd = [];
                     $local = $line['i_ln1'].' '. $line['i_ln2'];
-                    if ($line['l_ln3'] != '') { $local .= ' '.$line['i_ln3'] ; }
-                    if ($line['l_ln4'] != '') { $local .= ' '.$line['i_ln4'] ; }
+                    if ($line['i_ln3'] != '') { $local .= ' '.$line['i_ln3'] ; }
+                    if ($line['i_ln4'] != '') { $local .= ' '.$line['i_ln4'] ; }
                     $dd['local'] = $local;
                     $dd['exemplar'] = $line['i_exemplar'];
                     $dd['tombo'] = $line['i_tombo'];

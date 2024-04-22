@@ -13,6 +13,14 @@
         </li>
       </ul>
 
+      <!--------------- Meta -->
+      <ul *ngIf="book.meta.Publisher">
+        <li *ngFor="let meta of book.meta.Publisher">
+          Editora: {{ meta.name }}
+        </li>
+        <li *ngFor="let meta of book.meta.Place">Local: {{ meta.name }}</li>
+      </ul>
+
       <ul>
         <li><b>ISBN</b>: {{ book.isbn }}</li>
         <li *ngFor="let item of book.data" class="item">
@@ -21,11 +29,30 @@
         </li>
       </ul>
 
+      <!---- Assuntos-->
+      <ul *ngIf="book.meta.Subject">
+        <li><b>Assuntos:</b></li>
+        <span class="subject" *ngFor="let meta of book.meta.Subject">
+          {{ meta.name }}
+        </span>
+      </ul>
+
+      <!---- Classificação-->
+      <ul *ngIf="book.meta.CDD">
+        <li class="classification" *ngFor="let meta of book.meta.CDD">
+          <b>CDD:</b> {{ meta.name }}
+        </li>
+      </ul>
+      <ul *ngIf="book.meta.CDU">
+        <li class="classification" *ngFor="let meta of book.meta.CDU">
+          <b>CDU:</b> {{ meta.name }}
+        </li>
+      </ul>
+
       ITEMS
       <div>
-      <app-item-places [book]="book"></app-item-places>
+        <app-item-places [book]="book"></app-item-places>
       </div>
     </div>
   </div>
 </div>
-{{ book | json }}
