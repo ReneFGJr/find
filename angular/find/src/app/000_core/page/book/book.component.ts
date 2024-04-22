@@ -27,7 +27,6 @@ export class BookComponent {
       this.ActivatedRoute.queryParams.subscribe((res) => {
         let dt: Array<any> | any = { isbn: this.id, lib: this.lib };
         this.findService.api_post('getIsbn', dt).subscribe((res) => {
-          console.log(res);
           this.book = res;
         });
       });
