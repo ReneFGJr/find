@@ -65,7 +65,7 @@ class Index extends Model
         $limit = 9999;
         $offset = 0;
         $dt['labels'] = $this
-            ->select('i_ln1 as ln1, i_ln2 as ln2, i_ln3 as ln3, i_ln4 as ln4')
+            ->select('i_ln1 as ln1, i_ln2 as ln2, i_ln3 as ln3, i_ln4 as ln4, i_tombo')
             ->where('i_library', $lib)
             ->where('i_titulo <> ""')
             ->where('i_ln1 <> ""')
@@ -102,7 +102,7 @@ class Index extends Model
                 $pdf->Cell(40, 10, $linel['ln2'], 0);
 
                 $pdf->SetXY($posX, $posY + $labelLine*2); // 160 mm da borda esquerda
-                $pdf->Cell(40, 10, $linel['ln3'], 0);
+                $pdf->Cell(40, 10, $linel['i_tombo'], 0);
 
 
                 if ($labelCol >= ($labelCols-1))

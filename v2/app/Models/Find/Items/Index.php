@@ -124,6 +124,8 @@ class Index extends Model
 
 
                     $RSP['meta'] = $META;
+                } else {
+                    $RSP['meta'] = "OPS ERRO";
                 }
             return $RSP;
         }

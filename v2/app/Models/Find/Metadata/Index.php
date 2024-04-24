@@ -42,7 +42,7 @@ class Index extends Model
 
     function metadata($dt, $RSP = [])
     {
-        $fld = ['Title','Authors', 'Publisher', 'Place', 'CDD', 'CDU', 'Subject', 'Langage','',''];
+        $fld = ['Title','Authors', 'Publisher', 'Place', 'CDD', 'CDU', 'Subject', 'Langage','Page',''];
 
         foreach($fld as $name)
             {
@@ -71,6 +71,9 @@ class Index extends Model
                 case 'isPublisher':
                     array_push($RSP['Publisher'], $value);
                     break;
+                case 'isPlaceOfPublication':
+                    array_push($RSP['Publisher'], $value);
+                    break;
                 case 'hasClassificationCDD':
                     array_push($RSP['CDD'], $value);
                     break;
@@ -82,6 +85,9 @@ class Index extends Model
                     break;
                 case 'hasSubject':
                     array_push($RSP['Subject'], $value);
+                    break;
+                case 'hasPage':
+                    array_push($RSP['Page'], $value);
                     break;
                 /********* None */
                 case 'isAppellationOfExpression':
