@@ -3,6 +3,7 @@
 namespace App\Models\Find\Labels;
 
 use CodeIgniter\Model;
+use App\Libraries\Fpdf\Fpdf;
 #use TCPDF;
 
 
@@ -47,15 +48,16 @@ class Index extends Model
 
     function print($d1='', $d2='', $d3='')
     {
+
+        $pdf = new FPDF();
+        $pdf->AddPage();
+        $pdf->SetMargins(0,0,0,0);
+
         $dt = [];
         $da = [];
-        for ($r = 0; $r < 27; $r++) {
-            array_push($da, ['ln1' => '205.' . $r, 'ln2' => 'A123A']);
-        }
-        $dt = [];
 
         $lib = 1016;
-        $limit = 1000;
+        $limit = 100;
         $offset = 0;
         $dt['labels'] = $this
             ->select('i_ln1 as ln1, i_ln2 as ln2, i_ln3 as ln3, i_ln4 as ln4')
@@ -63,19 +65,62 @@ class Index extends Model
             ->where('i_titulo <> ""')
             ->where('i_ln1 <> ""')
             ->orderBy('id_i')
+            //->orderBy('ln1')
             ->findAll($limit, $offset);
+            //echo $this->getlastquery();
 
-        $mpdf = new \Mpdf\Mpdf();
-        $mpdf->AddPageByArray([
-            'margin-left' => 0,
-            'margin-right' => 0,
-            'margin-top' => 10,
-            'margin-bottom' => 5,
-        ]);
-        $html = view('BrapciBooks/Labels/pimaco_a4255.html', $dt);
-        $mpdf->WriteHTML($html);
-        header("Content-type:application/pdf");
-        $mpdf->Output('labels.pdf', 'I'); // opens in browser
+            $posXini = 20;
+            $posX = $posXini;
+            $labelSpace = 31;
+            $labelLine = 6;
+
+            $posYini = 12;
+            $posY = $posYini;
+            $labelCols = 3;
+            $labelCol = 0;
+            $labelWidth = 70;
+
+            $pdf->setX($posX);
+            $pdf->setY($posY);
+
+            $pdf->SetFont('Arial','B');
+            $pdf->SetFontSize(11);
+            $pdf->SetLineWidth(0.13);
+
+
+        foreach($dt['labels'] as $idl=>$linel)
+            {
+                $pdf->SetXY($posX, $posY); // 160 mm da borda esquerda
+                $pdf->Cell(40, 10, $linel['ln1'], 0);
+
+                $pdf->SetXY($posX, $posY + $labelLine); // 160 mm da borda esquerda
+                $pdf->Cell(40, 10, $linel['ln2'], 0);
+
+                $pdf->SetXY($posX, $posY + $labelLine*2); // 160 mm da borda esquerda
+                $pdf->Cell(40, 10, $linel['ln3'], 0);
+
+
+                if ($labelCol >= ($labelCols-1))
+                    {
+                        $posY = $posY + $labelSpace;
+                        $posX = $posXini;
+                        $labelCol = 0;
+
+                        if ($posY > 250)
+                            {
+                                $pdf->AddPage();
+                                $posX = $posXini;
+                                $posY = $posYini;
+                            }
+                    } else {
+                        $posX = $posX + $labelWidth;
+                        $labelCol++;
+                    }
+
+
+            }
+            //exit;
+        $pdf->Output();
         exit;
     }
 
