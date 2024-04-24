@@ -57,7 +57,7 @@ class Index extends Model
         $da = [];
 
         $lib = 1016;
-        $limit = 100;
+        $limit = 9999;
         $offset = 0;
         $dt['labels'] = $this
             ->select('i_ln1 as ln1, i_ln2 as ln2, i_ln3 as ln3, i_ln4 as ln4')
