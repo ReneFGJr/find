@@ -46,7 +46,7 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    function print($d1='', $d2='', $d3='')
+    function print($d1='', $ord='i', $d3='')
     {
 
         $pdf = new FPDF();
@@ -57,6 +57,11 @@ class Index extends Model
         $da = [];
 
         $lib = 1016;
+        $ord = 'id_i';
+        if ($d1 != '')
+            {
+                $lib = $d1;
+            }
         $limit = 9999;
         $offset = 0;
         $dt['labels'] = $this
@@ -64,7 +69,7 @@ class Index extends Model
             ->where('i_library', $lib)
             ->where('i_titulo <> ""')
             ->where('i_ln1 <> ""')
-            ->orderBy('id_i')
+            ->orderBy($ord)
             //->orderBy('ln1')
             ->findAll($limit, $offset);
             //echo $this->getlastquery();
