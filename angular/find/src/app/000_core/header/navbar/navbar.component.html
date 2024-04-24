@@ -34,6 +34,18 @@
             <li><a class="dropdown-item" href="#">Como se cadastrar</a></li>
           </ul>
         </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Índices
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" [routerLink]="['index/authors']" routerLinkActive="router-link-active">Índice de autores</a></li>
+            <li><a class="dropdown-item" [routerLink]="['index/subject']" routerLinkActive="router-link-active">Índice de assuntos</a></li>
+            <li><a class="dropdown-item" [routerLink]="['index/publisher']" routerLinkActive="router-link-active">Índice de editoras</a></li>
+          </ul>
+        </li>
+
       </ul>
       <form class="d-flex">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">

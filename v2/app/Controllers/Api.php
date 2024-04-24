@@ -27,6 +27,13 @@ class Api extends BaseController
 
 
         switch ($verb) {
+            case 'getIndex':
+                $lib = get("lib");
+                $Index = new \App\Models\Find\Indexes\Index();
+                $RSP['index'] = $d2;
+                $RSP['terms'] = $Index->getIndex($d2,$lib);
+                break;
+
             case 'search':
                 $RSP['term'] = get("q");
                 $UI = new \App\Models\UI\Search\Index();
@@ -39,7 +46,6 @@ class Api extends BaseController
                 break;
 
             case 'getIsbn':
-
                 $Book = new \App\Models\Find\Items\Index();
                 if ($d2 != '') {
                     $isbn = $d2;

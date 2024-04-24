@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { WelcomeComponent } from './000_core/page/welcome/welcome.component';
@@ -9,6 +10,7 @@ import { IsbnAddComponent } from './010_admin/page/isbn-add/isbn-add.component';
 import { BookSearchComponent } from './010_admin/page/book-search/book-search.component';
 import { SelectLibaryComponent } from './030_library/page/select/select.component';
 import { VComponent } from './000_core/page/v/v.component';
+import { IndexComponent } from './040_index/page/index/index.component';
 
 const routes: Routes = [
   {
@@ -24,6 +26,7 @@ const routes: Routes = [
       { path: 'admin/isbn/search', component: BookSearchComponent },
       { path: 'library', component: SelectLibaryComponent },
       { path: 'v/:id', component: VComponent },
+      { path: 'index/:type', component: IndexComponent },
     ],
   },
 ];

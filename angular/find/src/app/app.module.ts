@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormControlDirective, FormGroupDirective, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { CommonModule, HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -39,6 +39,7 @@ import { BookSearchComponent } from './010_admin/page/book-search/book-search.co
 import { SelectLibaryComponent } from './030_library/page/select/select.component';
 import { ItemPlacesComponent } from './000_core/widgat/item-places/item-places.component';
 import { VComponent } from './000_core/page/v/v.component';
+import { IndexComponent } from './040_index/page/index/index.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { VComponent } from './000_core/page/v/v.component';
     SelectLibaryComponent,
     ItemPlacesComponent,
     VComponent,
+    IndexComponent,
   ],
   imports: [
     BrowserModule,
@@ -82,7 +84,12 @@ import { VComponent } from './000_core/page/v/v.component';
     BrowserAnimationsModule,
   ],
   exports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
-  providers: [HttpClient, FormControlDirective, FormGroupDirective],
+  providers: [
+    HttpClient,
+    FormControlDirective,
+    FormGroupDirective,
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,0 +1,19 @@
+<div class="container"  *ngIf="data">
+  <div class="row">
+    <div class="col-12">
+        <h1>Índice {{tipo}}</h1>
+        <h5>Total: {{data.terms.index.length}}</h5>
+    </div>
+    <div class="col-12" style="column-count: 3;">
+      <div *ngIf="data.terms.index">
+      <ul>
+      <li *ngFor="let item of data.terms.index">
+        <a [routerLink]="['/v/'+item.ID]" class="link"> {{ item.name }}</a>
+      </li>
+
+      </ul>
+
+      </div>
+    </div>
+  </div>
+</div>

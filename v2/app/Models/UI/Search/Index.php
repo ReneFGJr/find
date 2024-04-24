@@ -50,13 +50,14 @@ class Index extends Model
             $terms = explode(' ', $term);
 
             foreach ($terms as $n) {
-                $item->like('i_titulo', $n);
+                $item->like('LOWER(i_titulo)', mb_strtolower($n));
             }
             $item->where('i_library',$lib);
             $item->orderBy($ord);
             $dt = $item->findAll(200);
 
             $RSP = [];
+
             foreach ($dt as $idb => $line) {
                 $dd = [];
                 $dd['title'] = $line['i_titulo'];

@@ -42,7 +42,8 @@ class Index extends Model
 
     function metadata($dt, $RSP = [])
     {
-        $fld = ['Title','Authors', 'Publisher', 'Place', 'CDD', 'CDU', 'Subject', 'Langage','Page',''];
+        $fld = ['Title','Authors', 'Publisher', 'Place', 'CDD', 'CDU', 'Subject', 'Langage','Page', 'ColorClassification',
+        'Cutter'];
 
         foreach($fld as $name)
             {
@@ -65,6 +66,9 @@ class Index extends Model
                 case 'hasAuthor':
                     array_push($RSP['Authors'], $value);
                     break;
+                case 'hasCutter':
+                    array_push($RSP['Cutter'], $value);
+                    break;
                 case 'isPlacePublisher':
                     array_push($RSP['Place'], $value);
                     break;
@@ -73,6 +77,9 @@ class Index extends Model
                     break;
                 case 'isPlaceOfPublication':
                     array_push($RSP['Publisher'], $value);
+                    break;
+                case 'hasColorclassification':
+                    array_push($RSP['ColorClassification'], $value);
                     break;
                 case 'hasClassificationCDD':
                     array_push($RSP['CDD'], $value);
@@ -95,10 +102,13 @@ class Index extends Model
                 case 'isAppellationOfManifestation':
                     break;
                 default:
-                    echo '==='.$Prop;
-                    pre($value);
-                    exit;
-
+                    $fld = $Prop;
+                    if (!isset($RSP[$fld]))
+                        {
+                            $RSP[$fld] = [];
+                        }
+                    array_push($RSP[$fld], $value);
+                    break;
             }
         }
         return $RSP;
