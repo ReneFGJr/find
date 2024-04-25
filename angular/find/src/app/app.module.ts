@@ -40,6 +40,11 @@ import { SelectLibaryComponent } from './030_library/page/select/select.componen
 import { ItemPlacesComponent } from './000_core/widgat/item-places/item-places.component';
 import { VComponent } from './000_core/page/v/v.component';
 import { IndexComponent } from './040_index/page/index/index.component';
+import { LibraryComponent } from './010_admin/page/library/library.component';
+import { AdminComponent } from './010_admin/page/admin/admin.component';
+import { SidebarComponent } from './000_core/header/sidebar/sidebar.component';
+import { HomeAdminComponent } from './010_admin/page/home/home.component';
+import { LibraryEditComponent } from './010_admin/page/library-edit/library-edit.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +77,11 @@ import { IndexComponent } from './040_index/page/index/index.component';
     ItemPlacesComponent,
     VComponent,
     IndexComponent,
+    LibraryComponent,
+    AdminComponent,
+    SidebarComponent,
+    HomeAdminComponent,
+    LibraryEditComponent,
   ],
   imports: [
     BrowserModule,

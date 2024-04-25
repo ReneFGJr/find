@@ -1,0 +1,31 @@
+<h1>{{ library }}</h1>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-lg-2 col-12 small text-end">BIBLIOTECA</div>
+    <div class="col-lg-10 col-12 h2">
+      {{ data.l_name }}
+    </div>
+
+    <div class="col-lg-2 col-12 small text-end">CÓDIGO</div>
+    <div class="col-lg-10 col-12">
+      <b>{{ data.l_code }}</b>
+    </div>
+
+    <div class="col-lg-2 col-12 small text-end mt-2">SOBRE</div>
+    <div
+      class="col-lg-10 col-12 mt-2"
+      style="min-height: 50px"
+    >
+      <b>{{ data.l_about }}</b>
+    </div>
+
+    <div class="col-lg-2 col-12 small text-end mt-2">LOGO</div>
+    <div
+      class="col-lg-10 col-12 mt-2"
+      style="min-height: 50px"
+    >
+      <img src="https://www.ufrgs.br/find/{{ data.l_logo }}" style="height: 100px;">
+    </div>
+  </div>
+</div>

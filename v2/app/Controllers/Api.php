@@ -27,6 +27,11 @@ class Api extends BaseController
 
 
         switch ($verb) {
+            case 'getLibrary':
+                $Library = new \App\Models\Find\Library\Index();
+                $RSP = $Library->where('l_code',$d2)->first();
+                break;
+
             case 'getIndex':
                 $lib = get("lib");
                 $Index = new \App\Models\Find\Indexes\Index();
@@ -40,6 +45,7 @@ class Api extends BaseController
                 $RSP['items'] = $UI->searchAPI(get("q"),$d2,$d3);
                 $RSP['term'] = array_merge($_POST,$_GET);
                 break;
+
             case 'label':
                 $Labels = new \App\Models\Find\Labels\Index();
                 $RSP = $Labels->print($d2, $d3);

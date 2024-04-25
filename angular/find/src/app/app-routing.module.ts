@@ -11,6 +11,10 @@ import { BookSearchComponent } from './010_admin/page/book-search/book-search.co
 import { SelectLibaryComponent } from './030_library/page/select/select.component';
 import { VComponent } from './000_core/page/v/v.component';
 import { IndexComponent } from './040_index/page/index/index.component';
+import { LibraryComponent } from './010_admin/page/library/library.component';
+import { AdminComponent } from './010_admin/page/admin/admin.component';
+import { HomeAdminComponent } from './010_admin/page/home/home.component';
+import { LibraryEditComponent } from './010_admin/page/library-edit/library-edit.component';
 
 const routes: Routes = [
   {
@@ -18,6 +22,15 @@ const routes: Routes = [
     component: MainFindComponent,
     children: [
       { path: '', component: WelcomeComponent },
+      {
+        path: 'admin',
+        component: AdminComponent,
+        children: [
+          { path: 'libraries', component: LibraryComponent },
+          { path: 'library/:id', component: LibraryEditComponent},
+          { path: 'home', component: HomeAdminComponent },
+        ],
+      },
       { path: 'libraries', component: LibrariesComponent },
       { path: 'libraries/:id', component: LibrariesComponent },
       { path: 'book/:id/:lib', component: BookComponent },

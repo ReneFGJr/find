@@ -1,0 +1,32 @@
+<h1>Lista de Biblitoecas</h1>
+
+<div *ngIf="libraries" class="container-full">
+  <div
+    *ngFor="let item of libraries.library; index as i"
+    class="row mb-1 overDiv"
+    (click)="selectLibrary(item.code)"
+  >
+    <div
+      class="col-4 col-lg-2 text-center"
+    >
+      <img [src]="item.logo" class="img-thumbnail d-block p-2" />
+    </div>
+    <div class="col-8 col-lg-10">
+      <h2>{{ item.name }}</h2>
+    </div>
+  </div>
+</div>
+
+<style>
+.overDiv
+  {
+    border: 2px solid #fff;
+  }
+.overDiv:hover
+{
+  background-color: #fff;
+  border: 2px solid #888;
+  cursor: pointer;
+}
+
+</style>
