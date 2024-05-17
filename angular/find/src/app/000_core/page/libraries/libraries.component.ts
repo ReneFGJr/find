@@ -24,7 +24,7 @@ export class LibrariesComponent {
         if (this.id !== '0' && this.id !== 'NaN')
           {
               this.findService.setLibrary(this.id);
-               this.router.navigate(['/'])
+              this.router.navigate(['/'])
           } else {
             console.log('select')
           }

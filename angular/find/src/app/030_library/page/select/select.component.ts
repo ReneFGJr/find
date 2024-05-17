@@ -26,6 +26,8 @@ export class SelectLibaryComponent {
   selectLibrary(idLib: string = '') {
     this.findService.setLibrary(idLib);
     this.localStorageService.set('library',idLib)
-    this.router.navigate(['/']);
+    //window.location.reload();
+    document.location.href = '/'
+    //this.router.navigate(['/']);
   }
 }

@@ -15,6 +15,8 @@ import { LibraryComponent } from './010_admin/page/library/library.component';
 import { AdminComponent } from './010_admin/page/admin/admin.component';
 import { HomeAdminComponent } from './010_admin/page/home/home.component';
 import { LibraryEditComponent } from './010_admin/page/library-edit/library-edit.component';
+import { LoginComponent } from './050_login/login/login.component';
+import { VitrineV2Component } from './060_vitrine/page/vitrine-v2/vitrine-v2.component';
 
 const routes: Routes = [
   {
@@ -27,19 +29,23 @@ const routes: Routes = [
         component: AdminComponent,
         children: [
           { path: 'libraries', component: LibraryComponent },
-          { path: 'library/:id', component: LibraryEditComponent},
+          { path: 'library/:id', component: LibraryEditComponent },
           { path: 'home', component: HomeAdminComponent },
         ],
       },
+      { path: 'library', component: SelectLibaryComponent },
       { path: 'libraries', component: LibrariesComponent },
       { path: 'libraries/:id', component: LibrariesComponent },
       { path: 'book/:id/:lib', component: BookComponent },
       { path: 'admin', component: MainAdminComponent },
       { path: 'admin/isbn/add', component: IsbnAddComponent },
       { path: 'admin/isbn/search', component: BookSearchComponent },
-      { path: 'library', component: SelectLibaryComponent },
       { path: 'v/:id', component: VComponent },
       { path: 'index/:type', component: IndexComponent },
+
+      { path: 'login', component: LoginComponent },
+
+      { path: 'vitrine', component: VitrineV2Component },
     ],
   },
 ];

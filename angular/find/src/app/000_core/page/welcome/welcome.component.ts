@@ -17,6 +17,7 @@ export class WelcomeComponent {
   public lib: string = '';
   public bookRow: Array<any> | any;
   public total: number = 0;
+  public logo: string = 'assets/img/logo/logo_find.png'
 
   ngOnInit() {
     let lib = this.findService.getLibrary();
@@ -24,6 +25,9 @@ export class WelcomeComponent {
       this.router.navigate(['library']);
     }
     this.lib = lib;
+    /* Logo */
+    this.logo = 'http://ufrgs.br/find/img/logo/logo_'+this.lib+'.jpg';
+
     let dt = [[]];
     this.findService.api_post('vitrine/' + lib, dt).subscribe((res) => {
       this.bookRow = res;
@@ -31,8 +35,7 @@ export class WelcomeComponent {
     });
   }
 
-  resultSearch($e:Array<any>)
-    {
-      this.bookRow = $e;
-    }
+  resultSearch($e: Array<any>) {
+    this.bookRow = $e;
+  }
 }

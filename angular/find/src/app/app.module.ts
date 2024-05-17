@@ -45,6 +45,9 @@ import { AdminComponent } from './010_admin/page/admin/admin.component';
 import { SidebarComponent } from './000_core/header/sidebar/sidebar.component';
 import { HomeAdminComponent } from './010_admin/page/home/home.component';
 import { LibraryEditComponent } from './010_admin/page/library-edit/library-edit.component';
+import { LoginComponent } from './050_login/login/login.component';
+import { VitrineV2Component } from './060_vitrine/page/vitrine-v2/vitrine-v2.component';
+import { BookV2Component } from './060_vitrine/widgat/book-v2/book-v2.component';
 
 @NgModule({
   declarations: [
@@ -82,6 +85,9 @@ import { LibraryEditComponent } from './010_admin/page/library-edit/library-edit
     SidebarComponent,
     HomeAdminComponent,
     LibraryEditComponent,
+    LoginComponent,
+    VitrineV2Component,
+    BookV2Component,
   ],
   imports: [
     BrowserModule,

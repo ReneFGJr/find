@@ -19,7 +19,6 @@ export class LibraryEditComponent {
   ngOnInit() {
     this.ActivatedRoute.params.subscribe((res) => {
       this.library = res['id'];
-      console.log(this.library);
 
       let dt: Array<any> | any = { id: this.library };
       this.findService

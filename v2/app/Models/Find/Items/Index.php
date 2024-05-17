@@ -54,7 +54,7 @@ class Index extends Model
     function vitrine($lib='')
         {
             $Covers = new \App\Models\Find\Cover\Index();
-            $limit = 20;
+            $limit = 48;
             $offset = 0;
             $dt = $this
                 ->select('i_titulo, i_identifier, max(id_i) as id_i')
