@@ -1,19 +1,22 @@
 import { Component } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['../signin/signin.component.scss'],
+  selector: 'app-signin',
+  templateUrl: './signin.component.html',
+  styleUrls: ['./signin.component.scss'],
 })
-export class LoginComponent {
+export class SigninComponent {
   public loginForm: FormGroup | any;
+  public field_name: boolean = true;
+  public field_pass: boolean = true;
 
   ngOnInit(): void {
     this.loginForm = new FormGroup({
+      fullname: new FormControl('', Validators.required),
       username: new FormControl('', Validators.required),
       password: new FormControl('', Validators.required),
-      verb: new FormControl('singin', Validators.required),
+      verb: new FormControl('singup', Validators.required),
     });
   }
 

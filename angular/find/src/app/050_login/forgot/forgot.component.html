@@ -3,10 +3,10 @@
     <div class="col-12 col-lg-6">
       <!-- login.component.html -->
       <div class="login custom-form">
-        <h1 class="text-center fw-bold mb-2">Login no Sistema</h1>
+        <h1 class="text-center fw-bold mb-2">Esqueci minha senha</h1>
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           <div>
-            <label for="username">E-mail do usuário</label>
+            <label for="username">Informe o e-mail cadastrado do usuário</label>
             <input id="username" formControlName="username" />
             <div
               *ngIf="loginForm.value.username == ''"
@@ -18,25 +18,12 @@
             >&nbsp;</div>
           </div>
 
-          <div>
-            <label for="password">Password</label>
-            <input id="password" type="password" formControlName="password" />
-            <div
-              *ngIf="loginForm.value.password == ''"
-              class="text-danger mb-4"
-            >senha é obrigatória</div>
-            <div
-              *ngIf="loginForm.value.password != ''"
-              class="text-success mb-4"
-            >&nbsp;</div>
-          </div>
-
-          <button type="submit" [disabled]="loginForm.invalid">Entrar</button>
+        <button type="submit" [disabled]="loginForm.invalid">Ressetar a senha</button>
         </form>
         <div class="full mt-2 text-center">
           <a class="link" [routerLink]="['/signup']" routerLinkActive="router-link-active">Não tem login?</a>
                     |
-          <a class="link" [routerLink]="['/forgout']" routerLinkActive="router-link-active">Esqueceu a senha?</a>
+          <a class="link" [routerLink]="['/login']" routerLinkActive="router-link-active">Já tem cadastro?</a>
 
         </div>
       </div>

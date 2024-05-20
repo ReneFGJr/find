@@ -48,6 +48,9 @@ import { LibraryEditComponent } from './010_admin/page/library-edit/library-edit
 import { LoginComponent } from './050_login/login/login.component';
 import { VitrineV2Component } from './060_vitrine/page/vitrine-v2/vitrine-v2.component';
 import { BookV2Component } from './060_vitrine/widgat/book-v2/book-v2.component';
+import { SigninComponent } from './050_login/signin/signin.component';
+import { PerfilComponent } from './050_login/perfil/perfil.component';
+import { ForgotComponent } from './050_login/forgot/forgot.component';
 
 @NgModule({
   declarations: [
@@ -88,6 +91,9 @@ import { BookV2Component } from './060_vitrine/widgat/book-v2/book-v2.component'
     LoginComponent,
     VitrineV2Component,
     BookV2Component,
+    SigninComponent,
+    PerfilComponent,
+    ForgotComponent,
   ],
   imports: [
     BrowserModule,

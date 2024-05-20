@@ -1,9 +1,11 @@
 <div class="container">
   <div class="row">
-    <div class="col-12 col-lg-6">
+    <div class="col-12 col-lg-4">
+    </div>
+    <div class="col-12 col-lg-8">
       <!-- login.component.html -->
       <div class="login custom-form">
-        <h1 class="text-center fw-bold mb-2">Login no Sistema</h1>
+        <h1 class="text-center fw-bold mb-2">Cadastro</h1>
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           <div>
             <label for="username">E-mail do usuário</label>
@@ -19,7 +21,20 @@
           </div>
 
           <div>
-            <label for="password">Password</label>
+            <label for="username">Nome completo</label>
+            <input id="fullname" formControlName="fullname" />
+            <div
+              *ngIf="loginForm.value.fullname == ''"
+              class="text-danger mb-4"
+            >Nome completo é obrigatório</div>
+            <div
+              *ngIf="loginForm.value.fullname != ''"
+              class="text-success mb-4"
+            >&nbsp;</div>
+          </div>
+
+          <div>
+            <label for="password">Senha</label>
             <input id="password" type="password" formControlName="password" />
             <div
               *ngIf="loginForm.value.password == ''"
@@ -31,17 +46,13 @@
             >&nbsp;</div>
           </div>
 
-          <button type="submit" [disabled]="loginForm.invalid">Entrar</button>
+          <button type="submit" [disabled]="loginForm.invalid">Cadastrar</button>
         </form>
         <div class="full mt-2 text-center">
-          <a class="link" [routerLink]="['/signup']" routerLinkActive="router-link-active">Não tem login?</a>
-                    |
+          <a class="link" [routerLink]="['/login']" routerLinkActive="router-link-active">Já tem cadastro?</a>
+          |
           <a class="link" [routerLink]="['/forgout']" routerLinkActive="router-link-active">Esqueceu a senha?</a>
-
         </div>
-      </div>
-      <div class="col-12 col-lg-6">
-        {{ loginForm.value | json }}
       </div>
     </div>
   </div>

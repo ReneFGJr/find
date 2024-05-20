@@ -25,7 +25,6 @@ class Api extends BaseController
             $d1 = get("verb");
         }
 
-
         switch ($verb) {
             case 'getLibrary':
                 $Library = new \App\Models\Find\Library\Index();
@@ -80,6 +79,10 @@ class Api extends BaseController
                 $RSP['library'] = $Library->listAll();
                 break;
 
+            case 'login':
+                $Social = new \App\Models\Social\Social();
+                $RSP = $Social->index();
+                break;
             default:
                 $RSP = $this->version();
                 break;

@@ -17,6 +17,8 @@ import { HomeAdminComponent } from './010_admin/page/home/home.component';
 import { LibraryEditComponent } from './010_admin/page/library-edit/library-edit.component';
 import { LoginComponent } from './050_login/login/login.component';
 import { VitrineV2Component } from './060_vitrine/page/vitrine-v2/vitrine-v2.component';
+import { SigninComponent } from './050_login/signin/signin.component';
+import { ForgotComponent } from './050_login/forgot/forgot.component';
 
 const routes: Routes = [
   {
@@ -44,6 +46,8 @@ const routes: Routes = [
       { path: 'index/:type', component: IndexComponent },
 
       { path: 'login', component: LoginComponent },
+      { path: 'signup', component: SigninComponent },
+      { path: 'forgout', component: ForgotComponent },
 
       { path: 'vitrine', component: VitrineV2Component },
     ],

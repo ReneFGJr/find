@@ -8,14 +8,11 @@ h1 {
   margin: 0;
   padding: 0;
 }
-.label
-  {
-    color: red;
-  }
+
 .custom-form {
-  min-width: 300px;
+  min-width: 100%;
   max-width: 60%;
-  margin: 0px auto;
+  //margin: 0px auto;
   background: rgba(255, 255, 255, 0.15);
   padding: 2rem 3rem;
   margin: auto;
@@ -27,7 +24,7 @@ h1 {
 }
 .custom-form input {
   display: block;
-  margin: 2rem 0;
+  margin: 0rem;
   width: 100%;
   border-radius: 0.5rem;
   padding: 1rem;
