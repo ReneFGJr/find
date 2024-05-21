@@ -13,10 +13,8 @@ export class FindService {
     private cookieService: CookieService
   ) {}
 
-  private url: string = 'http://find2/v2/api/';
-  //private url: string = 'https://www.ufrgs.br/find/v2/api/';
-  //private url: string = 'https://cip.brapci.inf.br/api/brapci/';
-  //private urlt: string = 'http://find/v2/api/';
+  //private url: string = 'http://find/v2/api/';
+  private url: string = 'https://www.ufrgs.br/find/v2/api/';
 
   public api_post(type: string, dt: Array<any> = []): Observable<Array<any>> {
     let url = `${this.url}` + type;

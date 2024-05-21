@@ -1,58 +1,164 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">
-    <img [src]="logo" class="logo">
+      <img [src]="logo" class="logo" />
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse ms-5" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link" [routerLink]="['library']" routerLinkActive="router-link-active">Bibliotecas</a>
+          <a
+            class="nav-link"
+            [routerLink]="['library']"
+            routerLinkActive="router-link-active"
+            >Bibliotecas</a
+          >
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
             Dropdown
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" [routerLink]="['admin/isbn/add']" routerLinkActive="router-link-active">ISBN ADD</a></li>
+            <li>
+              <a
+                class="dropdown-item"
+                [routerLink]="['admin/isbn/add']"
+                routerLinkActive="router-link-active"
+                >ISBN ADD</a
+              >
+            </li>
             <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider"></li>
+            <li><hr class="dropdown-divider" /></li>
             <li><a class="dropdown-item" href="#">Something else here</a></li>
           </ul>
         </li>
         <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+          <a
+            class="nav-link disabled"
+            href="#"
+            tabindex="-1"
+            aria-disabled="true"
+            >Disabled</a
+          >
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
             Sobre
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" [routerLink]="['about']" routerLinkActive="router-link-active">Sobre o FIND</a></li>
+            <li>
+              <a
+                class="dropdown-item"
+                [routerLink]="['about']"
+                routerLinkActive="router-link-active"
+                >Sobre o FIND</a
+              >
+            </li>
             <li><a class="dropdown-item" href="#">Sobre a Biblioteca</a></li>
-            <li><hr class="dropdown-divider"></li>
+            <li><hr class="dropdown-divider" /></li>
             <li><a class="dropdown-item" href="#">Como se cadastrar</a></li>
           </ul>
         </li>
 
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
             Índices
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li><a class="dropdown-item" [routerLink]="['index/authors']" routerLinkActive="router-link-active">Índice de autores</a></li>
-            <li><a class="dropdown-item" [routerLink]="['index/subject']" routerLinkActive="router-link-active">Índice de assuntos</a></li>
-            <li><a class="dropdown-item" [routerLink]="['index/publisher']" routerLinkActive="router-link-active">Índice de editoras</a></li>
+            <li>
+              <a
+                class="dropdown-item"
+                [routerLink]="['index/authors']"
+                routerLinkActive="router-link-active"
+                >Índice de autores</a
+              >
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                [routerLink]="['index/subject']"
+                routerLinkActive="router-link-active"
+                >Índice de assuntos</a
+              >
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
+                [routerLink]="['index/publisher']"
+                routerLinkActive="router-link-active"
+                >Índice de editoras</a
+              >
+            </li>
           </ul>
         </li>
-
       </ul>
-      <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
+
+      <!---- LOGED -->
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item" *ngIf="loged == false">
+          <a
+            class="dropdown-item"
+            [routerLink]="['login']"
+            routerLinkActive="router-link-active"
+          >
+            <img src="/assets/img/login.svg" style="height: 35px" />
+          </a>
+        </li>
+
+        <li *ngIf="loged" class="nav-item dropdown ms-auto">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            id="navbarDropdown"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            {{ user.nickname }}
+          </a>
+          <ul class="dropdown-menu ms-auto" aria-labelledby="navbarDropdown">
+            <li>
+              <a
+                class="dropdown-item"
+                [routerLink]="['logout']"
+                routerLinkActive="router-link-active"
+                >Logout</a
+              >
+            </li>
+          </ul>
+        </li>
+      </ul>
     </div>
   </div>
 </nav>

@@ -51,6 +51,8 @@ import { BookV2Component } from './060_vitrine/widgat/book-v2/book-v2.component'
 import { SigninComponent } from './050_login/signin/signin.component';
 import { PerfilComponent } from './050_login/perfil/perfil.component';
 import { ForgotComponent } from './050_login/forgot/forgot.component';
+import { PasswordComponent } from './050_login/password/password.component';
+import { LogoutComponent } from './050_login/logout/logout.component';
 
 @NgModule({
   declarations: [
@@ -94,6 +96,8 @@ import { ForgotComponent } from './050_login/forgot/forgot.component';
     SigninComponent,
     PerfilComponent,
     ForgotComponent,
+    PasswordComponent,
+    LogoutComponent,
   ],
   imports: [
     BrowserModule,

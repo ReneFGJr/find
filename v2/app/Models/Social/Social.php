@@ -20,7 +20,7 @@ class Social extends Model
         'us_badge', 'us_link', 'us_ativo',
         'us_nivel', 'us_image', 'us_genero',
         'us_verificado', 'us_autenticador', 'us_password',
-        'us_institution', 'us_perfil', 'us_login'
+        'us_institution', 'us_perfil', 'us_login', 'us_apikey'
     ];
 
     // Dates
@@ -47,58 +47,121 @@ class Social extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    function index($d1='',$d2='',$d3='')
-        {
-            $RSP = [];
-            $RSP['post'] = $_POST;
-            $verb = get("verb");
-            $RSP['verb'] = $verb;
-            $RSP['username'] = get("username");
+    public $data = [];
 
-            switch($verb)
+    function index($d1 = '', $d2 = '', $d3 = '')
+    {
+        $RSP = [];
+        $RSP['post'] = $_POST;
+        $verb = get("verb");
+        $RSP['verb'] = $verb;
+        $RSP['username'] = get("username");
+
+        switch ($verb) {
+            case 'signin':
+                $RSP['user'] = $this->signin($RSP['username']);
+                break;
+
+            case 'forgot':
+                $RSP['user'] = $this->forgot($RSP['username']);
+                break;
+        }
+        return $RSP;
+    }
+
+    function apiKey($dt,$new = false)
+        {
+            if (($dt['us_apikey'] == '') or ($new == true))
                 {
-                    case 'forgot':
-                        $this->forgot($RSP['username']);
-                        break;
+                    $apikey = md5($dt['us_nome'].date("Ymd-His"));
+                    $dd = [];
+                    $dd['us_apikey'] = $apikey;
+                    $this->set($dd)->where('id_us',$dt['id_us'])->update();
+                    $dt['us_apikey'] = $apikey;
                 }
+            return $dt['us_apikey'];
+        }
+
+    /********************************** FORGOT */
+    function signin($login)
+    {
+        $RSP = [];
+        $pass = get("password");
+
+        $dt = $this->where('us_email', $login)->first();
+
+        if ($dt != []) {
+            if (md5($pass) == $dt['us_password'])
+                {
+                    $nickname = $dt['us_nickname'];
+                    $fullname = $dt['us_nome'];
+                    if ($nickname == '')
+                        {
+                            $nickname = substr($fullname,0,strpos($fullname,' '));
+                        }
+                    $RSP['status'] = '200';
+                    $RSP['message'] = 'Usuário OK';
+                    $RSP['html'] = 'Usuário OK';
+                    $RSP['apikey'] = $this->apiKey($dt);
+                    $RSP['fullname'] = $dt['us_nome'];
+                    $RSP['nickname'] = $nickname;
+                    $RSP['email'] = $dt['us_email'];
+                    $RSP['ID'] = $dt['id_us'];
+                    $RSP['perfil'] = ['admin'=>false];
+                } else {
+                    $RSP['status'] = '400';
+                    $RSP['message'] = 'Usuário ou senha inválida';
+                    $RSP['html'] = 'Usuário ou senha inválida';
+                }
+        } else {
+            $RSP['status'] = '400';
+            $RSP['message'] = 'Usuário ou senha inválida';
+            $RSP['html'] = 'Usuário ou senha inválida';
+        }
+        return $RSP;
+    }
+
+    /********************************** FORGOT */
+    function forgot($login)
+    {
+        $RSP = [];
+        $dt = $this->where('us_email', $login)->first();
+
+        if ($dt != []) {
+            /* Send e-mail with information */
+            $from = 'rene.gabriel@ufrgs.br';
+            $subject = 'Cadastro de nova senha';
+            $text = 'Link de senha';
+            $text .= PATH . '#/social/password';
+            $img = [];
+            $RSP['html'] = 'Link enviado por e-mail: ';
+            $RSP['html'] .= $dt['us_email'];
+            if ($this->sendemail($dt['us_email'], $from, $subject, $text, $img)) {
+                $RSP['html'] .= '<p>Um e-mail foi enviado para sua conta</p>';
+            }
+        } else {
+            $RSP['status'] = '201';
+            $RSP['message'] = 'E-mail não cadastrado';
+            $RSP['html'] = 'E-mail não cadastrado';
             return $RSP;
         }
-        function forgot($login)
-            {
-                $RSP = '';
-                $dt = $this->where('us_email',$login)->first();
+        return $RSP;
+    }
+    function sendemail($to, $from, $subject, $text, $img)
+    {
+        $email = \Config\Services::email();
 
-                if ($dt != [])
-                    {
-                        /* Send e-mail with information */
-                        $from = 'rene@sisdoc.com.br';
-                        $subject = 'Cadastro de nova senha';
-                        $text = 'Link de senha';
-                        $img = [];
+        $email->setFrom($from, 'FIND');
+        $email->setTo($to);
 
-                        $this->sendemail($dt['us_email'],$from,$subject,$text,$img);
-                    } else {
-                        $RSP['status'] = '201';
-                        $RSP['message'] = 'E-mail não cadastrado';
-                        return $RSP;
-                    }
-                pre($dt);
-            }
-        function sendemail($to,$from,$subject,$text,$img)
-            {
-                $email = \Config\Services::email();
+        $email->setSubject($subject);
+        $email->setMessage($text);
 
-                $email->setFrom('seuemail@exemplo.com', 'Seu Nome');
-                $email->setTo('destinatario@exemplo.com');
-
-                $email->setSubject('Assunto do E-mail');
-                $email->setMessage('Esta é a mensagem do e-mail.');
-
-                if ($email->send()) {
-                    echo 'Email enviado com sucesso!';
-                } else {
-                    $data = $email->printDebugger(['headers']);
-                    pre($data);
-                }
-            }
+        if ($email->send()) {
+            return true;
+        } else {
+            $this->data = $email->printDebugger(['headers']);
+            return false;
+        }
+    }
 }

@@ -4,14 +4,14 @@ import { FindService } from 'src/app/000_core/service/find.service';
 import { SocialService } from 'src/app/000_core/service/social.service';
 
 @Component({
-  selector: 'app-forgot',
-  templateUrl: './forgot.component.html',
+  selector: 'app-password',
+  templateUrl: './password.component.html',
   styleUrls: ['../signin/signin.component.scss'],
 })
-export class ForgotComponent {
-  public loginForm: FormGroup | any
-  public html: string="Insruções"
-  public data: Array<any> | any
+export class PasswordComponent {
+  public loginForm: FormGroup | any;
+  public html: string = 'Insruções';
+  public data: Array<any> | any;
 
   constructor(
     private findService: FindService,
@@ -20,8 +20,10 @@ export class ForgotComponent {
 
   ngOnInit(): void {
     this.loginForm = new FormGroup({
-      username: new FormControl('', Validators.required),
-      verb: new FormControl('forgot', Validators.required),
+      pass1: new FormControl('', Validators.required),
+      pass2: new FormControl('', Validators.required),
+      key: new FormControl('', Validators.required),
+      verb: new FormControl('password', Validators.required),
     });
   }
 
@@ -32,9 +34,9 @@ export class ForgotComponent {
       this.findService
         .api_post('social', this.loginForm.value)
         .subscribe((res) => {
-          this.data = res
-          this.html = this.data.user.html
-          console.log(this.data)
+          this.data = res;
+          this.html = this.data.user.html;
+          console.log(this.data);
         });
     } else {
       console.log('Form is invalid');

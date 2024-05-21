@@ -19,6 +19,8 @@ import { LoginComponent } from './050_login/login/login.component';
 import { VitrineV2Component } from './060_vitrine/page/vitrine-v2/vitrine-v2.component';
 import { SigninComponent } from './050_login/signin/signin.component';
 import { ForgotComponent } from './050_login/forgot/forgot.component';
+import { PasswordComponent } from './050_login/password/password.component';
+import { LogoutComponent } from './050_login/logout/logout.component';
 
 const routes: Routes = [
   {
@@ -46,8 +48,10 @@ const routes: Routes = [
       { path: 'index/:type', component: IndexComponent },
 
       { path: 'login', component: LoginComponent },
+      { path: 'logout', component: LogoutComponent },
       { path: 'signup', component: SigninComponent },
       { path: 'forgout', component: ForgotComponent },
+      { path: 'password', component: PasswordComponent },
 
       { path: 'vitrine', component: VitrineV2Component },
     ],

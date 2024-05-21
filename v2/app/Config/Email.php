@@ -19,13 +19,13 @@ class Email extends BaseConfig
 
     public $DSN = false;
 
-    public $fromEmail = 'rene.gabriel@ufrgs.br';
+    public $fromEmail = '00282381@ufrgs.br';
     public $fromName  = 'FIND';
     public $recipients = '';
 
     public $SMTPHost = 'smtp.ufrgs.br';
-    public $SMTPUser = 'find@ufrgs.br';
-    public $SMTPPass = 'XXXXX';
+    public $SMTPUser = '00282381@ufrgs.br';
+    public $SMTPPass = 'aNDRE@2023';
     public $SMTPPort = 587;  // Porta SMTP (por exemplo, 587 para TLS ou 465 para SSL)
     public $SMTPCrypto = 'tls';  // Pode ser 'ssl' ou 'tls'
 

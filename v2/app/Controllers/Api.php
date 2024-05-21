@@ -79,9 +79,9 @@ class Api extends BaseController
                 $RSP['library'] = $Library->listAll();
                 break;
 
-            case 'login':
+            case 'social':
                 $Social = new \App\Models\Social\Social();
-                $RSP = $Social->index();
+                $RSP = $Social->index($d2,$d3);
                 break;
             default:
                 $RSP = $this->version();
