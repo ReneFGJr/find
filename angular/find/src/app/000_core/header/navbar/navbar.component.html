@@ -33,7 +33,7 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            Dropdown
+            Preparo Técnico
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
             <li>
@@ -49,15 +49,7 @@
             <li><a class="dropdown-item" href="#">Something else here</a></li>
           </ul>
         </li>
-        <li class="nav-item">
-          <a
-            class="nav-link disabled"
-            href="#"
-            tabindex="-1"
-            aria-disabled="true"
-            >Disabled</a
-          >
-        </li>
+
         <li class="nav-item dropdown">
           <a
             class="nav-link dropdown-toggle"
@@ -66,6 +58,7 @@
             role="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"
+            [routerLink]="['about']"
           >
             Sobre
           </a>
@@ -78,7 +71,8 @@
                 >Sobre o FIND</a
               >
             </li>
-            <li><a class="dropdown-item" href="#">Sobre a Biblioteca</a></li>
+            <li><a class="dropdown-item" href="#"
+            [routerLink]="['about_library']">Sobre a Biblioteca</a></li>
             <li><hr class="dropdown-divider" /></li>
             <li><a class="dropdown-item" href="#">Como se cadastrar</a></li>
           </ul>
