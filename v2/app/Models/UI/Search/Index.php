@@ -40,22 +40,58 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+    function makeSearch($lib)
+        {
+            $item = new \App\Models\Find\Items\Index();
+            $dt = $item
+                ->where('i_search','')
+                ->where('i_library', $lib)
+                ->findAll(100);
+            foreach($dt as $id=>$line)
+                {
+                    $t = $line['i_titulo'];
+                    $t .= ' ' .$line['i_identifier'];
+                    $lib = $line['i_library'];
+                    $dta = $item->getISBN($line['i_identifier'],$lib);
+
+                    if (isset($dta['meta']['Authors']))
+                        {
+                            foreach($dta['meta']['Authors'] as $ida=>$linea)
+                                {
+                                    $t .= ' ' . $linea['name'];
+                                }
+                        }
+                    $dd['i_search'] = strtolower(ascii($t));
+                    $ID = $line['i_identifier'];
+                    $item->set($dd)->where('i_identifier',$line['i_identifier'])->update();
+                }
+        }
+
     function searchAPI($term, $class = '')
         {
-            $lib = 1016;
+            $lib = get("lib");
+            $this->makeSearch($lib);
+
             $ord = 'i_titulo';
             $Cover = new \App\Models\Find\Cover\Index();
 
             $item = new \App\Models\Find\Items\Index();
             $terms = explode(' ', $term);
 
+            $cp = 'i_titulo, i_identifier, i_library';
+
+
+            $item->select($cp.', max(id_i) as id_i');
             foreach ($terms as $n) {
-                $item->like('LOWER(i_titulo)', mb_strtolower($n));
+                $item->like('LOWER(i_search)', mb_strtolower($n));
             }
             $item->where('i_library',$lib);
+            $item->groupby($cp);
             $item->orderBy($ord);
             $dt = $item->findAll(200);
 
+            //echo $item->getlastquery();
+            //exit;
             $RSP = [];
 
             foreach ($dt as $idb => $line) {

@@ -1,7 +1,10 @@
-<div class="container">
+<div class="container" *ngIf="data">
 <div class="row">
 <div class="col-12">
-<h1>{{id}}</h1>
+<h1>{{data.terms.PrefLabel}}</h1>
+<h4>{{data.terms.Class}}</h4>
+
+{{data | json}}
 </div>
 </div>
 </div>

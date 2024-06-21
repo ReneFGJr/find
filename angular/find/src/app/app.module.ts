@@ -53,6 +53,11 @@ import { PerfilComponent } from './050_login/perfil/perfil.component';
 import { ForgotComponent } from './050_login/forgot/forgot.component';
 import { PasswordComponent } from './050_login/password/password.component';
 import { LogoutComponent } from './050_login/logout/logout.component';
+import { ColorsComponent } from './070_classification/colors/colors.component';
+import { CddComponent } from './070_classification/cdd/cdd.component';
+import { CduComponent } from './070_classification/cdu/cdu.component';
+import { AcervoComponent } from './100_management/acervo/acervo.component';
+import { PainelComponent } from './100_management/painel/painel.component';
 
 @NgModule({
   declarations: [
@@ -98,6 +103,11 @@ import { LogoutComponent } from './050_login/logout/logout.component';
     ForgotComponent,
     PasswordComponent,
     LogoutComponent,
+    ColorsComponent,
+    CddComponent,
+    CduComponent,
+    AcervoComponent,
+    PainelComponent,
   ],
   imports: [
     BrowserModule,

@@ -8,7 +8,7 @@ define("PATH", 'https://www.ufrgs.br/find/');
 
 class Api extends BaseController
 {
-    public function index($verb = '', $d2 = '', $d3 = '')
+    public function index($verb = '', $d2 ='', $d3 ='', $d4 = '')
     {
         /* NAO USADO PARA AS APIS */
         header('Access-Control-Allow-Origin: *');
@@ -26,9 +26,21 @@ class Api extends BaseController
         }
 
         switch ($verb) {
+            case 'admin':
+                $Admin = new \App\Models\Admin\Index();
+                $RSP = $Admin->index($d2,$d3,$d4);
+                break;
+
             case 'getLibrary':
                 $Library = new \App\Models\Find\Library\Index();
                 $RSP = $Library->where('l_code',$d2)->first();
+                break;
+
+            case 'getPubID':
+                $lib = get("lib");
+                $Index = new \App\Models\Find\Items\Index();
+                $RSP['index'] = $d2;
+                $RSP['terms'] = $Index->getPubItem($d2, $lib);
                 break;
 
             case 'getIndex':
