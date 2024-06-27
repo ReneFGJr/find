@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./about.component.scss'],
 })
 export class FindAboutComponent {
-  public logo = '/assets/img/logo/logo_find.png';
+  public logo = 'https://ufrgs.br/find/app/assets/img/logo/logo_find.png';
 }

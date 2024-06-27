@@ -31,6 +31,7 @@ const routes: Routes = [
     children: [
       { path: '', component: WelcomeComponent },
       { path: 'find', component: WelcomeComponent },
+      { path: 'find/app', component: WelcomeComponent },
       { path: 'about', component: FindAboutComponent },
       { path: 'about_library', component: AboutComponent },
       {
