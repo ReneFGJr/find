@@ -99,11 +99,20 @@ class Index extends Model
                     $Item->orWhere('i_work',$line['ID']);
                 }
             }
+
             $dti = $Item
                     ->orderBy('i_titulo')
                     ->findAll();
+            foreach($dti as $idi=>$linei)
+                {
+                    $xlib = $linei['i_library'];
+                    if ($lib != $xlib)
+                        {
+                            unset($dti[$idi]);
+                        }
+                }
         }
-        $dd['works'] = $dti;
+        $dd['works'] = $wk;
         return $dd;
     }
 
