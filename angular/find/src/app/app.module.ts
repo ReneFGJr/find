@@ -58,6 +58,8 @@ import { CddComponent } from './070_classification/cdd/cdd.component';
 import { CduComponent } from './070_classification/cdu/cdu.component';
 import { AcervoComponent } from './100_management/acervo/acervo.component';
 import { PainelComponent } from './100_management/painel/painel.component';
+import { AboutComponent } from './030_library/page/about/about.component';
+import { FindAboutComponent } from './000_core/page/about/about.component';
 
 @NgModule({
   declarations: [
@@ -108,6 +110,8 @@ import { PainelComponent } from './100_management/painel/painel.component';
     CduComponent,
     AcervoComponent,
     PainelComponent,
+    AboutComponent,
+    FindAboutComponent,
   ],
   imports: [
     BrowserModule,

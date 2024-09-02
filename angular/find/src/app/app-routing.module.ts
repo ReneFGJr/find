@@ -21,6 +21,8 @@ import { SigninComponent } from './050_login/signin/signin.component';
 import { ForgotComponent } from './050_login/forgot/forgot.component';
 import { PasswordComponent } from './050_login/password/password.component';
 import { LogoutComponent } from './050_login/logout/logout.component';
+import { FindAboutComponent } from './000_core/page/about/about.component';
+import { AboutComponent } from './030_library/page/about/about.component';
 
 const routes: Routes = [
   {
@@ -28,6 +30,10 @@ const routes: Routes = [
     component: MainFindComponent,
     children: [
       { path: '', component: WelcomeComponent },
+      { path: 'find', component: WelcomeComponent },
+      { path: 'find/app', component: WelcomeComponent },
+      { path: 'about', component: FindAboutComponent },
+      { path: 'about_library', component: AboutComponent },
       {
         path: 'admin',
         component: AdminComponent,

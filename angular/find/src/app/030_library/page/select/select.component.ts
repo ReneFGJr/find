@@ -27,7 +27,7 @@ export class SelectLibaryComponent {
     this.findService.setLibrary(idLib);
     this.localStorageService.set('library',idLib)
     //window.location.reload();
-    document.location.href = '/'
+    document.location.href = '/find/app/'
     //this.router.navigate(['/']);
   }
 }
