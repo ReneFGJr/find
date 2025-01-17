@@ -107,10 +107,13 @@ class Api extends BaseController
 
     private function version()
     {
-        $RSP = [];
+        $CMD = [];
+        $CMD['admin'] = 'Administração';
+        $CMD['getIsbn'] = 'ISBN';
         $RSP['system'] = 'FIND 2.0';
         $RSP['version'] = 'v0.24.04.16';
         $RSP['timestamp'] = date("Y-m-d") . 'T' . date("H:i:s");
+        $RSP['commands'] = $CMD;
         $RSP['status'] = '200';
         return $RSP;
     }
