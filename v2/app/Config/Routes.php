@@ -21,6 +21,20 @@ $routes->setDefaultController('Home');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override();
+
+/******************* User */
+$routes->get('/login', 'AuthController::login');
+$routes->post('/authenticate', 'AuthController::authenticate');
+$routes->get('/logout', 'AuthController::logout');
+
+$routes->get('/forgot-password', 'AuthController::forgotPassword');
+$routes->post('/send-password-reset', 'AuthController::sendPasswordReset');
+$routes->get('/register', 'AuthController::register');
+$routes->post('/store-user', 'AuthController::storeUser');
+
+$routes->get('/reset-password/(:any)', 'AuthController::resetPassword/$1'); // Página para redefinir senha com token
+$routes->post('/update-password', 'AuthController::updatePassword'); // Submissão do formulário de redefinição
+
 // The Auto Routing (Legacy) is very dangerous. It is easy to create vulnerable apps
 // where controller filters or CSRF protection are bypassed.
 // If you don't want to define all routes, please use the Auto Routing (Improved).
@@ -43,6 +57,16 @@ $routes->get('/api/(:any)', 'Api::index/$1');
 $routes->post('/api/(:any)', 'Api::index/$1');
 
 $routes->get('/tt', 'Tt::index');
+$routes->get('/dashboard', 'Tt::index');
+
+
+/****************************************** BiblioFind */
+$routes->get('/bibliofind', 'BiblioFind::index');
+$routes->get('/bibliofind/buscar', 'BiblioFind::buscar');
+$routes->get('/bibliofind/reindex', 'BiblioFind::reindex');
+$routes->get('/bibliofind/zerar', 'BiblioFind::zerar');
+
+
 
 /*
  * --------------------------------------------------------------------

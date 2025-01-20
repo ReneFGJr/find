@@ -18,7 +18,7 @@
     .link-container {
         margin-top: auto;
         /* Empurra o conteúdo para cima */
-        text-align: right;
+        text-align: left;
         /* Alinha o texto à direita */
         padding: 1px 3px;
     }

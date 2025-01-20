@@ -16,7 +16,7 @@
         display: flex;
         flex-direction: column;
         font-family: Arial, sans-serif;
-        background-color: black;
-        color: white;
     }
 </style>
+
+<body class="bg-dark text-light">
