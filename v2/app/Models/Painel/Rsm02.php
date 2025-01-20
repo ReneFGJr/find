@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Models\Find\BooksOld;
+namespace App\Models\Painel;
 
 use CodeIgniter\Model;
 
-class Data extends Model
+class Rsm02 extends Model
 {
-    protected $DBGroup          = 'find';
-    protected $table            = 'rdf_data';
-    protected $primaryKey       = 'id_d';
+    protected $DBGroup          = 'default';
+    protected $table            = 'rsm01s';
+    protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $insertID         = 0;
     protected $returnType       = 'array';
@@ -39,4 +39,14 @@ class Data extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    function index($d1='',$d2='',$d3='')
+        {
+            $sx = '';
+            $sx .= '<h5>BIBLIOTECAS</h5>';
+            $sx .= 'Bibliotecas: <b>0</b><br>';
+            $sx .= 'Cidades: <b>0</b><br>';
+
+            return $sx;
+        }
 }

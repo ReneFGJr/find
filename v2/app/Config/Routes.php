@@ -42,6 +42,8 @@ $routes->get('/api', 'Api::index');
 $routes->get('/api/(:any)', 'Api::index/$1');
 $routes->post('/api/(:any)', 'Api::index/$1');
 
+$routes->get('/tt', 'Tt::index');
+
 /*
  * --------------------------------------------------------------------
  * Additional Routing

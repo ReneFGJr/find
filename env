@@ -44,16 +44,16 @@ app.prefix = 'index.php/'
 #--------------------------------------------------------------------
 
 database.default.hostname = localhost
-database.default.database = find2
+database.default.database = find
 database.default.username = root
-database.default.password = 
+database.default.password =
 database.default.DBDriver = MySQLi
 database.default.DBPrefix =
 
 database.rdf.hostname = localhost
-database.rdf.database = find2
+database.rdf.database = find
 database.rdf.username = root
-database.rdf.password = 
+database.rdf.password =
 database.rdf.DBDriver = MySQLi
 database.rdf.DBPrefix =
 
