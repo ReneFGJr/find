@@ -79,6 +79,7 @@ class BiblioFind extends BaseController
             $sx .= view('widgets/bibliofind_header');
             $sx .= view('headers/menu_tools');
             $WORKS = new Works();
+
             $sx .= $WORKS->indexar();
             return $sx;
         }

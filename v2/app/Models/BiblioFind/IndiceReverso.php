@@ -74,6 +74,7 @@ class IndiceReverso extends Model
 
         // Preprocessar o texto
         $conteudo = strtolower(ascii($texto));
+        $conteudo = troca($conteudo,'-',' ');
         $tokens = array_unique(explode(' ', preg_replace('/[^a-z0-9 ]/', '', $conteudo)));
 
         // Criar a consulta dinâmica para os termos

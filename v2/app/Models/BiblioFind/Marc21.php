@@ -49,12 +49,19 @@ class Marc21 extends Model
             $sx = bsc(h('MARC21',4),12);
             $sx .= bsc(view('widgets/bibliofind/marc21',$data),6);
             $data['data'] = $this->dectect_type($data['marc21']);
-            $sx .= bsc(view('widgets/bibliofind/bibliofind_view',$data),6);
+            if ($data['marc21'] != '')
+                {
+                    $sx .= bsc(view('widgets/bibliofind/bibliofind_view', $data), 6);
+                } else {
+                    $sx .= bsc('<a href="https://catalogo.bu.ufsc.br/zbib/" target="_blank">Z39.50</a>',6);
+                }
+
             return bs($sx);
         }
 
     function dectect_type($t)
         {
+            if ($t == '') { return ''; }
             if (strpos($t,'$a') > 0) { $t = troca($t,'$','|'); }
             $t = '<pre>'.$t.'</pre>';
             $t = troca($t,chr(13),chr(10));
@@ -193,7 +200,7 @@ class Marc21 extends Model
                     if (substr($dd[$r], 0, 1) == 'b') {
                         $nome = trim(substr($dd[$r], 2, strlen($dd[$r])));
                         $nome = troca($nome,';','');
-                        $nome = nbr_author($nome, 7);
+                        $nome = troca($nome, ',', '');
                         $authors[] = $nome;
                     }
                 }

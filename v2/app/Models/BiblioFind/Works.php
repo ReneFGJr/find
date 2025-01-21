@@ -85,7 +85,11 @@ class Works extends Model
     function indexar($limit=100)
         {
             $offset = get("offset");
-            if ($offset == '') { $offset = 0; }
+
+            if ($offset == '') {
+                $this->set(['w_Indexed' => 0])->where('id_w > 0')->update();
+                $offset = 0;
+                }
             $IndiceReverso = new \App\Models\BiblioFind\IndiceReverso();
 
             $cp = 'w_ID, w_TITLE, w_AUTHORS, w_YEAR';
