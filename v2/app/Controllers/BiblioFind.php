@@ -39,9 +39,37 @@ class BiblioFind extends BaseController
 
         $IndiceReverso = new \App\Models\BiblioFind\IndiceReverso();
         $sx .= bs(bsc(bsmessage('Base zerada com sucesso',3)));
-        //$sx .= $IndiceReverso->truncate();
+        $sx .= $IndiceReverso->truncate();
         return $sx;
     }
+
+    public function v($id=0)
+    {
+        $sx = view('headers/header');
+        $sx .= view('widgets/logo_find');
+        $sx .= view('widgets/system_version');
+        $sx .= view('widgets/bibliofind_header');
+        $sx .= view('headers/menu_tools');
+
+        $Works = new \App\Models\BiblioFind\Works();
+        $sx .= $Works->v($id);
+
+        return $sx;
+    }
+
+    public function marc21()
+        {
+            $sx = view('headers/header');
+            $sx .= view('widgets/logo_find');
+            $sx .= view('widgets/system_version');
+            $sx .= view('widgets/bibliofind_header');
+            $sx .= view('headers/menu_tools');
+
+            $MARC21 = new \App\Models\BiblioFind\Marc21();
+            $sx .= $MARC21->index();
+
+            return $sx;
+        }
 
     public function reindex()
         {

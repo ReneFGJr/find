@@ -65,6 +65,9 @@ $routes->get('/bibliofind', 'BiblioFind::index');
 $routes->get('/bibliofind/buscar', 'BiblioFind::buscar');
 $routes->get('/bibliofind/reindex', 'BiblioFind::reindex');
 $routes->get('/bibliofind/zerar', 'BiblioFind::zerar');
+$routes->get('/bibliofind/marc21', 'BiblioFind::marc21');
+$routes->post('/bibliofind/marc21', 'BiblioFind::marc21');
+$routes->get('/bibliofind/v/(:any)', 'BiblioFind::v/$1');
 
 
 

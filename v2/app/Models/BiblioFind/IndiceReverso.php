@@ -152,7 +152,7 @@ class IndiceReverso extends Model
     public function truncate()
     {
         $this->db->query('TRUNCATE indice_reverso_docs');
-        $this->db->query('TRUNCATE indice_reverso_termos');
+        $this->db->query('TRUNCATE indice_reverso_termo');
     }
 
     // Função de indexação

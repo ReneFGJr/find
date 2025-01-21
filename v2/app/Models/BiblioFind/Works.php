@@ -16,7 +16,17 @@ class Works extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = [
+        'w_ID',
+        'w_RDF',
+        'w_TYPE',
+        'w_TITLE',
+        'w_AUTHORS',
+        'w_YEAR',
+        'w_PUBLISHER',
+        'w_Language',
+        'w_Indexed'
+    ];
 
     // Dates
     protected $useTimestamps = false;
@@ -42,9 +52,38 @@ class Works extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    function indexar()
+    function v($id)
+    {
+        $RDF = new \App\Models\RDF2\RDF();
+        $RDFconcept = new \App\Models\RDF2\RDFconcept();
+        $dt = $RDF->v($id);
+        $sx = '';
+        $sx .= bsc(view('widgets/bibliofind/RDF/concept', $dt),12);
+        $sx .= bsc(view('widgets/bibliofind/RDF/proprerties', $dt),12);
+        return bs($sx);
+    }
+
+    function register($ISBN,$dd)
         {
-            $limit = 100;
+            $Publishers = new \App\Models\BiblioFind\Publishers();
+            $dd['w_PUBLISHER'] = $Publishers->register($dd['w_EDITORA']);
+            $dd['w_ID'] = $ISBN;
+            $dd['w_Indexed'] = 0;
+            $dt = $this->where('w_ID',$ISBN)->first();
+            if (!$dt)
+                {
+                    $this->insert($dd);
+                    $dt = $this->where('w_ID',$ISBN)->first();
+                } else {
+                    $this->update($dt['id_w'],$dd);
+                    $dt = $this->where('w_ID',$ISBN)->first();
+                }
+            $this->indexar();
+            return $dt;
+        }
+
+    function indexar($limit=100)
+        {
             $offset = get("offset");
             if ($offset == '') { $offset = 0; }
             $IndiceReverso = new \App\Models\BiblioFind\IndiceReverso();
@@ -53,13 +92,18 @@ class Works extends Model
 
             $dtt = $this
                 ->select('count(*) as total')
+                ->where('w_Indexed',0)
                 ->first();
             $total = $dtt['total'];
-
+            if ($total == 0)
+                {
+                    return bs(bsc(bsmessage("FIM da INDEXAÇÃO"),12));
+                }
             $cp = 'w_TITLE, w_AUTHORS, pb_name, id_w';
             $dt = $this
                 ->select($cp)
                 ->join('find_publisher', 'w_PUBLISHER = id_pb')
+                ->where('w_Indexed', 0)
                 ->findAll($limit,$offset);
 
             $sx = '<h4>Indexando - Total '.$total.', OffSet '.$offset.'</h4>';
@@ -73,7 +117,8 @@ class Works extends Model
                     $IDc = $line['id_w'];
                     $IndiceReverso->indexar($term, $IDc);
                     $sc .= '<li>'.$line['w_TITLE'].'</li>';
-
+                    $dd['w_Indexed'] = 1;
+                    $this->update($IDc,$dd);
                 }
                 $sx = bs(bsc($sc,12));
                 if (count($dt) > 0)

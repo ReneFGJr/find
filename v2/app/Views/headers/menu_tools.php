@@ -23,7 +23,7 @@
                             Configurações
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="submenu">
-                            <li><a class="dropdown-item" href="<?= base_url('/configuracoes/gerais'); ?>">Gerais</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url('/bibliofind/marc21'); ?>">MARC21</a></li>
                             <li><a class="dropdown-item" href="<?= base_url('/configuracoes/usuarios'); ?>">Usuários</a></li>
                         </ul>
                     </li>
