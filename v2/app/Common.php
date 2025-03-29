@@ -13,19 +13,3 @@
  *
  * @see: https://codeigniter4.github.io/CodeIgniter4/
  */
-
-
-function user()
-{
-    $session = \Config\Services::session();
-
-    if ($session->get('logged_in')) {
-        return [
-            'id_us' => $session->get('id_us'),
-            'us_nome' => $session->get('us_nome'),
-            'us_nickname' => $session->get('us_nickname')
-        ];
-    }
-
-    return null; // Se o usuário não estiver logado, retorna null
-}

@@ -46,7 +46,84 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    function print($d1='', $ord='i', $d3='')
+    function print($d1 = '', $ord = 'i', $d3 = '')
+    {
+
+        $pdf = new FPDF();
+        $pdf->AddPage();
+        $pdf->SetMargins(0, 0, 0, 0);
+
+        $dt = [];
+        $da = [];
+
+        $lib = 1016;
+        $ord = 'id_i';
+        if ($d1 != '') {
+            $lib = $d1;
+        }
+        $limit = 9999;
+        $offset = 0;
+        $dt['labels'] = $this
+            ->select('i_ln1 as ln1, i_ln2 as ln2, i_ln3 as ln3, i_ln4 as ln4, i_tombo')
+            ->where('i_library', $lib)
+            ->where('i_titulo <> ""')
+            ->where('i_ln1 <> ""')
+            ->orderBy($ord)
+            //->orderBy('ln1')
+            ->findAll($limit, $offset);
+        //echo $this->getlastquery();
+
+        $posXini = 23;
+        $posX = $posXini;
+        $labelSpace = 25.5;
+        $labelLine = 6;
+
+        $posYini = 14;
+        $posY = $posYini;
+        $labelCols = 3;
+        $labelCol = 0;
+        $labelWidth = 70;
+
+        $pdf->setX($posX);
+        $pdf->setY($posY);
+
+        $pdf->SetFont('Arial', 'B');
+        $pdf->SetFontSize(11);
+        $pdf->SetLineWidth(0.13);
+
+
+        foreach ($dt['labels'] as $idl => $linel) {
+            $pdf->SetXY($posX, $posY); // 160 mm da borda esquerda
+            $pdf->Cell(40, 10, $linel['ln1'], 0);
+
+            $pdf->SetXY($posX, $posY + $labelLine); // 160 mm da borda esquerda
+            $pdf->Cell(40, 10, $linel['ln2'], 0);
+
+            $pdf->SetXY($posX, $posY + $labelLine * 2); // 160 mm da borda esquerda
+            $pdf->Cell(40, 10, $linel['i_tombo'], 0);
+
+
+            if ($labelCol >= ($labelCols - 1)) {
+                $posY = $posY + $labelSpace;
+                $posX = $posXini;
+                $labelCol = 0;
+
+                if ($posY > 260) {
+                    $pdf->AddPage();
+                    $posX = $posXini;
+                    $posY = $posYini;
+                }
+            } else {
+                $posX = $posX + $labelWidth;
+                $labelCol++;
+            }
+        }
+        //exit;
+        $pdf->Output();
+        exit;
+    }
+
+    function print3($d1='', $ord='i', $d3='')
     {
 
         $pdf = new FPDF();
