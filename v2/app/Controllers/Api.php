@@ -97,6 +97,8 @@ class Api extends BaseController
                 break;
             default:
                 $RSP = $this->version();
+                $RSP['status'] = '404';
+                $RSP['message'] = 'API not found';
                 break;
         }
 
