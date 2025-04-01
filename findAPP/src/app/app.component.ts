@@ -27,7 +27,8 @@ export class AppComponent {
   title = 'findAPP';
   public data: Array<any> | any;
   public libraries: any[] = [];
-  public library: string = '';
+  public libraryID: string = '';
+  public library: any[] = [];
 
   constructor(
     private findService: FindService, // private router: Router
@@ -37,13 +38,21 @@ export class AppComponent {
   }
 
   ngOnInit(): void {
-    this.library = localStorage.getItem('library') || '';
-    if (this.library == '') {
+    this.libraryID = localStorage.getItem('library') || '';
+    if (this.libraryID == '') {
       this.findService.api_post('library', []).subscribe((res) => {
         this.data = res;
         this.libraries = this.data.library;
         console.log(this.data.library);
       });
+    } else {
+        this.findService
+          .api_post('getLibrary/' + this.libraryID, [])
+          .subscribe((res) => {
+            this.data = res;
+            this.libraries = this.data;
+            console.log(this.data);
+          });
     }
   }
 }
