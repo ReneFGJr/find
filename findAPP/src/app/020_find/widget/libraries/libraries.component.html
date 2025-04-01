@@ -1,0 +1,10 @@
+<div class="container" *ngIf="libraries">
+  <h1>Bibliotecas</h1>
+  <div class="row">
+    <div class="col-2 center" *ngFor="let lib of libraries">
+    <a href="#" class="link">
+      <img [src]="lib.logo" alt="Logo {{lib.name}}" class="img-fluid p-3" />
+      </a>
+    </div>
+  </div>
+</div>
