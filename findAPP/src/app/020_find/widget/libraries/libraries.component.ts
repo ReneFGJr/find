@@ -10,4 +10,10 @@ import { Component, Input } from '@angular/core';
 })
 export class LibrariesComponent {
   @Input() libraries: any[] = []; // Input property to receive libraries data from parent component
+
+  setLibrary(library: string) {
+    // Method to set the selected library in local storage and reload the page
+    localStorage.setItem('library', library);
+    window.location.reload();
+  }
 }

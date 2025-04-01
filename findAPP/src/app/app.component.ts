@@ -51,6 +51,11 @@ export class AppComponent {
           .subscribe((res) => {
             this.data = res;
             this.libraries = this.data;
+
+            if (!this.libraries) {
+              this.localStorage.remove('library');
+              this.libraryID = ''
+            }
             console.log(this.data);
           });
     }
