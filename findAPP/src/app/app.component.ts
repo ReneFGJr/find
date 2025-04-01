@@ -7,17 +7,17 @@ import { HeaderComponent } from './010_header/header/header.component';
 import { FooterComponent } from './010_header/footer/footer.component';
 import { LibrariesComponent } from './020_find/widget/libraries/libraries.component';
 import { LocalStorageService } from './000_core/service/local-storage.service';
+import { routes } from './app.routes';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
     RouterOutlet,
-    SpashPageComponent,
     NavbarComponent,
     HeaderComponent,
     FooterComponent,
-    LibrariesComponent,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './app.component.html',
@@ -25,39 +25,20 @@ import { LocalStorageService } from './000_core/service/local-storage.service';
 })
 export class AppComponent {
   title = 'findAPP';
-  public data: Array<any> | any;
-  public libraries: any[] = [];
   public libraryID: string = '';
-  public library: any[] = [];
 
   constructor(
+    private titleService:
+    Title, private metaService: Meta,
     private findService: FindService, // private router: Router
     private localStorage: LocalStorageService // private localStorage: LocalStorageService
-  ) {
-    console.log('constructor app component');
-  }
+  ) {}
 
   ngOnInit(): void {
+    this.titleService.setTitle('Find Livros');
     this.libraryID = localStorage.getItem('library') || '';
     if (this.libraryID == '') {
-      this.findService.api_post('library', []).subscribe((res) => {
-        this.data = res;
-        this.libraries = this.data.library;
-        console.log(this.data.library);
-      });
-    } else {
-        this.findService
-          .api_post('getLibrary/' + this.libraryID, [])
-          .subscribe((res) => {
-            this.data = res;
-            this.libraries = this.data;
-
-            if (!this.libraries) {
-              this.localStorage.remove('library');
-              this.libraryID = ''
-            }
-            console.log(this.data);
-          });
+      [routes[0].path] = ['selectLibrary'];
     }
   }
 }
