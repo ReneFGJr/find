@@ -28,22 +28,8 @@
   <button class="btn-close" (click)="closeBookDetails()">×</button>
   <div class="p-4 overflow-auto h-100">
     <div class="container">
-      <div class="row">
-        <div class="col-6">
-          <div class="text-center">
-            <img [src]="selectedBook.cover" class="img-fluid mb-3" />
-          </div>
-          <div class="col-6">
-            <h5>{{ selectedBook.title }}</h5>
-            <p>
-              <strong>Autor:</strong>
-              {{ selectedBook.author || "Autor desconhecido" }}
-            </p>
-            <p><strong>ISBN:</strong> {{ selectedBook.isbn }}</p>
-            <p><strong>Biblioteca:</strong> {{ selectedBook.library }}</p>
-          </div>
-        </div>
-      </div>
+      <h1>{{isbn}}</h1>
+        <app-view-book [isbn]="isbn" [libraryID]="libraryID"></app-view-book>
     </div>
   </div>
 </div>

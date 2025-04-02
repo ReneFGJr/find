@@ -3,11 +3,12 @@ import { FindService } from '../../../000_core/service/find.service';
 import { LocalStorageService } from '../../../000_core/service/local-storage.service';
 import { routes } from '../../../app.routes';
 import { CommonModule } from '@angular/common';
+import { BookComponent } from '../book/book.component';
 
 @Component({
   selector: 'app-vitrine',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, BookComponent],
   templateUrl: './vitrine.component.html',
   styleUrl: './vitrine.component.scss',
 })
@@ -17,6 +18,7 @@ export class VitrineComponent {
   public libraryID: string = '';
   public library: any[] = [];
   public selectedBook: any = null;
+  public isbn: string = '9788585445980'; //9788578110012
 
   constructor(
     private findService: FindService, // private router: Router
@@ -28,6 +30,7 @@ export class VitrineComponent {
   goBook(id: string, library: string) {}
 
   openBookDetails(book: any) {
+    this.isbn = book.isbn;
     this.selectedBook = book;
   }
 
