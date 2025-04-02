@@ -1,0 +1,22 @@
+<div class="book-identifier-container">
+  <h1>Identificar Livro</h1>
+  <!-- Exibe o vídeo da webcam -->
+  <video #videoElement autoplay playsinline></video>
+
+  <!-- Elemento canvas oculto usado para capturar a imagem -->
+  <canvas #canvas style="display: none;"></canvas>
+
+  <!-- Botão para capturar a imagem -->
+  <button (click)="captureImage()">Capturar Imagem</button>
+
+  <!-- Exemplo de exibição da imagem capturada -->
+  <div *ngIf="capturedImage">
+    <h3>Imagem Capturada:</h3>
+    <img [src]="capturedImage" alt="Imagem Capturada" />
+  </div>
+
+  <!-- Mensagem enquanto a webcam é iniciada -->
+  <div *ngIf="!streaming">
+    <p>Iniciando webcam...</p>
+  </div>
+</div>

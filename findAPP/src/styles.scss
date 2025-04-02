@@ -4,6 +4,24 @@
     font-size: 0.8em;
     line-height: 0.8em;
   }
+  .big
+  {
+    font-size: 1.2em;
+    line-height: 1.2em;
+  }
+  .superbig
+  {
+    font-size: 1.5em;
+    line-height: 1.5em;
+  }
+  .bold
+  {
+    font-weight: bold;
+  }
+  .italic
+  {
+    font-style: italic;
+  }
   .center
   {
     text-align: center;
@@ -12,6 +30,10 @@
   {
     text-align: right;
   }
+  .full
+  {
+    width: 100%;
+  }
 
   .link
   {
@@ -19,6 +41,7 @@
     text-decoration: none;
     opacity: 0.8;
     transition: all 0.3s ease-in-out;
+    cursor: pointer;
   }
   .link:hover
   {
