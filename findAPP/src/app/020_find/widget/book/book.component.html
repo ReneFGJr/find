@@ -1,11 +1,11 @@
+<app-waiting  *ngIf="!book"></app-waiting>
+
 <div class="container" *ngIf="book">
+
   <div class="row">
-    <div class="col-4 col-lg-4">
+    <div class="col-4 col-lg-4 p-3">
       <!-- Capa do livro -->
-      <div
-        class="book-cover"
-        [ngStyle]="{ 'background-image': 'url(' + book.cover + ')' }"
-      ></div>
+      <img [src]="book.cover" alt="Capa do Livro" class="book-cover" />
     </div>
 
     <div class="col-8 col-lg-8">

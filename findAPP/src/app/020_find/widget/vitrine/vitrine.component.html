@@ -1,3 +1,5 @@
+<app-waiting  *ngIf="!books?.items"></app-waiting>
+
 <div class="container mt-5" *ngIf="books?.items">
   <div class="row">
     <div class="col-12 col-sm-12 mb-5">
@@ -28,7 +30,6 @@
   <button class="btn-close" (click)="closeBookDetails()">×</button>
   <div class="p-4 overflow-auto h-100">
     <div class="container">
-      <h1>{{isbn}}</h1>
         <app-view-book [isbn]="isbn" [libraryID]="libraryID"></app-view-book>
     </div>
   </div>

@@ -1,46 +1,21 @@
-/* Reset e configurações básicas */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+
+
+
+.book-content {
+  font-size: 1.6em;
 }
 
-:host {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
-  padding: 20px;
-}
 
-/* Card do livro */
-.book-card {
-  background: #fff;
-  width: 350px;
-  border-radius: 10px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  animation: fadeIn 1.5s ease-out;
-}
 
 /* Capa do livro */
 .book-cover {
   width: 100%;
-  height: 0;
-  padding-top: 150%;
-  background-size: cover;
-  background-position: center;
   animation: slideDown 1s ease-out;
 }
 
-/* Conteúdo do card */
-.book-content {
-  padding: 20px;
-}
 
 .book-title {
-  font-size: 1.5em;
+  font-size: 1.8em;
   margin-bottom: 10px;
   font-weight: bold;
   color: #333;

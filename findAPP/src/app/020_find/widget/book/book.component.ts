@@ -3,11 +3,12 @@ import { FindService } from '../../../000_core/service/find.service';
 import { LocalStorageService } from '../../../000_core/service/local-storage.service';
 import { routes } from '../../../app.routes';
 import { CommonModule } from '@angular/common';
+import { WaitingComponent } from '../waiting/waiting.component';
 
 @Component({
   selector: 'app-view-book',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, WaitingComponent],
   templateUrl: './book.component.html',
   styleUrl: './book.component.scss',
 })
@@ -29,7 +30,7 @@ export class BookComponent {
 
   // Método auxiliar para concatenar os nomes das editoras
   getPublisher(): string {
-    return "X"
+    return 'X';
     //return this.book.meta.Publisher.map((pub) => pub.name).join(', ');
   }
 
