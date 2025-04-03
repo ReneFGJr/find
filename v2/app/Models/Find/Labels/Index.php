@@ -99,8 +99,13 @@ class Index extends Model
             $pdf->SetXY($posX, $posY + $labelLine); // 160 mm da borda esquerda
             $pdf->Cell(40, 10, $linel['ln2'], 0);
 
-            $pdf->SetXY($posX, $posY + $labelLine * 2); // 160 mm da borda esquerda
-            $pdf->Cell(40, 10, $linel['i_tombo'], 0);
+            if ($linel['ln3'] != '') {
+                $pdf->SetXY($posX, $posY + $labelLine * 2); // 160 mm da borda esquerda
+                $pdf->Cell(40, 10, $linel['ln3'].'   '. $linel['i_tombo'], 0);
+            } else {
+                $pdf->SetXY($posX, $posY + $labelLine * 2); // 160 mm da borda esquerda
+                $pdf->Cell(40, 10, $linel['i_tombo'], 0);
+            }
 
 
             if ($labelCol >= ($labelCols - 1)) {
