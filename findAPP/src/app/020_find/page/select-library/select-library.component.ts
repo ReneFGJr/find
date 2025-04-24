@@ -4,8 +4,6 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-select-library',
-  standalone: true,
-  imports: [CommonModule, SpashPageComponent],
   templateUrl: './select-library.component.html',
 })
 export class SelectLibraryComponent {

@@ -6,8 +6,6 @@ import { WebcamComponent } from '../../io/webcam/webcam.component';
 
 @Component({
   selector: 'app-catalog',
-  standalone: true,
-  imports: [CommonModule, FormsModule, WaitingComponent, WebcamComponent],
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.scss',
 })

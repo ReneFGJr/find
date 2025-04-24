@@ -3,8 +3,6 @@ import { Component, ElementRef, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-io-webcam',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './webcam.component.html',
   styleUrl: './webcam.component.scss',
 })

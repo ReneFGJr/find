@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FindService } from '../../../000_core/service/find.service';
+import { LocalStorageService } from '../../../000_core/service/local-storage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-view-book',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './book.component.html',
   styleUrl: './book.component.scss',
 })
@@ -17,7 +18,8 @@ export class BookComponent {
 
   constructor(
     private findService: FindService, // private router: Router
-    private localStorage: LocalStorageService // private localStorage: LocalStorageService
+    private localStorage: LocalStorageService, // private localStorage: LocalStorageService
+    private route: Router
   ) {
     console.log('constructor app component');
   }
@@ -34,7 +36,7 @@ export class BookComponent {
     console.log('ngChage', this.isbn);
     this.libraryID = localStorage.getItem('library') || '';
     if (this.libraryID == '') {
-      [routes[0].path] = ['selectLibrary'];
+      this.route.navigate(['/selectLibrary']);
     } else {
       let dt: Array<any> = [{ isbn: this.isbn, lib: this.libraryID }];
       console.log('ngChage', dt);

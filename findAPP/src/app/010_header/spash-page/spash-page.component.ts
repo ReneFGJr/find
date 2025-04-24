@@ -2,8 +2,6 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-spash-page',
-  standalone: true,
-  imports: [],
   templateUrl: './spash-page.component.html',
   styleUrl: './spash-page.component.scss',
 })

@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { FindService } from '../../../000_core/service/find.service';
+import { LocalStorageService } from '../../../000_core/service/local-storage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-vitrine',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './vitrine.component.html',
   styleUrl: './vitrine.component.scss',
 })
@@ -18,7 +18,8 @@ export class VitrineComponent {
 
   constructor(
     private findService: FindService, // private router: Router
-    private localStorage: LocalStorageService // private localStorage: LocalStorageService
+    private localStorage: LocalStorageService, // private localStorage: LocalStorageService
+    private route: Router
   ) {
     console.log('constructor app component');
   }
@@ -38,7 +39,7 @@ export class VitrineComponent {
     console.log('ngOnInit app component');
     this.libraryID = localStorage.getItem('library') || '';
     if (this.libraryID == '') {
-      [routes[0].path] = ['selectLibrary'];
+      this.route.navigate(['/selectLibrary']);
     } else {
       this.findService
         .api_post('vitrine/' + this.libraryID, [])

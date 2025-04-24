@@ -3,8 +3,6 @@ import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-libraries',
-  standalone: true,
-  imports: [CommonModule],
   templateUrl: './libraries.component.html',
   styleUrl: './libraries.component.scss',
 })
