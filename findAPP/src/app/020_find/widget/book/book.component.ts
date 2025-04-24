@@ -1,14 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { FindService } from '../../../000_core/service/find.service';
-import { LocalStorageService } from '../../../000_core/service/local-storage.service';
-import { routes } from '../../../app.routes';
 import { CommonModule } from '@angular/common';
-import { WaitingComponent } from '../waiting/waiting.component';
 
 @Component({
   selector: 'app-view-book',
   standalone: true,
-  imports: [CommonModule, WaitingComponent],
+  imports: [CommonModule],
   templateUrl: './book.component.html',
   styleUrl: './book.component.scss',
 })

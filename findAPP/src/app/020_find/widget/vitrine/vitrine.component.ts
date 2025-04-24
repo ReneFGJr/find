@@ -1,15 +1,10 @@
 import { Component } from '@angular/core';
-import { FindService } from '../../../000_core/service/find.service';
-import { LocalStorageService } from '../../../000_core/service/local-storage.service';
-import { routes } from '../../../app.routes';
 import { CommonModule } from '@angular/common';
-import { BookComponent } from '../book/book.component';
-import { WaitingComponent } from '../waiting/waiting.component';
 
 @Component({
   selector: 'app-vitrine',
   standalone: true,
-  imports: [CommonModule, BookComponent, WaitingComponent],
+  imports: [CommonModule],
   templateUrl: './vitrine.component.html',
   styleUrl: './vitrine.component.scss',
 })

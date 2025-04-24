@@ -1,9 +1,5 @@
 import { Component } from '@angular/core';
-import { LocalStorageService } from '../../../000_core/service/local-storage.service';
-import { FindService } from '../../../000_core/service/find.service';
 import { CommonModule } from '@angular/common';
-import { SpashPageComponent } from '../../../010_header/spash-page/spash-page.component';
-import { routes } from '../../../app.routes';
 import { Router } from '@angular/router';
 
 @Component({
