@@ -5,11 +5,11 @@ import { SelectLibraryComponent } from './020_find/page/select-library/select-li
 
 const routes: Routes = [
   { path: 'selectLibrary', component: SelectLibraryComponent },
-//  { path: 'catalog', component: CatalogComponent },
+  //  { path: 'catalog', component: CatalogComponent },
   {
-    path: '', component: VitrineComponent, children: [
-      { path: 'home', component: VitrineComponent }
-    ],
+    path: '',
+    component: VitrineComponent,
+    children: [{ path: 'home', component: SelectLibraryComponent }],
   },
 ];
 

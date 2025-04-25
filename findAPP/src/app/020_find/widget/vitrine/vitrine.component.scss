@@ -1,0 +1,23 @@
+/* catalog.component.scss */
+
+/* anima hover nos cards */
+.card {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* truncar títulos longos */
+.card-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* opcional: largura do offcanvas */
+.offcanvas-end {
+  max-width: 360px;
+}

@@ -37,7 +37,7 @@ export class VitrineComponent {
   }
 
   ngOnInit() {
-    console.log('ngOnInit app component');
+    console.log('ngOnInit app xcomponent');
     this.libraryID = localStorage.getItem('library') || '';
     if (this.libraryID == '') {
       this.route.navigate(['/selectLibrary']);

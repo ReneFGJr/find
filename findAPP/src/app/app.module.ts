@@ -17,6 +17,8 @@ import { CatalogComponent } from './020_find/widget/catalog/catalog.component';
 import { LibrariesComponent } from './020_find/widget/libraries/libraries.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WaitingComponent } from './020_find/widget/waiting/waiting.component';
+import { WebcamComponent } from './020_find/io/webcam/webcam.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -32,6 +34,7 @@ import { WaitingComponent } from './020_find/widget/waiting/waiting.component';
     CatalogComponent,
     LibrariesComponent,
     WaitingComponent,
+    WebcamComponent,
   ],
   imports: [
     BrowserModule,
@@ -39,7 +42,7 @@ import { WaitingComponent } from './020_find/widget/waiting/waiting.component';
     AppRoutingModule,
     NgbModule,
     BrowserAnimationsModule,
-
+    FormsModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [],
