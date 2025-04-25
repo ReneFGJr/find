@@ -14,14 +14,21 @@ export class FindService {
   ) {}
 
   //private url: string = 'http://find/v2/api/';
-  private url: string = 'https://www.ufrgs.br/find/v2/api/';
+  private url: string = 'http://find/api/';
+  //private url: string = 'https://www.ufrgs.br/find/v2/api/';
 
-  public api_post(type: string, dt: Array<any> = []): Observable<Array<any>> {
+  public api_post(
+    type: string,
+    dt: Record<string, any> = {},
+    development: boolean = false
+  ): Observable<Array<any>> {
     let url = `${this.url}` + type;
-    console.log('===' + url);
+    console.log('=URL==' + url);
     var formData: any = new FormData();
     let apikey = this.cookieService.get('section');
+    let library = this.getLibrary();
     formData.append('user', apikey);
+    formData.append('library', library);
 
     for (const key in dt) {
       formData.append(key, dt[key]);

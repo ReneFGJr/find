@@ -344,7 +344,7 @@ class RDF extends Model
             $class = $line['c_class'];
             $d[$class] = $line['total'];
         }
-        pre($d);
+        return $d;
     }
 
     function le($id)

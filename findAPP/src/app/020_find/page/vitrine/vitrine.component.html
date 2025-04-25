@@ -29,12 +29,13 @@
 ></div>
 
 <div class="slide-panel" *ngIf="selectedBook">
-  <button class="btn-close" (click)="closeBookDetails()">×</button>
+  <button class="btn-close" (click)="closeBookDetails()">X</button>
   <div class="p-4 overflow-auto h-100">
     <div class="container">
       <app-view-book
         [isbn]="isbn"
         [libraryID]="libraryID"
+        (Action)="closeBookDetails()"
       ></app-view-book>
     </div>
   </div>

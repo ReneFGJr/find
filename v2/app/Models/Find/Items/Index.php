@@ -138,6 +138,7 @@ class Index extends Model
 
             $RDF = new \App\Models\RDF2\RDF();
             $dtR = $RDF->le($dt['i_manitestation']);
+            pre($dtR);
 
             $Metadata = new \App\Models\Find\Metadata\Index();
             $META = $Metadata->metadata($dtR, $META);
@@ -192,6 +193,28 @@ class Index extends Model
             $META['ColorClassification'] = $COLORS;
         }
         return $META;
+    }
+
+    function getItemTombo($TomboID, $lib)
+    {
+        $Cover = new \App\Models\Find\Cover\Index();
+        $cp = 'i_titulo, i_identifier, i_exemplar, i_library, i_tombo, i_ln1, i_ln2, i_ln3, i_ln4, i_dt_emprestimo, i_dt_prev, is_name, lp_name';
+        $RSP = $this
+            ->select($cp)
+            ->join('library_place', 'id_lp = i_library_place', 'LEFT')
+            ->join('find_item_status', 'id_is = i_status', 'LEFT')
+            ->where('i_tombo', $TomboID)
+            ->where('i_library', $lib)
+            ->first();
+        if (isset($RSP['i_identifier']))
+            {
+                $RSP['cover'] = $Cover->cover($RSP['i_identifier']);
+            } else
+            {
+                $RSP['cover'] = $Cover->cover('XX');
+            }
+
+        return $RSP;
     }
 
     function exemplares($isbn, $lib)

@@ -1,24 +1,20 @@
 <?php
 
-namespace App\Models\Find\Library;
+namespace App\Models\Tombo;
 
 use CodeIgniter\Model;
 
 class Index extends Model
 {
     protected $DBGroup          = 'default';
-    protected $table            = 'library';
-    protected $primaryKey       = 'id_lb';
+    protected $table            = 'indices';
+    protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $insertID         = 0;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [
-        'id_l', 'l_name', 'l_code',
-        'l_id', 'l_logo', 'l_about',
-        'l_visible', 'l_net'
-    ];
+    protected $allowedFields    = [];
 
     // Dates
     protected $useTimestamps = false;
@@ -44,26 +40,25 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    function listAll()
-        {
-            $dt = $this
-                ->orderBy('l_name')
-                ->where('l_visible',1)
-                ->orderby('l_name')
-                ->findAll();
-            $LIBS = [];
-            $url = base_url();
-            $url = str_replace('v2/public','',$url);
-            foreach($dt as $id=>$line)
-                {
-                    $lib = [];
-                    $code = $line['l_code'];
-                    $lib['name'] = $line['l_name'];
-                    $lib['code'] = $code;
-                    $lib['logo'] = $url . '/img/logo/logo_'.$line['l_code'].'.jpg';
-                    $lib['about'] = $line['l_about'];
-                    array_push($LIBS,$lib);
-                }
-            return $LIBS;
+    function index($d1, $d2, $d3='')
+    {
+        $RSP = [];
+        if ($d1 =='view') { $d1 = 'v'; }
+
+        $RSP['action'] = $d1;
+        switch($d1) {
+            case 'v':
+                $Item = new \App\Models\Find\Items\Index();
+                $TomboID = get("tomboID");
+                $lib = get("library");
+                $RSP['library'] = $lib;
+                $RSP['item'] = $Item->getItemTombo($TomboID, $lib);
+                $RSP['data'] = $_POST;
+                break;
+
+            default:
+                $RSP['error'] = 'Invalid action';
         }
+        return $RSP;
+    }
 }

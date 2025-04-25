@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FindService } from '../../../010_core/service/find.service';
 import { LocalStorageService } from '../../../010_core/service/local-storage.service';
 import { Router } from '@angular/router';
@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 export class BookViewComponent {
   @Input() public isbn: string = '9788585445980'; //9788578110012
   @Input() public libraryID: string = '1003'; //1003
+  @Output() Action: EventEmitter<any> = new EventEmitter();
 
   //https://www.ufrgs.br/find/v2/api/getIsbn?isbn=9788585445980&lib=1003
   public book: Array<any> | any;
@@ -22,6 +23,10 @@ export class BookViewComponent {
     private route: Router
   ) {
     console.log('constructor app component');
+  }
+
+  closeBookDetails(){
+    this.Action.emit('close');
   }
 
   goBook(id: string, library: string) {}

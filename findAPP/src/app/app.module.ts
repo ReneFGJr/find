@@ -18,7 +18,9 @@ import { LibrariesComponent } from './020_find/widget/libraries/libraries.compon
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { WaitingComponent } from './020_find/widget/waiting/waiting.component';
 import { WebcamComponent } from './020_find/io/webcam/webcam.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TomboComponent } from './040_tombo/page/tombo/tombo.component';
+import { TomboViewComponent } from './040_tombo/widgat/tombo-view/tombo-view.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +37,8 @@ import { FormsModule } from '@angular/forms';
     LibrariesComponent,
     WaitingComponent,
     WebcamComponent,
+    TomboComponent,
+    TomboViewComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,6 +47,7 @@ import { FormsModule } from '@angular/forms';
     NgbModule,
     BrowserAnimationsModule,
     FormsModule,
+    ReactiveFormsModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [],

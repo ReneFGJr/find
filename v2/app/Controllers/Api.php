@@ -31,6 +31,11 @@ class Api extends BaseController
                 $RSP = $Admin->index($d2,$d3,$d4);
                 break;
 
+            case 'tombo':
+                $Tombo = new \App\Models\Tombo\Index();
+                $RSP = $Tombo->index($d2,$d3,$d4);
+                break;
+
             case 'getLibrary':
                 $Library = new \App\Models\Find\Library\Index();
                 $RSP = $Library->where('l_code',$d2)->first();
@@ -72,7 +77,7 @@ class Api extends BaseController
                 if ($d3 != '') {
                     $lib = $d3;
                 } else {
-                    $lib = get("lib");
+                    $lib = get("lib"). get("library");
                 }
                 $RSP = $Book->getISBN($isbn, $lib);
                 $RSP['dados']['isbn'] = $isbn;

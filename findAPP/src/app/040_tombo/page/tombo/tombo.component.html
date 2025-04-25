@@ -1,0 +1,38 @@
+<!-- tombo-form.component.html -->
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="row gy-2 gx-3 align-items-end">
+  <div class="col-auto">
+    <label for="tomboInput" class="form-label">Número de Tombo</label>
+    <input
+      type="text"
+      id="tomboInput"
+      formControlName="tombo"
+      class="form-control"
+      [class.is-invalid]="form.get('tombo')?.invalid && form.get('tombo')?.touched"
+      placeholder="Digite o tombo"
+    />
+    <div class="invalid-feedback">
+      Informe um número válido.
+    </div>
+  </div>
+
+  <div class="col-auto">
+    <button
+      type="submit"
+      class="btn btn-primary"
+      [disabled]="form.invalid || loading"
+    >
+      <span *ngIf="!loading">Consultar</span>
+      <span *ngIf="loading" class="spinner-border spinner-border-sm"></span>
+    </button>
+  </div>
+</form>
+{{data.item | json}}
+<br>
+{{data?.item?.i_library}}
+<br>
+{{data?.item?.i_identifier}}
+<app-view-book *ngIf="data" [libraryID]="data?.item?.i_library" [isbn]="data?.item?.i_identifier"></app-view-book>
+
+<div *ngIf="error" class="alert alert-danger mt-2">
+  {{ error }}
+</div>
