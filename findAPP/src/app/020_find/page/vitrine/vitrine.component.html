@@ -1,0 +1,36 @@
+<app-waiting  *ngIf="!books?.items"></app-waiting>
+
+<div class="container mt-5" *ngIf="books?.items">
+  <div class="row">
+    <div class="col-12 col-sm-12 mb-5">
+      <!-- <app-form-search (resultSearch)="resultSearch($event)"></app-form-search> -->
+    </div>
+    <div
+      class="col-md-6 col-6 col-sm-6 col-lg-3 col-xl-2 text-center"
+      *ngFor="let item of books.items"
+      (click)="openBookDetails(item)"
+    >
+      <img [src]="item.cover" class="img-fluid cover mb-3" />
+      <br />
+      <span class="t5 text-center p-0 m-0" style="line-height: 0.4">{{
+        item.title
+      }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- Painel lateral (off-canvas) -->
+<div
+  class="slide-panel-backdrop"
+  *ngIf="selectedBook"
+  (click)="closeBookDetails()"
+></div>
+
+<div class="slide-panel" *ngIf="selectedBook">
+  <button class="btn-close" (click)="closeBookDetails()">×</button>
+  <div class="p-4 overflow-auto h-100">
+    <div class="container">
+        <app-view-book [isbn]="isbn" [libraryID]="libraryID"></app-view-book>
+    </div>
+  </div>
+</div>

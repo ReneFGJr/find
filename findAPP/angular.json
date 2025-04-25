@@ -8,13 +8,15 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss",
-          "skipTests": true
+          "skipTests": true,
+          "standalone": false
         },
         "@schematics/angular:class": {
           "skipTests": true
         },
         "@schematics/angular:directive": {
-          "skipTests": true
+          "skipTests": true,
+          "standalone": false
         },
         "@schematics/angular:guard": {
           "skipTests": true
@@ -23,7 +25,8 @@
           "skipTests": true
         },
         "@schematics/angular:pipe": {
-          "skipTests": true
+          "skipTests": true,
+          "standalone": false
         },
         "@schematics/angular:resolver": {
           "skipTests": true
@@ -43,7 +46,8 @@
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
-              "zone.js"
+              "zone.js",
+              "@angular/localize/init"
             ],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
@@ -71,8 +75,8 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kB",
-                  "maximumError": "4kB"
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
                 }
               ],
               "outputHashing": "all"
@@ -105,7 +109,8 @@
           "options": {
             "polyfills": [
               "zone.js",
-              "zone.js/testing"
+              "zone.js/testing",
+              "@angular/localize/init"
             ],
             "tsConfig": "tsconfig.spec.json",
             "inlineStyleLanguage": "scss",

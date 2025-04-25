@@ -1,19 +1,11 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-libraries',
-  standalone: true,
-  imports: [CommonModule],
+  standalone: false,
   templateUrl: './libraries.component.html',
-  styleUrl: './libraries.component.scss',
+  styleUrl: './libraries.component.scss'
 })
 export class LibrariesComponent {
-  @Input() libraries: any[] = []; // Input property to receive libraries data from parent component
 
-  setLibrary(library: string) {
-    // Method to set the selected library in local storage and reload the page
-    localStorage.setItem('library', library);
-    window.location.reload();
-  }
 }
