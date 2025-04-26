@@ -21,6 +21,7 @@ export class SelectLibraryComponent {
   ) {}
 
   setLibrary(id: string) {
+    console.log('Library ID: ' + id);
     this.libraryID = id;
     this.localStorage.set('library', id);
     this.router.navigate(['/']);

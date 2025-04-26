@@ -47,6 +47,7 @@ class Index extends Model
                 ->where('i_search','')
                 ->where('i_library', $lib)
                 ->findAll(100);
+
             foreach($dt as $id=>$line)
                 {
                     $t = $line['i_titulo'];
@@ -69,14 +70,16 @@ class Index extends Model
 
     function searchAPI($term, $class = '')
         {
-            $lib = get("lib");
+            $lib = get("library");
             $this->makeSearch($lib);
+
 
             $ord = 'i_titulo';
             $Cover = new \App\Models\Find\Cover\Index();
 
             $item = new \App\Models\Find\Items\Index();
             $terms = explode(' ', $term);
+
 
             $cp = 'i_titulo, i_identifier, i_library';
 

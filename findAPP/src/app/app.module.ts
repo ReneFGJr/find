@@ -21,6 +21,14 @@ import { WebcamComponent } from './020_find/io/webcam/webcam.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TomboComponent } from './040_tombo/page/tombo/tombo.component';
 import { TomboViewComponent } from './040_tombo/widgat/tombo-view/tombo-view.component';
+import { TomboNotFoundComponent } from './040_tombo/widgat/tombo-not-found/tombo-not-found.component';
+import { BookLabelComponent } from './040_tombo/widgat/book-label/book-label.component';
+import { TomboShowComponent } from './040_tombo/widgat/tombo-show/tombo-show.component';
+import { BookLabelColorComponent } from './040_tombo/widgat/book-label-color/book-label-color.component';
+import { BookLabelLibraryComponent } from './040_tombo/widgat/book-label-library/book-label-library.component';
+import { BookStatusComponent } from './040_tombo/widgat/book-status/book-status.component';
+import { BookShowArrayComponent } from './040_tombo/widgat/book-show-array/book-show-array.component';
+import { SearchFormComponent } from './040_tombo/widgat/search-form/search-form.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +47,14 @@ import { TomboViewComponent } from './040_tombo/widgat/tombo-view/tombo-view.com
     WebcamComponent,
     TomboComponent,
     TomboViewComponent,
+    TomboNotFoundComponent,
+    BookLabelComponent,
+    TomboShowComponent,
+    BookLabelColorComponent,
+    BookLabelLibraryComponent,
+    BookStatusComponent,
+    BookShowArrayComponent,
+    SearchFormComponent,
   ],
   imports: [
     BrowserModule,

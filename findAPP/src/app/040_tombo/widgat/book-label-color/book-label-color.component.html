@@ -1,0 +1,10 @@
+<!-- Classificação por cor -->
+<div class="color-classification mb-2">
+  <div
+    class="color-item"
+    *ngFor="let cc of book.meta.ColorClassification"
+    [ngStyle]="{ background: cc.background, color: cc.textcolor }"
+  >
+    {{ cc.name }}
+  </div>
+</div>

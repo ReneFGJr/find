@@ -6,9 +6,8 @@ use CodeIgniter\Model;
 
 class RDF extends Model
 {
-    var $DBGroup          = 'find';
-    var $table            = 'rdfs';
-    protected $primaryKey       = 'id';
+    var $table            = 'rdf_concept';
+    protected $primaryKey       = 'id_cc';
     protected $useAutoIncrement = true;
     protected $insertID         = 0;
     protected $returnType       = 'array';
@@ -40,170 +39,79 @@ class RDF extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    function search($q,$class='')
-        {
-            $prop = 0;
-            if ($class != '')
-                {
-                    $prop = $this->class($class);
-                }
-            $RDFConcept = new \App\Models\Rdf\RDFConcept();
-            $RDFConcept->table = 'find.' . $RDFConcept->table;
+    function index($d1, $d2, $d3, $d4, $cab) {}
 
-            $cp = 'id_cc as id, cc_use as use, n_name as name, c_class as class, c_prefix as prefix, prefix_ref';
+    function le($id) {
+        $RSP = [];
+        $RSP['id'] = $id;
 
-            $RDFConcept
-                ->select($cp)
-                ->join('find.rdf_name', 'cc_pref_term = id_n')
-                ->join('find.rdf_class', 'cc_class = id_c')
-                ->join('find.rdf_prefix', 'c_prefix = id_prefix');
-
-                $c = [',','.','#','!','?','$','%','&'];
-                foreach($c as $id=>$ch)
-                    {
-                        $q = troca($q, $ch, ' ');
-                    }
-                $t = explode(' ',$q);
-
-                for($r=0;$r < count($t);$r++)
-                    {
-                        if ($r==0)
-                            {
-                                $RDFConcept->where('n_name like "%' . $t[$r] . '%"');
-                            } else {
-                                $RDFConcept->Where('n_name like "%' . $t[$r] . '%"');
-                            }
-
-                    }
-
-
-            if ($prop > 0)
-                {
-                    $RDFConcept->where('cc_class',$prop);
-                }
-            $RDFConcept->orderBy('n_name');
-            $dt = $RDFConcept->findAll(10);
-            return $dt;
-        }
-
-    function concept($name,$class,$lang='NnN')
-        {
-        $ld_class = $class;
-        $id_literal = $this->literal($name, $lang, True);
-
-        if ($class != sonumero($class))
-            {
-                $ld_class = $this->class($class);
-            }
-
-        $idc = $this->register_concept($ld_class, $id_literal);
-        return $idc;
-        }
-
-    function register_concept($idc, $idn)
-        {
-            $RDFConcept = new \App\Models\Rdf\RDFConcept();
-            $RDFConcept->table = 'find.' . $RDFConcept->table;
-            $dt = $RDFConcept
-                ->where('cc_class',$idc)
-                ->where('cc_pref_term',$idn)
-                ->first();
-
-            if ($dt == '')
-                {
-                    $dt['cc_class'] = $idc;
-                    $dt['cc_user'] = 0;
-                    $dt['cc_created'] = date("Y-m-dTH:i:s");
-                    $dt['cc_pref_term'] = $idn;
-                    $dt['cc_origin'] = '';
-                    $dt['cc_update'] = date("Y-m-dTH:i:s");
-                    $dt['cc_status'] = 1;
-                    $dt['cc_library'] = 0;
-                    $dt['c_equivalent'] = 0;
-                    $idc = $RDFConcept->set($dt)->insert();
-                } else {
-                    $idc = $dt['id_cc'];
-                }
-            return $idc;
-        }
-
-    function class($class)
-        {
-        $RDFClass = new \App\Models\Rdf\RDFClass();
-        $RDFClass->table = 'find.' . $RDFClass->table;
-
-        $idc = $RDFClass->class($class,false);
-        return $idc;
-        }
-
-    function literal($name,$lg='pt-BR', $force=1)
-    {
-        $RDFLiteral = new \App\Models\Rdf\RDFLiteral();
-        $RDFLiteral->table = 'find.' . $RDFLiteral->table;
-
-        $idn = $RDFLiteral->name($name, $lg, $force);
-        return $idn;
+        $dt = $this
+            ->select('id_cc as id, n_name as name, n_lang as lang, c_class as Class, c_type as type, cc_use as use')
+            ->join('rdf_class', 'cc_class = id_c', 'left')
+            ->join('rdf_name', 'cc_pref_term = id_n', 'left')
+            ->where('id_cc', $id)
+            ->first() ;
+        $RSP['concept'] = $dt;
+        $RSP['data'] = $this->getData($id);
+        return $RSP;
     }
 
-    function show_data($id)
-        {
-            $RDFData = new \App\Models\Rdf\RDFData();
-            $RDFData->table = 'find.' . $RDFData->table;
-            $dt = $RDFData
-                ->join('find.rdf_class', 'd_p = id_c')
-                ->join('find.rdf_prefix', 'c_prefix = id_prefix')
-                ->join('find.rdf_name', 'd_literal = id_n', 'left')
-                ->where('d_r1',$id)
-                ->findAll();
+    function getData($id) {
+        $RSP = [];
+        $cp = 'c_class as Property, c_type as type, c2.id_cc as ID, c2.cc_use as use, n_lang as Lang, n_name as Caption';
+        $cp1 = 'c_class as Property, "Literal" as type, id_cc as ID, cc_use as use, n_lang as Lang, n_name as Caption';
+        $dt1 = $this
+            ->select($cp)
+            ->join('rdf_data','d_r1 = id_cc')
+            ->join('rdf_class', 'd_p = id_c')
+            ->join('rdf_concept as c2', 'd_r2 = c2.id_cc')
+            ->join('rdf_name', 'c2.cc_pref_term = id_n', 'left')
+            ->where('rdf_concept.id_cc', $id)
+            ->where('d_literal',0)
+            ->findAll() ;
 
-            $rdf = [];
-            foreach($dt as $idl=>$line)
-                {
-                    pre($line,false);
-                    $dd = [];
-                    $prop = $line['prefix_ref'].':'.$line['c_class'];
-                    $value = $line['n_name'];
-                    if ($value != '')
-                        {
-                            $dd[$prop] = $value.'@'.$line['n_lang'];
-                        } else {
-                            $dd[$prop] = 'find:'.$line['d_r2'].'#';
-                        }
-                    array_push($rdf,$dd);
+        /* Adaptation for RDF2 */
+        $dt2 = $this
+            ->select($cp)
+            ->join('rdf_data', 'd_r2 = id_cc')
+            ->join('rdf_class', 'd_p = id_c')
+            ->join('rdf_concept as c2', 'd_r1 = c2.id_cc')
+            ->join('rdf_name', 'c2.cc_pref_term = id_n', 'left')
+            ->where('rdf_concept.id_cc', $id)
+            ->where('d_literal', 0)
+            ->findAll();
+        $dt3 = $this
+            ->select($cp1)
+            ->join('rdf_data', 'd_r1 = id_cc')
+            ->join('rdf_class', 'd_p = id_c')
+            ->join('rdf_name', 'd_literal = id_n', 'left')
+            ->where('rdf_concept.id_cc', $id)
+            ->where('d_literal <> 0')
+            ->findAll();
 
-                }
-            return $rdf;
 
-        }
+        $RSP = array_merge($dt1, $dt2, $dt3);
+        return $RSP;
+    }
 
-    function prop($resource_1,$prop, $resource_2,$literal)
-        {
-            $RDFData = new \App\Models\Rdf\RDFData();
-            $RDFData->table = 'find.' . $RDFData->table;
+    function extract($data,$property)
+    {
+        $RSP = [];
+        if (!isset($data['data'])) { return $RSP; }
 
-            if ($prop != sonumero($prop))
-                {
-                    $prop = $this->class($prop);
-                }
+        foreach($data['data'] as $id=>$line)
+            {
+                if ($line['Property'] == $property)
+                    {
+                        $dd = [];
+                        $dd['ID'] = $line['ID'];
+                        $dd['use'] = $line['use'];
+                        $dd['Lang'] = $line['Lang'];
+                        $dd['Caption'] = $line['Caption'];
+                        array_push($RSP, $dd);
+                    }
+            }
+        return $RSP;
+    }
 
-            $dt = $RDFData
-                ->where('d_r1', $resource_1)
-                ->where('d_p', $prop)
-                ->where('d_r2', $resource_2)
-                ->where('d_literal', $literal)
-                ->first();
-
-            if ($dt == '')
-                {
-                    $dt['d_r1'] = $resource_1;
-                    $dt['d_p'] = $prop;
-                    $dt['d_r2'] = $resource_2;
-                    $dt['d_literal'] = $literal;
-                    $dt['d_library'] = 0;
-                    $dt['d_user'] = 0;
-                    $dt['d_update'] = date("Y-m-d");
-                    $idr = $RDFData->set($dt)->insert();
-                }
-            return 1;
-        }
 }

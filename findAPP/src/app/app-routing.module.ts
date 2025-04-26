@@ -5,16 +5,15 @@ import { SelectLibraryComponent } from './020_find/page/select-library/select-li
 import { TomboComponent } from './040_tombo/page/tombo/tombo.component';
 
 const routes: Routes = [
-  { path: 'selectLibrary', component: SelectLibraryComponent },
   //  { path: 'catalog', component: CatalogComponent },
   {
     path: '',
-
     children: [
       { path: '', component: VitrineComponent },
       { path: 'home', component: SelectLibraryComponent },
       { path: 'tombo', component: TomboComponent },
-      ],
+      { path: 'selectLibrary', component: SelectLibraryComponent },
+    ],
   },
 ];
 

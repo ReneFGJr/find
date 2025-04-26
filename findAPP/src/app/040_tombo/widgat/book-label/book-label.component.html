@@ -1,0 +1,7 @@
+<div class="book-label mb-2" *ngIf="show && data?.item">
+  <div *ngIf="data?.item?.i_ln1">{{ data?.item?.i_ln1 }}&nbsp;</div>
+  <div *ngIf="data?.item?.i_ln2">{{ data?.item?.i_ln2 }}&nbsp;</div>
+  <div *ngIf="data?.item?.i_ln3">{{ data?.item?.i_ln3 }}&nbsp;</div>
+  {{ data?.item?.i_tombo }}
+  <span class="ms-4" *ngIf="data?.item?.i_ln4">{{ data?.item?.i_ln4 }}</span>
+</div>

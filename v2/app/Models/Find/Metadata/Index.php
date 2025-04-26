@@ -42,8 +42,11 @@ class Index extends Model
 
     function metadata($dt, $RSP = [])
     {
-        $fld = ['Title','Authors', 'Publisher', 'Place', 'CDD', 'CDU', 'Subject', 'Langage','Page', 'ColorClassification',
-        'Cutter'];
+        $fld = ['Title','Authors', 'Publisher',
+            'Place', 'CDD', 'CDU', 'Subject',
+            'Langage','Page',
+            'ColorClassification',
+            'Cutter'];
 
         foreach($fld as $name)
             {
@@ -53,10 +56,13 @@ class Index extends Model
                     }
             }
 
+        if (!isset($dt['data']))
+            {
+                return $RSP;
+            }
 
 
         foreach ($dt['data'] as $id => $line) {
-            $Class = $line['Class'];
             $Prop = $line['Property'];
             $value = $this->getValue($line);
             switch ($Prop) {

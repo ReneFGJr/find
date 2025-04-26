@@ -26,6 +26,10 @@ class Api extends BaseController
         }
 
         switch ($verb) {
+            case 'v':
+                $RDF = new \App\Models\Find\Rdf\RDF();
+                $RSP = $RDF->le($d2);
+                break;
             case 'admin':
                 $Admin = new \App\Models\Admin\Index();
                 $RSP = $Admin->index($d2,$d3,$d4);
@@ -69,15 +73,17 @@ class Api extends BaseController
 
             case 'getIsbn':
                 $Book = new \App\Models\Find\Items\Index();
+                /************* ISBN */
                 if ($d2 != '') {
                     $isbn = $d2;
                 } else {
                     $isbn = get("isbn");
                 }
+                /************* Biblioteca */
                 if ($d3 != '') {
                     $lib = $d3;
                 } else {
-                    $lib = get("lib"). get("library");
+                    $lib = get("lib");
                 }
                 $RSP = $Book->getISBN($isbn, $lib);
                 $RSP['dados']['isbn'] = $isbn;
@@ -85,7 +91,14 @@ class Api extends BaseController
                 break;
 
             case 'vitrine':
-                $lib = trim(get("library") . $d2);
+                $lib = trim(get("library"));
+                if ($d2 != '') {
+                    $lib = $d2;
+                } else if (get("lib") != '') {
+                    $lib = get("lib");
+                } else if (get("library") != '') {
+                    $lib = get("library");
+                }
                 $Items = new \App\Models\Find\Items\Index();
                 $RSP['items'] = $Items->vitrine($lib);
                 break;

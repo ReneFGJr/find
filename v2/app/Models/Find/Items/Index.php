@@ -15,16 +15,35 @@ class Index extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'id_i', 'i_tombo', 'i_manitestation',
-        'i_titulo', 'i_status', 'i_aquisicao',
-        'i_indexer', 'i_year', 'i_localization',
-        'i_ln1', 'i_ln2', 'i_ln3',
-        'i_ln4', 'i_type', 'i_identifier',
-        'i_uri', 'i_library', 'i_library_place',
-        'i_library_classification', 'i_created', 'i_ip',
-        'i_usuario', 'i_dt_emprestimo', 'i_dt_prev',
-        'i_dt_renovavao', 'i_exemplar', 'i_work',
-        'i_expression', 'i_search'
+        'id_i',
+        'i_tombo',
+        'i_manitestation',
+        'i_titulo',
+        'i_status',
+        'i_aquisicao',
+        'i_indexer',
+        'i_year',
+        'i_localization',
+        'i_ln1',
+        'i_ln2',
+        'i_ln3',
+        'i_ln4',
+        'i_type',
+        'i_identifier',
+        'i_uri',
+        'i_library',
+        'i_library_place',
+        'i_library_classification',
+        'i_created',
+        'i_ip',
+        'i_usuario',
+        'i_dt_emprestimo',
+        'i_dt_prev',
+        'i_dt_renovavao',
+        'i_exemplar',
+        'i_work',
+        'i_expression',
+        'i_search'
     ];
 
     // Dates
@@ -79,7 +98,7 @@ class Index extends Model
 
     function getPubItem($ID, $lib = '')
     {
-        $RDF = new \App\Models\RDF2\RDF();
+        $RDF = new \App\Models\Find\Rdf\RDF();
         $dt = $RDF->le($ID);
         $wk = [];
         $dd = [];
@@ -96,21 +115,19 @@ class Index extends Model
             foreach ($dt['data'] as $ida => $line) {
                 if ($line['Class'] == 'Work') {
                     array_push($wk, $line['ID']);
-                    $Item->orWhere('i_work',$line['ID']);
+                    $Item->orWhere('i_work', $line['ID']);
                 }
             }
 
             $dti = $Item
-                    ->orderBy('i_titulo')
-                    ->findAll();
-            foreach($dti as $idi=>$linei)
-                {
-                    $xlib = $linei['i_library'];
-                    if ($lib != $xlib)
-                        {
-                            unset($dti[$idi]);
-                        }
+                ->orderBy('i_titulo')
+                ->findAll();
+            foreach ($dti as $idi => $linei) {
+                $xlib = $linei['i_library'];
+                if ($lib != $xlib) {
+                    unset($dti[$idi]);
                 }
+            }
         }
         $dd['works'] = $wk;
         return $dd;
@@ -136,28 +153,29 @@ class Index extends Model
 
             $RSP['ID'] = $dt['i_manitestation'];
 
-            $RDF = new \App\Models\RDF2\RDF();
-            $dtR = $RDF->le($dt['i_manitestation']);
-            pre($dtR);
+            $RDF = new \App\Models\Find\Rdf\RDF();
+            $idM = $dt['i_manitestation'];
+            $dtR = $RDF->le($idM);
 
             $Metadata = new \App\Models\Find\Metadata\Index();
             $META = $Metadata->metadata($dtR, $META);
 
             /*********** Expression */
             $expression = $RDF->extract($dtR, 'isAppellationOfManifestation', 'A');
+
+            $WORK = [];
+
             foreach ($expression as $ide => $expr) {
-                $dtR = $RDF->le($expr);
-                $meta = $Metadata->metadata($dtR, $META);
-                $META = array_merge($META, $meta);
+                $idE = $expr['ID'];
+                $dtR = $RDF->le($expr['ID']);
+                $WORK = $RDF->extract($dtR, 'isAppellationOfExpression', 'A');
+
+                if (isset($WORK[0]['ID'])) {
+                    $dtW = $RDF->le($WORK[0]['ID']);
+                    $META = $Metadata->metadata($dtW, $META);
+                }
             }
 
-            /*********** Work */
-            $Work = $RDF->extract($dtR, 'isAppellationOfExpression', 'A');
-            foreach ($Work as $ide => $expr) {
-                $dtR = $RDF->le($expr);
-                $meta = $Metadata->metadata($dtR, $META);
-                $META = array_merge($META, $meta);
-            }
 
             $META = $this->prepara_classe_colors($META);
             $RSP['meta'] = $META;
@@ -198,22 +216,42 @@ class Index extends Model
     function getItemTombo($TomboID, $lib)
     {
         $Cover = new \App\Models\Find\Cover\Index();
-        $cp = 'i_titulo, i_identifier, i_exemplar, i_library, i_tombo, i_ln1, i_ln2, i_ln3, i_ln4, i_dt_emprestimo, i_dt_prev, is_name, lp_name';
+        $cp = 'i_titulo, i_identifier, i_exemplar, i_library, i_tombo, ';
+        $cp .= 'i_ln1, i_ln2, i_ln3, i_ln4, i_dt_emprestimo, i_dt_prev, ';
+        $cp .= 'is_name, lp_name, id_is as status, us_nome, id_us';
         $RSP = $this
             ->select($cp)
             ->join('library_place', 'id_lp = i_library_place', 'LEFT')
             ->join('find_item_status', 'id_is = i_status', 'LEFT')
+            ->join('users', 'i_usuario = id_us', 'LEFT')
             ->where('i_tombo', $TomboID)
             ->where('i_library', $lib)
             ->first();
-        if (isset($RSP['i_identifier']))
-            {
-                $RSP['cover'] = $Cover->cover($RSP['i_identifier']);
-            } else
-            {
-                $RSP['cover'] = $Cover->cover('XX');
-            }
 
+
+
+        $RSP['atrasado'] = 0;
+
+        // Supondo que $line['loan'] esteja em formato 'YYYY-MM-DD' ou similar
+        $loanDate = $RSP['i_dt_prev'];
+        if ($loanDate == '0') {
+            $loanDate = '00000000';
+        }
+        $formatted = substr($loanDate, 0, 4) . '-' .
+            substr($loanDate, 4, 2) . '-' .
+            substr($loanDate, 6, 2);
+
+        $RSP['i_dt_prev'] = $formatted;
+
+        if ($RSP['status'] == '6') {
+            $loanTimestamp = strtotime($formatted);
+            $todayTimestamp = time();
+
+            // Se a data de empréstimo for anterior a hoje, está atrasado
+            if ($loanTimestamp < $todayTimestamp) {
+                $RSP['atrasado'] = 1;
+            }
+        }
         return $RSP;
     }
 
@@ -241,6 +279,16 @@ class Index extends Model
             $dd['status'] = $line['is_name'];
             $dd['place'] = $line['lp_name'];
             $dd['loan'] = $line['i_dt_emprestimo'];
+            $dd['atrasado'] = 0;
+
+            /* Atrasado */
+            $loanTimestamp = strtotime($dd['loan']);
+            $todayTimestamp = time();
+
+            // Se a data de empréstimo for anterior a hoje, está atrasado
+            if ($loanTimestamp < $todayTimestamp) {
+                $dd['atrasado'] = 1;
+            }
             array_push($RSP, $dd);
         }
         return $RSP;

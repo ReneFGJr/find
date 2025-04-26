@@ -16,6 +16,8 @@ export class VitrineComponent {
   public library: any[] = [];
   public selectedBook: any = null;
   public isbn: string = '9788585445980'; //9788578110012
+  public result: Array<any> | any;
+  public isLoading: boolean = true;
 
   constructor(
     private findService: FindService, // private router: Router
@@ -27,6 +29,24 @@ export class VitrineComponent {
 
   goBook(id: string, library: string) {}
 
+  searchTerm(search: Event) {
+    console.log('searchTerm', search);
+    this.isLoading = true;
+    this.books = null;
+
+    console.log('searchTerm', search);
+
+    let dt = { q: search };
+
+    this.findService.api_post('search/' + this.libraryID, dt).subscribe(
+      (res) => {
+        this.books = res;
+        this.isLoading = false;
+        console.log(res)
+      }
+    );
+  }
+
   openBookDetails(book: any) {
     this.isbn = book.isbn;
     this.selectedBook = book;
@@ -37,22 +57,24 @@ export class VitrineComponent {
   }
 
   ngOnInit() {
-    console.log('ngOnInit app component');
+    console.log('--Init Vitrine--');
     this.libraryID = localStorage.getItem('library') || '';
     if (this.libraryID == '') {
+      console.log('--MSG: Library empty--');
       this.routes.navigate(['/selectLibrary']);
     } else {
       this.findService
         .api_post('vitrine/' + this.libraryID, [])
         .subscribe((res) => {
           this.books = res;
+          console.log(this.books);
           this.libraries = this.books;
 
           if (!this.libraries) {
             this.localStorage.remove('library');
             this.libraryID = '';
           }
-          console.log(this.books);
+          this.isLoading = false;
         });
     }
   }

@@ -50,7 +50,7 @@ export class BookViewComponent {
         .api_post('getIsbn', dt[0])
         .subscribe((res) => {
           this.book = res;
-          console.log(this.book);
+          console.log("------------BOOK-VIEW-",this.book);
         });
     }
   }

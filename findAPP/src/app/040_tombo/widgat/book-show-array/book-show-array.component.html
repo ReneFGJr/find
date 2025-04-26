@@ -1,0 +1,14 @@
+<!-- Use ng-container ou div para *ngIf -->
+<ng-container *ngIf="data && type === 'author'">
+<h5>{{label}}</h5>
+  <div class="row">
+    <div class="col-12 col-lg-12 p-1">
+      <!-- Coloque o li dentro de uma ul -->
+      <ul class="list-unstyled mb-0">
+        <li class="ms-4" *ngFor="let item of data">
+          {{ item.name }}
+        </li>
+      </ul>
+    </div>
+  </div>
+</ng-container>

@@ -44,6 +44,35 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+    function le($id)
+    {
+        $cp = 'l_name as Library, l_code as ID, l_logo as Logo';
+        $dt = $this
+            ->select($cp)
+            ->where('l_id',$id)
+            ->first();
+
+        $logo = $dt['Logo'];
+        if ($logo == '')
+            {
+                $logo = '/assets/icons/icone_library.png';
+            }
+        else
+            {
+                if (file_exists(FCPATH.'/assets/images/'.$logo))
+                    {
+                        $logo = base_url('assets/images/'.$logo);
+                    }
+                else
+                    {
+                        $logo = '/assets/icons/icone_library.png';
+                    }
+            }
+        $dt['Logo'] = $logo;
+
+        return $dt;
+    }
+
     function listAll()
         {
             $dt = $this

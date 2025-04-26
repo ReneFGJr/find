@@ -1,14 +1,26 @@
-<app-waiting *ngIf="!books?.items?.length"></app-waiting>
 
-<div class="container mt-5" *ngIf="books?.items?.length">
+
+<div class="container mt-5">
+  <!-- Form Search-->
   <div class="row">
-  <div class="col-12">
-    <h3 class="mt-2 mb-4">
-      Novidades na Biblioteca
-    </h3>
+    <app-search-form (searchQuery)="searchTerm($event)"></app-search-form>
   </div>
+
+  <!--- Waiting -->
+  <app-waiting *ngIf="isLoading" [isLoading]="isLoading"></app-waiting>
+
+  <!-- Result -->
+  <div class="row" *ngIf="result">
+  X
+  </div>
+
+  <!-- Form Vitrine-->
+  <div class="row" *ngIf="books?.items?.length && !isLoading">
+    <div class="col-12">
+      <h3 class="mt-2 mb-4">Novidades na Biblioteca</h3>
+    </div>
     <div
-      class="col-md-6 col-6 col-sm-6 col-lg-3 col-xl-2 text-center"
+      class="col-md-6 col-6 col-sm-6 col-lg-3 col-xl-2 text-center p-4"
       *ngFor="let item of books.items"
       (click)="openBookDetails(item)"
     >
@@ -31,7 +43,7 @@
 <div class="slide-panel" *ngIf="selectedBook">
   <button class="btn-close" (click)="closeBookDetails()">X</button>
   <div class="p-4 overflow-auto h-100">
-    <div class="container">
+    <div class="container p-4">
       <app-view-book
         [isbn]="isbn"
         [libraryID]="libraryID"

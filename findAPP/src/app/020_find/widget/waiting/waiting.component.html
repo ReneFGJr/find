@@ -1,1 +1,9 @@
-<p>waiting works!</p>
+<div class="loading-overlay" *ngIf="isLoading">
+  <div class="spinner-container">
+    <div class="spinner" style="height: 200px; width: 200px;"></div>
+    <p class="loading-text">Carregando...</p>
+  </div>
+  <div class="time-counter">
+    {{ secondsPassed }}s
+  </div>
+</div>

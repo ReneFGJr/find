@@ -1,0 +1,13 @@
+<div class="book-label mb-2">
+  <div *ngIf="data" class="d-flex align-items-center">
+    <img
+      [src]="data.library.Logo"
+      alt="Logo da Biblioteca"
+      class="me-3 rounded"
+      style="height: 50px; width: auto; object-fit: contain"
+    />
+    <span class="mb-0">{{ data.library.Library }}</span>
+  </div>
+  <div>
+  {{data?.item?.lp_name}}</div>
+</div>

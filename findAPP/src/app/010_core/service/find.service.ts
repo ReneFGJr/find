@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
+import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,12 +11,13 @@ export class FindService {
   http: any;
   constructor(
     private HttpClient: HttpClient,
+    private localStorage: LocalStorageService,
     private cookieService: CookieService
   ) {}
 
   //private url: string = 'http://find/v2/api/';
-  private url: string = 'http://find/api/';
-  //private url: string = 'https://www.ufrgs.br/find/v2/api/';
+  //private url: string = 'http://find/api/';
+  private url: string = 'https://www.ufrgs.br/find/v2/api/';
 
   public api_post(
     type: string,
@@ -23,7 +25,6 @@ export class FindService {
     development: boolean = false
   ): Observable<Array<any>> {
     let url = `${this.url}` + type;
-    console.log('=URL==' + url);
     var formData: any = new FormData();
     let apikey = this.cookieService.get('section');
     let library = this.getLibrary();
@@ -33,6 +34,8 @@ export class FindService {
     for (const key in dt) {
       formData.append(key, dt[key]);
     }
+
+    console.log('=URL==' + url, dt);
 
     return this.HttpClient.post<Array<any>>(url, formData).pipe(
       (res) => res,
@@ -63,12 +66,8 @@ export class FindService {
 
   public getLibrary(): string {
     console.log('getLibrary');
-    if (this.cookieService.check('library')) {
-      let lib = this.cookieService.get('library');
-      return String(lib);
-    } else {
-      return '0';
-    }
+    let lib = this.localStorage.get('library');
+    return String(lib);
   }
 
   public search(term: string, c: string): Observable<Array<any>> {

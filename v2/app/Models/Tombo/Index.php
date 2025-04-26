@@ -49,9 +49,10 @@ class Index extends Model
         switch($d1) {
             case 'v':
                 $Item = new \App\Models\Find\Items\Index();
+                $Library = new \App\Models\Find\Library\Index();
                 $TomboID = get("tomboID");
                 $lib = get("library");
-                $RSP['library'] = $lib;
+                $RSP['library'] = $Library->le($lib);
                 $RSP['item'] = $Item->getItemTombo($TomboID, $lib);
                 $RSP['data'] = $_POST;
                 break;
