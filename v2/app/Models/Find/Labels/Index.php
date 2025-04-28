@@ -66,11 +66,13 @@ class Index extends Model
         $dt['labels'] = $this
             ->select('i_ln1 as ln1, i_ln2 as ln2, i_ln3 as ln3, i_ln4 as ln4, i_tombo')
             ->where('i_library', $lib)
+            ->where('i_status', 2)
             ->where('i_titulo <> ""')
             ->where('i_ln1 <> ""')
             ->orderBy($ord)
             //->orderBy('ln1')
             ->findAll($limit, $offset);
+
         //echo $this->getlastquery();
 
         $posXini = 23;
