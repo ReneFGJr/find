@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { VitrineComponent } from './020_find/page/vitrine/vitrine.component';
 import { SelectLibraryComponent } from './020_find/page/select-library/select-library.component';
 import { TomboComponent } from './040_tombo/page/tombo/tombo.component';
+import { ReportsComponent } from './020_find/page/reports/reports.component';
 
 const routes: Routes = [
   //  { path: 'catalog', component: CatalogComponent },
@@ -13,6 +14,7 @@ const routes: Routes = [
       { path: 'home', component: SelectLibraryComponent },
       { path: 'tombo', component: TomboComponent },
       { path: 'selectLibrary', component: SelectLibraryComponent },
+      { path: 'report/:act', component: ReportsComponent },
     ],
   },
 ];

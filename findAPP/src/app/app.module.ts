@@ -29,6 +29,8 @@ import { BookLabelLibraryComponent } from './040_tombo/widgat/book-label-library
 import { BookStatusComponent } from './040_tombo/widgat/book-status/book-status.component';
 import { BookShowArrayComponent } from './040_tombo/widgat/book-show-array/book-show-array.component';
 import { SearchFormComponent } from './040_tombo/widgat/search-form/search-form.component';
+import { ReportItemComponent } from './020_find/report/report-item/report-item.component';
+import { ReportsComponent } from './020_find/page/reports/reports.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +57,8 @@ import { SearchFormComponent } from './040_tombo/widgat/search-form/search-form.
     BookStatusComponent,
     BookShowArrayComponent,
     SearchFormComponent,
+    ReportsComponent,
+    ReportItemComponent,
   ],
   imports: [
     BrowserModule,
