@@ -1,0 +1,80 @@
+<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-12">
+      <label for="tomboInput" class="form-label h4">Tombos para imprimir</label>
+      <!-- tombo-form.component.html -->
+      <form
+        [formGroup]="form"
+        class="row gy-2 gx-3 align-items-top"
+      >
+        <div class="col-lg-3 col-md-4 col-sm-12">
+          <textarea
+            #cursoInput
+            id="tomboInput"
+            formControlName="tombo"
+            class="form-control border border-secondary"
+            style="width: 100%; height: 300px"
+            [class.is-invalid]="form.get('tombo')?.invalid && form.get('tombo')?.touched"
+            placeholder="Digite o tombo"
+          ></textarea>
+        </div>
+        <div class="col-auto">
+          <button
+            (click)="onSubmit()"
+            type="button"
+            class="btn btn-primary full"
+            [disabled]="form.invalid || loading"
+          >
+            <span *ngIf="!loading">Enviar para Impressão</span>
+            <span
+              *ngIf="loading"
+              class="spinner-border spinner-border-sm"
+            ></span>
+          </button>
+
+          <button
+            (click)="onPrintLabel()"
+            type="button"
+            class="btn btn-danger full mt-2"
+            [disabled]="loading"
+          >
+            <span *ngIf="!loading && et">{{et.length}} etiquetas para imprimir</span>
+            <span
+              *ngIf="loading"
+              class="spinner-border spinner-border-sm"
+            ></span>
+          </button>
+
+          <button
+            (click)="onClear()"
+            type="button"
+            class="btn btn-warning full mt-2"
+            [disabled]="loading"
+          >
+            <span *ngIf="!loading">Limpar etiquetas (para imprimir)</span>
+            <span
+              *ngIf="loading"
+              class="spinner-border spinner-border-sm"
+            ></span>
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="col-md-9 col-9 mt-5">
+
+
+
+
+    </div>
+    <div class="col-md-3 col-3 mt-5">
+    <app-book-label-library [data]="data"></app-book-label-library>
+    <app-tombo-show [data]="data"></app-tombo-show>
+    <app-book-label [data]="data"></app-book-label>
+
+    <app-book-label-color *ngIf="book" [book]="book"></app-book-label-color>
+
+    <app-book-status [data]="data"></app-book-status>
+
+    </div>
+  </div>
+</div>

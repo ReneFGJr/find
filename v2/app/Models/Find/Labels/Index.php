@@ -46,6 +46,52 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+    function setToPrint()
+        {
+            $lb = get("tomboID");
+            $library = get("library");
+            $lbs = explode(chr(13), $lb);
+            $tot = 0;
+            foreach ($lbs as $lb) {
+                $tot++;
+                $dd = [];
+                $dd['i_status'] = 2;
+                $this->set($dd)
+                    ->where('i_tombo', $lb)
+                    ->where('i_library', $library)
+                    ->update();
+            }
+            $RSP = [];
+            $RSP['status'] = '200';
+            $RSP['msg'] = 'Atualizado com sucesso';
+            $RSP['total'] = $tot;
+            return $RSP;
+        }
+
+    function getLabels($status=0)
+    {
+        $library = get("library");
+        $dd = [];
+        $dd['i_status'] = 2;
+        $dt = $this
+            ->where('i_library', $library)
+            ->where('i_status', $status)
+            ->findAll();
+        return $dt;
+    }
+
+    function zerar()
+    {
+        $RSP = [];
+        $RSP['status'] = '200';
+        $RSP['msg'] = 'Zerado com sucesso';
+        $library = get("library");
+        $dd = [];
+        $dd['i_status'] = 5;
+        $this->set($dd)->where('i_library', $library)->update();
+        return $RSP;
+    }
+
     function print($d1 = '', $ord = 'i', $d3 = '')
     {
 

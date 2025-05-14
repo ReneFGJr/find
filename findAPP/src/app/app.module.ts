@@ -31,6 +31,9 @@ import { BookShowArrayComponent } from './040_tombo/widgat/book-show-array/book-
 import { SearchFormComponent } from './040_tombo/widgat/search-form/search-form.component';
 import { ReportItemComponent } from './020_find/report/report-item/report-item.component';
 import { ReportsComponent } from './020_find/page/reports/reports.component';
+import { TomboLabelComponent } from './030_admin/tombo/tombo-label/tombo-label.component';
+import { TomboEditComponent } from './030_admin/tombo/tombo-edit/tombo-edit.component';
+import { LabelTomboComponent } from './040_tombo/page/label-tombo/label-tombo.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +62,9 @@ import { ReportsComponent } from './020_find/page/reports/reports.component';
     SearchFormComponent,
     ReportsComponent,
     ReportItemComponent,
+    TomboLabelComponent,
+    TomboEditComponent,
+    LabelTomboComponent,
   ],
   imports: [
     BrowserModule,

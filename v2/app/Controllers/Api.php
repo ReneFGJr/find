@@ -72,7 +72,23 @@ class Api extends BaseController
 
             case 'label':
                 $Labels = new \App\Models\Find\Labels\Index();
-                $RSP = $Labels->print($d2, $d3);
+                $d2 = strtoupper($d2);
+
+                switch($d2)
+                    {
+                        case 'Z':
+                            $RSP = $Labels->zerar();
+                            break;
+                        case 'R':
+                            $RSP = $Labels->getLabels(2);
+                            break;
+                        case 'G':
+                            $RSP = $Labels->setToPrint(0);
+                            break;
+                        default:
+                            $RSP = $Labels->print($d2, $d3);
+                            break;
+                    }
                 break;
 
             case 'getIsbn':
