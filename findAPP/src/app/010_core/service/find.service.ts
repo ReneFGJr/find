@@ -16,8 +16,8 @@ export class FindService {
   ) {}
 
   //private url: string = 'http://find/v2/api/';
-  //private url: string = 'http://find/api/';
-  private url: string = 'https://www.ufrgs.br/find/v2/api/';
+  private url: string = 'http://find/api/';
+  //private url: string = 'https://www.ufrgs.br/find/v2/api/';
 
   public api_post(
     type: string,
@@ -41,6 +41,16 @@ export class FindService {
       (res) => res,
       (error) => error
     );
+  }
+
+  formatDateString(dateStr: string): string {
+    if (!dateStr || dateStr === '0' || dateStr.length !== 8) {
+      return '—';
+    }
+    const ano = dateStr.substr(0, 4);
+    const mes = dateStr.substr(4, 2);
+    const dia = dateStr.substr(6, 2);
+    return `${dia}/${mes}/${ano}`;
   }
 
   /******************************************************************** */

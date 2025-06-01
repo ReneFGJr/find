@@ -24,6 +24,7 @@ export class LabelTomboComponent {
     });
   }
 
+
   ngAfterViewInit(): void {
     // dá foco ao input assim que a view estiver pronta
     this.cursoInput.nativeElement.focus();

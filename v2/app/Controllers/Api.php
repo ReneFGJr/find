@@ -26,6 +26,10 @@ class Api extends BaseController
         }
 
         switch ($verb) {
+            case 'users':
+                $User = new \App\Models\User\User();
+                $RSP = $User->index($d2, $d3, $d4);
+                break;
             case 'report':
                 $Report = new \App\Models\Report\Index();
                 $RSP = $Report->index($d2,$d3,$d4);

@@ -34,6 +34,10 @@ import { ReportsComponent } from './020_find/page/reports/reports.component';
 import { TomboLabelComponent } from './030_admin/tombo/tombo-label/tombo-label.component';
 import { TomboEditComponent } from './030_admin/tombo/tombo-edit/tombo-edit.component';
 import { LabelTomboComponent } from './040_tombo/page/label-tombo/label-tombo.component';
+import { UsersComponent } from './050_users/page/users/users.component';
+import { GroupsComponent } from './050_users/page/groups/groups.component';
+import { UserListComponent } from './050_users/widget/user-list/user-list.component';
+import { UserShowComponent } from './050_users/widget/user-show/user-show.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +69,10 @@ import { LabelTomboComponent } from './040_tombo/page/label-tombo/label-tombo.co
     TomboLabelComponent,
     TomboEditComponent,
     LabelTomboComponent,
+    UsersComponent,
+    GroupsComponent,
+    UserListComponent,
+    UserShowComponent,
   ],
   imports: [
     BrowserModule,

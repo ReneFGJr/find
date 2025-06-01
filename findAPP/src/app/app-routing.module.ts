@@ -5,6 +5,7 @@ import { SelectLibraryComponent } from './020_find/page/select-library/select-li
 import { TomboComponent } from './040_tombo/page/tombo/tombo.component';
 import { ReportsComponent } from './020_find/page/reports/reports.component';
 import { LabelTomboComponent } from './040_tombo/page/label-tombo/label-tombo.component';
+import { UsersComponent } from './050_users/page/users/users.component';
 
 const routes: Routes = [
   //  { path: 'catalog', component: CatalogComponent },
@@ -17,6 +18,8 @@ const routes: Routes = [
       { path: 'label', component: LabelTomboComponent },
       { path: 'selectLibrary', component: SelectLibraryComponent },
       { path: 'report/:act', component: ReportsComponent },
+      { path: 'users', component: UsersComponent }
+      ,
     ],
   },
 ];

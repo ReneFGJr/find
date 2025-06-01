@@ -39,4 +39,37 @@ class User extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    function index($d1, $d2, $d3 = '')
+    {
+        $RSP = [];
+        switch ($d1) {
+            case 'list':
+                $RSP = $this->listUsers();
+                break;
+            case 'create':
+                $RSP = $this->createUser($d2);
+                break;
+            case 'update':
+                $RSP = $this->updateUser($d2, $d3);
+                break;
+            case 'delete':
+                $RSP = $this->deleteUser($d2);
+                break;
+            default:
+                $RSP = ['error' => 'Invalid user operation'];
+        }
+        return $RSP;
+    }
+
+    function listUsers()
+    {
+        $cp = 'us_nome, us_email, us_login, us_last, us_image, us_genero, us_cadastro';
+
+        $dt = $this
+            ->select($cp)
+            ->orderBy('us_nome', 'ASC')
+            ->findAll();
+        return $dt;
+    }
 }
