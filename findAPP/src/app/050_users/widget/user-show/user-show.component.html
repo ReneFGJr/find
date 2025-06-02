@@ -1,1 +1,163 @@
-<p>user-show works!</p>
+<div class="container mt-4">
+  <!-- Card principal -->
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white d-flex align-items-center">
+      <i class="bi bi-person-circle fs-4 me-2"></i>
+      <h4 class="mb-0">Detalhes do Usuário</h4>
+    </div>
+
+    <div class="card-body">
+      <!-- Indicador de carregamento -->
+      <div *ngIf="isLoading" class="alert alert-info mb-3">
+        <i class="bi bi-arrow-repeat rotate me-1"></i>
+        Carregando detalhes do usuário…
+      </div>
+
+      <!-- Mensagem de erro -->
+      <div *ngIf="errorMsg" class="alert alert-danger mb-3">
+        <i class="bi bi-exclamation-octagon-fill me-1"></i>
+        {{ errorMsg }}
+      </div>
+
+      <!-- Conteúdo principal: só aparece quando há usuário carregado sem erro -->
+      <div *ngIf="!isLoading && !errorMsg && user" class="row">
+        <!-- Coluna esquerda: Avatar e infos principais -->
+        <div class="col-lg-4 col-md-5 text-center mb-4 mb-md-0">
+          <!-- Avatar ou placeholder -->
+          <div class="mx-auto mb-3" style="width: 150px; height: 150px">
+            <img
+              *ngIf="user.us_image"
+              [src]="user.us_image"
+              class="rounded-circle border"
+              alt="Avatar do usuário"
+              style="width: 100%; height: 100%; object-fit: cover"
+            />
+            <div
+              *ngIf="!user.us_image"
+              class="rounded-circle border d-flex align-items-center justify-content-center bg-light text-secondary"
+              style="width: 100%; height: 100%; font-size: 1.5rem"
+            >
+              <i class="bi bi-person-fill"></i>
+            </div>
+          </div>
+
+          <!-- Nome, Email e Login -->
+          <h5 class="fw-bold">{{ user.us_nome || "—" }}</h5>
+          <p class="text-muted mb-1">
+            <i class="bi bi-envelope-fill me-1"></i>
+            {{ user.us_email || "—" }}
+          </p>
+          <p class="text-muted mb-0">
+            <i class="bi bi-person-badge-fill me-1"></i>
+            {{ user.us_login || "—" }}
+          </p>
+
+          <div class="d-flex justify-content-center gap-2">
+            <!-- Voltar à lista -->
+            <button class="btn btn-outline-secondary mt-3" (click)="goBack()">
+              <i class="bi bi-arrow-left-circle me-1"></i>
+              Voltar à lista
+            </button>
+
+            <!-- Botões de ação: Editar e Deletar/Inativar -->
+
+            <!-- Botão Editar -->
+            <button
+              class="btn btn-sm btn-outline-primary mt-3"
+              title="Editar usuário"
+              (click)="editUser(user)"
+            >
+              <i class="bi bi-pencil-fill"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Coluna direita: demais campos em definição (dl) -->
+        <div class="col-lg-8 col-md-7">
+          <dl class="row mb-0">
+            <dt class="col-sm-4 text-end text-sm-start">ID de Usuário:</dt>
+            <dd class="col-sm-8">{{ user.id_us }}</dd>
+
+            <dt class="col-sm-4 text-end text-sm-start">Crachá:</dt>
+            <dd class="col-sm-8">{{ user.us_badge || "—" }}</dd>
+
+            <dt class="col-sm-4 text-end text-sm-start">Apelido:</dt>
+            <dd class="col-sm-8">{{ user.us_nickname || "—" }}</dd>
+
+            <dt class="col-sm-4 text-end text-sm-start">Gênero:</dt>
+            <dd class="col-sm-8">{{ user.us_genero || "—" }}</dd>
+
+            <dt class="col-sm-4 bg-light text-end text-sm-start bold"></dt>
+            <dd class="col-sm-8 bg-light bold">ENDEREÇO</dd>
+
+            <dt class="col-sm-4 text-end text-sm-start">Cidade:</dt>
+            <dd class="col-sm-8">{{ user.us_cidade || "—" }}</dd>
+
+            <dt class="col-sm-4 text-end text-sm-start">País:</dt>
+            <dd class="col-sm-8">{{ user.us_pais || "—" }}</dd>
+
+            <dt class="col-sm-4 text-end text-sm-start">CEP:</dt>
+            <dd class="col-sm-8">{{ user.us_codigo || "—" }}</dd>
+
+            <dt class="col-sm-4 text-end text-sm-start">Link:</dt>
+            <dd class="col-sm-8">
+              <a
+                *ngIf="user.us_link"
+                [href]="user.us_link"
+                target="_blank"
+                rel="noopener"
+                class="text-decoration-none"
+              >
+                {{ user.us_link }}
+              </a>
+
+              <span *ngIf="!user.us_link">—</span>
+            </dd>
+
+            <dt class="col-sm-4 bg-light text-end text-sm-start bold"></dt>
+            <dd class="col-sm-8 bg-light bold">OUTROS DADOS</dd>
+
+            <dt class="col-sm-4 text-end text-sm-start">Ativo:</dt>
+            <dd class="col-sm-8">
+              <span
+                class="badge"
+                [ngClass]="
+                  user.us_ativo === '1' ? 'bg-success' : 'bg-secondary'
+                "
+              >
+                {{ user.us_ativo === "1" ? "Sim" : "Não" }}
+              </span>
+            </dd>
+
+            <dt class="col-sm-4 text-end text-sm-start">Nível:</dt>
+            <dd class="col-sm-8">{{ user.us_nivel || "—" }}</dd>
+
+            <dt class="col-sm-4 text-end text-sm-start">Verificado:</dt>
+            <dd class="col-sm-8">{{ user.us_verificado || "—" }}</dd>
+
+            <dt class="col-sm-4 text-end text-sm-start">Autenticador:</dt>
+            <dd class="col-sm-8">{{ user.us_autenticador || "—" }}</dd>
+
+            <dt class="col-sm-4 text-end text-sm-start">Acessos:</dt>
+            <dd class="col-sm-8">{{ user.us_acessos || "0" }}</dd>
+
+            <dt class="col-sm-4 text-end text-sm-start">Pesquisa:</dt>
+            <dd class="col-sm-8">{{ user.us_pesquisa || "0" }}</dd>
+
+            <dt class="col-sm-4 text-end text-sm-start">Último acesso:</dt>
+            <dd class="col-sm-8">{{ formatDateString(user.us_last) }}</dd>
+
+            <dt class="col-sm-4 text-end text-sm-start">Instituição:</dt>
+            <dd class="col-sm-8">{{ user.us_institution || "—" }}</dd>
+
+            <dt class="col-sm-4 text-end text-sm-start">Password Method:</dt>
+            <dd class="col-sm-8">{{ user.us_password_method || "—" }}</dd>
+
+            <dt class="col-sm-4 text-end text-sm-start">Último Acesso:</dt>
+            <dd class="col-sm-8">{{ user.us_lastaccess || "—" }}</dd>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

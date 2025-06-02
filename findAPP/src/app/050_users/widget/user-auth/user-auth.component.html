@@ -1,0 +1,324 @@
+<!-- src/app/pages/auth/auth.component.html -->
+
+<div class="auth-container d-flex justify-content-center align-items-center">
+  <div class="card auth-card shadow-lg">
+    <!-- Cabeçalho com abas -->
+    <div class="card-header p-0">
+      <ul class="nav nav-pills nav-justified rounded-top">
+        <li class="nav-item">
+          <a
+            class="nav-link link"
+            [class.active]="activeTab === 'signin'"
+            (click)="setTab('signin')"
+            >Sign In</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link link"
+            [class.active]="activeTab === 'signup'"
+            (click)="setTab('signup')"
+            >Sign Up</a
+          >
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link link"
+            [class.active]="activeTab === 'forgot'"
+            (click)="setTab('forgot')"
+            >Forgot Password</a
+          >
+        </li>
+      </ul>
+    </div>
+
+    <div class="card-body">
+      <!-- Mensagens de erro / sucesso -->
+      <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
+      <div *ngIf="successMessage" class="alert alert-success">
+        {{ successMessage }}
+      </div>
+
+      <!-- Loader central -->
+      <div *ngIf="isLoading" class="text-center my-4">
+        <i class="bi bi-arrow-repeat rotate fs-2 text-primary"></i>
+      </div>
+
+      <!-- Sign In -->
+      <form
+        *ngIf="activeTab === 'signin' && !isLoading"
+        [formGroup]="loginForm"
+        (ngSubmit)="onLogin()"
+        novalidate
+      >
+        <div class="mb-3">
+          <label for="loginEmail" class="form-label">Email</label>
+          <input
+            id="loginEmail"
+            type="email"
+            formControlName="email"
+            class="form-control"
+            [class.is-invalid]="
+              loginForm.get('email')?.invalid &&
+              (loginForm.get('email')?.touched || loginForm.get('email')?.dirty)
+            "
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              loginForm.get('email')?.hasError('required') &&
+              (loginForm.get('email')?.touched || loginForm.get('email')?.dirty)
+            "
+          >
+            Email é obrigatório.
+          </div>
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              loginForm.get('email')?.hasError('email') &&
+              (loginForm.get('email')?.touched || loginForm.get('email')?.dirty)
+            "
+          >
+            Insira um email válido.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="loginPassword" class="form-label">Password</label>
+          <input
+            id="loginPassword"
+            type="password"
+            formControlName="password"
+            class="form-control"
+            [class.is-invalid]="
+              loginForm.get('password')?.invalid &&
+              (loginForm.get('password')?.touched ||
+                loginForm.get('password')?.dirty)
+            "
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              loginForm.get('password')?.hasError('required') &&
+              (loginForm.get('password')?.touched ||
+                loginForm.get('password')?.dirty)
+            "
+          >
+            Password é obrigatório.
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary w-100"
+          [disabled]="loginForm.invalid"
+        >
+          <i class="bi bi-box-arrow-in-right me-1"></i>
+          Sign In
+        </button>
+      </form>
+
+      <!-- Sign Up -->
+      <form
+        *ngIf="activeTab === 'signup' && !isLoading"
+        [formGroup]="signupForm"
+        (ngSubmit)="onSignUp()"
+        novalidate
+      >
+        <div class="mb-3">
+          <label for="signName" class="form-label">Name</label>
+          <input
+            id="signName"
+            type="text"
+            formControlName="name"
+            class="form-control"
+            [class.is-invalid]="
+              signupForm.get('name')?.invalid &&
+              (signupForm.get('name')?.touched ||
+                signupForm.get('name')?.dirty)
+            "
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              signupForm.get('name')?.hasError('required') &&
+              (signupForm.get('name')?.touched ||
+                signupForm.get('name')?.dirty)
+            "
+          >
+            Nome é obrigatório.
+          </div>
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              signupForm.get('name')?.hasError('minlength') &&
+              (signupForm.get('name')?.touched ||
+                signupForm.get('name')?.dirty)
+            "
+          >
+            Mínimo de 3 caracteres.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="signEmail" class="form-label">Email</label>
+          <input
+            id="signEmail"
+            type="email"
+            formControlName="email"
+            class="form-control"
+            [class.is-invalid]="
+              signupForm.get('email')?.invalid &&
+              (signupForm.get('email')?.touched ||
+                signupForm.get('email')?.dirty)
+            "
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              signupForm.get('email')?.hasError('required') &&
+              (signupForm.get('email')?.touched ||
+                signupForm.get('email')?.dirty)
+            "
+          >
+            Email é obrigatório.
+          </div>
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              signupForm.get('email')?.hasError('email') &&
+              (signupForm.get('email')?.touched ||
+                signupForm.get('email')?.dirty)
+            "
+          >
+            Insira um email válido.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="signPassword" class="form-label">Password</label>
+          <input
+            id="signPassword"
+            type="password"
+            formControlName="password"
+            class="form-control"
+            [class.is-invalid]="
+              signupForm.get('password')?.invalid &&
+              (signupForm.get('password')?.touched ||
+                signupForm.get('password')?.dirty)
+            "
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              signupForm.get('password')?.hasError('required') &&
+              (signupForm.get('password')?.touched ||
+                signupForm.get('password')?.dirty)
+            "
+          >
+            Password é obrigatório.
+          </div>
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              signupForm.get('password')?.hasError('minlength') &&
+              (signupForm.get('password')?.touched ||
+                signupForm.get('password')?.dirty)
+            "
+          >
+            Mínimo de 6 caracteres.
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="signConfirm" class="form-label">Confirm Password</label>
+          <input
+            id="signConfirm"
+            type="password"
+            formControlName="confirmPassword"
+            class="form-control"
+            [class.is-invalid]="
+              signupForm.hasError('mismatch') &&
+              (signupForm.get('confirmPassword')?.touched ||
+                signupForm.get('confirmPassword')?.dirty)
+            "
+          />
+          <div class="invalid-feedback" *ngIf="signupForm.hasError('mismatch')">
+            As senhas não coincidem.
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-success w-100"
+          [disabled]="signupForm.invalid"
+        >
+          <i class="bi bi-person-plus-fill me-1"></i>
+          Sign Up
+        </button>
+      </form>
+
+      <!-- Forgot Password -->
+      <form
+        *ngIf="activeTab === 'forgot' && !isLoading"
+        [formGroup]="forgotForm"
+        (ngSubmit)="onForgot()"
+        novalidate
+      >
+        <div class="mb-3">
+          <label for="forgotEmail" class="form-label">Email</label>
+          <input
+            id="forgotEmail"
+            type="email"
+            formControlName="email"
+            class="form-control"
+            [class.is-invalid]="
+              forgotForm.get('email')?.invalid &&
+              (forgotForm.get('email')?.touched ||
+                forgotForm.get('email')?.dirty)
+            "
+          />
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              forgotForm.get('email')?.hasError('required') &&
+              (forgotForm.get('email')?.touched ||
+                forgotForm.get('email')?.dirty)
+            "
+          >
+            Email é obrigatório.
+          </div>
+          <div
+            class="invalid-feedback"
+            *ngIf="
+              forgotForm.get('email')?.hasError('email') &&
+              (forgotForm.get('email')?.touched ||
+                forgotForm.get('email')?.dirty)
+            "
+          >
+            Insira um email válido.
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-warning w-100"
+          [disabled]="forgotForm.invalid"
+        >
+          <i class="bi bi-envelope-at-fill me-1"></i>
+          Reset Password
+        </button>
+      </form>
+    </div>
+
+    <!-- Card footer: botão Logout (se estiver logado) -->
+    <div class="card-footer text-center" *ngIf="isLoggedIn">
+      <button class="btn btn-outline-danger" (click)="onLogout()">
+        <i class="bi bi-box-arrow-right me-1"></i>
+        Logout
+      </button>
+    </div>
+  </div>
+</div>

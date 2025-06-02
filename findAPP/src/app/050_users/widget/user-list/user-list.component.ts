@@ -37,7 +37,6 @@ export class UserListComponent {
         this.isLoading = false;
       },
       error: (err) => {
-        console.error(err);
         this.errorMsg = 'Não foi possível obter a lista de usuários.';
         this.isLoading = false;
       },
@@ -58,15 +57,19 @@ export class UserListComponent {
   }
 
   viewDetails(user: User): void {
-    this.router.navigate(['/users/details', user.us_login]);
+    this.router.navigate(['/users/details', user.id_us]);
   }
 
   editUser(user: User): void {
-    this.router.navigate(['/users/edit', user.us_login]);
+    this.router.navigate(['/users/edit', user.id_us]);
   }
 
   formatDateString(dateStr: string): string {
     return this.findService.formatDateString(dateStr);
+  }
+
+  isMember(library: string): boolean {
+    return library ? true : false;
   }
 
   /**
@@ -86,7 +89,6 @@ export class UserListComponent {
           this.loadUsers();
         },
         error: (err) => {
-          console.error('Erro ao inativar usuário:', err);
           alert('Falha ao inativar o usuário. Por favor, tente novamente.');
         },
       });

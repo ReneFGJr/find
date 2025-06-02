@@ -6,6 +6,7 @@ import { TomboComponent } from './040_tombo/page/tombo/tombo.component';
 import { ReportsComponent } from './020_find/page/reports/reports.component';
 import { LabelTomboComponent } from './040_tombo/page/label-tombo/label-tombo.component';
 import { UsersComponent } from './050_users/page/users/users.component';
+import { UserAuthComponent } from './050_users/widget/user-auth/user-auth.component';
 
 const routes: Routes = [
   //  { path: 'catalog', component: CatalogComponent },
@@ -18,8 +19,10 @@ const routes: Routes = [
       { path: 'label', component: LabelTomboComponent },
       { path: 'selectLibrary', component: SelectLibraryComponent },
       { path: 'report/:act', component: ReportsComponent },
-      { path: 'users', component: UsersComponent }
-      ,
+      { path: 'auth', component: UserAuthComponent },
+      { path: 'users', component: UsersComponent },
+      { path: 'users/:act', component: UsersComponent },
+      { path: 'users/:act/:id', component: UsersComponent },
     ],
   },
 ];

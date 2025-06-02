@@ -59,7 +59,7 @@ export class FindService {
     console.log(url);
     var formData: any = new FormData();
 
-    formData.append('library', '1');
+    formData.append('library', this.getLibrary());
     formData.append('apikey', 'ff63a314d1ddd425517550f446e4175e');
     formData.append('data', file);
 

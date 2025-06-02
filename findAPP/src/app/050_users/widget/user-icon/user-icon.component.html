@@ -1,0 +1,6 @@
+<div *ngIf="!loged">
+    <img [src]="img" class="ms-4 link" (click)="login()" alt="User Icon" Style="height: 40px" />
+</div>
+<div *ngIf="loged" (click)="logout()" class="text-white link ps-3">
+    {{userName}}
+</div>

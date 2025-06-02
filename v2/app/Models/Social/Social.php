@@ -88,6 +88,20 @@ class Social extends Model
         $RSP = [];
         $pass = get("password");
 
+        if ($pass == '') {
+            $RSP['status'] = '400';
+            $RSP['message'] = 'Senha não informada';
+            $RSP['html'] = 'Senha não informada';
+            return $RSP;
+        }
+
+        if ($login == '') {
+            $RSP['status'] = '400';
+            $RSP['message'] = 'Login não informado';
+            $RSP['html'] = 'Login não informado';
+            return $RSP;
+        }
+
         $dt = $this->where('us_email', $login)->first();
 
         if ($dt != []) {

@@ -38,6 +38,9 @@ import { UsersComponent } from './050_users/page/users/users.component';
 import { GroupsComponent } from './050_users/page/groups/groups.component';
 import { UserListComponent } from './050_users/widget/user-list/user-list.component';
 import { UserShowComponent } from './050_users/widget/user-show/user-show.component';
+import { UserEditComponent } from './050_users/widget/user-edit/user-edit.component';
+import { UserIconComponent } from './050_users/widget/user-icon/user-icon.component';
+import { UserAuthComponent } from './050_users/widget/user-auth/user-auth.component';
 
 @NgModule({
   declarations: [
@@ -73,6 +76,9 @@ import { UserShowComponent } from './050_users/widget/user-show/user-show.compon
     GroupsComponent,
     UserListComponent,
     UserShowComponent,
+    UserEditComponent,
+    UserIconComponent,
+    UserAuthComponent,
   ],
   imports: [
     BrowserModule,

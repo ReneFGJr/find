@@ -3,6 +3,7 @@
 namespace App\Models\User;
 
 use CodeIgniter\Model;
+helper(['nbr']);
 
 class User extends Model
 {
@@ -47,6 +48,9 @@ class User extends Model
             case 'list':
                 $RSP = $this->listUsers();
                 break;
+            case 'details':
+                $RSP = $this->detailsUser($d2);
+                break;
             case 'create':
                 $RSP = $this->createUser($d2);
                 break;
@@ -62,12 +66,58 @@ class User extends Model
         return $RSP;
     }
 
+    function updateUser()
+    {
+        $id = get("id_us");
+        if (!is_numeric($id)) {
+            $RSP = [];
+            $RSP['status'] = '500';
+            $RSP['message'] = 'Invalid user ID:'.$id;
+        }
+        $data = [
+            'us_nome' => nbr_author(get("us_nome"),7),
+            'us_email' => get("us_email"),
+            'us_login' => get("us_login"),
+            'us_password' => get("us_password"),
+            'us_oauth2' => get("us_oauth2"),
+        ];
+        $this->set($data)->where('id_us',get("id_us"))->update();
+        $RSP = [];
+        $RSP['status'] = '200';
+        $RSP['message'] = 'User updated successfully';
+        $RSP['library'] = get("library");
+
+        $UserLibrary = new \App\Models\User\UserLibrary();
+        $library = get("library");
+        $st = $UserLibrary->updateUserLibrary($id,$library);
+        switch ($st) {
+            default:
+                $RSP['status'] = $st;
+                $RSP['message'] = 'User library not found';
+        }
+        return $RSP;
+    }
+
+    function detailsUser($id)
+    {
+        if (!is_numeric($id)) {
+            return ['error' => 'Invalid user ID', 'id' => $id];
+        }
+        $cp = '*';
+        $dt = $this
+            ->select($cp)
+            ->where('id_us', $id)
+            ->first();
+        return $dt;
+    }
+
     function listUsers()
     {
-        $cp = 'us_nome, us_email, us_login, us_last, us_image, us_genero, us_cadastro';
+        $cp = 'id_us, us_nome, us_email, us_login, us_last, us_image, us_genero, us_cadastro, ul_library';
 
         $dt = $this
             ->select($cp)
+            ->join('users_library', 'ul_user = id_us', 'left')
             ->orderBy('us_nome', 'ASC')
             ->findAll();
         return $dt;
