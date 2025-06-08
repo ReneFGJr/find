@@ -1,1 +1,7 @@
-<p>groups works!</p>
+<div class="container">
+  <div class="row">
+  <h1>{{ act }}</h1>
+    <app-user-groups *ngIf="act === 'list'"></app-user-groups>
+    <app-user-groups-add [idGroup]="idGroup" *ngIf="act === 'addUserToGroup'"></app-user-groups-add>
+  </div>
+</div>

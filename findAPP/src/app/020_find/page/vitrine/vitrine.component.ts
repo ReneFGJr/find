@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FindService } from '../../../010_core/service/find.service';
 import { LocalStorageService } from '../../../010_core/service/local-storage.service';
 import { Router } from '@angular/router';
+import { SocialService } from '../../../010_core/service/social.service';
 
 @Component({
   selector: 'app-vitrine',
@@ -22,7 +23,8 @@ export class VitrineComponent {
   constructor(
     private findService: FindService, // private router: Router
     private localStorage: LocalStorageService, // private localStorage: LocalStorageService
-    private routes: Router
+    private routes: Router,
+    private socialService: SocialService
   ) {
     console.log('constructor app component');
   }

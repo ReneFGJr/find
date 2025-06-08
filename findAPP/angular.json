@@ -119,7 +119,7 @@
               {
                 "glob": "**/*",
                 "input": "public"
-              }
+              },
             ],
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.css",

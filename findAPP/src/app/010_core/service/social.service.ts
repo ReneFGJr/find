@@ -1,14 +1,17 @@
+import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { delay, map, Observable, tap } from 'rxjs';
 import { FindService } from './find.service';
+import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SocialService {
   http: any;
+  @Output() Response: EventEmitter<any> = new EventEmitter();
   public user: Array<any> | any;
   public data: Array<any> | any;
   public message: string = '';
@@ -19,12 +22,14 @@ export class SocialService {
   constructor(
     private HttpClient: HttpClient,
     private cookieService: CookieService,
-    private findService: FindService
+    private findService: FindService,
+    private localStorageService: LocalStorageService,
+    private router: Router
   ) {}
 
   public isLoggedIn(): boolean {
     {
-      let apikey = this.cookieService.check('apiKey');
+      let apikey = this.localStorageService.check('apiKey');
 
       if (apikey) {
         return true;
@@ -38,7 +43,7 @@ export class SocialService {
     let url = `${this.url}` + type;
 
     var formData: any = new FormData();
-    let apikey = this.cookieService.get('section');
+    let apikey = this.localStorageService.get('section');
     formData.append('user', apikey);
 
     for (const key in dt) {
@@ -52,7 +57,7 @@ export class SocialService {
   }
 
   public loged() {
-    return this.cookieService.check('apiKey');
+    return this.localStorageService.check('apiKey');
   }
 
   /******************************************************************** */
@@ -64,64 +69,58 @@ export class SocialService {
     nickname: string,
     perfil: Array<any> | any
   ) {
-    this.cookieService.set('apiKey', apiKey, 365);
-    this.cookieService.set('fullName', fullname, 365);
-    this.cookieService.set('nickname', nickname, 365);
-    this.cookieService.set('email', email, 365);
-    this.cookieService.set('id', idU, 365);
-    this.cookieService.set('perfil', perfil, 365);
+    this.localStorageService.set('apiKey', apiKey);
+    this.localStorageService.set('fullName', fullname);
+    this.localStorageService.set('nickname', nickname);
+    this.localStorageService.set('email', email);
+    this.localStorageService.set('ID', idU);
+    this.localStorageService.set('perfil', perfil);
+    console.log("IDuser", idU);
   }
 
   public logout() {
-    this.cookieService.delete('apiKey', '');
-    this.cookieService.delete('fullName', '');
-    this.cookieService.delete('nickname', '');
-    this.cookieService.delete('email', '');
-    this.cookieService.delete('id', '');
-    this.cookieService.delete('perfil', '');
+    this.localStorageService.remove('apiKey');
+    this.localStorageService.remove('fullName');
+    this.localStorageService.remove('nickname');
+    this.localStorageService.remove('email');
+    this.localStorageService.remove('id');
+    this.localStorageService.remove('perfil');
+    // aguarda 1 segundo antes de navegar
   }
 
-  public signIn(email: string, password: string): Observable<Array<any>> {
-    let payload = {
-      username: email,
-      password: password,
-      verb: 'signin',
-    };
-
-    let url = 'social/signin';
-    this.findService.api_post(url, payload).subscribe(
-      (res) => {
+  // retire o subscribe interno e devolva o Observable:
+  public signIn(email: string, password: string): Observable<any> {
+    const payload = { username: email, password, verb: 'signin' };
+    const url = 'social/signin';
+    return this.findService.api_post(url, payload).pipe(
+      tap((res) => {
         this.data = res;
-        let status = this.data?.user?.status;
-
-        if (status == '200') {
-          this.user = this.data['user'];
+        const status = this.data?.user?.status;
+        if (status === '200') {
+          const u = this.data.user;
           this.setUser(
-            this.user?.apiKey,
-            this.user?.fullname,
-            this.user?.email,
-            this.user?.id,
-            this.user?.nickname,
-            this.user?.perfil
+            u.apikey,
+            u.fullname,
+            u.email,
+            u.ID,
+            u.nickname,
+            u.perfil
           );
-          console.log("DADOS",this.data);
-          console.log('APIKEY', this.user?.apiKey);
-          this.data = {'status': '200','message': 'Usuário logado com sucesso!'};
-        } else if (status == '400') {
-          let message = this.data?.user?.message;
-          this.message = message;
-          this.data = {
+        }
+      }),
+      map((res) => {
+        this.data = res;
+        const status = this.data?.user?.status;
+        if (status === '200') {
+          return { status: '200', message: 'Usuário logado com sucesso!' };
+        } else {
+          return {
             status: '400',
-            message: 'e-mail ou senha inválidos',
+            message: this.data.user?.message || 'Credenciais inválidas',
           };
         }
-
-      },
-      (error) => {
-        console.log(error);
-      }
+      })
     );
-    return this.data;
   }
 
   public forgotPassword(email: string): Array<any> {
@@ -140,14 +139,13 @@ export class SocialService {
   }
 
   public getUser(): string {
-    console.log('getUser');
-    if (this.cookieService.check('library')) {
-      let ID = this.cookieService.get('id');
-      let key = this.cookieService.get('apiKey');
-      let fullname = this.cookieService.get('fullname');
-      let nickname = this.cookieService.get('nickname');
-      let email = this.cookieService.get('email');
-      let perfil = this.cookieService.get('perfil');
+    if (this.localStorageService.check('library')) {
+      let ID = this.localStorageService.get('ID');
+      let key = this.localStorageService.get('apiKey');
+      let fullname = this.localStorageService.get('fullname');
+      let nickname = this.localStorageService.get('nickname');
+      let email = this.localStorageService.get('email');
+      let perfil = this.localStorageService.get('perfil');
 
       this.user = {
         apikey: key,

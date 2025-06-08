@@ -18,10 +18,29 @@ export class LocalStorageService {
   }
 
   get(key: string): any {
-    if (this.storage) {
-      return JSON.parse(<any>this.storage.getItem(key));
+    if (!this.storage) {
+      return null;
     }
-    return null;
+
+    const raw = this.storage.getItem(key);
+    if (raw === null || raw === undefined) {
+      // nada salvo sob essa chave
+      return null;
+    }
+
+    try {
+      return JSON.parse(raw);
+    } catch {
+      // caso o valor não seja um JSON válido, retorna o texto cru
+      return raw;
+    }
+  }
+
+  check(key: string): boolean {
+    if (this.storage) {
+      return this.storage.getItem(key) !== null;
+    }
+    return false;
   }
 
   remove(key: string): boolean {

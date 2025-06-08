@@ -35,8 +35,6 @@ export class FindService {
       formData.append(key, dt[key]);
     }
 
-    console.log('=URL==' + url, dt);
-
     return this.HttpClient.post<Array<any>>(url, formData).pipe(
       (res) => res,
       (error) => error
@@ -75,7 +73,6 @@ export class FindService {
   }
 
   public getLibrary(): string {
-    console.log('getLibrary');
     let lib = this.localStorage.get('library');
     return String(lib);
   }

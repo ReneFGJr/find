@@ -45,6 +45,9 @@ class User extends Model
     {
         $RSP = [];
         switch ($d1) {
+            case 'search':
+                $RSP = $this->searchUser();
+                break;
             case 'list':
                 $RSP = $this->listUsers();
                 break;
@@ -64,6 +67,19 @@ class User extends Model
                 $RSP = ['error' => 'Invalid user operation'];
         }
         return $RSP;
+    }
+
+    function searchUser()
+    {
+        $d2 = get("q");
+        $cp = 'id_us, us_nome, us_email, us_login, us_last, us_image, us_genero, us_cadastro, ul_library';
+        $dt = $this
+            ->select($cp)
+            ->join('users_library', 'ul_user = id_us', 'left')
+            ->like('us_nome', $d2)
+            ->orderBy('us_nome', 'ASC')
+            ->findAll(20);
+        return $dt;
     }
 
     function updateUser()

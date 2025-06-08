@@ -1,3 +1,4 @@
+import { SocialService } from './../../../010_core/service/social.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -15,13 +16,18 @@ export class UsersComponent implements OnInit, OnDestroy {
 
   private routeSub!: Subscription;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private socialService: SocialService) {}
 
   ngOnInit() {
     // Assina o paramMap para reagir sempre que a rota (':act' ou ':id') mudar
     this.routeSub = this.route.paramMap.subscribe((params: ParamMap) => {
       this.act = params.get('act') ?? 'list';
       this.userID = Number(params.get('id')) || 0;
+
+      if (this.act === 'logout') {
+        this.socialService.logout();
+      }
+
 
       // Exemplo: dispara lógica de carregamento de acordo com act
       this.loading = true;

@@ -1,0 +1,15 @@
+<div class="col-12" *ngFor="let group of groups">
+  <div class="card mb-3">
+    <div class="card-header">
+      <h5 class="card-title">{{ group.name }}
+      <i class="bi bi-plus-circle full me-1 link" (click)="addUserToGroup(group.id)"></i>
+      </h5>
+    </div>
+    <div class="col-12">
+      <li *ngFor="let user of group.users" class="list-group-item ms-4 link" (click)="profile(user.id_us)">
+        <span>{{ user.name }}</span>
+        <span>{{ group.type }}</span>
+      </li>
+    </div>
+  </div>
+</div>

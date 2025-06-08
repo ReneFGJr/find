@@ -41,6 +41,15 @@ import { UserShowComponent } from './050_users/widget/user-show/user-show.compon
 import { UserEditComponent } from './050_users/widget/user-edit/user-edit.component';
 import { UserIconComponent } from './050_users/widget/user-icon/user-icon.component';
 import { UserAuthComponent } from './050_users/widget/user-auth/user-auth.component';
+import { UserLogoutComponent } from './050_users/widget/user-logout/user-logout.component';
+import { UserAwardsComponent } from './050_users/widget/user-awards/user-awards.component';
+import { UserFunctionsComponent } from './050_users/widget/user-functions/user-functions.component';
+import { UserHistoryComponent } from './050_users/widget/user-history/user-history.component';
+import { UserFavoritesComponent } from './050_users/widget/user-favorites/user-favorites.component';
+import { UserGroupsComponent } from './050_users/widget/user-groups/user-groups.component';
+import { UserGroupsAddComponent } from './050_users/widget/user-groups-add/user-groups-add.component';
+import { UserGroupsHeaderComponent } from './050_users/widget/user-groups-header/user-groups-header.component';
+import { UserGroupsAssignUsersComponent } from './050_users/widget/user-groups-assign-users/user-groups-assign-users.component';
 
 @NgModule({
   declarations: [
@@ -79,6 +88,15 @@ import { UserAuthComponent } from './050_users/widget/user-auth/user-auth.compon
     UserEditComponent,
     UserIconComponent,
     UserAuthComponent,
+    UserLogoutComponent,
+    UserAwardsComponent,
+    UserFunctionsComponent,
+    UserHistoryComponent,
+    UserFavoritesComponent,
+    UserGroupsComponent,
+    UserGroupsAddComponent,
+    UserGroupsHeaderComponent,
+    UserGroupsAssignUsersComponent,
   ],
   imports: [
     BrowserModule,

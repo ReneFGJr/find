@@ -24,6 +24,7 @@ export class UserAuthComponent {
   isLoading = false;
   errorMessage: string | null = null;
   successMessage: string | null = null;
+  message: string | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -33,14 +34,13 @@ export class UserAuthComponent {
 
   ngOnInit(): void {
     this.buildForms();
-
   }
 
   private buildForms(): void {
     // Formulário de Login
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]],
+      email: ['renefgj@gmail.com', [Validators.required, Validators.email]],
+      password: ['448545ct', [Validators.required]],
     });
 
     // Formulário de Sign Up
@@ -88,10 +88,40 @@ export class UserAuthComponent {
 
     this.clearMessages();
     this.isLoading = true;
+    const { email, password } = this.loginForm.value;
+
+    this.socialService.signIn(email, password).subscribe({
+      next: (data) => {
+        // data é { status, message }
+        this.isLoading = false;
+        if (data.status === '200') {
+          // redireciona ou atualiza view
+          this.router.navigate(['/']);
+        } else {
+          this.message = data.message;
+        }
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error(err);
+        this.message = 'Erro de conexão, tente novamente.';
+      },
+    });
+  }
+
+  onLogin2(): void {
+    if (this.loginForm.invalid) {
+      this.loginForm.markAllAsTouched();
+      return;
+    }
+
+    this.clearMessages();
+    this.isLoading = true;
     const payload = this.loginForm.value;
 
     /* Chamada ao serviço de autenticação */
-    this.socialService.signIn(payload.email, payload.password)
+    this.data = this.socialService.signIn(payload.email, payload.password);
+    console.log('Login Data:', this.data);
   }
 
   /** Submete Sign Up */

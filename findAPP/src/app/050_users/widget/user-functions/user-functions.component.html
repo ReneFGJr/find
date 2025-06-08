@@ -1,0 +1,26 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="card p-3">
+        <label class="bold">Funções do Usuário</label>
+
+        <div class="row mt-0">
+          <div
+            class="col-auto border m-2 p-2 rounded border-secondary text-center"
+            *ngFor="let func of functions"
+            style="width: 100px;"
+          >
+            <img
+              [src]="func.icon"
+              title="{{ func.name }}"
+              alt="Ícone {{ func.name }}"
+              class="img-fluid"
+              style="max-height: 70px;"
+            />
+            <div class="mt-1 small">{{ func.name }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

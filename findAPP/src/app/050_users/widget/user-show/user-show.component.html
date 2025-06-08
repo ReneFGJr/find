@@ -156,8 +156,17 @@
             <dt class="col-sm-4 text-end text-sm-start">Último Acesso:</dt>
             <dd class="col-sm-8">{{ user.us_lastaccess || "—" }}</dd>
           </dl>
+
+      <app-user-awards *ngIf="dataUser?.ID == userID" [user]="user"></app-user-awards>
+      <app-user-history  [user]="user"></app-user-history>
+      <app-user-favorites  [user]="user"></app-user-favorites>
+      <app-user-functions  [user]="user"></app-user-functions>
+
         </div>
       </div>
+      <div>
+
+      <app-user-logout *ngIf="dataUser?.ID == userID" [user]="user"></app-user-logout></div>
     </div>
   </div>
 </div>

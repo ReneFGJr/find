@@ -43,16 +43,22 @@
           </ul>
         </li>
 
-        <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Gerenenciamento
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" [routerLink]="['/groups/list']">Grupos de usuários</a></li>
+          </ul>
         </li>
+
       </ul>
       <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
 
-      <app-user-icon [loged]="loged" [userName]="user?.nickname" (logedChange)="onLogedChange($event)"></app-user-icon>
+      <app-user-icon [loged]="loged" [user]="user"></app-user-icon>
     </div>
   </div>
 </nav>

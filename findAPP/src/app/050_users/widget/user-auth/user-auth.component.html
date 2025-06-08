@@ -1,6 +1,9 @@
 <!-- src/app/pages/auth/auth.component.html -->
-
-<div class="auth-container d-flex justify-content-center align-items-center">
+<div class="container">
+<div class="row">
+<div class="col-1 col-lg-4"></div>
+<div class="col-12 col-lg-4">
+<div class="auth-container d-flex2 justify-content-center align-items-center">
   <div class="card auth-card shadow-lg">
     <!-- Cabeçalho com abas -->
     <div class="card-header p-0">
@@ -10,7 +13,7 @@
             class="nav-link link"
             [class.active]="activeTab === 'signin'"
             (click)="setTab('signin')"
-            >Sign In</a
+            >Entrar</a
           >
         </li>
         <li class="nav-item">
@@ -18,7 +21,7 @@
             class="nav-link link"
             [class.active]="activeTab === 'signup'"
             (click)="setTab('signup')"
-            >Sign Up</a
+            >Cadastrar-se</a
           >
         </li>
         <li class="nav-item">
@@ -26,7 +29,7 @@
             class="nav-link link"
             [class.active]="activeTab === 'forgot'"
             (click)="setTab('forgot')"
-            >Forgot Password</a
+            >Esqueceu a senha?</a
           >
         </li>
       </ul>
@@ -321,4 +324,9 @@
       </button>
     </div>
   </div>
+</div>
+<div class="alert alert-danger mt-2 mb-2" *ngIf="message">
+  <i class="bi bi-exclamation-triangle-fill"></i>
+  Erro: {{ message }}
+</div>
 </div>

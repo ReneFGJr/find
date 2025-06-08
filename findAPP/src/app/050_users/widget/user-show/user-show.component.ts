@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { FindService } from '../../../010_core/service/find.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SocialService } from '../../../010_core/service/social.service';
 
 @Component({
   selector: 'app-user-show',
@@ -10,15 +11,19 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class UserShowComponent {
   @Input() userID: number = 0;
+  isUser: boolean = false;
+  dataUser : any = null;
 
   /** Objeto que conterá os dados do usuário retornados pela API */
   user: any = null;
+
 
   isLoading = false;
   errorMsg: string | null = null;
 
   constructor(
     private findService: FindService,
+    private socialService: SocialService,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -37,6 +42,13 @@ export class UserShowComponent {
         this.isLoading = false;
       },
     });
+
+    this.dataUser = this.socialService.getUser();
+
+  }
+
+  ngOnChanges(): void {
+    this.loadUserDetails()
   }
 
   ngOnInit(): void {
@@ -53,9 +65,8 @@ export class UserShowComponent {
     }
   }
 
-
-  editUser(user:any): void {
-    this.router.navigate(['/users/edit/'+user.id_us]);
+  editUser(user: any): void {
+    this.router.navigate(['/users/edit/' + user.id_us]);
   }
 
   formatDateString(dateStr: string): string {

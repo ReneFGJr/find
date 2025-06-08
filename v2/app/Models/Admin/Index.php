@@ -43,6 +43,20 @@ class Index extends Model
     function index($d1, $d2, $d3='')
     {
         $RSP = [];
+        switch ($d1) {
+            case 'users':
+                $User = new \App\Models\User\User();
+                $RSP = $User->index($d2, $d3);
+                break;
+            case 'group':
+                $UserGroup = new \App\Models\User\UserGroup();
+                $RSP = $UserGroup->where('id_gr',$d2)->first();
+                break;
+            case 'groups':
+                $UserGroup = new \App\Models\User\UserGroup();
+                $RSP = $UserGroup->groups($d2);
+                break;
+        }
         return $RSP;
     }
 }

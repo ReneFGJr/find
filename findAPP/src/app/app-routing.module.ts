@@ -7,6 +7,7 @@ import { ReportsComponent } from './020_find/page/reports/reports.component';
 import { LabelTomboComponent } from './040_tombo/page/label-tombo/label-tombo.component';
 import { UsersComponent } from './050_users/page/users/users.component';
 import { UserAuthComponent } from './050_users/widget/user-auth/user-auth.component';
+import { GroupsComponent } from './050_users/page/groups/groups.component';
 
 const routes: Routes = [
   //  { path: 'catalog', component: CatalogComponent },
@@ -23,6 +24,8 @@ const routes: Routes = [
       { path: 'users', component: UsersComponent },
       { path: 'users/:act', component: UsersComponent },
       { path: 'users/:act/:id', component: UsersComponent },
+      { path: 'groups/:act', component: GroupsComponent },
+      { path: 'groups/:act/:id', component: GroupsComponent },
     ],
   },
 ];
