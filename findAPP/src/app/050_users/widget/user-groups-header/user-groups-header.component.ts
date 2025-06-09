@@ -15,6 +15,7 @@ export class UserGroupsHeaderComponent {
   errorMsg: string | null = null;
   users: any[] = []; // Array to hold the list of users
   assignedUsers: any[] = []; // Array to hold the list of assigned users
+  data: any = {}; // Object to hold data for API requests
 
   @ViewChild('searchInput', { static: false })
   searchInput!: ElementRef<HTMLInputElement>;
@@ -28,17 +29,17 @@ export class UserGroupsHeaderComponent {
     console.log('reloadUsers');
     let library = localStorage.getItem('library');
     let dt = { library: library, group: this.group.id_gr };
-    this.findService.api_post('users/assignGroup', dt).subscribe({
+    this.findService.api_post('admin/group/assignGroup', dt).subscribe({
       next: (data) => {
         this.assignedUsers = data;
+        console.log('---------------', data);
       },
       error: (err) => {
         this.errorMsg = 'Não foi possível obter a lista de usuários.';
         this.isLoading = false;
         this.isBusy = false;
       },
-
-      })
+    });
   }
 
   search() {
@@ -67,8 +68,22 @@ export class UserGroupsHeaderComponent {
   }
 
   addUserToGroup(idUser: string) {
-    alert('Adicionar usuário ao grupo: ' + idUser);
-    this.reloadUsers()
+
+    let dt = {
+      id_us: idUser,
+      id_gr: this.group.id_gr
+      }
+
+    this.findService.api_post('admin/group/addToGroup', dt)
+      .subscribe({
+      next: (res) => {
+        this.data = res;
+        console.log(res);
+        this.reloadUsers();
+      },
+      error: (err) => {
+        this.errorMsg = '' + err.error.message;
+      }})
   }
 
   ngAfterViewInit(): void {

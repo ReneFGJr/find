@@ -3,6 +3,7 @@
 namespace App\Models\User;
 
 use CodeIgniter\Model;
+use Config\App;
 
 class UserGroup extends Model
 {
@@ -43,6 +44,38 @@ class UserGroup extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    function addToGroup($dt)
+    {
+        $UserGroupMember = new \App\Models\User\UserGroupMember();
+
+        $RSP = [];
+        $us = get('id_us');
+        $group = get('id_gr');
+        $library = get('library');
+        $RSP = $UserGroupMember->addToGroup($us, $group,$library);
+        return $RSP;
+    }
+
+    function list($id_gr = null, $library = null)
+    {
+        $cp = 'us_nome, id_grm, gr_name';
+        $dt = $this
+            ->select($cp)
+            ->join('users_group_members', 'grm_group = id_gr AND grm_library = \''.$library.'\'', 'left')
+            ->join('users', 'id_us = grm_user', 'left')
+            //->where('gr_library', $library)
+            ->where('grm_group', $id_gr)
+            ->groupBy($cp)
+            ->orderBy('gr_name', 'ASC')
+            ->findAll();
+
+        if (count($dt) == 0) {
+            return ['status' => '404', 'message' => 'Grupo não encontrado', 'id_gr' => $id_gr];
+        } else {
+            return $dt;
+        }
+    }
 
     function groups($library = null)
     {

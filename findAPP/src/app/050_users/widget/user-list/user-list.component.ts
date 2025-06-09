@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { FindService } from '../../../010_core/service/find.service';
 import { User } from '../../../000_models/user.model';
 import { Router } from '@angular/router';
@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
   styleUrl: './user-list.component.scss',
 })
 export class UserListComponent {
+  @Input() idGroup: string = ''; // ID do grupo de usuários, se necessário
   users: User[] = [];
   isLoading = false;
   errorMsg: string | null = null;
@@ -30,7 +31,10 @@ export class UserListComponent {
   loadUsers(): void {
     this.isLoading = true;
     this.errorMsg = null;
-    let dt = {};
+    let dt = {
+      id_gr: this.idGroup,
+      library: localStorage.getItem('library') || '',
+    };
     this.findService.api_post('users/list', dt).subscribe({
       next: (data) => {
         this.users = data;
@@ -44,6 +48,7 @@ export class UserListComponent {
   }
 
   ngOnInit() {
+    console.log('============', this.idGroup);
     this.loadUsers();
   }
 

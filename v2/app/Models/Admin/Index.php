@@ -49,8 +49,22 @@ class Index extends Model
                 $RSP = $User->index($d2, $d3);
                 break;
             case 'group':
-                $UserGroup = new \App\Models\User\UserGroup();
-                $RSP = $UserGroup->where('id_gr',$d2)->first();
+                switch ($d2) {
+                    case 'assignGroup':
+                        $UserGroup = new \App\Models\User\UserGroup();
+                        $gr = get('id_gr');
+                        $library = get('library');
+                        $RSP = $UserGroup->list($gr, $library);
+                        break;
+                    case 'addToGroup':
+                        $UserGroup = new \App\Models\User\UserGroup();
+                        $RSP = $UserGroup->addToGroup($_POST);
+                        break;
+                    default:
+                        $UserGroup = new \App\Models\User\UserGroup();
+                        $RSP = $UserGroup->where('id_gr', $d2)->first();
+                        break;
+                }
                 break;
             case 'groups':
                 $UserGroup = new \App\Models\User\UserGroup();
