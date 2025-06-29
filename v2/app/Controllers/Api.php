@@ -26,6 +26,13 @@ class Api extends BaseController
         }
 
         switch ($verb) {
+            case 'server':
+                $Server = new \App\Models\Server\Index();
+                $RSP = [];
+                $RSP = $Server->index($d2,$d3,$d4);
+                $RSP['status'] = '200';
+                $RSP['message'] = 'API is running';
+                break;
             case 'users':
                 $User = new \App\Models\User\User();
                 $RSP = $User->index($d2, $d3, $d4);

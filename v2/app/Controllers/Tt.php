@@ -2,42 +2,39 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
-use App\Models\User\User;
-
 class Tt extends BaseController
 {
-    public function index($d1='',$d2='',$d3='',$d4='')
+    public function index($d1='', $d2='', $d3='')
     {
-
-        $user = user();
-
-        if (!$user) {
-            return redirect()->to('/login')->with('msg', 'Você precisa estar logado para acessar o dashboard.');
+        $sx = view('Code/header');
+        $dt = [];
+        switch ($d1) {
+            case 'item':
+                $sx .= view('Code/Item/Item', $dt);
+                break;
+            case 'social':
+                switch ($d2) {
+                    case 'login':
+                        return $sx . $this->socialLogin();
+                    case 'logout':
+                        return redirect()->to('/tt/social/login');
+                    default:
+                        return redirect()->to('/tt/social/login');
+                }
+                return $sx . $this->socialLogin();
+            default:
+                return redirect()->to('/tt/social/login');
         }
+        return $sx;
+    }
 
-        $sx = view('headers/header');
-
-        $sc = '';
-        $sc .= view('widgets/logo_find');
-        $sc .= view('widgets/system_version');
-
-        $RSM1 = new \App\Models\Painel\Rsm01();
-        $RSM2 = new \App\Models\Painel\Rsm02();
-
-        $sc .= '<div class="container"><div class="row">';
-        $sc .= '<div class="col-md-2 col-12">';
-        $sc .= view('widgets/painel/p1', ['content'=>$RSM1->index($d1,$d2,$d3,$d4)]);
-        $sc .= '</div>';
-
-        $sc .= '<div class="col-md-2 col-12">';
-        $sc .= view('widgets/painel/p1', ['content' => $RSM2->index($d1, $d2, $d3, $d4)]);
-        $sc .= '</div>';
-
-        $sc .= '</div></div>';
-
-        $sx .= view('headers/menu_left', ['content' => $sc, 'user' => $user]);
-
+    function  socialLogin()
+    {
+        $sx = view('Code/Social/login', [
+            'title' => 'FindServer',
+            'description' => 'Faça login para acessar sua conta.',
+            'keywords' => 'login, sistema, autenticação',
+        ]);
         return $sx;
     }
 }
