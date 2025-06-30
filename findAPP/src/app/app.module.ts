@@ -50,6 +50,9 @@ import { UserGroupsComponent } from './050_users/widget/user-groups/user-groups.
 import { UserGroupsAddComponent } from './050_users/widget/user-groups-add/user-groups-add.component';
 import { UserGroupsHeaderComponent } from './050_users/widget/user-groups-header/user-groups-header.component';
 import { UserGroupsAssignUsersComponent } from './050_users/widget/user-groups-assign-users/user-groups-assign-users.component';
+import { WorkFormComponent } from './020_find/widget/work-form/work-form.component';
+import { ExpressionShowComponent } from './020_find/widget/expression-show/expression-show.component';
+import { ExpressionLanguageComponent } from './020_find/widget/expression-language/expression-language.component';
 
 @NgModule({
   declarations: [
@@ -97,6 +100,9 @@ import { UserGroupsAssignUsersComponent } from './050_users/widget/user-groups-a
     UserGroupsAddComponent,
     UserGroupsHeaderComponent,
     UserGroupsAssignUsersComponent,
+    WorkFormComponent,
+    ExpressionShowComponent,
+    ExpressionLanguageComponent,
   ],
   imports: [
     BrowserModule,

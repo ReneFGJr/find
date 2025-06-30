@@ -13,12 +13,21 @@
 
     <div class="col-12 col-lg-8">
       <!-- Conteúdo do card -->
-      <div class="book-content">
+      <div class="work">
         <div class="book-title">{{ book.title }}</div>
-        <div class="book-meta">
+        <app-book-show-array [label]="'Autor(es)'" [type]="'author'" [data]="book.meta.Authors"></app-book-show-array>
+        <app-work-form [work]="book" [type]="'book'"></app-work-form>
+
+      </div>
+      <div class="expression">
+        <app-expression-show [work]="book"></app-expression-show>
+      </div>
+
+      <div class="manifestation">
+
+        <div class="book-meta mt-3">
           <p><strong>ISBN:</strong> {{ book.isbn }}</p>
           <!-- Authors-->
-          <app-book-show-array [label]="'Autor(es)'" [type]="'author'" [data]="book.meta.Authors"></app-book-show-array>
           <p><strong>Editora:</strong> {{ getPublisher() }}</p>
           <p><strong>Páginas:</strong> {{ book.meta.Page[0]?.name }}</p>
         </div>
