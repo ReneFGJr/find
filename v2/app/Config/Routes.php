@@ -39,6 +39,16 @@ $routes->get('/', 'Home::index');
 $routes->get('/api/', 'Api::index');
 $routes->get('/api', 'Api::index');
 
+$routes->get('/tt', 'Tt::index');
+$routes->get('/tt/(:any)', 'Tt::index/$1');
+$routes->get('/tt/(:any)/(:any)', 'Tt::index/$1/$2');
+$routes->get('/tt/(:any)/(:any)/(:any)', 'Tt::index/$1/$2/$3');
+
+$routes->post('/tt/(:any)', 'Tt::index/$1');
+$routes->post('/tt/(:any)/(:any)', 'Tt::index/$1/$2');
+$routes->post('/tt/(:any)/(:any)/(:any)', 'Tt::index/$1/$2/$3');
+
+
 $routes->get('/api/(:any)', 'Api::index/$1');
 $routes->post('/api/(:any)', 'Api::index/$1');
 
