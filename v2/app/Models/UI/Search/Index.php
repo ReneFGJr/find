@@ -68,6 +68,12 @@ class Index extends Model
                 }
         }
 
+    function searchISBN($isbn,$library)
+        {
+            $item = new \App\Models\Find\Items\Index();
+            return $item->getISBN($isbn, $library);
+        }
+
     function searchAPI($term, $class = '')
         {
             $lib = get("library");

@@ -8,6 +8,8 @@ import { LabelTomboComponent } from './040_tombo/page/label-tombo/label-tombo.co
 import { UsersComponent } from './050_users/page/users/users.component';
 import { UserAuthComponent } from './050_users/widget/user-auth/user-auth.component';
 import { GroupsComponent } from './050_users/page/groups/groups.component';
+import { CatalogComponent } from './060_catalog/page/catalog/catalog.component';
+import { CatalogInputFormComponent } from './060_catalog/widget/catalog-input-form/catalog-input-form.component';
 
 const routes: Routes = [
   //  { path: 'catalog', component: CatalogComponent },
@@ -17,6 +19,10 @@ const routes: Routes = [
       { path: '', component: VitrineComponent },
       { path: 'home', component: SelectLibraryComponent },
       { path: 'tombo', component: TomboComponent },
+
+      { path: 'catalog', component: CatalogInputFormComponent },
+      { path: 'catalog/:act', component: CatalogComponent },
+      { path: 'tombo/:act', component: TomboComponent },
       { path: 'label', component: LabelTomboComponent },
       { path: 'selectLibrary', component: SelectLibraryComponent },
       { path: 'report/:act', component: ReportsComponent },

@@ -133,13 +133,21 @@ class Index extends Model
         return $dd;
     }
 
-    function getISBN($isbn, $lib)
+    function getISBN($isbn, $lib='')
     {
         $Cover = new \App\Models\Find\Cover\Index();
-        $dt = $this
-            ->where('i_identifier', $isbn)
-            ->where('i_library', $lib)
-            ->first();
+
+        if ($lib == '')
+        {
+            $dt = $this
+                ->where('i_identifier', $isbn)
+                ->first();
+        } else {
+            $dt = $this
+                ->where('i_identifier', $isbn)
+                ->where('i_library', $lib)
+                ->first();
+        }
 
         $META = [];
         $RSP = [];

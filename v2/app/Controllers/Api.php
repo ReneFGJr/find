@@ -26,6 +26,14 @@ class Api extends BaseController
         }
 
         switch ($verb) {
+            case 'catalog':
+                $Catalog = new \App\Models\Catalog\Index();
+                $RSP = $Catalog->index($d2, $d3, $d4);
+                break;
+            case 'trunc':
+                $Trunc = new \App\Models\Server\Trunc();
+                $RSP = $Trunc->clear_sections();
+                $RSP['status'] = '200';
             case 'server':
                 $Server = new \App\Models\Server\Index();
                 $RSP = [];

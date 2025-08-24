@@ -53,6 +53,8 @@ import { UserGroupsAssignUsersComponent } from './050_users/widget/user-groups-a
 import { WorkFormComponent } from './020_find/widget/work-form/work-form.component';
 import { ExpressionShowComponent } from './020_find/widget/expression-show/expression-show.component';
 import { ExpressionLanguageComponent } from './020_find/widget/expression-language/expression-language.component';
+import { CatalogInputFormComponent } from './060_catalog/widget/catalog-input-form/catalog-input-form.component';
+import { CatalogItemShowComponent } from './060_catalog/widget/catalog-item-show/catalog-item-show.component';
 
 @NgModule({
   declarations: [
@@ -103,6 +105,8 @@ import { ExpressionLanguageComponent } from './020_find/widget/expression-langua
     WorkFormComponent,
     ExpressionShowComponent,
     ExpressionLanguageComponent,
+    CatalogInputFormComponent,
+    CatalogItemShowComponent,
   ],
   imports: [
     BrowserModule,
