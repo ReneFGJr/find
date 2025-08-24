@@ -1,1 +1,98 @@
-<p>report-item works!</p>
+<div class="container py-3" *ngIf="data">
+  <div class="row mb-3 d-print-none">
+    <div
+      class="col-12 d-flex flex-wrap gap-2 align-items-center justify-content-between"
+    >
+      <div>
+        <h1 class="h3 mb-1">Relatórios</h1>
+        <p class="text-muted mb-0">
+          Selecione uma opção ou filtre pelos campos abaixo.
+        </p>
+      </div>
+
+      <div class="input-group" style="max-width: 420px">
+        <span class="input-group-text" id="lblBusca">🔎</span>
+        <input
+          type="search"
+          class="form-control"
+          aria-describedby="lblBusca"
+          [(ngModel)]="filtro"
+          placeholder="Filtrar por tombo, título, identificador, LN..."
+        />
+        <button
+          class="btn btn-outline-secondary"
+          (click)="filtro = ''"
+          [disabled]="!filtro"
+        >
+          Limpar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <small class="text-muted">
+          Exibindo {{ itensFiltrados.length }} de
+          {{ data?.items?.length || 0 }} registros
+        </small>
+        <div class="d-none d-sm-block d-print-none">
+          <span class="badge text-bg-light">Tombo</span>
+          <span class="badge text-bg-light">Título</span>
+          <span class="badge text-bg-light">Identificador</span>
+          <span class="badge text-bg-light">LN1</span>
+          <span class="badge text-bg-light">LN2</span>
+          <span class="badge text-bg-light">LN3</span>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+          <thead class="table-light position-sticky top-0" style="z-index: 1">
+            <tr>
+              <th scope="col">Tombo</th>
+              <th scope="col">Título</th>
+              <th scope="col" style="width: 180px">Identificador</th>
+              <th scope="col" style="width: 100px">LN1</th>
+              <th scope="col" style="width: 100px">LN2</th>
+              <th scope="col" style="width: 100px">LN3</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of itensFiltrados; trackBy: trackByTombo">
+              <td class="text-nowrap">{{ item.i_tombo }}</td>
+              <td>
+                <div
+                  class="fw-semibold text-truncate"
+                  title="{{ item.i_titulo }}"
+                >
+                  {{ item.i_titulo }}
+                </div>
+              </td>
+              <td class="text-truncate">{{ item.i_identifier }}</td>
+              <td class="text-nowrap">{{ item.i_ln1 }}</td>
+              <td class="text-nowrap">{{ item.i_ln2 }}</td>
+              <td class="text-nowrap">{{ item.i_ln3 }}</td>
+              <td>
+                <a
+                  [routerLink]="['/report']"
+                  routerLinkActive="router-link-active"
+                  >X</a
+                >
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div
+        *ngIf="!itensFiltrados.length"
+        class="alert alert-light border text-muted d-print-none"
+        role="status"
+      >
+        Nenhum resultado para “{{ filtro }}”.
+      </div>
+    </div>
+  </div>
+</div>

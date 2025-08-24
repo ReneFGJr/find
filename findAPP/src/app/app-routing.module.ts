@@ -25,6 +25,7 @@ const routes: Routes = [
       { path: 'tombo/:act', component: TomboComponent },
       { path: 'label', component: LabelTomboComponent },
       { path: 'selectLibrary', component: SelectLibraryComponent },
+      { path: 'report', component: ReportsComponent },
       { path: 'report/:act', component: ReportsComponent },
       { path: 'auth', component: UserAuthComponent },
       { path: 'users', component: UsersComponent },
