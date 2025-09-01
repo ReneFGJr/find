@@ -1,0 +1,55 @@
+<div class="container" *ngIf="libraries?.length; else emptyState">
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-3" role="list">
+    <div class="col" *ngFor="let library of libraries" role="listitem">
+      <article class="card h-100 shadow-sm">
+        <img
+          [src]="library.logo || defaultLogo"
+          class="p-2"
+          [attr.alt]="library.name + ' — logo'"
+          loading="lazy"
+          style="width: 160px;"
+        />
+
+        <div class="card-body">
+          <h5 class="card-title mb-1 text-truncate" [title]="library.name">
+            {{ library.name }}
+          </h5>
+          <p class="card-text text-muted line-clamp-3">
+            {{ library.description }}
+          </p>
+          <button class="btn btn-sm btn-outline-primary" (click)="editLibrary(library)">
+            Editar
+          </button>
+
+          <button class="btn btn-sm btn-outline-secondary ms-1" (click)="editLibrary(library)">
+            Selecionar
+          </button>
+
+        </div>
+
+        <div class="card-footer bg-transparent border-0 pt-0" *ngIf="library.url">
+          <a
+            class="btn btn-sm btn-outline-primary w-100"
+            [href]="library.url"
+            target="_blank"
+            rel="noopener"
+          >
+            Visitar site
+          </a>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+
+<ng-template #emptyState>
+  <div class="alert alert-info m-0" role="alert">
+    Nenhuma biblioteca encontrada.
+  </div>
+</ng-template>
+
+<div class="mt-3">
+  <button class="btn btn-primary" (click)="createLibrary()">
+    Adicionar nova biblioteca
+  </button>
+</div>

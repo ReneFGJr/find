@@ -58,6 +58,9 @@ import { CatalogItemShowComponent } from './060_catalog/widget/catalog-item-show
 import { CatalogAuthorityComponent } from './060_catalog/widget/catalog-authority/catalog-authority.component';
 import { MessagesComponent } from './010_core/widget/messages/messages.component';
 import { CatalogStatusComponent } from './060_catalog/widget/catalog-status/catalog-status.component';
+import { LibrariesAdminComponent } from './070_libraries/page/libraries-admin/libraries-admin.component';
+import { LibrariesListComponent } from './070_libraries/widget/libraries-list/libraries-list.component';
+import { LibrariesEditComponent } from './070_libraries/widget/libraries-edit/libraries-edit.component';
 
 @NgModule({
   declarations: [
@@ -113,6 +116,9 @@ import { CatalogStatusComponent } from './060_catalog/widget/catalog-status/cata
     CatalogAuthorityComponent,
     MessagesComponent,
     CatalogStatusComponent,
+    LibrariesAdminComponent,
+    LibrariesListComponent,
+    LibrariesEditComponent,
   ],
   imports: [
     BrowserModule,

@@ -18,7 +18,7 @@ export class CatalogInputFormComponent {
 
   constructor(private bookService: FindService) {
     this.searchForm = new FormGroup({
-      searchQuery: new FormControl('', [Validators.required]),
+      searchQuery: new FormControl('9786589167501', [Validators.required]),
     });
   }
 

@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class Index extends Model
 {
-    protected $DBGroup          = 'find2';
+    protected $DBGroup          = 'find';
     protected $table            = 'rdf_concept';
     protected $primaryKey       = 'id_cc';
     protected $useAutoIncrement = true;
@@ -203,9 +203,9 @@ class Index extends Model
     function leConcept($idx)
     {
         $RDFConcept = new \App\Models\Rdf\RDFConcept();
-        $RDFConcept->table = 'find2.rdf_concept';
+        $RDFConcept->table = 'find.rdf_concept';
 
-        $PREFIX = 'find2.';
+        $PREFIX = 'find.';
 
         $RDFConcept->select('rdf_class.c_class, rdf_class.id_c, rdf_class.c_type, rdf_class.c_url, rdf_class.c_equivalent');
         $RDFConcept->select('rdf_name.n_name, rdf_name.n_lang, rdf_name.id_n');
@@ -222,7 +222,7 @@ class Index extends Model
 
     function leData($idx)
     {
-        $PREFIX = 'find2.';
+        $PREFIX = 'find.';
         $sql = "select ";
         $sql .= " DISTINCT
     		rdf_name.id_n, rdf_name.n_name, rdf_name.n_lang,
