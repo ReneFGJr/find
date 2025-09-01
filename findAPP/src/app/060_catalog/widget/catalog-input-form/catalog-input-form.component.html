@@ -23,10 +23,22 @@
           </button>
         </div>
       </form>
+
+      <app-catalog-status></app-catalog-status>
+
     </div>
     <div class="col-6" *ngIf="data">
-      <div *ngFor="let item of data?.items">
-        <app-catalog-item-show [data]="item"></app-catalog-item-show>
+
+      <div *ngIf="message && type === 'success'">
+        <app-messages [messages]="message" [type]="'success'"></app-messages>
+      </div>
+
+      <div *ngFor="let item of itens; let i = index" class="mb-4">
+        <app-catalog-item-show
+          [data]="item"
+          [editMode]="editMode"
+          (response)="onItemResponse($event)"
+        ></app-catalog-item-show>
       </div>
     </div>
   </div>

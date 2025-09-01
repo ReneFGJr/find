@@ -1,0 +1,26 @@
+<div
+  class="alert alert-dismissible fade show mt-2"
+  [ngClass]="{
+    'alert-success': type === 'success',
+    'alert-danger': type === 'error',
+    'alert-info': type === 'info'
+  }"
+  *ngIf="messages && messages.length"
+  role="alert"
+>
+  <!-- Ícone conforme tipo -->
+  <i
+    class="bi"
+    [ngClass]="{
+      'bi-check-circle-fill me-2': type === 'success',
+      'bi-exclamation-triangle-fill me-2': type === 'error',
+      'bi-info-circle-fill me-2': type === 'info'
+    }"
+  ></i>
+
+  <!-- Mensagens -->
+  <span *ngIf="messages" [innerHTML]="messages"></span>
+
+  <!-- Botão fechar -->
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>

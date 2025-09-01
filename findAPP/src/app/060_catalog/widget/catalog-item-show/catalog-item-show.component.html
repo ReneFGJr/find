@@ -1,1 +1,35 @@
-{{ data | json }}
+<div class="card" *ngIf="data">
+  <div class="container">
+    <div class="row" *ngIf="data?.title; else notFound">
+      <div class="col-10">
+        <div>{{ data.title }}</div>
+        <div class="italic">
+          <ul>
+            <li *ngFor="let author of data.meta?.Authors" class="author">{{ author.name }}</li>
+          </ul>
+        </div>
+        <div class="small">
+          <span *ngFor="let editora of data.meta?.Publisher" class="editora">
+          {{ editora.name }}
+          </span>
+          <span *ngIf="data?.meta?.dateOfPublication">| {{ data.meta?.dateOfPublication[0].name }}</span>
+          <span *ngIf="data?.isbn">| ISBN: {{ data.isbn }}</span>
+        </div>
+
+        <div *ngIf="editMode">
+          <button (click)="onAdd(data.isbn)" class="btn btn-outline-primary small mt-2 mb-2">
+            Adicionar Exemplar
+          </button>
+        </div>
+      </div>
+
+      <div class="col-2">
+        <img [src]="data.cover" class="p-1 me-2" [alt]="data.title" style="max-height: 80px;" />
+      </div>
+    </div>
+
+    <ng-template #notFound>
+      <div class="row"><app-messages [messages]="'Obra/ISBN não localizada em nossa DB'" [type]="'error'"></app-messages></div>
+    </ng-template>
+  </div>
+</div>

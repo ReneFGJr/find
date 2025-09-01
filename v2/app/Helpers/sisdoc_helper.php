@@ -34,6 +34,12 @@ function pre($dt, $force = true)
     }
 }
 
+function sonumero($n)
+    {
+        $n = preg_replace('/[^0-9]/', '', $n);
+        return $n;
+    }
+
 function ascii($d)
 {    //$d = strtoupper($d);
 

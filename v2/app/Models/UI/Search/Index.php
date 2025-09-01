@@ -68,6 +68,13 @@ class Index extends Model
                 }
         }
 
+    function searchTitle($title,$library)
+        {
+            $item = new \App\Models\Find\Items\Index();
+            $dt = $item->searchTitle($title, $library);
+            return $dt;
+        }
+
     function searchISBN($isbn,$library)
         {
             $item = new \App\Models\Find\Items\Index();
@@ -77,7 +84,7 @@ class Index extends Model
     function searchAPI($term, $class = '')
         {
             $lib = get("library");
-            $this->makeSearch($lib);
+            //$this->makeSearch($lib);
 
 
             $ord = 'i_titulo';
@@ -136,7 +143,6 @@ class Index extends Model
             $this->orderBy('n_name');
             $dt = $this->findAll(100);
             //echo $this->getlastquery();
-            //pre($dt);
             $RSP = [];
             foreach($dt as $idb=>$line)
                 {

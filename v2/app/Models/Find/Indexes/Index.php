@@ -40,6 +40,24 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+    function getStatus()
+        {
+            $lib = get("library");
+            $cp = 'i_status, is_name, count(*) as total';
+            $this->select($cp)
+                ->join('find_item_status', 'i_status = id_is')
+                ->where('i_library', $lib)
+                ->groupBy('i_status')
+                ->orderBy('i_status, is_name');
+            $dt = $this->findAll();
+            $RSP = [];
+            foreach($dt as $d)
+                {
+                    $RSP[$d['is_name']] = $d['total'];
+                }
+            return $RSP;
+        }
+
     function getIndex($type,$lib)
         {
             $RSP = [];
@@ -52,25 +70,6 @@ class Index extends Model
                     $RSP['_GET'] = $_GET;
                     $RSP['_POST'] = $_GET;
                     $RSP['lib'] = $lib;
-                    return $RSP;
-                }
-
-            switch($type)
-                {
-                    case 'authors':
-                        $RSP['index'] = $this->indexWork($lib, 'hasAuthor');
-                        break;
-                    case 'subject':
-                        $RSP['index'] = $this->indexManifestation($lib, 'hasSubject');
-                        break;
-                    case 'publisher':
-                        $RSP['index'] = $this->indexManifestation($lib, 'isPublisher');
-                        break;
-                    default:
-                        $RSP['_GET'] = $_GET;
-                        $RSP['_POST'] = $_GET;
-                        $RSP['lib'] = $lib;
-                        break;
                 }
             return $RSP;
         }

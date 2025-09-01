@@ -55,6 +55,9 @@ import { ExpressionShowComponent } from './020_find/widget/expression-show/expre
 import { ExpressionLanguageComponent } from './020_find/widget/expression-language/expression-language.component';
 import { CatalogInputFormComponent } from './060_catalog/widget/catalog-input-form/catalog-input-form.component';
 import { CatalogItemShowComponent } from './060_catalog/widget/catalog-item-show/catalog-item-show.component';
+import { CatalogAuthorityComponent } from './060_catalog/widget/catalog-authority/catalog-authority.component';
+import { MessagesComponent } from './010_core/widget/messages/messages.component';
+import { CatalogStatusComponent } from './060_catalog/widget/catalog-status/catalog-status.component';
 
 @NgModule({
   declarations: [
@@ -107,6 +110,9 @@ import { CatalogItemShowComponent } from './060_catalog/widget/catalog-item-show
     ExpressionLanguageComponent,
     CatalogInputFormComponent,
     CatalogItemShowComponent,
+    CatalogAuthorityComponent,
+    MessagesComponent,
+    CatalogStatusComponent,
   ],
   imports: [
     BrowserModule,

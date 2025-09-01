@@ -70,6 +70,62 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+    function addItem($ISBN,$LIBRARY)
+    {
+        if (($ISBN=='') or ($LIBRARY=='')) {
+            return [
+                'status' => '400',
+                'msg'    => 'ISBN e Biblioteca são obrigatórios'
+            ];
+        }
+        $dt = $this->where('i_identifier', $ISBN)
+                ->where('i_library', $LIBRARY)
+                ->first();
+        if ($dt == []) {
+            $dt = $this->where('i_identifier', $ISBN)
+                ->first();
+        }
+        unset($dt['id_i']);
+        $dt['i_library'] = $LIBRARY;
+        $dt['i_tombo'] = $this->nextTombo($LIBRARY);
+        $dt['i_created'] = date('Y-m-d H:i:s');
+        $dt['i_ip'] = $_SERVER['REMOTE_ADDR'];
+        $dt['i_exemplar'] = $this->nextExemplar($ISBN,$LIBRARY);
+        $dt['i_dt_emprestimo'] = '0000-00-00';
+        $dt['i_dt_prev'] = 0;
+        $dt['i_dt_renovavao'] = 0;
+        $dt['i_status'] = 1;
+        $id = $this->insert($dt);
+        $RSP['status'] = '200';
+        $RSP['tombo'] = $dt['i_tombo'];
+        $RSP['msg'] = 'Item adicionado com sucesso';
+        return $RSP;
+    }
+
+    function nextExemplar($ISBN,$LIBRARY)
+    {
+        $dt = $this
+            ->where('i_library', $LIBRARY)
+            ->where('i_identifier', $ISBN)
+            ->orderBy('i_exemplar', 'desc')
+            ->first();
+        if ($dt) {
+            return $dt['i_exemplar'] + 1;
+        }
+        return 1;
+    }
+
+    function nextTombo($LIBRARY)
+        {
+            $dt = $this->where('i_library', $LIBRARY)
+                ->orderBy('i_tombo', 'desc')
+                ->first();
+            if ($dt) {
+                return $dt['i_tombo'] + 1;
+            }
+            return 1;
+        }
+
     function vitrine($lib = '')
     {
         $Covers = new \App\Models\Find\Cover\Index();
@@ -131,6 +187,36 @@ class Index extends Model
         }
         $dd['works'] = $wk;
         return $dd;
+    }
+
+    function searchTitle($title, $library = '')
+    {
+        $t = explode(' ', $title);
+        foreach($t as $w)
+            {
+                if (strlen($w) > 2)
+                    {
+                        $this->like('i_titulo', $w);
+                    }
+            }
+        if ($library != '')
+            {
+                $this->where('i_library', $library);
+            }
+        $dt = $this->orderBy('i_titulo')->findAll(30);
+
+        $RSP = [];
+        $ISBN = [];
+        foreach ($dt as $id => $line) {
+            $ISBNb = $line['i_identifier'];
+            if (!isset($ISBN[$ISBNb]))
+                {
+                    $ISBN[$ISBNb] = 1;
+                    $da = $this->getISBN($line['i_identifier'], $line['i_library']);
+                    $RSP[] = $da;
+                }
+        }
+        return $RSP;
     }
 
     function getISBN($isbn, $lib='')

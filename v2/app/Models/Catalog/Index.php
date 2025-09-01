@@ -46,18 +46,39 @@ class Index extends Model
         $RSP['msg'] = 'OK';
 
         switch($d1) {
+            case 'status':
+                $Index = new \App\Models\Find\Indexes\Index();
+                $RSP = $Index->getStatus();
+                break;
             case 'getIndex':
                 $lib = $d2;
                 $Index = new \App\Models\Find\Indexes\Index();
                 $RSP['terms'] = $Index->getIndex($d2,$d3);
                 break;
 
+            case 'itemAdd':
+                $RSP['status'] = '200';
+                $RSP['msg'] = 'Item adicionado com sucesso';
+                $RSP['data'] = $_POST;
+
+                $Item = new \App\Models\Find\Items\Index();
+                $ISBN = get('isbn');
+                $Library = get('library');
+                $RSP = $Item->addItem($ISBN,$Library);
+                break;
+
             case 'itemSearch':
                 $q = get("searchQuery");
                 $UI = new \App\Models\UI\Search\Index();
-                $RSP['items'] = $UI->searchISBN($q,$d3);
+                $qn = sonumero($q);
+                if ($qn == $q) {
+                    $ITEM = $UI->searchISBN($q,$d3);
+                    $RSP['data'][] = $ITEM;
+                } else {
+                    $ITEM = $UI->searchTitle($q,$d3);
+                    $RSP['data'] = $ITEM;
+                }
                 break;
-
             case 'getIsbn':
                 $Book = new \App\Models\Find\Items\Index();
                 /************* ISBN */
