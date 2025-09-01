@@ -8,13 +8,14 @@ import { FindService } from '../../../010_core/service/find.service';
   styleUrl: './catalog-status.component.scss',
 })
 export class CatalogStatusComponent {
-  status: Array<any> = [];
+  data: Array<any> | any;
   constructor(private findService: FindService) {}
 
   ngOnInit() {
     let dt = {};
     this.findService.api_post('catalog/status', dt).subscribe((res) => {
-      this.status = res;
+      this.data = res;
+      console.log(res)
     });
   }
 }

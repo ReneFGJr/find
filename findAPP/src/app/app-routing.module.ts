@@ -22,6 +22,7 @@ const routes: Routes = [
 
       { path: 'catalog', component: CatalogInputFormComponent },
       { path: 'catalog/:act', component: CatalogComponent },
+      { path: 'catalog/:act/:id', component: CatalogComponent },
       { path: 'tombo/:act', component: TomboComponent },
       { path: 'label', component: LabelTomboComponent },
       { path: 'selectLibrary', component: SelectLibraryComponent },

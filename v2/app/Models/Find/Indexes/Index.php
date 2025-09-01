@@ -51,10 +51,14 @@ class Index extends Model
                 ->orderBy('i_status, is_name');
             $dt = $this->findAll();
             $RSP = [];
+            $RSP['library'] = $lib;
+            $status = [];
             foreach($dt as $d)
                 {
-                    $RSP[$d['is_name']] = $d['total'];
+                    $st = ['id'=>$d['i_status'],'name'=>$d['is_name'],'total'=>$d['total']];
+                    $status[] = $st;
                 }
+            $RSP = $status;
             return $RSP;
         }
 
