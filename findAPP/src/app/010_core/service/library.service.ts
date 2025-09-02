@@ -8,7 +8,7 @@ import { Library } from './library.model';
 export class LibraryService {
   private http = inject(HttpClient);
   // ajuste conforme seu ambiente:
-  private baseUrl = '/api/library';
+  private baseUrl = 'http://find/api/library';
 
   getById(id: number): Observable<Library> {
     return this.http.get<Library>(`${this.baseUrl}/${id}`);
@@ -21,11 +21,11 @@ export class LibraryService {
   }
 
   create(data: Library): Observable<Library> {
-    return this.http.post<Library>(this.baseUrl, data);
+    return this.http.post<Library>(this.baseUrl+'/create', data);
   }
 
   update(id: number, data: Library): Observable<Library> {
-    return this.http.put<Library>(`${this.baseUrl}/${id}`, data);
+    return this.http.put<Library>(`${this.baseUrl}/save/${id}`, data);
   }
 
   // Opcional: upload do logo (backend deve devolver uma URL/caminho salvo)

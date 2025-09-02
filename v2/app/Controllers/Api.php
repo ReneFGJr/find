@@ -144,8 +144,28 @@ class Api extends BaseController
 
             case 'library':
                 $Library = new \App\Models\Find\Library\Index();
-                $RSP = $this->version();
-                $RSP['library'] = $Library->listAll();
+                if ($d2 == '')
+                    {
+                    $RSP = $this->version();
+                    $RSP['library'] = $Library->listAll();
+                    } else {
+                        switch($d2)
+                            {
+                                case 'get':
+                                    $RSP = $Library->where('l_code',$d3)->first();
+                                    break;
+                                case 'save':
+                                    $RSP = $Library->saveLibrary($d3);
+                                    break;
+                                case 'create':
+                                    $RSP = $Library->createLibrary($d3);
+                                    break;
+                                default:
+                                    $RSP = $this->version();
+                                    $RSP['message'] = 'Ação não definida';
+                                    break;
+                            }
+                    }
                 break;
 
             case 'social':

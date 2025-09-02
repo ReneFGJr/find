@@ -44,6 +44,13 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+    function createLibrary($d3)
+        {
+            $RSP = [];
+            $RSP['post'] = $_POST;
+            return $RSP;
+        }
+
     function le($id)
     {
         $cp = 'l_name as Library, l_code as ID, l_logo as Logo';
