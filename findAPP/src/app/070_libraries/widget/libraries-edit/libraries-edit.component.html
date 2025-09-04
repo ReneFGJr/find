@@ -22,7 +22,7 @@
 
       <div class="col-md-4">
         <label class="form-label">Código (até 15) *</label>
-        <input type="text" class="form-control" formControlName="l_code" placeholder="Ex.: 1001" />
+        <input type="text" class="form-control" formControlName="l_code" placeholder="Ex.: 1001" readonly />
         <div class="invalid-feedback d-block" *ngIf="f.l_code.touched && f.l_code.invalid">
           Código é obrigatório (máx. 15).
         </div>
@@ -30,29 +30,13 @@
 
       <div class="col-md-4">
         <label class="form-label">ID Numérico (l_id) *</label>
-        <input type="number" class="form-control" formControlName="l_id" placeholder="Ex.: 1001" />
+        <input type="number" class="form-control" formControlName="l_id" placeholder="Ex.: 1001" readonly />
         <div class="invalid-feedback d-block" *ngIf="f.l_id.touched && f.l_id.invalid">
           Informe um número inteiro ≥ 1.
         </div>
       </div>
 
       <div class="col-md-8">
-        <label class="form-label">Logo (URL/caminho)</label>
-        <div class="input-group">
-          <input type="text" class="form-control" formControlName="l_logo" placeholder="Ex.: img/logo_library.png" />
-          <label class="input-group-text" for="logoFile">ou arquivo</label>
-          <input id="logoFile" class="form-control" type="file" accept="image/*" (change)="onLogoFileChange($event)" />
-        </div>
-        <small class="text-muted">Máx. 80 caracteres para o caminho; upload opcional.</small>
-
-        <div class="mt-2" *ngIf="form.value.l_logo">
-          <div class="card" style="max-width: 280px;">
-            <img [src]="form.value.l_logo" class="card-img-top" alt="Prévia do logo" />
-            <div class="card-body py-2">
-              <div class="small text-muted">{{ form.value.l_logo }}</div>
-            </div>
-          </div>
-        </div>
       </div>
 
       <div class="col-12">

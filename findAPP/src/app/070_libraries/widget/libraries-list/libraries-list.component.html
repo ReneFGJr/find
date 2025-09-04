@@ -17,11 +17,11 @@
           <p class="card-text text-muted line-clamp-3">
             {{ library.description }}
           </p>
-          <button class="btn btn-sm btn-outline-primary" (click)="editLibrary(library)">
+          <button class="btn btn-sm btn-outline-primary" (click)="editLibrary(library.code)">
             Editar
           </button>
 
-          <button class="btn btn-sm btn-outline-secondary ms-1" (click)="editLibrary(library)">
+          <button class="btn btn-sm btn-outline-secondary ms-1" (click)="editLibrary(library.code)">
             Selecionar
           </button>
 

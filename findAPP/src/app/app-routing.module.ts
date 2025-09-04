@@ -12,6 +12,7 @@ import { CatalogComponent } from './060_catalog/page/catalog/catalog.component';
 import { CatalogInputFormComponent } from './060_catalog/widget/catalog-input-form/catalog-input-form.component';
 import { LibrariesComponent } from './020_find/widget/libraries/libraries.component';
 import { LibrariesAdminComponent } from './070_libraries/page/libraries-admin/libraries-admin.component';
+import { ConfiguraLibraryComponent } from './070_libraries/page/configura-library/configura-library.component';
 
 const routes: Routes = [
   //  { path: 'catalog', component: CatalogComponent },
@@ -25,6 +26,7 @@ const routes: Routes = [
       { path: 'catalog', component: CatalogInputFormComponent },
       { path: 'catalog/:act', component: CatalogComponent },
       { path: 'catalog/:act/:id', component: CatalogComponent },
+      { path: 'libraries/configure/:id', component: ConfiguraLibraryComponent },
       { path: 'libraries/:act', component: LibrariesAdminComponent },
       { path: 'libraries/:act/:id', component: LibrariesAdminComponent },
 

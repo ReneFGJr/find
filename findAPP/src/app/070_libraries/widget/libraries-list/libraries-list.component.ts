@@ -19,7 +19,7 @@ export class LibrariesListComponent {
   ) {}
 
   editLibrary(library: any) {
-    //this.router.navigate(['/libraries', library.id, 'edit']);
+    this.router.navigate(['/libraries/configure/', library]);
   }
 
   createLibrary() {

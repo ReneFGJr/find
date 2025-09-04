@@ -61,6 +61,9 @@ import { CatalogStatusComponent } from './060_catalog/widget/catalog-status/cata
 import { LibrariesAdminComponent } from './070_libraries/page/libraries-admin/libraries-admin.component';
 import { LibrariesListComponent } from './070_libraries/widget/libraries-list/libraries-list.component';
 import { LibrariesEditComponent } from './070_libraries/widget/libraries-edit/libraries-edit.component';
+import { LibrariesLogoComponent } from './070_libraries/widget/libraries-logo/libraries-logo.component';
+import { LibrariesConfigureComponent } from './070_libraries/widget/libraries-configure/libraries-configure.component';
+import { ConfiguraLibraryComponent } from './070_libraries/page/configura-library/configura-library.component';
 
 @NgModule({
   declarations: [
@@ -119,6 +122,9 @@ import { LibrariesEditComponent } from './070_libraries/widget/libraries-edit/li
     LibrariesAdminComponent,
     LibrariesListComponent,
     LibrariesEditComponent,
+    LibrariesLogoComponent,
+    LibrariesConfigureComponent,
+    ConfiguraLibraryComponent,
   ],
   imports: [
     BrowserModule,

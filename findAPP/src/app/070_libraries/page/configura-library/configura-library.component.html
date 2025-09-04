@@ -1,0 +1,107 @@
+<app-th-show *ngIf="data" [thesaID]="id" [thesa]="data" [tab]="'2'" [editMode]="editMode"></app-th-show>
+<div class="container">
+  <div class="row">
+    <div class="col-12 col-lg-12 col-md-12 col-sm-12">
+      <div class="doc-container">
+        <aside class="doc-menu">
+          <ul>
+            <li
+              *ngFor="let section of sections"
+              [class.active]="section.id === selectedSection"
+              (click)="selectSection(section.id)"
+            >
+              {{ section.title }}
+            </li>
+          </ul>
+        </aside>
+
+        <section class="doc-content">
+          <ng-container [ngSwitch]="selectedSection">
+            <div *ngSwitchCase="'Title'" class="fade-in">
+            <h1>Titulo</h1>
+
+            <app-config-title [thesaID]="id"></app-config-title>
+            </div>
+          </ng-container>
+
+<!----------------------------------------- Introduction-->
+          <ng-container [ngSwitch]="selectedSection">
+            <div *ngSwitchCase="'Descript'" class="fade-in">
+            <h4>Descrição do vocabulário / tesauro</h4>
+            <app-form-textarea [thesaID]="id" [field]="'Introduction'"></app-form-textarea>
+            </div>
+          </ng-container>
+<!----------------------------------------- Introduction-->
+          <ng-container [ngSwitch]="selectedSection">
+            <div *ngSwitchCase="'Type'" class="fade-in">
+            <h4>Tipo do Thesa</h4>
+            <app-config-type [thesaID]="id" [field]="'Type'"></app-config-type>
+            </div>
+          </ng-container>
+<!----------------------------------------- Methodology-->
+          <ng-container [ngSwitch]="selectedSection">
+            <div *ngSwitchCase="'Methodology'" class="fade-in">
+            <h4>Metodologia</h4>
+            <app-form-textarea [thesaID]="id" [field]="'Methodology'"></app-form-textarea>
+            </div>
+          </ng-container>
+<!----------------------------------------- Audience-->
+          <ng-container [ngSwitch]="selectedSection">
+            <div *ngSwitchCase="'Audience'" class="fade-in">
+            <h4>Público Alvo</h4>
+            <app-form-textarea [thesaID]="id" [field]="'Audience'"></app-form-textarea>
+            </div>
+          </ng-container>
+<!----------------------------------------- Lnaguage -->
+          <ng-container [ngSwitch]="selectedSection">
+            <div *ngSwitchCase="'Language'" class="fade-in">
+            <h4>Idiomas</h4>
+            <app-config-language [thesaID]="id"></app-config-language>
+            </div>
+          </ng-container>
+
+<!----------------------------------------- License-->
+          <ng-container [ngSwitch]="selectedSection">
+            <div *ngSwitchCase="'License'" class="fade-in">
+            <h4>Licença</h4>
+              <app-config-license [thesaID]="id"></app-config-license>
+            </div>
+          </ng-container>
+<!----------------------------------------- visibility-->
+          <ng-container [ngSwitch]="selectedSection">
+            <div *ngSwitchCase="'Visibility'" class="fade-in">
+            <h4>Visibilidade</h4>
+            <app-config-visibility [thesaID]="id" [status]="data.th_status" (thesaIDChange)="update()"></app-config-visibility>
+            </div>
+          </ng-container>
+
+<!----------------------------------------- Themes -->
+          <ng-container [ngSwitch]="selectedSection">
+            <div *ngSwitchCase="'Themes'" class="fade-in">
+            <h4>Temas</h4>
+            <app-libraries-logo [library]="id"></app-libraries-logo>
+            ==>{{id}}
+            </div>
+          </ng-container>
+
+<!----------------------------------------- Related  -->
+          <ng-container [ngSwitch]="selectedSection">
+            <div *ngSwitchCase="'Relations'" class="fade-in">
+            <h4>Relações</h4>
+            <app-config-related [thesaID]="id" [thesa]="data"></app-config-related>
+            </div>
+          </ng-container>
+
+<!----------------------------------------- Members -->
+          <ng-container [ngSwitch]="selectedSection">
+            <div *ngSwitchCase="'Members'" class="fade-in">
+            <h4>Membros do tesauro</h4>
+            <app-config-members [thesaID]="id"></app-config-members>
+            </div>
+          </ng-container>
+
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
