@@ -67,6 +67,13 @@ class Index extends Model
                 $RSP = $Item->addItem($ISBN,$Library);
                 break;
 
+            case 'search':
+                $q = get("q");
+                $UI = new \App\Models\UI\Search\Index();
+                $ITEM = $UI->searchTitle($q, $d3);
+                $RSP['data'] = $ITEM;
+                break;
+
             case 'itemSearch':
                 $q = get("searchQuery");
                 $UI = new \App\Models\UI\Search\Index();

@@ -274,7 +274,7 @@ class Index extends Model
             $META = $this->prepara_classe_colors($META);
             $RSP['meta'] = $META;
         } else {
-            $RSP['meta'] = "OPS ERRO";
+            $RSP = [];
         }
         return $RSP;
     }

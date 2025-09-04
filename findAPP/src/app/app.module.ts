@@ -64,6 +64,8 @@ import { LibrariesEditComponent } from './070_libraries/widget/libraries-edit/li
 import { LibrariesLogoComponent } from './070_libraries/widget/libraries-logo/libraries-logo.component';
 import { LibrariesConfigureComponent } from './070_libraries/widget/libraries-configure/libraries-configure.component';
 import { ConfiguraLibraryComponent } from './070_libraries/page/configura-library/configura-library.component';
+import { CatalogSearchComponent } from './060_catalog/widget/catalog-search/catalog-search.component';
+import { CatalogSearchResultComponent } from './060_catalog/widget/catalog-search-result/catalog-search-result.component';
 
 @NgModule({
   declarations: [
@@ -125,6 +127,8 @@ import { ConfiguraLibraryComponent } from './070_libraries/page/configura-librar
     LibrariesLogoComponent,
     LibrariesConfigureComponent,
     ConfiguraLibraryComponent,
+    CatalogSearchComponent,
+    CatalogSearchResultComponent,
   ],
   imports: [
     BrowserModule,

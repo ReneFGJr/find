@@ -78,7 +78,20 @@ class Index extends Model
     function searchISBN($isbn,$library)
         {
             $item = new \App\Models\Find\Items\Index();
-            return $item->getISBN($isbn, $library);
+            $dt = $item->getISBN($isbn, $library);
+
+            if ($dt == [])
+                {
+                    $Z3950 = new \App\Models\Z3950\Index();
+                    $RSP = $Z3950->searchISBN($isbn);
+
+                    /******************************* Register a Book */
+
+                    pre($RSP);
+                    exit;
+                }
+
+            return $dt;
         }
 
     function searchAPI($term, $class = '')

@@ -13,6 +13,7 @@ import { CatalogInputFormComponent } from './060_catalog/widget/catalog-input-fo
 import { LibrariesComponent } from './020_find/widget/libraries/libraries.component';
 import { LibrariesAdminComponent } from './070_libraries/page/libraries-admin/libraries-admin.component';
 import { ConfiguraLibraryComponent } from './070_libraries/page/configura-library/configura-library.component';
+import { CatalogSearchComponent } from './060_catalog/widget/catalog-search/catalog-search.component';
 
 const routes: Routes = [
   //  { path: 'catalog', component: CatalogComponent },
@@ -29,6 +30,8 @@ const routes: Routes = [
       { path: 'libraries/configure/:id', component: ConfiguraLibraryComponent },
       { path: 'libraries/:act', component: LibrariesAdminComponent },
       { path: 'libraries/:act/:id', component: LibrariesAdminComponent },
+
+      { path: 'search', component: CatalogSearchComponent },
 
       { path: 'tombo/:act', component: TomboComponent },
       { path: 'label', component: LabelTomboComponent },

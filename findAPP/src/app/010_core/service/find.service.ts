@@ -25,7 +25,6 @@ export class FindService {
     development: boolean = false
   ): Observable<Array<any>> {
     let url = `${this.url}` + type;
-    console.log(url);
     var formData: any = new FormData();
     let apikey = this.cookieService.get('section');
     let library = this.getLibrary();

@@ -1,0 +1,24 @@
+<div class="row" *ngIf="data">
+  <div class="col-2 p-2">
+    <img [src]="data.cover" alt="Capa" class="img-fluid" *ngIf="data.cover" />
+  </div>
+  <div class="col-8">
+    <h4>{{ data.title }}</h4>
+    <p>
+      <strong>Autor:</strong>
+      {{ data.Authors | json }}
+      <span *ngFor="let author of data.meta.Authors; let isLast = last">
+        {{ author.name }}<span *ngIf="!isLast">, </span>
+      </span>
+    </p>
+    <p><b>ISBN</b>: {{ data.isbn }} </p>
+    <p>
+      Tombo: {{ data.items[0].tombo }}, Exemplar: {{ data.items[0].exemplar }}
+    </p>
+    <p>Estatus: {{ data.items[0].status }}</p>
+  </div>
+
+  <div class="col-2">
+    <button class="btn btn-outline-primary full mt-1 me-2">Detalhes</button>
+    <button class="btn btn-outline-warning full mt-1 me-2">Editar</button>
+</div>
