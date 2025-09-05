@@ -85,9 +85,9 @@ class Index extends Model
                     $Z3950 = new \App\Models\Z3950\Index();
                     $RSP = $Z3950->searchISBN($isbn);
 
-                    /******************************* Register a Book */
-
-                    pre($RSP);
+                    /*************************  ****** Register a Book */
+                    $RDF = new \App\Models\FindServer\Index();
+                    $RDF->register($RSP);
                     exit;
                 }
 
