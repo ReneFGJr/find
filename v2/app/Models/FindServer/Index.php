@@ -43,4 +43,9 @@ class Index extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    function register($dt)
+        {
+            pre($dt);
+        }
 }
