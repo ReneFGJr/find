@@ -1,5 +1,5 @@
 import { FindService } from './../../../010_core/service/find.service';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -9,6 +9,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrl: './tombo.component.scss',
 })
 export class TomboComponent {
+  @Input() editMode = false;
+
   form: FormGroup;
   loading = false;
   error: string | null = null;

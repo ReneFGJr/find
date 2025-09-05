@@ -71,6 +71,7 @@ class RDFconcept extends Model
         if (isset($cl['id_c'])) {
             $id_class = $cl['id_c'];
         } else {
+            echo $class . " não existe!";
             return 0;
         }
 

@@ -79,6 +79,10 @@ class Index extends Model
         {
             $item = new \App\Models\Find\Items\Index();
             $dt = $item->getISBN($isbn, $library);
+            if ($dt == [])
+                {
+                    $dt = $item->getISBN($isbn,'');
+                }
 
             if ($dt == [])
                 {
@@ -88,7 +92,8 @@ class Index extends Model
                     /*************************  ****** Register a Book */
                     $RDF = new \App\Models\FindServer\Index();
                     $RDF->register($RSP);
-                    exit;
+
+                    $dt = $item->getISBN($isbn,'');
                 }
 
             return $dt;
