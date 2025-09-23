@@ -1,1 +1,56 @@
-<p>catalog-status-row works!</p>
+<div class="container">
+<div class="row">
+  <div class="col-12">
+    <a routerLink="/catalog" class="btn btn-link mb-3">&larr; Voltar ao Catálogo</a>
+  </div>
+<div *ngIf="data?.books?.length; else vazio" class="catalog-wrap">
+  <h5 class="title">Detalhes do Status da Catalogação</h5>
+
+  <div class="item-card"
+       *ngFor="let item of data.books; trackBy: trackById"
+       [ngClass]="statusRowClass(item.i_status)">
+
+  <!-- CAPA -->
+  <div class="cover-wrap">
+    <img class="cover"
+         [src]="item.i_cover || placeholderCover"
+         [attr.alt]="item.i_titulo || 'Capa'"
+         loading="lazy"
+         (error)="onImgError($event)" />
+  </div>
+
+    <div class="meta">
+      <div class="line-1">
+        <span class="titulo" [title]="item.i_titulo">{{ item.i_titulo }}</span>
+        <span class="badge" [ngClass]="statusBadgeClass(item.i_status)">
+          {{ item.i_status || '—' }}
+        </span>
+      </div>
+      <div class="line-2">
+        <span class="mono">ID: {{ item.i_identifier }}</span>
+        <span class="dot">•</span>
+        <span class="mono">Tombo: {{ item.i_tombo }}</span>
+      </div>
+    </div>
+
+    <!-- Botão quadrado com cor por status -->
+    <button class="sq-btn"
+            [ngClass]="statusBtnClass(item.i_status)"
+            (click)="onView(item)"
+            aria-label="Visualizar item"
+            title="Visualizar item">
+      <!-- ícone olho em SVG (sem dependências) -->
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-2.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<ng-template #vazio>
+  <div class="empty">
+    Nenhum item encontrado.
+  </div>
+</ng-template>
+</div>
+</div>

@@ -7,5 +7,6 @@ import { Component } from '@angular/core';
   styleUrl: './catalog.component.scss'
 })
 export class CatalogComponent {
+  data: Array<any> | any;
 
 }

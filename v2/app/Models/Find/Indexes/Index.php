@@ -64,28 +64,21 @@ class Index extends Model
 
     function getStatusRow($id)
         {
-            return $_POST;
+            //return array_merge($_POST,$_GET);
             $lib = get("library");
-            $cp = 'i_status, is_name, count(*) as total';
+            $status = get("status");
+            $cp = '*';
             $this->select($cp)
                 ->join('find_item_status', 'i_status = id_is')
                 ->where('i_library', $lib)
-                ->where('i_status', $id)
-                ->groupBy('i_status')
-                ->orderBy('i_status, is_name');
-
-            pre($this->getLastQuery());
-
+                ->where('i_status', $status)
+                ->orderBy('i_tombo DESC, is_name');
             $dt = $this->findAll();
+
             $RSP = [];
             $RSP['library'] = $lib;
-            $status = [];
-            foreach($dt as $d)
-                {
-                    $st = ['id'=>$d['i_status'],'name'=>$d['is_name'],'total'=>$d['total']];
-                    $status[] = $st;
-                }
-            $RSP = $status;
+            $RSP['books'] = $dt;
+            $RSP['statusID'] = $status;
             return $RSP;
         }
 

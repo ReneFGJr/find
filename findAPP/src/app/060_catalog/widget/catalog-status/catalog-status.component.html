@@ -4,7 +4,7 @@
   <h5>Status da Catalogação</h5>
   <ul>
   <li *ngFor="let item of data">
-      <a [routerLink]="['/catalog/status', item.id]" class="link">
+      <a [routerLink]="['/catalog/statusID', item.id]" class="link">
       {{ item.name }}: {{ item.total }}
       </a>
   </li>

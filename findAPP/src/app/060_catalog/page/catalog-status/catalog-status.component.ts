@@ -15,13 +15,5 @@ export class CatalogStatusComponent {
 
   constructor(private route: ActivatedRoute) {}
 
-  ngOnInit() {
-    console.log('CatalogStatusComponent ngOnInit');
-    this.route.paramMap
-      .pipe(
-        map((p) => Number(p.get('id'))),
-        takeUntilDestroyed()
-      )
-      .subscribe((id) => (this.id = id));
-  }
+  ngOnInit() {}
 }

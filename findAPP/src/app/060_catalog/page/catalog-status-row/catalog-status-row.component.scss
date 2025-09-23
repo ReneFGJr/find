@@ -1,0 +1,104 @@
+.catalog-wrap {
+  .title { margin-bottom: .75rem; font-weight: 600; }
+
+  .item-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    padding: .75rem .9rem;
+    border: 1px solid #e5e7eb;
+    border-radius: .5rem;
+    background: #fff;
+    transition: transform .06s ease, box-shadow .06s ease, border-color .06s ease;
+    & + .item-card { margin-top: .5rem; }
+
+    &:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,.06); border-color: #d1d5db; }
+  }
+
+  .meta {
+    min-width: 0; /* truncar bem */
+    flex: 1;
+    .line-1 {
+      display: flex; align-items: center; gap: .5rem; margin-bottom: .15rem;
+      .titulo {
+        font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 56ch;
+      }
+    }
+    .line-2 {
+      color: #6b7280; font-size: .9rem; display: flex; align-items: center; gap: .4rem;
+      .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .dot { opacity: .6; }
+    }
+  }
+
+  /* Badge de status */
+  .badge {
+    padding: .12rem .5rem;
+    border-radius: .4rem;
+    font-size: .78rem;
+    font-weight: 600;
+    border: 1px solid transparent;
+    &.ok       { color: #1b5e20; background: #e8f5e9; border-color: #c8e6c9; }
+    &.info     { color: #0d47a1; background: #e3f2fd; border-color: #bbdefb; }
+    &.pending  { color: #e65100; background: #fff3e0; border-color: #ffe0b2; }
+    &.warning  { color: #9a6700; background: #fff8e1; border-color: #ffecb3; }
+    &.error    { color: #b71c1c; background: #ffebee; border-color: #ffcdd2; }
+    &.muted    { color: #374151; background: #f3f4f6; border-color: #e5e7eb; }
+  }
+
+  /* Botão quadrado */
+  .sq-btn {
+    width: 42px; height: 42px;
+    border-radius: 0; /* quadrado */
+    border: 1px solid transparent;
+    display: inline-grid; place-items: center;
+    background: #111827; color: #fff;
+    cursor: pointer;
+    transition: transform .06s ease, filter .06s ease, box-shadow .06s ease, background .06s ease, border-color .06s ease;
+    svg { display: block; fill: currentColor; }
+    &:hover { transform: translateY(-1px); filter: brightness(1.05); box-shadow: 0 3px 10px rgba(0,0,0,.12); }
+
+    &.ok      { background: #2e7d32; border-color: #1b5e20; }
+    &.info    { background: #1565c0; border-color: #0d47a1; }
+    &.pending { background: #ef6c00; border-color: #e65100; }
+    &.warning { background: #b38f00; border-color: #9a7d00; }
+    &.error   { background: #c62828; border-color: #b71c1c; }
+    &.muted   { background: #6b7280; border-color: #4b5563; }
+  }
+
+  /* faixa lateral opcional por status (sutil) */
+  .item-card.ok      { box-shadow: inset 4px 0 0 #c8e6c9; }
+  .item-card.info    { box-shadow: inset 4px 0 0 #bbdefb; }
+  .item-card.pending { box-shadow: inset 4px 0 0 #ffe0b2; }
+  .item-card.warning { box-shadow: inset 4px 0 0 #ffecb3; }
+  .item-card.error   { box-shadow: inset 4px 0 0 #ffcdd2; }
+  .item-card.muted   { box-shadow: inset 4px 0 0 #e5e7eb; }
+}
+
+.empty {
+  padding: 1rem; border: 1px dashed #e5e7eb; border-radius: .5rem; color: #6b7280; background: #fafafa;
+}
+
+.item-card {
+  display: flex; align-items: center; gap: .9rem;
+}
+
+.cover-wrap {
+  flex: 0 0 auto;
+  width: 64px;        /* largura fixa */
+  height: 88px;       /* proporção de livro */
+  border: 1px solid #e5e7eb;
+  border-radius: .35rem;
+  background: #f3f4f6;
+  overflow: hidden;
+  display: grid; place-items: center;
+}
+
+.cover {
+  width: 100%; height: 100%;
+  object-fit: cover;  /* preenche sem deformar */
+  display: block;
+}
+
+/* restante do seu SCSS (badge, botão, etc.) permanece igual */
