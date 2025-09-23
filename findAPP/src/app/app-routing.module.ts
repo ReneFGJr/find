@@ -16,6 +16,7 @@ import { ConfiguraLibraryComponent } from './070_libraries/page/configura-librar
 import { CatalogSearchComponent } from './060_catalog/widget/catalog-search/catalog-search.component';
 import { CatalogStatusComponent } from './060_catalog/widget/catalog-status/catalog-status.component';
 import { CatalogStatusRowComponent } from './060_catalog/page/catalog-status-row/catalog-status-row.component';
+import { CatalogEditRdfComponent } from './060_catalog/widget/catalog-edit-rdf/catalog-edit-rdf.component';
 
 const routes: Routes = [
   //  { path: 'catalog', component: CatalogComponent },
@@ -32,7 +33,8 @@ const routes: Routes = [
       { path: 'libraries/:act/:id', component: LibrariesAdminComponent },
 
       { path: 'search', component: CatalogSearchComponent },
-
+      { path: 'catalog/rdf/:id', component: CatalogEditRdfComponent },
+      { path: 'catalog/marc/:id', component: CatalogEditRdfComponent },
       { path: 'catalog/status/:id', component: CatalogStatusComponent },
       { path: 'catalog/statusID/:id', component: CatalogStatusRowComponent },
       { path: 'catalog/:act', component: CatalogComponent },

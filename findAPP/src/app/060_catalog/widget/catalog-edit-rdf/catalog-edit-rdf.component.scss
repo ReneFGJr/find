@@ -1,0 +1,16 @@
+/* Força largura em 90% */
+.custom-offcanvas {
+  width: 90% !important;
+}
+
+/* Animação customizada */
+.animate-slide {
+  transform: translateX(100%);
+  opacity: 0;
+  transition: all 0.2s ease-in-out;
+}
+
+.animate-slide.show {
+  transform: translateX(0);
+  opacity: 1;
+}

@@ -26,6 +26,10 @@ class Api extends BaseController
         }
 
         switch ($verb) {
+            case 'form':
+                $Item = new \App\Models\Find\Items\Index();
+                $RSP = $Item->index($d2, $d3, $d4);
+                break;
             case 'catalog':
                 $Catalog = new \App\Models\Catalog\Index();
                 $RSP = $Catalog->index($d2, $d3, $d4);

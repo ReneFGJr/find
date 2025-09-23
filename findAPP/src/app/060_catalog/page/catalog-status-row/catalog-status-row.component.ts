@@ -34,7 +34,8 @@ export class CatalogStatusRowComponent {
   onView(item: any) {
     const id = item?.id_i;
     // ajuste a rota conforme seu app:
-    this.router.navigate(['/catalog/item', id]);
+    this.router.navigate(['/catalog/rdf', id]);
+    //this.router.navigate(['/catalog/rdf', id]);
   }
 
   /** Normaliza o status para uma classe semântica */

@@ -70,6 +70,23 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+    function    index($d1='',$d2='',$d3='')
+        {
+            $RSP = [];
+
+            switch($d1)
+                {
+                    case 'rdf':
+                        $Editor = new \App\Models\FindServer\RDFform();
+                        $RSP = $Editor->getForm($d2,get("library"));
+                        break;
+                }
+            $RSP['d1'] = $d1;
+            $RSP['d2'] = $d2;
+            $RSP['d3'] = get("library");
+            return $RSP;
+        }
+
     function addItem($ISBN,$LIBRARY)
     {
         if (($ISBN=='') or ($LIBRARY=='')) {

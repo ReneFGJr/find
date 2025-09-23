@@ -67,6 +67,9 @@ import { ConfiguraLibraryComponent } from './070_libraries/page/configura-librar
 import { CatalogSearchComponent } from './060_catalog/widget/catalog-search/catalog-search.component';
 import { CatalogSearchResultComponent } from './060_catalog/widget/catalog-search-result/catalog-search-result.component';
 import { CatalogStatusRowComponent } from './060_catalog/page/catalog-status-row/catalog-status-row.component';
+import { CatalogEditRdfComponent } from './060_catalog/widget/catalog-edit-rdf/catalog-edit-rdf.component';
+import { CatalogEditMarc21Component } from './060_catalog/widget/catalog-edit-marc21/catalog-edit-marc21.component';
+import { CutterComponent } from './060_catalog/widget/cutter/cutter.component';
 
 @NgModule({
   declarations: [
@@ -131,6 +134,9 @@ import { CatalogStatusRowComponent } from './060_catalog/page/catalog-status-row
     CatalogSearchComponent,
     CatalogSearchResultComponent,
     CatalogStatusRowComponent,
+    CatalogEditRdfComponent,
+    CatalogEditMarc21Component,
+    CutterComponent,
   ],
   imports: [
     BrowserModule,
