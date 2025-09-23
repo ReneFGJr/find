@@ -15,7 +15,6 @@ export class CatalogSearchComponent {
   ) {}
 
   searchQuery(event: Event) {
-    console.log("+++++++++++++++++++++++++++++++");
     let dt = {q: event};
     console.log(dt);
     this.findService.api_post('catalog/search', dt).subscribe((res) => {

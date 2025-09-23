@@ -28,6 +28,7 @@ export class FindService {
     var formData: any = new FormData();
     let apikey = this.cookieService.get('section');
     let library = this.getLibrary();
+    console.log("URL",url);
     formData.append('user', apikey);
     formData.append('library', library);
 

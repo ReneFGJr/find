@@ -62,6 +62,33 @@ class Index extends Model
             return $RSP;
         }
 
+    function getStatusRow($id)
+        {
+            return $_POST;
+            $lib = get("library");
+            $cp = 'i_status, is_name, count(*) as total';
+            $this->select($cp)
+                ->join('find_item_status', 'i_status = id_is')
+                ->where('i_library', $lib)
+                ->where('i_status', $id)
+                ->groupBy('i_status')
+                ->orderBy('i_status, is_name');
+
+            pre($this->getLastQuery());
+
+            $dt = $this->findAll();
+            $RSP = [];
+            $RSP['library'] = $lib;
+            $status = [];
+            foreach($dt as $d)
+                {
+                    $st = ['id'=>$d['i_status'],'name'=>$d['is_name'],'total'=>$d['total']];
+                    $status[] = $st;
+                }
+            $RSP = $status;
+            return $RSP;
+        }
+
     function getIndex($type,$lib)
         {
             $RSP = [];

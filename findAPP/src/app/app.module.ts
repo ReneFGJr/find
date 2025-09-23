@@ -66,6 +66,7 @@ import { LibrariesConfigureComponent } from './070_libraries/widget/libraries-co
 import { ConfiguraLibraryComponent } from './070_libraries/page/configura-library/configura-library.component';
 import { CatalogSearchComponent } from './060_catalog/widget/catalog-search/catalog-search.component';
 import { CatalogSearchResultComponent } from './060_catalog/widget/catalog-search-result/catalog-search-result.component';
+import { CatalogStatusRowComponent } from './060_catalog/page/catalog-status-row/catalog-status-row.component';
 
 @NgModule({
   declarations: [
@@ -129,6 +130,7 @@ import { CatalogSearchResultComponent } from './060_catalog/widget/catalog-searc
     ConfiguraLibraryComponent,
     CatalogSearchComponent,
     CatalogSearchResultComponent,
+    CatalogStatusRowComponent,
   ],
   imports: [
     BrowserModule,

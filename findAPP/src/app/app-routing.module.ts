@@ -14,6 +14,8 @@ import { LibrariesComponent } from './020_find/widget/libraries/libraries.compon
 import { LibrariesAdminComponent } from './070_libraries/page/libraries-admin/libraries-admin.component';
 import { ConfiguraLibraryComponent } from './070_libraries/page/configura-library/configura-library.component';
 import { CatalogSearchComponent } from './060_catalog/widget/catalog-search/catalog-search.component';
+import { CatalogStatusComponent } from './060_catalog/widget/catalog-status/catalog-status.component';
+import { CatalogStatusRowComponent } from './060_catalog/page/catalog-status-row/catalog-status-row.component';
 
 const routes: Routes = [
   //  { path: 'catalog', component: CatalogComponent },
@@ -25,13 +27,16 @@ const routes: Routes = [
       { path: 'tombo', component: TomboComponent },
 
       { path: 'catalog', component: CatalogInputFormComponent },
-      { path: 'catalog/:act', component: CatalogComponent },
-      { path: 'catalog/:act/:id', component: CatalogComponent },
       { path: 'libraries/configure/:id', component: ConfiguraLibraryComponent },
       { path: 'libraries/:act', component: LibrariesAdminComponent },
       { path: 'libraries/:act/:id', component: LibrariesAdminComponent },
 
       { path: 'search', component: CatalogSearchComponent },
+
+      { path: 'catalog/status/:id', component: CatalogStatusComponent },
+      { path: 'catalog/statusID/:id', component: CatalogStatusRowComponent },
+      { path: 'catalog/:act', component: CatalogComponent },
+      { path: 'catalog/:act/:id', component: CatalogComponent },
 
       { path: 'tombo/:act', component: TomboComponent },
       { path: 'label', component: LabelTomboComponent },

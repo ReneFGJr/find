@@ -50,6 +50,11 @@ class Index extends Model
                 $Index = new \App\Models\Find\Indexes\Index();
                 $RSP = $Index->getStatus();
                 break;
+            case 'statusID':
+                $Index = new \App\Models\Find\Indexes\Index();
+                $RSP = $Index->getStatusRow($d2);
+                $RSP['id'] = $d2;
+                break;
             case 'getIndex':
                 $lib = $d2;
                 $Index = new \App\Models\Find\Indexes\Index();

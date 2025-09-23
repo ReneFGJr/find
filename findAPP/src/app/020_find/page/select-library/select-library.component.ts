@@ -28,7 +28,6 @@ export class SelectLibraryComponent {
   }
 
   ngOnInit() {
-    console.log('OKK');
     this.findService.api_post('library', []).subscribe((res) => {
       console.log(res);
       this.data = res;
