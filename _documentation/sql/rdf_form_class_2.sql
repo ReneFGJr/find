@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `rdf_form_class_2` (
   `form_library` char(4) NOT NULL,
   `form_order` int NOT NULL DEFAULT '0',
   UNIQUE KEY `id_form` (`id_form`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `rdf_form_class_2`

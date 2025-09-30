@@ -1,0 +1,36 @@
+<div class="container mt-4" *ngIf="data">
+  <h3 class="mb-3">Estrutura FRBR (Biblioteca {{ data.d2 }})</h3>
+
+  <div *ngFor="let fr of frbrKeys" class="mb-4">
+    <h4 class="bg-dark text-white p-2 rounded">
+      {{ frbrMap[fr] }}
+    </h4>
+
+<div *ngIf="getDataByFrbr(fr) | keyvalue as groups">
+  <div *ngFor="let g of groups" class="mb-3 ps-3">
+    <h5 class="text-primary">{{ g.key }}</h5>
+    <ol class="list-group list-group-flush ps-3">
+      <li
+        *ngFor="let item of g.value; let first = first; let last = last"
+        class="list-group-item d-flex align-items-center justify-content-between"
+      >
+        <span>
+          <!-- seta para cima (só se não for o primeiro) -->
+          <i *ngIf="!first" class="bi bi-arrow-up me-2 text-primary link" (click)="moveItem(item, 'up')"></i>
+
+          <!-- seta para baixo (só se não for o último) -->
+          <i *ngIf="!last" class="bi bi-arrow-down me-2 text-success link" (click)="moveItem(item, 'down')"></i>
+
+          {{ item.c_class }}
+        </span>
+      </li>
+    </ol>
+  </div>
+</div>
+
+
+    <p *ngIf="!(getDataByFrbr(fr) | keyvalue).length" class="text-muted ps-3">
+      Nenhum dado encontrado em {{ frbrMap[fr] }}
+    </p>
+  </div>
+</div>

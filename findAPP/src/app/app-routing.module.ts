@@ -19,6 +19,7 @@ import { CatalogStatusRowComponent } from './060_catalog/page/catalog-status-row
 import { CatalogEditRdfComponent } from './060_catalog/widget/catalog-edit-rdf/catalog-edit-rdf.component';
 import { RdfMainComponent } from './010_core/rdf/rdf-main/rdf-main.component';
 import { RdfFormEditComponent } from './010_core/rdf/rdf-form-edit/rdf-form-edit.component';
+import { RdfFormViewComponent } from './010_core/rdf/rdf-form-view/rdf-form-view.component';
 
 const routes: Routes = [
   //  { path: 'catalog', component: CatalogComponent },
@@ -59,7 +60,8 @@ const routes: Routes = [
         path: 'rdf',
         children: [
           { path: '', component: RdfMainComponent },
-          { path: 'form/:type', component: RdfFormEditComponent },
+          { path: 'form/:type/:group', component: RdfFormEditComponent },
+          { path: 'view', component: RdfFormViewComponent },
         ],
       },
     ],

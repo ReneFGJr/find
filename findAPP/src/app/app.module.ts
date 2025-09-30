@@ -72,6 +72,7 @@ import { CatalogEditMarc21Component } from './060_catalog/widget/catalog-edit-ma
 import { CutterComponent } from './060_catalog/widget/cutter/cutter.component';
 import { RdfFormEditComponent } from './010_core/rdf/rdf-form-edit/rdf-form-edit.component';
 import { RdfMainComponent } from './010_core/rdf/rdf-main/rdf-main.component';
+import { RdfFormViewComponent } from './010_core/rdf/rdf-form-view/rdf-form-view.component';
 
 @NgModule({
   declarations: [
@@ -141,6 +142,7 @@ import { RdfMainComponent } from './010_core/rdf/rdf-main/rdf-main.component';
     CutterComponent,
     RdfFormEditComponent,
     RdfMainComponent,
+    RdfFormViewComponent,
   ],
   imports: [
     BrowserModule,

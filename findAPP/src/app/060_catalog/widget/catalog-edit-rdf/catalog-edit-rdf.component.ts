@@ -13,6 +13,7 @@ export class CatalogEditRdfComponent {
   id: string = '';
   data: any;
 
+
   constructor(
     private route: ActivatedRoute,
     private findService: FindService
@@ -30,10 +31,17 @@ export class CatalogEditRdfComponent {
         map((params) => Number(params.get('id'))),
         filter((id) => !Number.isNaN(id)), // garante ID válido
         tap((id) => (this.id = String(id))),
-        switchMap((id) => this.findService.api_post('form/rdf/' + id)) // ✅ retorna observable
-      )
+        switchMap((id) =>
+          this.findService.api_post('form/property', {
+            type: this.id,
+            model: 'FIND',
+          })
+        )
+      ) // ✅ retorna observable
       .subscribe((res) => {
         this.data = res;
       });
   }
+
+
 }

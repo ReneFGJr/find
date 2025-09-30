@@ -82,8 +82,25 @@ class Index extends Model
                         break;
                     case 'property':
                         $RDFform = new \App\Models\FindServer\RDFform2();
-                        $DT = $RDFform->property(get("type"),get("library"));
-                        pre($DT);
+                        $RSP = $RDFform->property(get("type"),get("library"));
+                        break;
+                    case 'moveProperty':
+                        $RDFform = new \App\Models\FindServer\RDFform2();
+                        $RSP = $RDFform->moveProperty(get("type"),get("library"),get("subgroup"),get("id"),get("pos"));
+                        break;
+                    case 'formByLibrary':
+                        $RDFform = new \App\Models\FindServer\RDFform2();
+                        if ($d2 == '') {
+                            $d2 = get("library");
+                        }
+                        if ($d3 == '') {
+                            $d3 = get("id");
+                        }
+                        $RSP = $RDFform->formByLibrary($d2, $d1);
+                        break;
+                    case 'property_save':
+                        $RDFform = new \App\Models\FindServer\RDFform2();
+                        $RSP = $RDFform->property_save(get("type"), get("library"));
                         break;
                 }
             $RSP['d1'] = $d1;
