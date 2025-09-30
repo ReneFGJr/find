@@ -70,6 +70,8 @@ import { CatalogStatusRowComponent } from './060_catalog/page/catalog-status-row
 import { CatalogEditRdfComponent } from './060_catalog/widget/catalog-edit-rdf/catalog-edit-rdf.component';
 import { CatalogEditMarc21Component } from './060_catalog/widget/catalog-edit-marc21/catalog-edit-marc21.component';
 import { CutterComponent } from './060_catalog/widget/cutter/cutter.component';
+import { RdfFormEditComponent } from './010_core/rdf/rdf-form-edit/rdf-form-edit.component';
+import { RdfMainComponent } from './010_core/rdf/rdf-main/rdf-main.component';
 
 @NgModule({
   declarations: [
@@ -137,6 +139,8 @@ import { CutterComponent } from './060_catalog/widget/cutter/cutter.component';
     CatalogEditRdfComponent,
     CatalogEditMarc21Component,
     CutterComponent,
+    RdfFormEditComponent,
+    RdfMainComponent,
   ],
   imports: [
     BrowserModule,

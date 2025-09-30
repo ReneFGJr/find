@@ -17,6 +17,8 @@ import { CatalogSearchComponent } from './060_catalog/widget/catalog-search/cata
 import { CatalogStatusComponent } from './060_catalog/widget/catalog-status/catalog-status.component';
 import { CatalogStatusRowComponent } from './060_catalog/page/catalog-status-row/catalog-status-row.component';
 import { CatalogEditRdfComponent } from './060_catalog/widget/catalog-edit-rdf/catalog-edit-rdf.component';
+import { RdfMainComponent } from './010_core/rdf/rdf-main/rdf-main.component';
+import { RdfFormEditComponent } from './010_core/rdf/rdf-form-edit/rdf-form-edit.component';
 
 const routes: Routes = [
   //  { path: 'catalog', component: CatalogComponent },
@@ -51,6 +53,15 @@ const routes: Routes = [
       { path: 'users/:act/:id', component: UsersComponent },
       { path: 'groups/:act', component: GroupsComponent },
       { path: 'groups/:act/:id', component: GroupsComponent },
+
+      /******************* RDF Routes ******************* */
+      {
+        path: 'rdf',
+        children: [
+          { path: '', component: RdfMainComponent },
+          { path: 'form/:type', component: RdfFormEditComponent },
+        ],
+      },
     ],
   },
 ];

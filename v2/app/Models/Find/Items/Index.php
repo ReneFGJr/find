@@ -70,7 +70,7 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    function    index($d1='',$d2='',$d3='')
+    function index($d1='',$d2='',$d3='')
         {
             $RSP = [];
 
@@ -79,6 +79,11 @@ class Index extends Model
                     case 'rdf':
                         $Editor = new \App\Models\FindServer\RDFform();
                         $RSP = $Editor->getForm($d2,get("library"));
+                        break;
+                    case 'property':
+                        $RDFform = new \App\Models\FindServer\RDFform2();
+                        $DT = $RDFform->property(get("type"),get("library"));
+                        pre($DT);
                         break;
                 }
             $RSP['d1'] = $d1;
@@ -322,6 +327,15 @@ class Index extends Model
             $META['ColorClassification'] = $COLORS;
         }
         return $META;
+    }
+
+    function getItem($id, $library)
+    {
+        $dt = $this
+            ->where('id_i', $id)
+            ->where('i_library', $library)
+            ->first();
+        return $dt;
     }
 
     function getItemTombo($TomboID, $lib)
