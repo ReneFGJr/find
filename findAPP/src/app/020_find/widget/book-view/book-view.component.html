@@ -1,14 +1,11 @@
-<app-waiting  *ngIf="!book"></app-waiting>
+<app-waiting *ngIf="!book"></app-waiting>
 
 <div class="container" *ngIf="book">
 
   <div class="row">
     <div class="col-12 col-lg-4 p-1">
       <!-- Capa do livro -->
-      <img [src]="book.cover"
-        alt="Capa do Livro"
-        class="book-cover"
-        (click)="closeBookDetails()" />
+      <img [src]="book.cover" alt="Capa do Livro" class="book-cover" (click)="closeBookDetails()" />
     </div>
 
     <div class="col-12 col-lg-8">
@@ -28,9 +25,29 @@
         <div class="book-meta mt-3">
           <p><strong>ISBN:</strong> {{ book.isbn }}</p>
           <!-- Authors-->
-          <p><strong>Editora:</strong> {{ getPublisher() }}</p>
-          <p><strong>Páginas:</strong> {{ book.meta.Page[0]?.name }}</p>
+          <p><strong>Editora: </strong>
+            <a href="#" class="link bold"><span
+                *ngFor="let editora of book.meta?.Publisher">{{editora.name}}</span></a>.
+          </p>
+          <p><strong>Ano: </strong>
+            <a href="#" class="link bold"><span
+                *ngFor="let year of book.meta?.dateOfPublication">{{year.name}}</span></a>.
+          </p>
+
+          <p><strong>Páginas: </strong> <a href="#" class="link bold">{{ book.meta.Page[0]?.name }}</a></p>
+
         </div>
+      </div>
+      <div class="manifestation-about mt-3">
+        <p class="mt-3 book-abstract"><strong>Descrição: </strong>
+          <span *ngFor="let t of book.meta?.description">{{t.name}}</span>
+        </p>
+      </div>
+      <!-- Item -->
+      <div class="item mt-3">
+        <app-classification-cdd [data]="book?.meta?.CDD"></app-classification-cdd>
+        <app-classification-cdu [data]="book?.meta?.CDU"></app-classification-cdu>
+        <app-classification-custom [data]="book?.meta?.CDD"></app-classification-custom>
       </div>
     </div>
   </div>

@@ -31,12 +31,6 @@ export class BookViewComponent {
 
   goBook(id: string, library: string) {}
 
-  // Método auxiliar para concatenar os nomes das editoras
-  getPublisher(): string {
-    return 'X';
-    //return this.book.meta.Publisher.map((pub) => pub.name).join(', ');
-  }
-
   ngOnChanges() {
     console.log('ngChage', this.isbn);
     this.libraryID = localStorage.getItem('library') || '';

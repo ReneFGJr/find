@@ -74,6 +74,10 @@ import { RdfFormEditComponent } from './010_core/rdf/rdf-form-edit/rdf-form-edit
 import { RdfMainComponent } from './010_core/rdf/rdf-main/rdf-main.component';
 import { RdfFormViewComponent } from './010_core/rdf/rdf-form-view/rdf-form-view.component';
 import { UserNewComponent } from './050_users/widget/user-new/user-new.component';
+import { ClassificationCDDComponent } from './020_find/widget/classification/classification-cdd/classification-cdd.component';
+import { ClassificationCDUComponent } from './020_find/widget/classification/classification-cdu/classification-cdu.component';
+import { ClassificationColorComponent } from './020_find/widget/classification/classification-color/classification-color.component';
+import { ClassificationCustomComponent } from './020_find/widget/classification/classification-custom/classification-custom.component';
 
 @NgModule({
   declarations: [
@@ -145,6 +149,10 @@ import { UserNewComponent } from './050_users/widget/user-new/user-new.component
     RdfMainComponent,
     RdfFormViewComponent,
     UserNewComponent,
+    ClassificationCDDComponent,
+    ClassificationCDUComponent,
+    ClassificationColorComponent,
+    ClassificationCustomComponent,
   ],
   imports: [
     BrowserModule,
