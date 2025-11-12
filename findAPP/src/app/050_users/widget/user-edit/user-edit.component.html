@@ -1,140 +1,136 @@
 <!-- Exemplo simplificado de alguns campos em user-edit.component.html -->
 <div class="container mt-4">
-  <h2>Editar Usuário</h2>
+  <div class="row">
+    <h2>Editar Usuário</h2>
 
-  <div *ngIf="errorMsg" class="alert alert-danger">
-    {{ errorMsg }}
+    <div *ngIf="errorMsg" class="alert alert-danger">
+      {{ errorMsg }}
+    </div>
+    <div *ngIf="isLoading" class="alert alert-info">Carregando...</div>
+
+    <form *ngIf="!isLoading && !errorMsg" #userForm="ngForm">
+      <!-- ID (readonly) -->
+      <div class="mb-3">
+        <input
+          id="id_us"
+          type="hidden"
+          class="form-control"
+          [(ngModel)]="user.id_us"
+          name="id_us"
+          readonly
+        />
+      </div>
+
+      <!-- us_nome -->
+      <div class="mb-3">
+        <label for="us_nome" class="form-label">Nome</label>
+        <input
+          id="us_nome"
+          type="text"
+          class="form-control"
+          [(ngModel)]="user.us_nome"
+          name="us_nome"
+          required
+        />
+      </div>
+
+      <!-- us_email -->
+      <div class="mb-3">
+        <label for="us_email" class="form-label">Email</label>
+        <input
+          id="us_email"
+          type="email"
+          class="form-control"
+          [(ngModel)]="user.us_email"
+          name="us_email"
+          required
+        />
+      </div>
+
+      <!-- us_login -->
+      <div class="mb-3">
+        <label for="us_login" class="form-label">Login</label>
+        <input
+          id="us_login"
+          type="text"
+          class="form-control"
+          [(ngModel)]="user.us_login"
+          name="us_login"
+          required
+        />
+      </div>
+
+      <!-- Exemplo de campo us_ativo (checkbox) -->
+      <div class="form-check mb-3">
+        <input
+          id="us_ativo"
+          type="checkbox"
+          class="form-check-input"
+          [(ngModel)]="user.us_ativo"
+          name="us_ativo"
+          [ngModelOptions]="{ standalone: true }"
+        />
+        <label for="us_ativo" class="form-check-label">Ativo</label>
+      </div>
+
+      <!-- Demais campos escalonados conforme sua necessidade -->
+      <!-- Por exemplo, us_cidade -->
+      <div class="mb-3 col-6">
+        <label for="us_cidade" class="form-label">Cidade</label>
+        <input
+          id="us_cidade"
+          type="text"
+          class="form-control"
+          [(ngModel)]="user.us_cidade"
+          name="us_cidade"
+        />
+      </div>
+
+      <!-- us_pais -->
+      <div class="mb-3 col-6">
+        <label for="us_pais" class="form-label">País</label>
+        <input
+          id="us_pais"
+          type="text"
+          class="form-control"
+          [(ngModel)]="user.us_pais"
+          name="us_pais"
+        />
+      </div>
+
+      <!-- you can add the rest of fields similarly… -->
+
+      <!-- Botões de ação -->
+      <div class="mt-4 col-12">
+        <button
+          type="button"
+          class="btn btn-primary me-2"
+          (click)="saveUser()"
+          [disabled]="userForm.form.invalid"
+        >
+          Salvar
+        </button>
+        <button
+          *ngIf="isMember(user.ul_library)"
+          type="button"
+          class="btn btn-danger me-2"
+          (click)="inactivateUser()"
+        >
+          Inativar
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-success me-2"
+          (click)="detailUser()"
+        >
+          Detalhes
+        </button>
+
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()">
+          Cancelar
+        </button>
+      </div>
+    </form>
   </div>
-  <div *ngIf="isLoading" class="alert alert-info">
-    Carregando...
-  </div>
-
-  <form *ngIf="!isLoading && !errorMsg" #userForm="ngForm">
-    <!-- ID (readonly) -->
-    <div class="mb-3">
-      <label for="id_us" class="form-label">ID de Usuário</label>
-      <input
-        id="id_us"
-        type="text"
-        class="form-control"
-        [(ngModel)]="user.id_us"
-        name="id_us"
-        readonly
-      />
-    </div>
-
-    <!-- us_nome -->
-    <div class="mb-3">
-      <label for="us_nome" class="form-label">Nome</label>
-      <input
-        id="us_nome"
-        type="text"
-        class="form-control"
-        [(ngModel)]="user.us_nome"
-        name="us_nome"
-        required
-      />
-    </div>
-
-    <!-- us_email -->
-    <div class="mb-3">
-      <label for="us_email" class="form-label">Email</label>
-      <input
-        id="us_email"
-        type="email"
-        class="form-control"
-        [(ngModel)]="user.us_email"
-        name="us_email"
-        required
-      />
-    </div>
-
-    <!-- us_login -->
-    <div class="mb-3">
-      <label for="us_login" class="form-label">Login</label>
-      <input
-        id="us_login"
-        type="text"
-        class="form-control"
-        [(ngModel)]="user.us_login"
-        name="us_login"
-        required
-      />
-    </div>
-
-    <!-- Exemplo de campo us_ativo (checkbox) -->
-    <div class="form-check mb-3">
-      <input
-        id="us_ativo"
-        type="checkbox"
-        class="form-check-input"
-        [(ngModel)]="user.us_ativo"
-        name="us_ativo"
-        [ngModelOptions]="{ standalone: true }"
-      />
-      <label for="us_ativo" class="form-check-label">Ativo</label>
-    </div>
-
-    <!-- Demais campos escalonados conforme sua necessidade -->
-    <!-- Por exemplo, us_cidade -->
-    <div class="mb-3">
-      <label for="us_cidade" class="form-label">Cidade</label>
-      <input
-        id="us_cidade"
-        type="text"
-        class="form-control"
-        [(ngModel)]="user.us_cidade"
-        name="us_cidade"
-      />
-    </div>
-
-    <!-- us_pais -->
-    <div class="mb-3">
-      <label for="us_pais" class="form-label">País</label>
-      <input
-        id="us_pais"
-        type="text"
-        class="form-control"
-        [(ngModel)]="user.us_pais"
-        name="us_pais"
-      />
-    </div>
-
-    <!-- you can add the rest of fields similarly… -->
-
-    <!-- Botões de ação -->
-    <div class="mt-4">
-      <button
-        type="button"
-        class="btn btn-primary me-2"
-        (click)="saveUser()"
-        [disabled]="userForm.form.invalid"
-      >
-        Salvar
-      </button>
-      <button
-        type="button"
-        class="btn btn-danger me-2"
-        (click)="inactivateUser()"
-      >
-        Inativar
-      </button>
-
-      <button
-        type="button"
-        class="btn btn-success me-2"
-        (click)="detailUser()"
-      >
-        Detalhes
-      </button>
-
-      <button
-        type="button"
-        class="btn btn-secondary"
-        (click)="cancelEdit()"
-      >
-        Cancelar
-      </button>
-    </div>
-  </form>
 </div>

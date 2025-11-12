@@ -1,29 +1,34 @@
-<!-- src/app/pages/user-list/user-list.component.html -->
 <div class="container mt-4">
   <h2>Lista de Usuários</h2>
 
-  <!-- 1) Indicador de carregamento -->
-  <div *ngIf="isLoading" class="alert alert-info">
-    Carregando usuários…
-  </div>
+  <!-- Indicador de carregamento -->
+  <div *ngIf="isLoading" class="alert alert-info">Carregando usuários…</div>
 
-  <!-- 2) Mensagem de erro -->
-  <div *ngIf="errorMsg" class="alert alert-danger">
-    {{ errorMsg }}
-  </div>
+  <!-- Mensagem de erro -->
+  <div *ngIf="errorMsg" class="alert alert-danger">{{ errorMsg }}</div>
 
-  <!-- 3) Campo de busca (só aparece quando não está carregando nem há erro) -->
+  <!-- Campo de busca + botão novo usuário -->
   <div class="mb-3" *ngIf="!isLoading && !errorMsg">
-    <input
-      #searchInput
-      (keyup)="ngAfterViewInit()"
-      type="text"
-      class="form-control"
-      placeholder="Buscar por nome ou login..."
-    />
+    <div class="input-group">
+      <input
+        #searchInput
+        (keyup)="filterUsers(searchInput.value)"
+        type="text"
+        class="form-control"
+        placeholder="Buscar por nome ou login..."
+      />
+      <button
+        class="btn btn-success"
+        type="button"
+        (click)="createUser()"
+        title="Adicionar novo usuário"
+      >
+        <i class="bi bi-person-plus-fill me-1"></i> Novo Usuário
+      </button>
+    </div>
   </div>
 
-  <!-- 4) Tabela de usuários (só aparece quando não está carregando nem há erro) -->
+  <!-- Tabela -->
   <table *ngIf="!isLoading && !errorMsg" class="table table-striped table-hover">
     <thead class="thead-light">
       <tr>
@@ -37,15 +42,18 @@
       </tr>
     </thead>
 
-    <!-- 4.1) Se houver ao menos 1 usuário, mostramos as linhas e habilitamos o filtro -->
-    <tbody #usersTbody *ngIf="users.length > 0; else noDataTpl">
-      <tr *ngFor="let user of users">
+    <tbody *ngIf="paginatedUsers.length > 0; else noDataTpl">
+      <tr *ngFor="let user of paginatedUsers">
         <td>{{ user.us_nome }}</td>
         <td>{{ user.us_login }}</td>
         <td>{{ formatDateString(user.us_last) }}</td>
         <td>{{ user.us_genero || '—' }}</td>
         <td>{{ formatDateString(user.us_cadastro) }}</td>
-        <td><span class="btn p-0 m-0 btn-primary full" *ngIf="isMember(user.ul_library)">Membro</span></td>
+        <td>
+          <span class="btn p-0 m-0 btn-primary full" *ngIf="isMember(user.ul_library)">
+            Membro
+          </span>
+        </td>
         <td>
           <button
             class="btn btn-sm btn-info me-1"
@@ -63,31 +71,48 @@
           </button>
 
           <button
-           *ngIf="isMember(user.ul_library)"
+            *ngIf="!isMember(user.ul_library)"
+            class="btn btn-sm btn-success me-1"
+            (click)="activateUser(user)"
+            title="Tornar membro da biblioteca"
+          >
+            <i class="bi bi-plus"></i>
+          </button>
+
+          <button
+            *ngIf="isMember(user.ul_library)"
             class="btn btn-sm btn-danger"
             (click)="inactivateUser(user)"
-            title="Inativar usuário"
+            title="Remover membro da biblioteca"
           >
-            <i class="bi bi-trash"></i>
+            <i class="bi bi-door-open"></i>
           </button>
         </td>
       </tr>
     </tbody>
   </table>
 
-  <!-- 4.2) Se não houver NENHUM usuário no sistema -->
+  <!-- Sem dados -->
   <ng-template #noDataTpl>
-    <div class="alert alert-warning">
-      Nenhum usuário cadastrado no sistema.
-    </div>
+    <div class="alert alert-warning">Nenhum usuário cadastrado no sistema.</div>
   </ng-template>
 
-  <!-- 5) Alerta “Nenhum usuário encontrado” para quando o filtro não achar linhas -->
-  <div
-    #noResults
-    class="alert alert-warning d-none"
-    *ngIf="!isLoading && !errorMsg"
-  >
-    Nenhum usuário encontrado.
-  </div>
+  <!-- Paginação -->
+  <nav *ngIf="totalPages > 1" class="mt-3">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a class="page-link" (click)="previousPage()">Anterior</a>
+      </li>
+
+      <li class="page-item disabled">
+        <span class="page-link">
+          Página {{ currentPage }} de {{ totalPages }}
+        </span>
+      </li>
+
+      <li class="page-item" [class.disabled]="currentPage === totalPages">
+        <a class="page-link" (click)="nextPage()">Próxima</a>
+      </li>
+    </ul>
+  </nav>
 </div>

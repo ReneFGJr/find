@@ -3,7 +3,6 @@ import { FindService } from '../../../010_core/service/find.service';
 import { User } from '../../../000_models/user.model';
 import { Router } from '@angular/router';
 
-
 @Component({
   selector: 'app-user-list',
   standalone: false,
@@ -15,6 +14,12 @@ export class UserListComponent {
   users: User[] = [];
   isLoading = false;
   errorMsg: string | null = null;
+  paginatedUsers: any[] = [];
+
+  // Paginação
+  itemsPerPage = 50;
+  currentPage = 1;
+  totalPages = 1;
 
   /** Referência ao <input> de busca */
   @ViewChild('searchInput', { static: false })
@@ -28,9 +33,8 @@ export class UserListComponent {
 
   constructor(private findService: FindService, private router: Router) {}
 
-  loadUsers(): void {
+  loadUsers() {
     this.isLoading = true;
-    this.errorMsg = null;
     let dt = {
       id_gr: this.idGroup,
       library: localStorage.getItem('library') || '',
@@ -38,10 +42,12 @@ export class UserListComponent {
     this.findService.api_post('users/list', dt).subscribe({
       next: (data) => {
         this.users = data;
+        this.totalPages = Math.ceil(this.users.length / this.itemsPerPage);
+        this.updatePaginatedUsers();
         this.isLoading = false;
       },
-      error: (err) => {
-        this.errorMsg = 'Não foi possível obter a lista de usuários.';
+      error: (err: any) => {
+        this.errorMsg = 'Erro ao carregar usuários.';
         this.isLoading = false;
       },
     });
@@ -77,6 +83,25 @@ export class UserListComponent {
     return library ? true : false;
   }
 
+  activateUser(user: User): void {
+    if (!confirm(`Deseja realmente ativar o usuário "${user.us_nome}"?`)) {
+      return;
+    }
+
+    this.findService
+      .api_post('users/activate', { userID: user.id_us })
+      .subscribe({
+        next: (data) => {
+          // Recarregar lista após inativação
+          console.log(data);
+          this.loadUsers();
+        },
+        error: (err) => {
+          alert('Falha ao inativar o usuário. Por favor, tente novamente.');
+        },
+      });
+  }
+
   /**
    * “Exclui” logicamente (inativa) o usuário.
    * Após a resposta, recarrega a lista.
@@ -87,7 +112,7 @@ export class UserListComponent {
     }
 
     this.findService
-      .api_post('user/inactivate', { login: user.us_login })
+      .api_post('users/inactivate', { userID: user.id_us })
       .subscribe({
         next: () => {
           // Recarregar lista após inativação
@@ -132,5 +157,42 @@ export class UserListComponent {
     } else {
       noResultsEl.classList.add('d-none');
     }
+  }
+
+  createUser() {
+    // Exemplo: navegar para a página de criação
+    this.router.navigate(['/users/new']);
+
+    // ou abrir modal:
+    // this.openUserFormModal();
+  }
+
+  updatePaginatedUsers() {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+    this.paginatedUsers = this.users.slice(start, end);
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.updatePaginatedUsers();
+    }
+  }
+
+  previousPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.updatePaginatedUsers();
+    }
+  }
+
+  filterUsers(term: string) {
+    const filtered = this.users.filter((u) =>
+      `${u.us_nome} ${u.us_login}`.toLowerCase().includes(term.toLowerCase())
+    );
+    this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
+    this.currentPage = 1;
+    this.paginatedUsers = filtered.slice(0, this.itemsPerPage);
   }
 }

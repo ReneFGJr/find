@@ -107,6 +107,10 @@ export class UserEditComponent implements OnInit {
     });
   }
 
+  isMember(library: string): boolean {
+    return library ? true : false;
+  }
+
   /**
    * “Inativa” (remove) o usuário via API. Após sucesso, retorna à lista.
    */

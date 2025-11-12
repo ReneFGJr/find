@@ -73,6 +73,7 @@ import { CutterComponent } from './060_catalog/widget/cutter/cutter.component';
 import { RdfFormEditComponent } from './010_core/rdf/rdf-form-edit/rdf-form-edit.component';
 import { RdfMainComponent } from './010_core/rdf/rdf-main/rdf-main.component';
 import { RdfFormViewComponent } from './010_core/rdf/rdf-form-view/rdf-form-view.component';
+import { UserNewComponent } from './050_users/widget/user-new/user-new.component';
 
 @NgModule({
   declarations: [
@@ -143,6 +144,7 @@ import { RdfFormViewComponent } from './010_core/rdf/rdf-form-view/rdf-form-view
     RdfFormEditComponent,
     RdfMainComponent,
     RdfFormViewComponent,
+    UserNewComponent,
   ],
   imports: [
     BrowserModule,

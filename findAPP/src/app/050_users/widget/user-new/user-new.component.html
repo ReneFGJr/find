@@ -1,0 +1,112 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-4">
+          <h3 class="text-center mb-4 text-primary fw-bold">
+            <i class="bi bi-person-plus-fill me-2"></i> Cadastro de Novo Usuário
+          </h3>
+
+          <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+            <!-- Nome -->
+            <div class="mb-3">
+              <label for="us_nome" class="form-label fw-semibold">Nome Completo</label>
+              <input
+                id="us_nome"
+                type="text"
+                class="form-control"
+                formControlName="us_nome"
+                placeholder="Digite o nome do usuário"
+                [ngClass]="{'is-invalid': isInvalid('us_nome')}"
+              />
+              <div class="invalid-feedback">
+                O nome é obrigatório.
+              </div>
+            </div>
+
+            <!-- Login -->
+            <div class="mb-3">
+              <label for="us_login" class="form-label fw-semibold">e-mail</label>
+              <input
+                id="us_email"
+                type="text"
+                class="form-control"
+                formControlName="us_email"
+                placeholder="Digite o email (ex: find@ufrgs.br)"
+                [ngClass]="{'is-invalid': isInvalid('us_email')}"
+              />
+              <div class="invalid-feedback">
+                O email é obrigatório.
+              </div>
+            </div>
+
+            <!-- Gênero -->
+            <div class="mb-3">
+              <label for="us_genero" class="form-label fw-semibold">Gênero</label>
+              <select
+                id="us_genero"
+                class="form-select"
+                formControlName="us_genero"
+                [ngClass]="{'is-invalid': isInvalid('us_genero')}"
+              >
+                <option value="">Selecione...</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Feminino">Feminino</option>
+                <option value="Outro">Outro</option>
+                <option value="Prefiro não informar">Prefiro não informar</option>
+              </select>
+              <div class="invalid-feedback">Selecione o gênero.</div>
+            </div>
+
+            <!-- Senha -->
+            <div class="mb-3">
+              <label for="us_senha" class="form-label fw-semibold">Senha</label>
+              <div class="input-group">
+                <input
+                  id="us_senha"
+                  type="text"
+                  class="form-control"
+                  formControlName="us_senha"
+                  placeholder="Digite ou gere uma senha"
+                  [ngClass]="{ 'is-invalid': isInvalid('us_senha') }"
+                />
+                <button
+                  type="button"
+                  class="btn btn-outline-secondary"
+                  (click)="gerarSenha()"
+                  title="Gerar senha numérica de 6 dígitos"
+                >
+                  <i class="bi bi-shuffle"></i>
+                  Gerar Senha
+                </button>
+              </div>
+              <div class="invalid-feedback">
+                A senha deve ter ao menos 6 caracteres.
+              </div>
+            </div>
+
+            <!-- Botões -->
+            <div class="d-flex justify-content-between mt-4">
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                routerLink="/users"
+              >
+                <i class="bi bi-arrow-left"></i> Voltar
+              </button>
+
+              <button
+                type="submit"
+                class="btn btn-success px-4"
+                [disabled]="userForm.invalid || isSubmitting"
+              >
+                <i class="bi bi-check-circle-fill me-1"></i>
+                {{ isSubmitting ? 'Salvando...' : 'Salvar Usuário' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
