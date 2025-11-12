@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-classification-cdu',
@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './classification-cdu.component.scss'
 })
 export class ClassificationCDUComponent {
-
+  @Input() data: any;
 }

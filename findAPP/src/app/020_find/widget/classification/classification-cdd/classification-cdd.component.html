@@ -1,2 +1,6 @@
-<p>classification-cdd works!</p>
-{{ data | json }}
+<div class="card" *ngIf="data.length > 0">
+    <strong>Classificação CDD</strong>
+    <div class="card-body p-2" *ngFor="let class of data" >
+        {{ class?.name }}
+    </div>
+</div>
