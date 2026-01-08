@@ -27,7 +27,7 @@ export class WaitingComponent {
   private startTimer() {
     this.secondsPassed = 0;
     this.timerSubscription = timer(0, 1000).subscribe(() => {
-      this.secondsPassed++;
+      this.secondsPassed = this.secondsPassed + 0.5;
     });
   }
 

@@ -6,7 +6,6 @@ use CodeIgniter\Model;
 
 class Publishers extends Model
 {
-    protected $DBGroup          = 'findserver';
     protected $table            = 'find_publisher';
     protected $primaryKey       = 'id_pb';
     protected $useAutoIncrement = true;

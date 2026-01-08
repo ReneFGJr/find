@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './classification-custom.component.scss'
 })
 export class ClassificationCustomComponent {
-
+  data: any;
 }

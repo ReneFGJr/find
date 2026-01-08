@@ -6,7 +6,6 @@ use CodeIgniter\Model;
 
 class Catalog extends Model
 {
-    protected $DBGroup          = 'findserver';
     protected $table            = 'find_work';
     protected $primaryKey       = 'id_w';
     protected $useAutoIncrement = true;

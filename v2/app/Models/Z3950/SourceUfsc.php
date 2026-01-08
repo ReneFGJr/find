@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class SourceUfsc extends Model
 {
-    protected $DBGroup          = 'default';
+    //protected $DBGroup          = 'default';
     protected $table            = 'sourceufscs';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;

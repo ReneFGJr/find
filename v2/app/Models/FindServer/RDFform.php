@@ -6,7 +6,6 @@ use CodeIgniter\Model;
 
 class RDFform extends Model
 {
-    protected $DBGroup          = 'findserver';
     protected $table            = 'rdf_form_class';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;

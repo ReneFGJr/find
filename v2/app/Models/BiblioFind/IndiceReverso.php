@@ -6,7 +6,6 @@ use CodeIgniter\Model;
 
 class IndiceReverso extends Model
 {
-    protected $DBGroup          = 'findserver';
     protected $table            = 'indicereversos';
     protected $primaryKey       = 'id';
     protected $returnType       = 'array';

@@ -6,7 +6,6 @@ use CodeIgniter\Model;
 
 class IndiceReversoDocumento extends Model
 {
-    protected $DBGroup          = 'findserver';
     protected $table            = 'indice_reverso_docs';
     protected $primaryKey       = 'id_d';
     protected $useAutoIncrement = true;

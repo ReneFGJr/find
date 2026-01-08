@@ -6,7 +6,6 @@ use CodeIgniter\Model;
 
 class RDFconcept extends Model
 {
-    protected $DBGroup          = 'findserver';
     protected $table            = 'rdf_concept';
     protected $primaryKey       = 'id_cc';
     protected $useAutoIncrement = true;

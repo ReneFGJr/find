@@ -6,7 +6,6 @@ use CodeIgniter\Model;
 
 class IndiceReversoTermo extends Model
 {
-    protected $DBGroup          = 'findserver';
     protected $table            = 'indice_reverso_termo';
     protected $primaryKey       = 'id_t';
     protected $useAutoIncrement = true;

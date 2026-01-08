@@ -7,9 +7,8 @@ use RuntimeException; // ← importa a built-in
 
 class Index extends Model
 {
-    protected $DBGroup          = 'default';
-    protected $table            = 'indices';
-    protected $primaryKey       = 'id';
+    protected $table            = 'msg';
+    protected $primaryKey       = 'id_msg';
     protected $useAutoIncrement = true;
     protected $insertID         = 0;
     protected $returnType       = 'array';
@@ -61,7 +60,7 @@ class Index extends Model
     function api_request(
         string $method,
         string $url,
-        array|string|null $data = null,
+        array $data = [],
         array $headers = [],
         int $timeout = 15
     ): array {
