@@ -49,6 +49,19 @@ class RDFform2 extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+    function editForm($id, $library)
+    {
+        $Item = new \App\Models\Find\Items\Index();
+        $DtiTEM = $Item->getPubItem($id);
+
+        $RDFdata = new \App\Models\FindServer\RDFdata();
+        $DTdata = $RDFdata->le($id);
+        pre($DTdata);
+        $RSP = [];
+        $RDFclass = new \App\Models\FindServer\RDFclass();
+        pre($id);
+    }
+
     function property_save($type, $library)
     {
         $type = strtoupper(substr($type, 0, 1));

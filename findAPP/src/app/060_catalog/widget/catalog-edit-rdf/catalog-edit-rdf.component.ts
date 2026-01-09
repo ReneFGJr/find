@@ -32,7 +32,7 @@ export class CatalogEditRdfComponent {
         filter((id) => !Number.isNaN(id)), // garante ID válido
         tap((id) => (this.id = String(id))),
         switchMap((id) =>
-          this.findService.api_post('form/property', {
+          this.findService.api_post('form/edit/' + this.id, {
             type: this.id,
             model: 'FIND',
           })

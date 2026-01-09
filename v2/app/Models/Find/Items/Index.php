@@ -76,6 +76,10 @@ class Index extends Model
 
             switch($d1)
                 {
+                    case 'edit':
+                        $RDFform = new \App\Models\FindServer\RDFform2();
+                        $RSP = $RDFform->editForm($d2,get("library"));
+                        break;
                     case 'rdf':
                         $Editor = new \App\Models\FindServer\RDFform();
                         $RSP = $Editor->getForm($d2,get("library"));
@@ -195,22 +199,22 @@ class Index extends Model
     {
         $RDF = new \App\Models\Find\Rdf\RDF();
         $dt = $RDF->le($ID);
+
         $wk = [];
         $dd = [];
         $dd['library'] = $lib;
 
         $Item = new \App\Models\Find\Items\Index();
-
         if ($dt != []) {
-            $dd['Class'] = $dt['concept']['c_class'];
-            $dd['PrefLabel'] = $dt['concept']['n_name'];
-            $dd['Language'] = $dt['concept']['n_lang'];
+            $dd['Class'] = $dt['concept']['Class'];
+            $dd['PrefLabel'] = $dt['concept']['name'];
+            $dd['Language'] = $dt['concept']['lang'];
             $dd['ID'] = $ID;
 
             foreach ($dt['data'] as $ida => $line) {
-                if ($line['Class'] == 'Work') {
-                    array_push($wk, $line['ID']);
-                    $Item->orWhere('i_work', $line['ID']);
+                if ($dd['Class'] == 'Work') {
+                    array_push($wk, $dd['ID']);
+                    $Item->orWhere('i_work', $dd['ID']);
                 }
             }
 
