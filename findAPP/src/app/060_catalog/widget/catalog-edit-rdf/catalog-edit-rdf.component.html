@@ -2,7 +2,7 @@
   <div class="row">
     <h1>RDF Editor</h1>
 
-    <table class="table table-bordered table-striped">
+    <table class="table table-bordered table-striped" *ngIf="data">
       <thead>
         <tr>
           <th width="18%" class="text-end">Field</th>
@@ -10,6 +10,17 @@
           <th width="80%">Value</th>
         </tr>
       </thead>
+
+      <!--------- Work -->
+      <tr>
+      <td class="text-end">Work:
+      </td>
+      <td>#</td>
+      <td colspan="1">
+        <h3>{{data?.Work[0]?.concept?.name}}</h3>
+      </td>
+      </tr>
+
 
       <ng-container *ngFor="let section of sections">
         <thead *ngIf="data?.[section.key]">
@@ -20,7 +31,7 @@
 
         <tbody *ngIf="data?.[section.key]">
           <tr *ngFor="let item of data[section.key]">
-            <td class="text-end small">{{ item.Label }}</td>
+            <td class="text-end small">{{ item.Caption }}</td>
             <td>
               <!-- Botão que abre o painel lateral -->
               <i
@@ -30,7 +41,8 @@
               ></i>
             </td>
             <td>
-              {{ item.Value | json }}
+              {{ item | json }}
+              <span class="bold">{{ item.data.Caption | json }}</span>
               <i *ngIf="item.Value" class="bi bi-trash text-danger"></i>
             </td>
           </tr>

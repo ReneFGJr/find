@@ -13,7 +13,6 @@ export class CatalogEditRdfComponent {
   id: string = '';
   data: any;
 
-
   constructor(
     private route: ActivatedRoute,
     private findService: FindService
@@ -23,6 +22,7 @@ export class CatalogEditRdfComponent {
     { key: 'Work', title: 'Trabalho - Work' },
     { key: 'Expression', title: 'Expressão - Expression' },
     { key: 'Manifestation', title: 'Manifestação - Manifestation' },
+    { key: 'Editora', title: 'Editora - Publisher' },
   ];
 
   ngOnInit() {
@@ -42,6 +42,4 @@ export class CatalogEditRdfComponent {
         this.data = res;
       });
   }
-
-
 }

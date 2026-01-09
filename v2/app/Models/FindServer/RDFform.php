@@ -49,9 +49,8 @@ class RDFform extends Model
         $Item = new \App\Models\Find\Items\Index();
         $dd = $Item->getItem($id,$library);
         if ($dd == []) {
-            return ['status'=>'404','message'=>'Item not found'];
+            return ['status'=>'404','message'=>'Item not found - '.$id];
         }
-
 
         $Work = $dd['i_work'];
         $Manifestation = $dd['i_manitestation'];
@@ -60,15 +59,39 @@ class RDFform extends Model
         $RDF = new \App\Models\Find\Rdf\RDF();
         $dd = $RDF->le($id);
 
+        /**************************** WORK */
+
+
         $dt = $this
-            ->select('sc_group as SUBGROUP, c1.c_class as GROUP, c2.c_class as PROP, c1.c_type as c_type, c1.c_class as c_class, sc_library')
-            ->join('rdf_class as c1', 'c1.id_c = sc_class', 'left')
-            ->join('rdf_class as c2', 'c2.id_c = sc_propriety')
-            ->where('sc_library',$library)
-            ->OrWhere('sc_library','1000')
-            ->groupBy('sc_group, c1.c_class, c2.c_class, c1.c_order, c2.c_order, sc_library, c1.c_type')
-            ->orderBy('sc_group, c1.c_order, c2.c_order','ASC')
-                ->findAll();
+            ->select('
+                    sc_group AS SUBGROUP,
+                    c1.c_class AS GROUP,
+                    c2.c_class AS PROP,
+                    c1.c_type AS c_type,
+                    c1.c_class AS c_class,
+                    sc_library
+                ')
+                        ->join('rdf_class AS c1', 'c1.id_c = sc_class', 'left')
+                        ->join('rdf_class AS c2', 'c2.id_c = sc_propriety')
+                        ->groupStart()
+                        ->where('sc_library', $library)
+                        ->orWhere('sc_library', '1000')
+                        ->groupEnd()
+                        ->where('c1.c_class', 'Work')
+                        ->groupBy('
+                    sc_group,
+                    c1.c_class,
+                    c2.c_class,
+                    c1.c_order,
+                    c2.c_order,
+                    sc_library,
+                    c1.c_type
+                ')
+            ->orderBy('sc_group, c1.c_order, c2.c_order', 'ASC')
+            ->findAll();
+        $RSP = [];
+        $RSP['Work'] = $dt;
+        return $RSP;
 
         $RSP = [];
         foreach ($dt as $k => $v) {

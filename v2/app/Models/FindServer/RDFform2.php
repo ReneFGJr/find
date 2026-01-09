@@ -138,8 +138,12 @@ class RDFform2 extends Model
 
     function property($type, $library)
     {
+        $id = get("type");
+
         $type = strtoupper(substr($type, 0, 1));
         $RSP = [];
+        $RDFdata = new \App\Models\FindServer\RDFdata();
+
         $RDFclass = new \App\Models\FindServer\RDFclass();
         $data = $RDFclass
             ->join('rdf_form_class_2 as sc', 'sc.form_property = id_c AND sc.form_library = "' . $library . '"', 'left')
@@ -162,6 +166,7 @@ class RDFform2 extends Model
 
         foreach ($data as $dd) {
             $idf = $dd['id_form'];
+            $dd['Label'] = $dd['c_class'];
             if ($dd['form_frbr'] == $type) {
                 $WT[] = $dd;
             } else {

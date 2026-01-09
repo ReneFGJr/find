@@ -81,8 +81,8 @@ class Index extends Model
                         $RSP = $Editor->getForm($d2,get("library"));
                         break;
                     case 'property':
-                        $RDFform = new \App\Models\FindServer\RDFform2();
-                        $RSP = $RDFform->property(get("type"),get("library"));
+                        $RDFform = new \App\Models\FindServer\RDFform();
+                        $RSP = $RDFform->getForm(get("type"),get("library"));
                         break;
                     case 'moveProperty':
                         $RDFform = new \App\Models\FindServer\RDFform2();
