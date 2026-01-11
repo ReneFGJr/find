@@ -22,17 +22,13 @@
         >
         </li>
 
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Acervo
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" [routerLink]="['/tombo']">Itens do acervo</a></li>
-            <li><a class="dropdown-item" [routerLink]="['/search']">Busca no acervo</a></li>
-            <li><a class="dropdown-item" [routerLink]="['/label']">Etiquetas</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" [routerLink]="['/users']">Usuários</a></li>
-          </ul>
+        <li class="nav-item">
+        <a
+          class="nav-link text-gray-700 hover:text-indigo-600 transition font-medium"
+          [routerLink]="['/acervo']"
+          routerLinkActive="router-link-active"
+          >Acervo</a
+        >
         </li>
 
         <li class="nav-item">
@@ -53,15 +49,13 @@
           </ul>
         </li>
         <!-- Gerenciamento -->
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Gerenciamento
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" [routerLink]="['/groups/list']">Grupos de usuários</a></li>
-            <li><a class="dropdown-item" [routerLink]="['/libraries/list']">Bibliotecas</a></li>
-            <li><a class="dropdown-item" [routerLink]="['/catalog']">Preparo Técnico</a></li>
-          </ul>
+        <li class="nav-item">
+        <a
+          class="nav-link text-gray-700 hover:text-indigo-600 transition font-medium"
+          [routerLink]="['/gerenciamento']"
+          routerLinkActive="router-link-active"
+          >Gerenciamento</a
+        >
         </li>
       </ul>
       <form class="d-flex" role="search">

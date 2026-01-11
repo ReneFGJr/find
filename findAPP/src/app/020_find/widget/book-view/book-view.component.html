@@ -1,53 +1,98 @@
 <app-waiting *ngIf="!book"></app-waiting>
 
 <div class="container" *ngIf="book">
-
   <div class="row">
     <div class="col-12 col-lg-4 p-1">
       <!-- Capa do livro -->
-      <img [src]="book.cover" alt="Capa do Livro" class="book-cover" (click)="closeBookDetails()" />
+      <img
+        [src]="book.cover"
+        alt="Capa do Livro"
+        class="book-cover"
+        (click)="closeBookDetails()"
+      />
     </div>
 
     <div class="col-12 col-lg-8">
       <!-- Conteúdo do card -->
       <div class="work">
         <div class="book-title">{{ book.title }}</div>
-        <app-book-show-array [label]="'Autor(es)'" [type]="'author'" [data]="book.meta.Authors"></app-book-show-array>
+        <app-book-show-array
+          [label]="'Autor(es)'"
+          [type]="'author'"
+          [data]="book.meta.Authors"
+        ></app-book-show-array>
         <app-work-form [work]="book" [type]="'book'"></app-work-form>
-
       </div>
       <div class="expression">
         <app-expression-show [work]="book"></app-expression-show>
       </div>
 
       <div class="manifestation">
-
         <div class="book-meta mt-3">
           <p><strong>ISBN:</strong> {{ book.isbn }}</p>
           <!-- Authors-->
-          <p><strong>Editora: </strong>
-            <a href="#" class="link bold"><span
-                *ngFor="let editora of book.meta?.Publisher">{{editora.name}}</span></a>.
+          <p>
+            <strong>Editora: </strong>
+            <a href="#" class="link bold"
+              ><span *ngFor="let editora of book.meta?.Publisher">{{
+                editora.name
+              }}</span></a
+            >.
           </p>
-          <p><strong>Ano: </strong>
-            <a href="#" class="link bold"><span
-                *ngFor="let year of book.meta?.dateOfPublication">{{year.name}}</span></a>.
+          <p>
+            <strong>Ano: </strong>
+            <a href="#" class="link bold"
+              ><span *ngFor="let year of book.meta?.dateOfPublication">{{
+                year.name
+              }}</span></a
+            >.
           </p>
 
-          <p><strong>Páginas: </strong> <a href="#" class="link bold">{{ book.meta.Page[0]?.name }}</a></p>
-
+          <p>
+            <strong>Páginas: </strong>
+            <a href="#" class="link bold">{{ book.meta.Page[0]?.name }}</a>
+          </p>
         </div>
       </div>
       <div class="manifestation-about mt-3">
-        <p class="mt-3 book-abstract"><strong>Descrição: </strong>
-          <span *ngFor="let t of book.meta?.description">{{t.name}}</span>
+        <p class="mt-3 book-abstract">
+          <strong>Descrição: </strong>
+          <span *ngFor="let t of book.meta?.description">{{ t.name }}</span>
         </p>
       </div>
-      <!-- Item -->
+      <!-- Classificação -->
       <div class="item mt-3">
-        <app-classification-cdd [data]="book?.meta?.CDD"></app-classification-cdd>
-        <app-classification-cdu [data]="book?.meta?.CDU"></app-classification-cdu>
-        <app-classification-custom [data]="book?.meta?.CDD"></app-classification-custom>
+        <app-classification-cdd
+          [data]="book?.meta?.CDD"
+        ></app-classification-cdd>
+        <app-classification-cdu
+          [data]="book?.meta?.CDU"
+        ></app-classification-cdu>
+        <app-classification-custom
+          [data]="book?.meta?.CDD"
+        ></app-classification-custom>
+      </div>
+
+      <!-- Item -->
+      <div class="items">
+        <table class="table table-striped mt-3">
+          <tr>
+            <th>Tombo</th>
+            <th>Local</th>
+            <th>Status</th>
+          </tr>
+          <tr *ngFor="let it of book?.items">
+            <td>{{ it.tombo }}</td>
+            <td>{{ it.place }}</td>
+            <td>{{ it.status }}</td>
+          </tr>
+        </table>
+
+        <!-- Dados adicionais   -->
+        <div class="additional-data mt-3">
+          <pre>
+          {{ book | json }}
+          </pre>
       </div>
     </div>
   </div>

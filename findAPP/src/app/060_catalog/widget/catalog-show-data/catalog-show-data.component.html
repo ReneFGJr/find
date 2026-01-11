@@ -1,0 +1,31 @@
+<span
+  *ngFor="let dataItem of data"
+  class="d-flex align-items-center gap-2 mb-1">
+
+  <!-- Texto -->
+  <span class="" *ngIf="dataItem?.ID == 0">
+    {{ dataItem.Caption }}
+  </span>
+
+  <a href="/catalog/rdf/{{dataItem?.ID}}" class="link rdfEdit" *ngIf="dataItem?.ID != 0">
+      {{ dataItem.Caption }}
+  </a>
+
+  ({{ range }})
+
+  <!-- Edit -->
+  <i *ngIf="dataItem?.type == 'Literal'"
+    class="bi bi-pencil-square link text-primary"
+    role="button"
+    title="Editar"
+    (click)="editItem()">
+  </i>
+
+  <!-- Trash -->
+  <i
+    class="bi bi-trash text-danger link"
+    role="button"
+    title="Excluir"
+    (click)="deleteItem(dataItem.IDd)">
+  </i>
+</span>

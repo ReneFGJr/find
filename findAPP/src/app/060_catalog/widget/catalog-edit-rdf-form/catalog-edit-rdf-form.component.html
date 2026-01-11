@@ -1,0 +1,21 @@
+<div *ngIf="data">
+  <h3>{{ data?.form_group }}</h3>
+  <h6>{{ data?.form_range }}</h6>
+  <pre>
+    {{ data | json }}
+</pre>
+
+<h1>=> {{ data?.type }}</h1>
+
+<!-- Form Text-->
+<app-catalog-edit-rdf-form-text *ngIf="data?.form_range == 'Text'"></app-catalog-edit-rdf-form-text>
+
+<!-- Form Text Editar-->
+<app-catalog-edit-rdf-form-text *ngIf="data?.type == 'Literal'" [data]="data" (action)="handleAction($event)"></app-catalog-edit-rdf-form-text>
+
+
+
+<!-- Form Classe-->
+
+<!-- Form Image-->
+</div>

@@ -1,0 +1,72 @@
+<div class="container-fluid manual-layout">
+  <div class="row">
+
+    <!-- MENU LATERAL -->
+    <aside class="col-md-3 col-lg-2 manual-sidebar">
+      <div class="sidebar-header">
+        <h5>{{ manualInfo.system }}</h5>
+        <small>{{ manualInfo.version }}</small>
+      </div>
+
+      <ul class="nav flex-column">
+        <li class="nav-item" *ngFor="let item of menu">
+          <a class="nav-link" (click)="loadSection(item.section)">
+            {{ item.label }}
+          </a>
+        </li>
+      </ul>
+
+      <button
+        class="btn btn-outline-secondary btn-sm mt-3 w-100"
+        (click)="clearContent()">
+        Voltar à capa
+      </button>
+    </aside>
+
+    <!-- CONTEÚDO -->
+    <main class="col-md-9 col-lg-10 manual-content">
+
+      <!-- CONTEÚDO MARKDOWN -->
+      <div *ngIf="manualContent; else cover">
+        <div id="title" class="bold" innerHTML="{{ manualContent?.title }}"></div>
+        <div id="section" class="italic">Section:
+          {{ manualContent?.section }}
+
+        </div>
+        <hr>
+        <div id="content-markdown" innerHTML="{{ manualContent?.content }}"></div>
+      </div>
+
+      <!-- CAPA DO MANUAL -->
+      <ng-template #cover>
+        <div class="manual-cover card shadow-sm">
+          <div class="card-body text-center">
+
+            <h1>{{ manualInfo.title }}</h1>
+            <h5 class="text-muted">{{ manualInfo.subtitle }}</h5>
+
+            <hr>
+
+            <p>
+              Este manual apresenta a documentação oficial do sistema
+              <strong>{{ manualInfo.system }}</strong>, descrevendo
+              funcionalidades, módulos e fluxos operacionais.
+            </p>
+
+            <div class="cover-meta">
+              <span class="badge bg-primary">{{ manualInfo.system }}</span>
+              <span class="badge bg-secondary">{{ manualInfo.version }}</span>
+            </div>
+
+            <p class="mt-4 text-muted">
+              📘 Utilize o menu lateral para iniciar a navegação.
+            </p>
+
+          </div>
+        </div>
+      </ng-template>
+
+    </main>
+
+  </div>
+</div>

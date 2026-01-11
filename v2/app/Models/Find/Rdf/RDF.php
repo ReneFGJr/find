@@ -58,8 +58,8 @@ class RDF extends Model
 
     function getData($id) {
         $RSP = [];
-        $cp = 'c_class as Property, c_type as type, c2.id_cc as ID, c2.cc_use as use, n_lang as Lang, n_name as Caption';
-        $cp1 = 'c_class as Property, "Literal" as type, id_cc as ID, cc_use as use, n_lang as Lang, n_name as Caption';
+        $cp = 'c_class as Property, c_type as type, c2.id_cc as ID, c2.cc_use as use, n_lang as Lang, n_name as Caption, id_c as IDClass, id_d as IDd, id_n as IdN';
+        $cp1 = 'c_class as Property, "Literal" as type, id_cc as ID, cc_use as use, n_lang as Lang, n_name as Caption, id_c as IDClass, id_d as IDd, id_n as IdN';
         $dt1 = $this
             ->select($cp)
             ->join('rdf_data','d_r1 = id_cc')

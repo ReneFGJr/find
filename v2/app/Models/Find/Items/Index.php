@@ -76,6 +76,10 @@ class Index extends Model
 
             switch($d1)
                 {
+                    case 'check':
+                        $RDFform = new \App\Models\FindServer\RDFform2();
+                        $RSP = $RDFform->checkRegister($d2);
+                        break;
                     case 'edit':
                         $RDFform = new \App\Models\FindServer\RDFform2();
                         $RSP = $RDFform->editForm($d2,get("library"));

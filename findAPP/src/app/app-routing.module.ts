@@ -20,6 +20,9 @@ import { CatalogEditRdfComponent } from './060_catalog/widget/catalog-edit-rdf/c
 import { RdfMainComponent } from './010_core/rdf/rdf-main/rdf-main.component';
 import { RdfFormEditComponent } from './010_core/rdf/rdf-form-edit/rdf-form-edit.component';
 import { RdfFormViewComponent } from './010_core/rdf/rdf-form-view/rdf-form-view.component';
+import { ManualComponent } from './900_manual/page/manual/manual.component';
+import { NavbarGerenciamentoComponent } from './010_header/navbar-gerenciamento/navbar-gerenciamento.component';
+import { NavbarAcervoComponent } from './010_header/navbar-acervo/navbar-acervo.component';
 
 const routes: Routes = [
   //  { path: 'catalog', component: CatalogComponent },
@@ -29,6 +32,12 @@ const routes: Routes = [
       { path: '', component: VitrineComponent },
       { path: 'home', component: SelectLibraryComponent },
       { path: 'tombo', component: TomboComponent },
+
+      // Navigation Links Edits
+      { path: 'gerenciamento', component: NavbarGerenciamentoComponent },
+      { path: 'users', component: NavbarGerenciamentoComponent },
+      { path: 'acervo', component: NavbarAcervoComponent },
+      { path: 'report', component: ReportsComponent },
 
       { path: 'catalog', component: CatalogInputFormComponent },
       { path: 'libraries/configure/:id', component: ConfiguraLibraryComponent },
@@ -46,7 +55,6 @@ const routes: Routes = [
       { path: 'tombo/:act', component: TomboComponent },
       { path: 'label', component: LabelTomboComponent },
       { path: 'selectLibrary', component: SelectLibraryComponent },
-      { path: 'report', component: ReportsComponent },
       { path: 'report/:act', component: ReportsComponent },
       { path: 'auth', component: UserAuthComponent },
       { path: 'users', component: UsersComponent },
@@ -62,6 +70,15 @@ const routes: Routes = [
           { path: '', component: RdfMainComponent },
           { path: 'form/:type/:group', component: RdfFormEditComponent },
           { path: 'view', component: RdfFormViewComponent },
+        ],
+      },
+
+      /******************* RDF Routes ******************* */
+      {
+        path: 'manual',
+        children: [
+          { path: '', component: ManualComponent },
+          { path: ':group', component: ManualComponent },
         ],
       },
     ],

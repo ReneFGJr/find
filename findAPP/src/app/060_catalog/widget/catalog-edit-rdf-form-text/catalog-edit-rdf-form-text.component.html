@@ -1,0 +1,29 @@
+<form [formGroup]="formAction" (ngSubmit)="save()">
+
+  <div class="mb-2">
+    <label class="fw-bold">
+      {{ data.Property }}
+    </label>
+  </div>
+
+  <textarea
+    class="form-control"
+    rows="5"
+    formControlName="caption">
+  </textarea>
+
+  <button
+    type="submit"
+    class="btn btn-outline-primary mt-2"
+    [disabled]="formAction.invalid">
+    Save
+  </button>
+
+  <button
+    type="button"
+    class="btn btn-outline-warning mt-2 ms-2"
+    (click)="cancel()">
+    Cancel
+  </button>
+
+</form>

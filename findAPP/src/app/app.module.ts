@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { VitrineComponent } from './020_find/page/vitrine/vitrine.component';
 import { FooterComponent } from './010_header/footer/footer.component';
 import { HeaderComponent } from './010_header/header/header.component';
@@ -78,6 +77,14 @@ import { ClassificationCDDComponent } from './020_find/widget/classification/cla
 import { ClassificationCDUComponent } from './020_find/widget/classification/classification-cdu/classification-cdu.component';
 import { ClassificationColorComponent } from './020_find/widget/classification/classification-color/classification-color.component';
 import { ClassificationCustomComponent } from './020_find/widget/classification/classification-custom/classification-custom.component';
+import { ManualComponent } from './900_manual/page/manual/manual.component';
+import { CatalogShowDataComponent } from './060_catalog/widget/catalog-show-data/catalog-show-data.component';
+import { CatalogEditRdfFormComponent } from './060_catalog/widget/catalog-edit-rdf-form/catalog-edit-rdf-form.component';
+import { CatalogEditRdfFormTextComponent } from './060_catalog/widget/catalog-edit-rdf-form-text/catalog-edit-rdf-form-text.component';
+import { CatalogEditRdfFormClassComponent } from './060_catalog/widget/catalog-edit-rdf-form-class/catalog-edit-rdf-form-class.component';
+import { NavbarAcervoComponent } from './010_header/navbar-acervo/navbar-acervo.component';
+import { NavbarUsuarioComponent } from './010_header/navbar-usuario/navbar-usuario.component';
+import { NavbarGerenciamentoComponent } from './010_header/navbar-gerenciamento/navbar-gerenciamento.component';
 
 @NgModule({
   declarations: [
@@ -153,12 +160,19 @@ import { ClassificationCustomComponent } from './020_find/widget/classification/
     ClassificationCDUComponent,
     ClassificationColorComponent,
     ClassificationCustomComponent,
+    ManualComponent,
+    CatalogShowDataComponent,
+    CatalogEditRdfFormComponent,
+    CatalogEditRdfFormTextComponent,
+    CatalogEditRdfFormClassComponent,
+    NavbarAcervoComponent,
+    NavbarUsuarioComponent,
+    NavbarGerenciamentoComponent,
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    NgbModule,
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,

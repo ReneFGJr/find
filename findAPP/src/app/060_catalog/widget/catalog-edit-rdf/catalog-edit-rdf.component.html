@@ -2,57 +2,57 @@
   <div class="row">
     <h1>RDF Editor</h1>
 
-    <table class="table table-bordered table-striped" *ngIf="data">
-      <thead>
-        <tr>
-          <th width="18%" class="text-end">Field</th>
-          <th width="2%" class="text-end">#</th>
-          <th width="80%">Value</th>
-        </tr>
-      </thead>
+<table
+  class="table table-bordered table-striped"
+  style="width: 100%"
+  *ngIf="data?.W?.length">
 
-      <!--------- Work -->
-      <tr>
-      <td class="text-end">Work:
+  <!-- Cabeçalho -->
+  <thead>
+    <tr>
+      <th colspan="4"
+          class="h4 text-center p-2"
+          style="background-color:#EEE">
+        Work Data
+      </th>
+    </tr>
+    <tr>
+      <th width="8%" class="text-end">Group</th>
+      <th width="8%" class="text-end">Field</th>
+      <th width="2%" class="text-end">#</th>
+      <th width="80%">Value</th>
+    </tr>
+  </thead>
+
+  <!-- Corpo -->
+  <tbody>
+    <tr *ngFor="let item of data.W">
+      <td class="text-end small">
+        {{ item.form_group }}
       </td>
-      <td>#</td>
-      <td colspan="1">
-        <h3>{{data?.Work[0]?.concept?.name}}</h3>
+      <td class="text-end small">
+        {{ item.c_class }}
       </td>
-      </tr>
+      <td class="text-center">
+        <i
+          class="bi bi-plus-circle-fill link text-primary small"
+          role="button"
+          title="Novo dado"
+          (click)="newData(item)">
+        </i>
 
+      </td>
+      <td class="text-start small">
+        <app-catalog-show-data
+          [data]="item.data" [range]="item.form_range"
+          (action)="sonEvent($event)">
+        </app-catalog-show-data>
+      </td>
+    </tr>
+  </tbody>
 
-      <ng-container *ngFor="let section of sections">
-        <thead *ngIf="data?.[section.key]">
-          <tr>
-            <th colspan="3" class="h3 text-center">{{ section.title }}</th>
-          </tr>
-        </thead>
+</table>
 
-        <tbody *ngIf="data?.[section.key]">
-          <tr *ngFor="let item of data[section.key]">
-            <td class="text-end small">{{ item.Caption }}</td>
-            <td>
-              <!-- Botão que abre o painel lateral -->
-              <i
-                class="bi bi-plus-circle-fill link text-primary"
-                data-bs-toggle="offcanvas"
-                data-bs-target="#editorRdfOffcanvas"
-              ></i>
-            </td>
-            <td>
-              {{ item | json }}
-              <span class="bold">{{ item.data.Caption | json }}</span>
-              <i *ngIf="item.Value" class="bi bi-trash text-danger"></i>
-            </td>
-          </tr>
-        </tbody>
-      </ng-container>
-    </table>
-  </div>
-</div>
-
-<!-- Offcanvas lateral -->
 <!-- Offcanvas lateral -->
 <div
   class="offcanvas offcanvas-end custom-offcanvas animate-slide"
@@ -70,6 +70,6 @@
     ></button>
   </div>
   <div class="offcanvas-body">
-    <app-editor-rdf-form></app-editor-rdf-form>
+    <app-catalog-edit-rdf-form [data]="editData" (action)="action($event)"></app-catalog-edit-rdf-form>
   </div>
 </div>

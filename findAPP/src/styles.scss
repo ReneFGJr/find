@@ -1,6 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
 /* You can add global styles to this file, and also import other style files */
-
+.rdfEdit
+  {
+    font-size: 1.2rem;
+    line-height: 1.6rem;
+    font-weight: bold;
+    color: #008;
+  }
+.rdfEdit:hover
+  {
+    color: #00F;
+    cursor: pointer;
+  }
 .work
 {
   font-family: 'Courier New', Courier, monospace;

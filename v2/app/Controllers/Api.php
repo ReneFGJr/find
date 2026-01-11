@@ -26,6 +26,16 @@ class Api extends BaseController
         }
 
         switch ($verb) {
+            case 'rdf':
+                $RDF = new \App\Models\FindServer\RDF();
+                $d4 = get("action");
+                $d5 = get("value");
+                $RSP = $RDF->index($d2, $d3, $d4, $d5, '');
+                break;
+            case 'manual':
+                $Manual = new \App\Models\Manual\ManualModel();
+                $RSP = $Manual->index($d2,$d3);
+                break;
             case 'form':
                 $Item = new \App\Models\Find\Items\Index();
                 $RSP = $Item->index($d2, $d3, $d4);
