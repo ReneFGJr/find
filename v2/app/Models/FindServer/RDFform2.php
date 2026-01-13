@@ -51,6 +51,48 @@ class RDFform2 extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+    function searchAPI(string $term, int $formID): array
+    {
+        $form = $this->find($formID);
+
+        if (!$form || empty($form['form_range'])) {
+            return [];
+        }
+
+        $class = json_decode($form['form_range'], true);
+        if (!is_array($class)) {
+            $class = [$class];
+        }
+
+        $terms = preg_split('/\s+/', trim($term));
+
+        $RDFconcept = new \App\Models\FindServer\RDFconcept();
+
+        $cp = 'id_cc as ID, c_class as Class, n_name as Label';
+
+        $RDFconcept
+            ->select($cp)
+            ->join('rdf_name', 'cc_pref_term = id_n')
+            ->join('rdf_class', 'id_c = cc_class')
+            ->whereIn('cc_class', $class)
+            ->groupStart();
+
+        foreach ($terms as $t) {
+            if (strlen($t) >= 2) {
+                $RDFconcept->Like('n_name', $t);
+            }
+        }
+
+        $RDFconcept->groupEnd();
+
+        $dt = $RDFconcept
+            ->orderBy('n_name', 'ASC')
+            ->findAll(20);
+
+        return $dt;
+    }
+
+
     function checkRegister($itemId)
     {
         $RDFItem = new \App\Models\Find\Items\Index();
@@ -148,7 +190,7 @@ class RDFform2 extends Model
             $property = $v['form_property'];
             foreach ($workData as $kk => $wd) {
                 if ($wd['IDClass'] == $property) {
-                    $WorkForm[$k]   ['data'][] = $wd;
+                    $WorkForm[$k]['data'][] = $wd;
                 }
             }
         }
@@ -175,7 +217,20 @@ class RDFform2 extends Model
         /******************** Recupera Item */
         $RDFItem = new \App\Models\Find\Items\Index();
         $RDFdata = new \App\Models\Find\Rdf\RDF();
+        if ($library == '') {
+            $RSP = [];
+            $RSP['status'] = '400';
+            $RSP['message'] = 'Library not informed.';
+            return $RSP;
+        }
+
         $dd = $RDFItem->where('id_i', $id)->where('i_library', $library)->first();
+        if ($dd == []) {
+            $RSP = [];
+            $RSP['status'] = '400';
+            $RSP['message'] = 'Item not found in the selected library.';
+            return $RSP;
+        }
         $workId = $dd['i_work'];
         $manId = $dd['i_manitestation'];
         $expId = $dd['i_expression'];
@@ -211,7 +266,7 @@ class RDFform2 extends Model
                         $RG .= $ClasseProperties[$rv]['c_class'];
                     }
                 }
-               $WorkForm[$k]['form_range'] =  $RG;
+                $WorkForm[$k]['form_range'] =  $RG;
             }
         }
 

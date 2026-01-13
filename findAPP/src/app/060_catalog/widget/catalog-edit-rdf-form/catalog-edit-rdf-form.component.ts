@@ -8,6 +8,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class CatalogEditRdfFormComponent {
   @Input() data: any;
+  @Input() ID:any
   @Output() action = new EventEmitter<string>();
 
   handleAction(event: any) {

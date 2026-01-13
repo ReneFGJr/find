@@ -44,14 +44,18 @@ class RDF extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    function index($d1, $d2, $d3, $d4, $cab) {
+    function index($d1, $d2, $d3, $d4, $cab)
+    {
         $RSP = [];
         $RSP['id'] = $d1;
         $RSP['d2'] = $d2;
         $RSP['d3'] = $d3;
         $RSP['d4'] = $d4;
 
-        switch($d3) {
+        switch ($d3) {
+            case 'form':
+                $RSP['post'] = $_POST;
+                break;
             case 'update':
                 $RDFliteral = new \App\Models\FindServer\RDFliteral();
                 $dd = [];

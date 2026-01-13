@@ -1,75 +1,57 @@
 <div class="container">
   <div class="row">
-    <h1>RDF Editor</h1>
+    <h1>RDF Editor <sup>v.2</sup></h1>
 
-<table
-  class="table table-bordered table-striped"
-  style="width: 100%"
-  *ngIf="data?.W?.length">
+    <table class="table table-bordered table-striped" style="width: 100%" *ngIf="data?.W?.length">
 
-  <!-- Cabeçalho -->
-  <thead>
-    <tr>
-      <th colspan="4"
-          class="h4 text-center p-2"
-          style="background-color:#EEE">
-        Work Data
-      </th>
-    </tr>
-    <tr>
-      <th width="8%" class="text-end">Group</th>
-      <th width="8%" class="text-end">Field</th>
-      <th width="2%" class="text-end">#</th>
-      <th width="80%">Value</th>
-    </tr>
-  </thead>
+      <!-- Cabeçalho -->
+      <thead>
+        <tr>
+          <th colspan="4" class="h4 text-center p-2" style="background-color:#EEE">
+            Work Data
+          </th>
+        </tr>
+        <tr>
+          <th width="8%" class="text-end">Group</th>
+          <th width="8%" class="text-end">Field</th>
+          <th width="2%" class="text-end">#</th>
+          <th width="80%">Value</th>
+        </tr>
+      </thead>
 
-  <!-- Corpo -->
-  <tbody>
-    <tr *ngFor="let item of data.W">
-      <td class="text-end small">
-        {{ item.form_group }}
-      </td>
-      <td class="text-end small">
-        {{ item.c_class }}
-      </td>
-      <td class="text-center">
-        <i
-          class="bi bi-plus-circle-fill link text-primary small"
-          role="button"
-          title="Novo dado"
-          (click)="newData(item)">
-        </i>
+      <!-- Corpo -->
+      <tbody>
+        <tr *ngFor="let item of data.W">
+          <td class="text-end small">
+            {{ item.form_group }}
+          </td>
+          <td class="text-end small">
+            {{ item.c_class }}
+          </td>
+          <td class="text-center">
+            <i class="bi bi-plus-circle-fill link text-primary small" role="button" title="Novo dado"
+              (click)="newData(item)">
+            </i>
 
-      </td>
-      <td class="text-start small">
-        <app-catalog-show-data
-          [data]="item.data" [range]="item.form_range"
-          (action)="sonEvent($event)">
-        </app-catalog-show-data>
-      </td>
-    </tr>
-  </tbody>
+          </td>
+          <td class="text-start small">
+            <app-catalog-show-data [data]="item.data" [range]="item.form_range" (action)="sonEvent($event)">
+            </app-catalog-show-data>
+          </td>
+        </tr>
+      </tbody>
 
-</table>
-
-<!-- Offcanvas lateral -->
-<div
-  class="offcanvas offcanvas-end custom-offcanvas animate-slide"
-  tabindex="-1"
-  id="editorRdfOffcanvas"
-  aria-labelledby="editorRdfLabel"
->
-  <div class="offcanvas-header">
-    <h5 id="editorRdfLabel">Editor RDF</h5>
-    <button
-      type="button"
-      class="btn-close text-reset"
-      data-bs-dismiss="offcanvas"
-      aria-label="Close"
-    ></button>
+    </table>
   </div>
-  <div class="offcanvas-body">
-    <app-catalog-edit-rdf-form [data]="editData" (action)="action($event)"></app-catalog-edit-rdf-form>
+
+  <!-- Offcanvas lateral -->
+  <div class="offcanvas offcanvas-end custom-offcanvas animate-slide" tabindex="-1" id="editorRdfOffcanvas"
+    aria-labelledby="editorRdfLabel">
+    <div class="offcanvas-header">
+      <h5 id="editorRdfLabel">Editor RDF - FIND</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <app-catalog-edit-rdf-form [data]="editData" [ID]="id" (action)="action($event)"></app-catalog-edit-rdf-form>
+    </div>
   </div>
-</div>

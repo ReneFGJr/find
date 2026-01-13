@@ -1,1 +1,24 @@
-<p>catalog-edit-rdf-form-class works!</p>
+<form [formGroup]="form">
+    <label class="form-label">
+        Classe RDF - {{ ID }}
+    </label>
+    {{ form.value | json }}
+
+    <small class="text-muted d-block mb-2">
+        Debug: {{ form.value | json }}
+    </small>
+
+    <input type="text" formControlName="classKey" class="form-control mb-2" placeholder="Classe RDF"
+        (keyup)="RDFEditSearch()" />
+
+    <input type="text" formControlName="selectID" class="form-control mb-2" />
+
+    <select formControlName="concept" class="form-select" size="6" (change)="onConceptChange()">
+        <option value="">Selecione</option>
+        <option *ngFor="let opt of options" [value]="opt.ID">
+            {{ opt.Label }} ({{ opt.Class }})
+        </option>
+    </select>
+
+    <button type="button" class="btn btn-primary mt-2" (click)="RDFsave()" [disabled]="form.invalid">Salvar</button>
+</form>

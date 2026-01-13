@@ -6,6 +6,7 @@
 </pre>
 
 <h1>=> {{ data?.type }}</h1>
+<h2>ID: {{ ID }}</h2>
 
 <!-- Form Text-->
 <app-catalog-edit-rdf-form-text *ngIf="data?.form_range == 'Text'"></app-catalog-edit-rdf-form-text>
@@ -13,9 +14,8 @@
 <!-- Form Text Editar-->
 <app-catalog-edit-rdf-form-text *ngIf="data?.type == 'Literal'" [data]="data" (action)="handleAction($event)"></app-catalog-edit-rdf-form-text>
 
-
-
 <!-- Form Classe-->
+<app-catalog-edit-rdf-form-class *ngIf="data?.type != 'Literal'" [ID]="ID" [data]="data" (action)="handleAction($event)"></app-catalog-edit-rdf-form-class>
 
 <!-- Form Image-->
 </div>

@@ -73,9 +73,19 @@ class Index extends Model
     function index($d1='',$d2='',$d3='')
         {
             $RSP = [];
-
             switch($d1)
                 {
+                    case 'search':
+                        $RDFform2 = new \App\Models\FindServer\RDFform2();
+                        $term = get("searchTerm");
+                        $formID = get("formID");
+                        $RSP['term'] = $term;
+                        $RSP['formID'] = $formID;
+                        $RSP['options'] = $RDFform2->searchAPI($term,$formID);
+                        break;
+                    case 'concept':
+                        $RSP['ppsot'] = $_POST;
+                        break;
                     case 'check':
                         $RDFform = new \App\Models\FindServer\RDFform2();
                         $RSP = $RDFform->checkRegister($d2);
