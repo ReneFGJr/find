@@ -59,23 +59,92 @@ class RDF extends Model
             case 'form':
                 $RSP['post'] = $_POST;
                 break;
+
             case 'saveRDFdata':
                 $RDFdata = new \App\Models\FindServer\RDFdata();
                 $RDFclass = new \App\Models\FindServer\RDFclass();
-                $Class = $RDFclass->getClass(get("propriety"));
+                $RDFform = new \App\Models\FindServer\RDFform2();
+                $RDFitem = new \App\Models\Find\Items\Index();
+
+                /*********************************** Item */
+                $itemID = get("itemID");
+                if ($itemID == '') {
+                    $RSP['message'] = 'Item ID is required';
+                    $RSP['status'] = '400';
+                    return $RSP;
+                }
+                $Item = $RDFitem->find($itemID);
+                if (!$Item) {
+                    $RSP['message'] = 'Item not found - '.$itemID;
+                    $RSP['status'] = '404';
+                    return $RSP;
+                }
+                /*********************************** Form */
+                $formID = get("formID");
+                if ($formID == '') {
+                    $RSP['message'] = 'Form ID is required';
+                    $RSP['status'] = '400';
+                    return $RSP;
+                }
+                $Form = $RDFform->find($formID);
+                if (!$Form) {
+                    $RSP['message'] = 'Form not found';
+                    $RSP['status'] = '404';
+                    return $RSP;
+                }
+                /*********************************** Propriety */
+                $property = get("propriety");
+                if ($property == '') {
+                    $RSP['message'] = 'Propriety is required - '.$property;
+                    $RSP['status'] = '400';
+                    return $RSP;
+                }
+                $Class = $RDFclass->getClass($property);
+                if ($Class == null) {
+                    $RSP['message'] = 'Propriety not found - '.$property;
+                    $RSP['status'] = '404';
+                    return $RSP;
+                }
                 $IDclass = $Class['id_c'];
                 if ($IDclass == '') {
                     $RSP['message'] = 'Propriety not found';
                     $RSP['status'] = '400';
                     return $RSP;
                 }
+                /*********************************** Concept */
+                switch($Form["form_frbr"]) {
+                    case 'W':
+                        $conceptID = $Item['i_work'];
+                        break;
+                    case 'E':
+                        $conceptID = $Item['i_expression'];
+                        break;
+                    case 'M':
+                        $conceptID = $Item['i_manitestation'];
+                        break;
+                    default:
+                        $RSP['message'] = 'Form group not identified - '. $Form["form_frbr"];
+                        $RSP['status'] = '400';
+                        return $RSP;
+                }
                 $dt = [];
-                $dt['d_r1'] = get("conceptID");
+                $dt['d_r1'] = $conceptID;
                 $dt['d_p'] = $IDclass;
                 $dt['d_r2'] = get("selectID");
                 $dt['d_literal'] = 0;
                 $dt['d_library'] = get("library") ?? '1000';
                 $dt['d_user'] = $user;
+                /******************************** Checa Entrada */
+                if ($dt['d_r1'] == '' || $dt['d_p'] == '') {
+                    $RSP['message'] = 'Required data is missing R1 or P';
+                    $RSP['status'] = '400';
+                    return $RSP;
+                }
+                if ($dt['d_r2'] == '0' && $dt['d_literal'] == '0') {
+                    $RSP['message'] = 'Required data is missing R2 or Literal';
+                    $RSP['status'] = '400';
+                    return $RSP;
+                }
 
                 /****************** Verifica se não existe antes de inserir */
                 $RDFdata->where('d_r1', $dt['d_r1']);

@@ -13,6 +13,10 @@ export class CatalogEditRdfFormClassComponent {
   @Input() ID: any
   @Output() action = new EventEmitter<any>();
 
+  message: string = '';
+  message_class = '';
+  rsp : any;
+
   options: any = [];
   form = new FormGroup({
     classKey: new FormControl(''),
@@ -33,29 +37,31 @@ export class CatalogEditRdfFormClassComponent {
     this.form.patchValue({
       selectID: value
     });
+
+    this.rsp = [{ message: 'Conceito alterado para ' + value, status: '200' }];
   }
 
 
   RDFsave(): void {
     let dt2 = this.form.value;
     let dt = {
-      conceptID: this.form.value.conceptID,
+      itemID: this.form.value.conceptID,
       selectID: this.form.value.selectID,
       action: 'saveRDFdata',
+      formID: this.data.id_form,
       propriety: this.data.c_class,
-    }
-
-    console.log('➡️ Enviando para API:', dt);
-
+    };
+    /******************************** Save */
     this.findService
       .api_post('rdf/concept/data', dt)
       .subscribe({
         next: (response: any) => {
-          console.log('🔎 Dados inseridos:', response);
+          this.rsp = response;
         },
         error: (err) => {
           console.error('❌ Erro na inserção RDF', err);
           this.options = [];
+          this.rsp = err;
         }
       });
   }

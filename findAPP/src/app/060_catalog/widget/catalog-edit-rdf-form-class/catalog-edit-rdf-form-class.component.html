@@ -8,6 +8,8 @@
         Debug: {{ form.value | json }}
     </small>
 
+    XX<app-messages [messages]="rsp?.message" [type]='rsp?.status'></app-messages>{{rsp | json}}XX
+
     <input type="text" formControlName="classKey" class="form-control mb-2" placeholder="Classe RDF"
         (keyup)="RDFEditSearch()" />
 

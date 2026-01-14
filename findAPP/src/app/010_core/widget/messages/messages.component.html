@@ -3,7 +3,11 @@
   [ngClass]="{
     'alert-success': type === 'success',
     'alert-danger': type === 'error',
-    'alert-info': type === 'info'
+    'alert-info': type === 'info',
+    '200': type === 'success',
+    '400': type === 'error',
+    '404': type === 'error',
+
   }"
   *ngIf="messages && messages.length"
   role="alert"
@@ -24,3 +28,6 @@
   <!-- Botão fechar -->
   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
+
+
+{{messages}} = {{type}}
