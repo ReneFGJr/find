@@ -271,32 +271,15 @@ class RDFform2 extends Model
         }
 
         $workData = $RDFdata->getData($workId);
+        //pre($workData);
         $FORM = [];
         $FORM['W'] = $this->combine($WorkForm, $workData);
+
+        $FORM['workID'] = $workId;
+        $FORM['manID'] = $manId;
+        $FORM['expID'] = $expId;
+
         return $FORM;
-
-        $DTdata = $RDFdata->getData($id);
-        pre($DTdata);
-        $cp = 'form_frbr, form_frbr as GROUP, form_group as SUBGROUP, c_class as PROPERTY, form_property as PROPERTY_ID, form_order as ORDER';
-        $cp = '*';
-        $form = $this
-            ->select($cp)
-            ->join('rdf_class as c', 'c.id_c = form_property', 'left')
-            ->join('rdf_data', '(rdf_data.d_p = form_property) and (rdf_data.d_r1 = ' . $id . ' or rdf_data.d_r2 = ' . $id . ')', 'left')
-            ->join('rdf_name', 'd_literal = id_n', 'left')
-            ->orderby('form_group, form_order')
-            ->findAll();
-        echo $this->getlastquery();
-        pre($form);
-        $Item = new \App\Models\Find\Items\Index();
-        $DtiTEM = $Item->getPubItem($id);
-
-        $RDFdata = new \App\Models\FindServer\RDFdata();
-        $DTdata = $RDFdata->le($id);
-        pre($DTdata);
-        $RSP = [];
-        $RDFclass = new \App\Models\FindServer\RDFclass();
-        pre($id);
     }
 
     function property_save($type, $library)

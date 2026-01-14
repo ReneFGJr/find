@@ -66,6 +66,7 @@ export class CatalogEditRdfComponent {
       ) // ✅ retorna observable
       .subscribe((res) => {
         this.data = res;
+        console.log('Dados carregados:', this.data);
       });
   }
 }

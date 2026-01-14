@@ -37,6 +37,27 @@ export class CatalogEditRdfFormClassComponent {
 
 
   RDFsave(): void {
+    let dt2 = this.form.value;
+    let dt = {
+      conceptID: this.form.value.conceptID,
+      selectID: this.form.value.selectID,
+      action: 'saveRDFdata',
+      propriety: this.data.c_class,
+    }
+
+    console.log('➡️ Enviando para API:', dt);
+
+    this.findService
+      .api_post('rdf/concept/data', dt)
+      .subscribe({
+        next: (response: any) => {
+          console.log('🔎 Dados inseridos:', response);
+        },
+        error: (err) => {
+          console.error('❌ Erro na inserção RDF', err);
+          this.options = [];
+        }
+      });
   }
 
   RDFEditSearch(): void {
