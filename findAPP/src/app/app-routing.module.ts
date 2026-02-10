@@ -23,6 +23,7 @@ import { RdfFormViewComponent } from './010_core/rdf/rdf-form-view/rdf-form-view
 import { ManualComponent } from './900_manual/page/manual/manual.component';
 import { NavbarGerenciamentoComponent } from './010_header/navbar-gerenciamento/navbar-gerenciamento.component';
 import { NavbarAcervoComponent } from './010_header/navbar-acervo/navbar-acervo.component';
+import { IndiceComponent } from './060_catalog/page/indice/indice.component';
 
 const routes: Routes = [
   //  { path: 'catalog', component: CatalogComponent },
@@ -32,6 +33,9 @@ const routes: Routes = [
       { path: '', component: VitrineComponent },
       { path: 'home', component: SelectLibraryComponent },
       { path: 'tombo', component: TomboComponent },
+      { path: 'indices', component: IndiceComponent },
+      { path: 'indices/:type', component: IndiceComponent },
+
 
       // Navigation Links Edits
       { path: 'gerenciamento', component: NavbarGerenciamentoComponent },

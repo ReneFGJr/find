@@ -1,0 +1,27 @@
+<div class="indice-container">
+
+  <div *ngFor="let letter of letters" class="indice-group">
+
+    <div class="indice-letter">
+      {{ letter }}
+    </div>
+
+    <ul class="indice-list">
+      <li
+        *ngFor="let item of indexData[letter]"
+        (click)="onSelect(item)"
+        class="indice-item"
+      >
+        <span class="name">
+          {{ item.n_name }}
+        </span>
+
+        <span class="badge">
+          {{ item.total }}
+        </span>
+      </li>
+    </ul>
+
+  </div>
+
+</div>

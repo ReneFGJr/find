@@ -36,6 +36,8 @@ export class FindService {
       formData.append(key, dt[key]);
     }
 
+    console.log("URL",url);
+
     return this.HttpClient.post<Array<any>>(url, formData).pipe(
       (res) => res,
       (error) => error

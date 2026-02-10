@@ -26,6 +26,11 @@ class Api extends BaseController
         }
 
         switch ($verb) {
+            case 'indices':
+                $Indices = new \App\Models\Find\Indexes\Index();
+                $library = get("library");                
+                $RSP = $Indices->index($d2, $library);
+                break;
             case 'rdf':
                 $RDF = new \App\Models\FindServer\RDF();
                 $d4 = get("action");

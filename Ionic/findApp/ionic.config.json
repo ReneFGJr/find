@@ -1,0 +1,7 @@
+{
+  "name": "findApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { FindService } from '../../../010_core/service/find.service';
 
 @Component({
   selector: 'app-book-label',
@@ -12,8 +13,13 @@ export class BookLabelComponent {
   @Input() editMode: boolean = false;
   show: boolean = false;
   formLabel: FormGroup;
+  msg: string = ''
+  rsp: any = [];
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private findService: FindService
+  ) {
     this.formLabel = this.fb.group({
       ln1: [''],
       ln2: [''],
@@ -21,9 +27,32 @@ export class BookLabelComponent {
     });
   }
 
-  onSubmit() {
-    const dt = this.formLabel.value;
-    console.log(dt);
+  onChange() {
+    let dt = { 
+      tomboID: this.data?.data?.tomboID,
+      library: this.data?.data?.library, 
+      ln1: this.formLabel.value.ln1,
+      ln2: this.formLabel.value.ln2,
+      ln3: this.formLabel.value.ln3
+    };
+
+    this.findService
+      .api_post('catalog/label/update', dt)
+      .subscribe(
+        (res) => {
+          this.rsp = res;
+          this.msg = this.rsp?.msg;
+
+          // ⏱ limpa a mensagem após 5 segundos
+          setTimeout(() => {
+            this.msg = '';
+          }, 5000);          
+        },
+        (error) => {
+          console.error('Error updating label', error);
+        }
+      );    
+
   }
 
   ngOnChanges(): void {

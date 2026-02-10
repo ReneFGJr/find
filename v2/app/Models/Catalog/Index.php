@@ -46,6 +46,30 @@ class Index extends Model
         $RSP['msg'] = 'OK';
 
         switch($d1) {
+            case 'label':
+                switch($d2)
+                    {
+                        case 'update':
+                            $Item = new \App\Models\Find\Items\Index();
+                            $DT = $Item->where('i_tombo', get('tomboID'))->where('i_library', get('library'))->first();
+                            if ($DT) {
+                                $data = [];
+                                $data['i_ln1'] = get('ln1');
+                                $data['i_ln2'] = get('ln2');
+                                $data['i_ln3'] = get('ln3');
+                                $Item->set($data)->where('i_tombo', get('tomboID'))->where('i_library', get('library'))->update();
+                                $RSP['query'] = $Item->getLastQuery();
+                            }
+                            $RSP['data'] = $DT;
+                            $RSP['status'] = '200';
+                            $RSP['msg'] = 'Label atualizado com sucesso';
+                            break;
+                        default:
+                            $RSP['status'] = '240';
+                            $RSP['msg'] = 'Label atualizado com sucesso';
+                            break;
+                    }
+                    break;
             case 'status':
                 $Index = new \App\Models\Find\Indexes\Index();
                 $RSP = $Index->getStatus();

@@ -105,12 +105,12 @@ class Index extends Model
 
         $logo = $dt['Logo'];
         if ($logo == '') {
-            $logo = '/assets/icons/icone_library.png';
+            $logo = base_url('/assets/icons/icone_library.png');
         } else {
             if (file_exists(FCPATH . '/assets/images/' . $logo)) {
                 $logo = base_url('assets/images/' . $logo);
             } else {
-                $logo = '/assets/icons/icone_library.png';
+                $logo = base_url('/assets/icons/icone_library.png');
             }
         }
         $dt['Logo'] = $logo;

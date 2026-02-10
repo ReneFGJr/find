@@ -85,6 +85,11 @@ import { CatalogEditRdfFormClassComponent } from './060_catalog/widget/catalog-e
 import { NavbarAcervoComponent } from './010_header/navbar-acervo/navbar-acervo.component';
 import { NavbarUsuarioComponent } from './010_header/navbar-usuario/navbar-usuario.component';
 import { NavbarGerenciamentoComponent } from './010_header/navbar-gerenciamento/navbar-gerenciamento.component';
+import { IndiceComponent } from './060_catalog/page/indice/indice.component';
+import { IndexTitleComponent } from './060_catalog/page/indice/index-title/index-title.component';
+import { IndexYearComponent } from './060_catalog/page/indice/index-year/index-year.component';
+import { IndexSubjectComponent } from './060_catalog/page/indice/index-subject/index-subject.component';
+import { IndexAuthorComponent } from './060_catalog/page/indice/index-author/index-author.component';
 
 @NgModule({
   declarations: [
@@ -168,6 +173,11 @@ import { NavbarGerenciamentoComponent } from './010_header/navbar-gerenciamento/
     NavbarAcervoComponent,
     NavbarUsuarioComponent,
     NavbarGerenciamentoComponent,
+    IndiceComponent,
+    IndexTitleComponent,
+    IndexYearComponent,
+    IndexSubjectComponent,
+    IndexAuthorComponent,
   ],
   imports: [
     BrowserModule,
