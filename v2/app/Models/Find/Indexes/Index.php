@@ -48,13 +48,22 @@ class Index extends Model
             'data' => []
         ];
 
+        $Class = new \App\Models\FindServer\RDFclass();
+        $Data  = new \App\Models\FindServer\RDFdata();
+        $Item = new \App\Models\Find\Items\Index();
+
         switch ($type) {
+            case 'title':
+                $data = $Item
+                    ->select('i_titulo as n_name, min(id_i) as id_cc, 1 as total')
+                    ->where('i_library', $lib)
+                    ->where('i_titulo !=', '')
+                    ->groupby('i_titulo')
+                    ->orderby('i_titulo', 'ASC')
+                    ->findAll();
+                break;
 
             case 'author':
-
-                $Class = new \App\Models\FindServer\RDFclass();
-                $Data  = new \App\Models\FindServer\RDFdata();
-
                 $prop = $Class->getClass('hasAuthor');
                 $IDprop = $prop['id_c'];
 
@@ -68,41 +77,54 @@ class Index extends Model
                     ->groupBy('id_cc, n_name')
                     ->orderBy('n_name', 'ASC')
                     ->findAll();
-
-                $grouped = [];
-
-                foreach ($data as $d) {
-                    $name = $d['n_name'];
-
-                    // normaliza letra (acentos)
-                    $letter = mb_strtoupper(
-                        mb_substr(
-                            iconv('UTF-8', 'ASCII//TRANSLIT', $name),
-                            0,
-                            1
-                        )
-                    );
-
-                    $grouped[$letter][] = $d;
-                }
-
-                ksort($grouped);
-
-                $RSP['data'] = $grouped;
                 break;
 
             default:
-                return $this->response
-                    ->setStatusCode(404)
-                    ->setJSON([
-                        'status' => 404,
-                        'message' => 'Índice não encontrado'
-                    ]);
+                echo json_encode([
+                    'status' => 404,
+                    'message' => 'Índice não encontrado',
+                    'index' => $type
+                ]);
+                exit;
         }
-            header('Content-Type: application/json');
-            echo json_encode($RSP);
-            exit;
 
+
+
+        $grouped = [];
+
+        foreach ($data as $d) {
+            $name = $d['n_name'];
+
+            // normaliza letra (acentos)
+            $letter = mb_strtoupper(
+                mb_substr(
+                    iconv('UTF-8', 'ASCII//TRANSLIT', ascii($name)),
+                    0,
+                    1
+                )
+            );
+
+            $grouped[$letter][] = $d;
+        }
+
+        ksort($grouped);
+        $Index = [];
+
+        foreach ($grouped as $letter => $items) {
+            $dt = [];
+            $dt['letter'] = $letter;
+            usort($items, function ($a, $b) {
+                return strcmp($a['n_name'], $b['n_name']);
+            });
+            $dt['items'] = $items;
+            $Index[] = $dt;
+        }
+
+        $RSP['data'] = $Index;
+
+        header('Content-Type: application/json');
+        echo json_encode($RSP);
+        exit;
     }
 
 

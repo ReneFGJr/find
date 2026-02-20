@@ -16,8 +16,8 @@ export class FindService {
   ) {}
 
   //private url: string = 'http://find/v2/api/';
-  private url: string = 'http://find/api/';
-  //private url: string = 'https://www.ufrgs.br/find/v2/api/';
+  //private url: string = 'http://find/api/';
+  private url: string = 'https://www.ufrgs.br/find/v2/api/';
 
   public api_post(
     type: string,

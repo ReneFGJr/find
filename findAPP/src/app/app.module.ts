@@ -90,6 +90,10 @@ import { IndexTitleComponent } from './060_catalog/page/indice/index-title/index
 import { IndexYearComponent } from './060_catalog/page/indice/index-year/index-year.component';
 import { IndexSubjectComponent } from './060_catalog/page/indice/index-subject/index-subject.component';
 import { IndexAuthorComponent } from './060_catalog/page/indice/index-author/index-author.component';
+import { IndexVComponent } from './080_rdf_view/index-v/index-v.component';
+import { VPersonComponent } from './080_rdf_view/index_v/v-person/v-person.component';
+import { VGenericComponent } from './080_rdf_view/index_v/v-generic/v-generic.component';
+import { VPublisherComponent } from './080_rdf_view/index_v/v-publisher/v-publisher.component';
 
 @NgModule({
   declarations: [
@@ -178,6 +182,10 @@ import { IndexAuthorComponent } from './060_catalog/page/indice/index-author/ind
     IndexYearComponent,
     IndexSubjectComponent,
     IndexAuthorComponent,
+    IndexVComponent,
+    VPersonComponent,
+    VGenericComponent,
+    VPublisherComponent,
   ],
   imports: [
     BrowserModule,

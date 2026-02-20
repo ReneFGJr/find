@@ -1,0 +1,51 @@
+.alphabet-tabs {
+  width: 100%;
+}
+
+/* Barra de Letras */
+.tab-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 6px;
+  margin-bottom: 12px;
+}
+
+.tab-letter {
+  padding: 4px 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  color: #374151;
+}
+
+.tab-letter:hover {
+  background: #e5e7eb;
+}
+
+.tab-letter.active {
+  background: #1e3a8a;
+  color: white;
+}
+
+/* Conteúdo */
+.tab-content {
+  width: 100%;
+}
+
+/* Linhas Compactas */
+.work-line {
+  padding: 4px 6px;
+  font-size: 0.95rem;
+  line-height: 1.2;
+  border-bottom: 1px solid #f3f4f6;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.work-line:hover {
+  background: #f9fafb;
+}

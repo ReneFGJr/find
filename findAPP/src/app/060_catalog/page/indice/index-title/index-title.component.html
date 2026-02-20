@@ -1,1 +1,35 @@
-<p>index-title works!</p>
+<div class="alphabet-tabs container">
+<h2>Índice por Título</h2>
+
+  <!-- Barra de Letras -->
+  <div class="tab-bar">
+    <div
+      class="tab-letter"
+      *ngFor="let item of indexData?.data"
+      [class.active]="activeLetter === item.letter"
+      (click)="setActiveLetter(item.letter)"
+    >
+      {{ item.letter }}
+    </div>
+  </div>
+
+  <!-- Conteúdo -->
+  <div class="tab-content">
+
+    <ng-container *ngFor="let item of indexData?.data">
+      <div *ngIf="activeLetter === item.letter">
+
+        <div
+          class="work-line"
+          *ngFor="let subItem of item.items"
+          (click)="onSelect(subItem.id_cc)"
+        >
+          {{ subItem.n_name }}
+        </div>
+
+      </div>
+    </ng-container>
+
+  </div>
+
+</div>

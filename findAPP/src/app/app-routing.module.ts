@@ -24,6 +24,7 @@ import { ManualComponent } from './900_manual/page/manual/manual.component';
 import { NavbarGerenciamentoComponent } from './010_header/navbar-gerenciamento/navbar-gerenciamento.component';
 import { NavbarAcervoComponent } from './010_header/navbar-acervo/navbar-acervo.component';
 import { IndiceComponent } from './060_catalog/page/indice/indice.component';
+import { IndexVComponent } from './080_rdf_view/index-v/index-v.component';
 
 const routes: Routes = [
   //  { path: 'catalog', component: CatalogComponent },
@@ -35,7 +36,7 @@ const routes: Routes = [
       { path: 'tombo', component: TomboComponent },
       { path: 'indices', component: IndiceComponent },
       { path: 'indices/:type', component: IndiceComponent },
-
+      { path: 'v/:id', component: IndexVComponent },
 
       // Navigation Links Edits
       { path: 'gerenciamento', component: NavbarGerenciamentoComponent },
