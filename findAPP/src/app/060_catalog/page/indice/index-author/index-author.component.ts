@@ -15,7 +15,6 @@ export class IndexAuthorComponent {
   onSelect(item: any) {
     // aqui você decide o que fazer:
     // navegar, emitir evento, abrir modal etc.
-    alert(item);
     this.router.navigate(['/v/', item]);
   }
 }

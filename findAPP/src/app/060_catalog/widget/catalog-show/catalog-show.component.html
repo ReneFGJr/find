@@ -1,0 +1,44 @@
+
+
+<div class="container mt-5">
+  <!--- Waiting -->
+  <app-waiting *ngIf="isLoading" [isLoading]="isLoading"></app-waiting>
+
+  <!-- Form Vitrine-->
+  <div class="row" *ngIf="books?.length && !isLoading">
+    <div class="col-12">
+      <h3 class="mt-2 mb-4">Livros</h3>
+    </div>
+    <div
+      class="col-md-6 col-6 col-sm-6 col-lg-3 col-xl-2 text-center p-4"
+      *ngFor="let item of books"
+      (click)="openBookDetails(item)"
+    >
+      <img [src]="item.cover" class="img-fluid cover mb-3" />
+      <br />
+      <span class="t5 text-center p-0 m-0" style="line-height: 0.4">
+        {{ item.title }}
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- Off-canvas -->
+<div
+  class="slide-panel-backdrop"
+  *ngIf="selectedBook"
+  (click)="closeBookDetails()"
+></div>
+
+<div class="slide-panel" *ngIf="selectedBook">
+  <button class="btn-close" (click)="closeBookDetails()">X</button>
+  <div class="p-4 overflow-auto h-100">
+    <div class="container p-4">
+      <app-view-book
+        [isbn]="isbn"
+        [libraryID]="libraryID"
+        (Action)="closeBookDetails()"
+      ></app-view-book>
+    </div>
+  </div>
+</div>

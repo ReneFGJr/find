@@ -34,6 +34,7 @@ export class BookViewComponent {
   ngOnChanges() {
     console.log('ngChage', this.isbn);
     this.libraryID = localStorage.getItem('library') || '';
+
     if (this.libraryID == '') {
       this.route.navigate(['/selectLibrary']);
     } else {

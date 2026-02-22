@@ -1,0 +1,30 @@
+<!-- Ícone para mostrar/ocultar -->
+<div class="mt-3">
+
+  <button
+    class="btn btn-sm btn-outline-secondary"
+    (click)="showDetails = !showDetails">
+
+    <i
+      class="bi"
+      [ngClass]="showDetails ? 'bi-eye-slash' : 'bi-eye'">
+    </i>
+
+    {{ showDetails ? 'Ocultar dados técnicos' : 'Mostrar dados técnicos' }}
+
+  </button>
+
+  <!-- Dados adicionais -->
+  <div
+    class="additional-data mt-3"
+    *ngIf="showDetails">
+
+    <div class="card bg-light border-0 p-3">
+      <pre class="mb-0 small">
+{{ book | json }}
+      </pre>
+    </div>
+
+  </div>
+
+</div>

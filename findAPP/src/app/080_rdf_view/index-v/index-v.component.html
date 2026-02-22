@@ -1,12 +1,23 @@
 <div class="container">
-<div class="row">
-<app-v-person class="col-12" *ngIf="data?.concept?.Class === 'person'" [data]="data"></app-v-person>
+  <div class="row">
+    <app-v-person
+      class="col-12"
+      *ngIf="data?.concept?.Class === 'person'"
+      [data]="data"
+    ></app-v-person>
 
-{{data?.concept?.Class}} = [{{ISBN}}]
-<app-view-book class="col-12" *ngIf="data?.concept?.Class === 'Work'" [isbn]="ISBN" [libraryID]="libraryID"></app-view-book>
-<pre>
-{{data | json}}
-</pre>
-<app-v-person class="col-12" *ngIf="data?.concept?.Class != 'person'" [data]="data"></app-v-person>
-</div>
+    {{ data?.concept?.Class }} = [{{ ISBN }}]
+    <app-view-book
+      class="col-12"
+      *ngIf="data?.concept?.Class === 'Work'"
+      [isbn]="ISBN"
+      [libraryID]="libraryID"
+    ></app-view-book>
+
+    <app-v-person
+      class="col-12"
+      *ngIf="data?.concept?.Class != 'person'"
+      [data]="data"
+    ></app-v-person>
+  </div>
 </div>

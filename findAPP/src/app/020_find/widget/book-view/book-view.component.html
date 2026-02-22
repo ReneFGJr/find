@@ -33,10 +33,10 @@
           <!-- Authors-->
           <p>
             <strong>Editora: </strong>
-            <a href="#" class="link bold"
+            <a [routerLink]="['/v/'+book.ID]" class="link bold"
               ><span *ngFor="let editora of book.meta?.Publisher">{{
                 editora.name
-              }}</span></a
+              }} </span> </a
             >.
           </p>
           <p>
@@ -54,12 +54,22 @@
           </p>
         </div>
       </div>
+
       <div class="manifestation-about mt-3">
         <p class="mt-3 book-abstract">
           <strong>Descrição: </strong>
           <span *ngFor="let t of book.meta?.description">{{ t.name }}</span>
         </p>
       </div>
+
+      <!-- Subject -->
+      <div class="manifestation-about mt-3">
+        <p class="mt-3 book-abstract">
+          <app-subject-view [subject]="book?.meta?.Subject"></app-subject-view>
+        </p>
+      </div>
+
+
       <!-- Classificação -->
       <div class="item mt-3">
         <app-classification-cdd
@@ -72,6 +82,8 @@
           [data]="book?.meta?.CDD"
         ></app-classification-custom>
       </div>
+
+
 
       <!-- Item -->
       <div class="items">
@@ -89,11 +101,7 @@
         </table>
 
         <!-- Dados adicionais   -->
-        <div class="additional-data mt-3">
-          <pre>
-          {{ book | json }}
-          </pre>
-      </div>
+        <app-xml-view [book]="book"></app-xml-view>
     </div>
   </div>
 </div>

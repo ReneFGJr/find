@@ -1,0 +1,18 @@
+<div class="card shadow-sm border-0 " *ngIf="subject?.length > 0">
+
+  <div class="d-flex align-items-start flex-wrap gap-1">
+
+    <strong style="line-height: 0.9">Assuntos:</strong>
+    <br>
+
+    <a
+      *ngFor="let s of subject"
+      class="link text-black"
+      [routerLink]="['/v', s.ID]"
+    >
+      {{ s.name }} -
+    </a>
+
+  </div>
+
+</div>

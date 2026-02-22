@@ -127,6 +127,39 @@ class Index extends Model
             return $RSP;
         }
 
+    function check()
+        {
+            $RDFclass = new \App\Models\FindServer\RDFclass();
+            $RDFdata = new \App\Models\FindServer\RDFdata();
+            $Class = $RDFclass->getClass('isAppellationOfManifestation');
+            if ($Class != []) {
+                $Class = $Class['id_c'];
+            } else {
+                echo "OPS - Classe não encontrada";
+                exit;
+            }
+            $dt = $this
+                ->where('i_work', 0)
+                ->where('i_manitestation >', 0)
+                ->FindAll(1000);
+
+            foreach($dt as $id=>$line)
+                {
+                    $dti = $RDFdata
+                        ->select('d2.d_r1 as W, rdf_data.d_r1 as E, rdf_data.d_r2 as M')
+                        ->join('rdf_data as d2', 'd2.d_r2 = rdf_data.d_r1', 'left')
+                        ->where('rdf_data.d_p', $Class)
+                        ->where('rdf_data.d_r2', $line['i_manitestation'])
+                        ->first();
+
+                    $DD = [];
+                    $DD['i_work'] = $dti['W'];
+                    $DD['i_expression'] = $dti['E'];
+                    $this->set($DD)->where('id_i', $line['id_i'])->update();
+                }
+            return ["Total" => count($dt) . " itens"];
+        }
+
     function addItem($ISBN,$LIBRARY)
     {
         if (($ISBN=='') or ($LIBRARY=='')) {

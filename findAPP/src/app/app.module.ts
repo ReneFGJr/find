@@ -94,6 +94,9 @@ import { IndexVComponent } from './080_rdf_view/index-v/index-v.component';
 import { VPersonComponent } from './080_rdf_view/index_v/v-person/v-person.component';
 import { VGenericComponent } from './080_rdf_view/index_v/v-generic/v-generic.component';
 import { VPublisherComponent } from './080_rdf_view/index_v/v-publisher/v-publisher.component';
+import { CatalogShowComponent } from './060_catalog/widget/catalog-show/catalog-show.component';
+import { SubjectViewComponent } from './020_find/widget/subject/subject-view/subject-view.component';
+import { XmlViewComponent } from './020_find/widget/xml/xml-view/xml-view.component';
 
 @NgModule({
   declarations: [
@@ -186,6 +189,9 @@ import { VPublisherComponent } from './080_rdf_view/index_v/v-publisher/v-publis
     VPersonComponent,
     VGenericComponent,
     VPublisherComponent,
+    CatalogShowComponent,
+    SubjectViewComponent,
+    XmlViewComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,1 +1,30 @@
-<p>index-subject works!</p>
+<div class="container">
+  <div class="row" *ngIf="indexData?.data?.length">
+
+    <div
+      class="col-lg-3 col-md-6 mb-4"
+      *ngFor="let item of indexData.data"
+    >
+      <div class="index-column">
+
+        <div class="index-letter">
+          {{ item.letter }}
+        </div>
+
+        <ul class="index-list">
+          <li *ngFor="let subitem of item.items">
+            <a
+              href="javascript:void(0)"
+              class="index-link"
+              (click)="onSelect(subitem.id_cc)"
+            >
+              {{ subitem.n_name }}
+            </a>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+
+  </div>
+</div>

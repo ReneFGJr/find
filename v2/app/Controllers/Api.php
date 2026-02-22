@@ -28,7 +28,7 @@ class Api extends BaseController
         switch ($verb) {
             case 'indices':
                 $Indices = new \App\Models\Find\Indexes\Index();
-                $library = get("library");                
+                $library = get("library");
                 $RSP = $Indices->index($d2, $library);
                 break;
             case 'rdf':
@@ -44,6 +44,10 @@ class Api extends BaseController
             case 'form':
                 $Item = new \App\Models\Find\Items\Index();
                 $RSP = $Item->index($d2, $d3, $d4);
+                break;
+            case 'check':
+                $Item = new \App\Models\Find\Items\Index();
+                $RSP = $Item->check();
                 break;
             case 'catalog':
                 $Catalog = new \App\Models\Catalog\Index();

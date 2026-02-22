@@ -42,6 +42,9 @@ class RDF extends Model
     function index($d1, $d2, $d3, $d4, $cab) {}
 
     function le($id) {
+        $library = get("library");
+        $ItemModel = new \App\Models\Find\Items\Index();
+
         $RSP = [];
         $RSP['id'] = $id;
 
@@ -53,6 +56,60 @@ class RDF extends Model
             ->first() ;
         $RSP['concept'] = $dt;
         $RSP['data'] = $this->getData($id);
+
+        $Class = $RSP['concept']['Class'];
+        $IT = [];
+        switch ($Class)
+            {
+                case 'Subject':
+                    foreach ($RSP['data'] as $id => $line) {
+                        if ($line['Property'] == 'hasSubject') {
+                            $IT[] = $line['ID'];
+                        }
+                    }
+                    $TT = $ItemModel
+                            ->select('i_work')
+                            ->wherein('i_manitestation', $IT)
+                            ->where('i_library', $library)
+                            ->groupby('i_work')
+                            ->findAll();
+                    $IT = [];
+                    foreach($TT as $id=>$line)
+                        {
+                            $IT[] = $line['i_work'];
+                        }
+                break;
+                case 'Person':
+                    foreach($RSP['data'] as $id=>$line)
+                        {
+                            if ($line['Property'] == 'hasAuthor')
+                                {
+                                    $IT[] = $line['ID'];
+                                }
+                        }
+                    break;
+            }
+        $cp = 'i_titulo as title, i_work as ID, i_identifier as isbn, i_library, "" as cover, count(*) as exemplares';
+        $RSP['items'] = [];
+        if (count($IT) == 0) { return $RSP; }
+
+        $Covers = new \App\Models\Find\Cover\Index();
+
+        $Items = $ItemModel
+            ->select($cp)
+            ->whereIn('i_work', $IT)
+            ->where('i_library',$library)
+            ->groupby('i_work, i_library')
+            ->orderBy('i_titulo')
+            ->findAll();
+
+        foreach($Items as $id=>$line)
+            {
+                $cover = $Covers->cover($line['isbn']);
+                $Items[$id]['cover'] = $cover;
+            }
+        $RSP['items'] = $Items;
+
         return $RSP;
     }
 

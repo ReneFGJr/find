@@ -63,6 +63,19 @@ class Index extends Model
                     ->findAll();
                 break;
 
+            case 'subject':
+                $data = $Data
+                    ->select('n_name, id_cc, COUNT(*) as total')
+                    ->join('find_item', 'd_r1 = id_i')
+                    ->join('rdf_concept', 'd_r2 = id_cc')
+                    ->join('rdf_name', 'cc_pref_term = id_n')
+                    ->where('d_p', $Class->getClass('hasSubject')['id_c'])
+                    ->where('i_library', $lib)
+                    ->groupBy('id_cc, n_name')
+                    ->orderBy('n_name', 'ASC')
+                    ->findAll();
+                break;
+
             case 'author':
                 $prop = $Class->getClass('hasAuthor');
                 $IDprop = $prop['id_c'];

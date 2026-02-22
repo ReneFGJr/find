@@ -1,7 +1,7 @@
-<!-- Use ng-container ou div para *ngIf -->
-<ng-container *ngIf="data && type === 'author'">
-  <!-- Coloque o li dentro de uma ul -->
-  <a href="#" class="me-3 link italic" *ngFor="let item of data">
-    {{ item.name }}
-  </a>
-</ng-container>
+<ul *ngIf="data && type === 'author'">
+  <li *ngFor="let item of data">
+    <a [routerLink]="['/v', item.ID]" class="link bold">
+      {{ item.name }}
+    </a>
+  </li>
+</ul>

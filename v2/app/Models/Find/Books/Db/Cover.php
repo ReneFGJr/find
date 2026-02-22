@@ -43,7 +43,6 @@ class Cover extends Model
 
     function saveDataCover($isbn, $data)
     {
-
         $RSP = [];
         $dir = substr($isbn, 0, 3) . '/' . substr($isbn, 3, 4) . '/' . substr($isbn, 7, 3) . '/' . substr($isbn, 10, 3);
         $dir = '_repository/book/' . $dir;

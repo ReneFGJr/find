@@ -82,7 +82,7 @@ class Index extends Model
                     array_push($RSP['Publisher'], $value);
                     break;
                 case 'isPlaceOfPublication':
-                    array_push($RSP['Publisher'], $value);
+                    array_push($RSP['PublisherPlace'], $value);
                     break;
                 case 'hasColorclassification':
                     array_push($RSP['ColorClassification'], $value);
