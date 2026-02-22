@@ -32,7 +32,6 @@ export class BookViewComponent {
   goBook(id: string, library: string) {}
 
   ngOnChanges() {
-    console.log('ngChage', this.isbn);
     this.libraryID = localStorage.getItem('library') || '';
 
     if (this.libraryID == '') {

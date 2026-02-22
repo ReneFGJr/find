@@ -43,6 +43,7 @@ class Index extends Model
     function metadata($dt, $RSP = [])
     {
         $fld = ['Title','Authors', 'Publisher',
+            'PublisherPlace',
             'Place', 'CDD', 'CDU', 'Subject',
             'Langage','Page',
             'ColorClassification',

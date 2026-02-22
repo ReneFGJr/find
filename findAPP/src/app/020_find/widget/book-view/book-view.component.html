@@ -30,14 +30,42 @@
       <div class="manifestation">
         <div class="book-meta mt-3">
           <p><strong>ISBN:</strong> {{ book.isbn }}</p>
-          <!-- Authors-->
+
+          <!-- Editora-->
           <p>
             <strong>Editora: </strong>
-            <a [routerLink]="['/v/'+book.ID]" class="link bold"
-              ><span *ngFor="let editora of book.meta?.Publisher">{{
-                editora.name
-              }} </span> </a
-            >.
+
+            <a [routerLink]="['/v/' + book.ID]" class="link bold" (onclick)="closeBookDetails()">
+              <!-- Editoras -->
+              <ng-container *ngIf="book.meta?.Publisher?.length > 0">
+                <ng-container
+                  *ngFor="let editora of book.meta.Publisher; let last = last"
+                >
+                  {{ editora.name }}<span *ngIf="!last">, </span>
+                </ng-container>
+              </ng-container>
+
+              <!-- Caso não exista editora -->
+              <ng-container *ngIf="!book.meta?.Publisher?.length">
+                [s.n.]
+              </ng-container>:
+
+              <!-- Locais -->
+              <ng-container
+                *ngIf="book.meta?.PublisherPlace?.length > 0; else semLocal"
+              >
+                <ng-container
+                  *ngFor="
+                    let place of book.meta.PublisherPlace;
+                    let last = last
+                  "
+                >
+                  {{ place.name }}<span *ngIf="!last">, </span>
+                </ng-container>
+              </ng-container>
+
+              <ng-template #semLocal> [s.l.] </ng-template>.
+            </a>
           </p>
           <p>
             <strong>Ano: </strong>
@@ -69,7 +97,6 @@
         </p>
       </div>
 
-
       <!-- Classificação -->
       <div class="item mt-3">
         <app-classification-cdd
@@ -82,8 +109,6 @@
           [data]="book?.meta?.CDD"
         ></app-classification-custom>
       </div>
-
-
 
       <!-- Item -->
       <div class="items">
@@ -102,6 +127,7 @@
 
         <!-- Dados adicionais   -->
         <app-xml-view [book]="book"></app-xml-view>
+      </div>
     </div>
   </div>
 </div>
