@@ -3,164 +3,135 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
-use App\Models\User\User;
+use App\Models\Social\Social;
 
 class AuthController extends BaseController
 {
     public function index()
     {
-        //
-    }
-
-    public function resetPassword($token)
-    {
-        $model = new User();
-        $user = $model->where('us_oauth2', $token)->first();
-
-        if (!$user) {
-            return redirect()->to('/login')->with('msg', 'Token inválido ou expirado.');
-        }
-        $sx = view('headers/header');
-        $sx .= view('widgets/logo_find');
-        $sx .= view('Users/reset_password', ['token' => $token]);
-        return $sx;
-    }
-
-    public function updatePassword()
-    {
-        $model = new User();
-        $token = $this->request->getVar('token');
-        $newPassword = $this->request->getVar('us_password');
-
-        $user = $model->where('us_oauth2', $token)->first();
-
-        if (!$user) {
-            return redirect()->to('/login')->with('msg', 'Token inválido ou expirado.');
-        }
-
-        $model->update($user['id_us'], [
-            'us_password' => password_hash($newPassword, PASSWORD_DEFAULT),
-            'us_oauth2' => null // Invalida o token após o uso
-        ]);
-
-        return redirect()->to('/login')->with('msg', 'Senha redefinida com sucesso!');
+        return redirect()->to('/login');
     }
 
     public function login()
     {
-        helper(['form']);
-        $sx = view('headers/header');
-        $sx .= view('widgets/logo_find');
-        $sx .= view('Users/login');
-        return $sx;
+        helper(['form', 'url']);
+        return view('Users/login');
     }
 
     public function forgotPassword()
     {
-        helper(['form']);
-        $sx = view('headers/header');
-        $sx .= view('widgets/logo_find');
-        $sx .= view('Users/forgot_password');
-        return $sx;
+        helper(['form', 'url']);
+        return view('Users/forgot_password');
     }
 
     public function sendPasswordReset()
     {
-        $model = new User();
-        $us_email = $this->request->getVar('us_email');
-        $user = $model->where('us_email', $us_email)->first();
+        $model = new Social();
+        $email = trim((string) $this->request->getVar('us_email'));
 
-        if ($user) {
-            // Gerar um hash único para redefinição
-            $token = bin2hex(random_bytes(16));
-            $model->update($user['id_us'], ['us_oauth2' => $token]);
-
-            // Criar o link de redefinição
-            $resetLink = base_url("/reset-password/$token");
-            echo $resetLink;
-            exit;
-
-            // Enviar e-mail ao usuário
-            $email = \Config\Services::email();
-
-            $email->setFrom('no-reply@seusite.com', 'Seu Sistema');
-            $email->setTo($us_email);
-            $email->setSubject('Redefinição de Senha');
-            $email->setMessage("
-            <p>Olá, {$user['us_nome']}</p>
-            <p>Recebemos uma solicitação para redefinir sua senha. Clique no link abaixo para redefini-la:</p>
-            <p><a href='{$resetLink}'>{$resetLink}</a></p>
-            <p>Se você não solicitou a redefinição, ignore este e-mail.</p>
-        ");
-
-            if ($email->send()) {
-                return redirect()->to('/login')->with('msg', 'Um link de redefinição foi enviado para o seu e-mail.');
-            } else {
-                return redirect()->back()->with('msg', 'Não foi possível enviar o e-mail. Tente novamente.');
-            }
-        } else {
-            return redirect()->back()->with('msg', 'E-mail não encontrado.');
+        if ($email === '') {
+            return redirect()->back()->with('msg', 'Informe seu e-mail.')->with('msg_type', 'warning');
         }
+
+        $result = $model->forgot($email);
+
+        if (($result['status'] ?? '500') === '200') {
+            return redirect()->to('/forgot-password')->with('msg', 'Se o e-mail estiver cadastrado, a mensagem de recuperação foi enviada.')->with('msg_type', 'success');
+        }
+
+        return redirect()->back()->with('msg', $result['message'] ?? 'Não foi possível processar o pedido.')->with('msg_type', 'warning');
+    }
+
+    public function resetPassword($token)
+    {
+        $model = new Social();
+        $user = $model->where('us_apikey', $token)->first();
+
+        if (!$user) {
+            return redirect()->to('/login')->with('msg', 'Link inválido ou expirado.')->with('msg_type', 'danger');
+        }
+
+        return view('Users/reset_password', ['token' => $token]);
+    }
+
+    public function updatePassword()
+    {
+        $model = new Social();
+        $token = (string) $this->request->getVar('token');
+        $newPassword = (string) $this->request->getVar('us_password');
+        $confirmPassword = (string) $this->request->getVar('confirm_password');
+
+        if ($newPassword === '' || $newPassword !== $confirmPassword) {
+            return redirect()->back()->with('msg', 'As senhas não coincidem.')->with('msg_type', 'warning');
+        }
+
+        $user = $model->where('us_apikey', $token)->first();
+
+        if (!$user) {
+            return redirect()->to('/login')->with('msg', 'Link inválido ou expirado.')->with('msg_type', 'danger');
+        }
+
+        $model->update($user['id_us'], [
+            'us_password' => md5($newPassword),
+            'us_apikey' => md5(($user['us_nome'] ?? 'find') . date('Ymd-His')),
+        ]);
+
+        return redirect()->to('/login')->with('msg', 'Senha redefinida com sucesso!')->with('msg_type', 'success');
     }
 
     public function register()
     {
-        helper(['form']);
-        $sx = view('headers/header');
-        $sx .= view('widgets/logo_find');
-        $sx .= view('Users/register');
-        return $sx;
+        helper(['form', 'url']);
+        return view('Users/register');
     }
 
     public function storeUser()
     {
-        $model = new User();
+        $model = new Social();
 
-        $data = [
+        $result = $model->registerUser([
             'us_nome' => $this->request->getVar('us_nome'),
             'us_email' => $this->request->getVar('us_email'),
             'us_login' => $this->request->getVar('us_login'),
-            'us_password' => password_hash($this->request->getVar('us_password'), PASSWORD_DEFAULT),
-        ];
+            'us_password' => $this->request->getVar('us_password'),
+        ]);
 
-        $model->insert($data);
-        return redirect()->to('/login')->with('msg', 'Cadastro realizado com sucesso.');
+        if (($result['status'] ?? '500') !== '200') {
+            return redirect()->back()->withInput()->with('msg', $result['message'] ?? 'Não foi possível cadastrar.')->with('msg_type', 'warning');
+        }
+
+        return redirect()->to('/login')->with('msg', 'Cadastro realizado com sucesso.')->with('msg_type', 'success');
     }
 
     public function authenticate()
     {
         $session = session();
-        $model = new User();
+        $model = new Social();
 
-        $us_login = $this->request->getVar('us_login');
-        $us_password = $this->request->getVar('us_password');
+        $login = trim((string) $this->request->getVar('us_login'));
+        $password = (string) $this->request->getVar('us_password');
 
-        $user = $model->where('us_login', $us_login)->first();
+        $user = $model->authenticateUser($login, $password);
 
-        if ($user) {
-            if (password_verify($us_password, $user['us_password'])) {
-                $sessionData = [
-                    'id_us' => $user['id_us'],
-                    'us_nome' => $user['us_nome'],
-                    'us_nickname' => $user['us_nickname'],
-                    'logged_in' => true
-                ];
-                $session->set($sessionData);
-                return redirect()->to('/dashboard');
-            } else {
-                $session->setFlashdata('msg', 'Senha incorreta.');
-                return redirect()->to('/login');
-            }
-        } else {
-            $session->setFlashdata('msg', 'Usuário não encontrado.');
-            return redirect()->to('/login');
+        if (!$user) {
+            return redirect()->to('/login')->withInput()->with('msg', 'Usuário ou senha inválida.')->with('msg_type', 'danger');
         }
+
+        $session->set([
+            'id_us' => $user['id_us'] ?? null,
+            'us_nome' => $user['us_nome'] ?? '',
+            'first_name' => $model->firstName($user['us_nome'] ?? ''),
+            'us_email' => $user['us_email'] ?? '',
+            'apikey' => $user['us_apikey'] ?? '',
+            'logged_in' => true,
+        ]);
+
+        return redirect()->to('/')->with('msg', 'Login realizado com sucesso.')->with('msg_type', 'success');
     }
 
     public function logout()
     {
-        $session = session();
-        $session->destroy();
-        return redirect()->to('/login');
+        session()->destroy();
+        return redirect()->to('/')->with('msg', 'Sessão encerrada.')->with('msg_type', 'info');
     }
 }
