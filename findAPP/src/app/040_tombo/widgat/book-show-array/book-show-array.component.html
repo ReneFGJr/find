@@ -1,7 +1,0 @@
-<ul *ngIf="data && type === 'author'">
-  <li *ngFor="let item of data">
-    <a [routerLink]="['/v', item.ID]" class="link bold">
-      {{ item.name }}
-    </a>
-  </li>
-</ul>
