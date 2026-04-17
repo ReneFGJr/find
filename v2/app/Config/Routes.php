@@ -45,6 +45,9 @@ $routes->post('/send-password-reset', 'AuthController::sendPasswordReset');
 $routes->get('/reset-password/(:any)', 'AuthController::resetPassword/$1');
 $routes->post('/update-password', 'AuthController::updatePassword');
 $routes->get('/logout', 'AuthController::logout');
+$routes->get('/bibliotecas', 'LibraryController::bibliotecas');
+$routes->post('/bibliotecas/select', 'LibraryController::select');
+$routes->get('/library', 'LibraryController::library');
 
 $routes->get('/api/', 'Api::index');
 $routes->get('/api', 'Api::index');

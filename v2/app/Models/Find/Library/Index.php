@@ -95,27 +95,77 @@ class Index extends Model
         return $RSP;
     }
 
-    function le($id)
+    public function logoUrl(array $library): string
     {
-        $cp = 'l_name as Library, l_code as ID, l_logo as Logo';
-        $dt = $this
-            ->select($cp)
-            ->where('l_id', $id)
-            ->first();
+        $code = trim((string) ($library['l_code'] ?? ''));
+        $customLogo = trim((string) ($library['l_logo'] ?? ''));
 
-        $logo = $dt['Logo'];
-        if ($logo == '') {
-            $logo = base_url('/assets/icons/icone_library.png');
-        } else {
-            if (file_exists(FCPATH . '/assets/images/' . $logo)) {
-                $logo = base_url('assets/images/' . $logo);
-            } else {
-                $logo = base_url('/assets/icons/icone_library.png');
+        $candidates = [];
+
+        if ($customLogo !== '') {
+            $candidates[] = ['file' => FCPATH . 'img/logo/' . $customLogo, 'url' => base_url('img/logo/' . $customLogo)];
+            $candidates[] = ['file' => FCPATH . 'img/' . $customLogo, 'url' => base_url('img/' . $customLogo)];
+        }
+
+        if ($code !== '') {
+            $candidates[] = ['file' => FCPATH . 'img/logo/logo_' . $code . '.png', 'url' => base_url('img/logo/logo_' . $code . '.png')];
+            $candidates[] = ['file' => FCPATH . 'img/logo/logo_' . $code . '.jpg', 'url' => base_url('img/logo/logo_' . $code . '.jpg')];
+            $candidates[] = ['file' => FCPATH . 'img/logo/logo_' . $code . '.jpeg', 'url' => base_url('img/logo/logo_' . $code . '.jpeg')];
+        }
+
+        $candidates[] = ['file' => FCPATH . 'img/logo/no_logo.png', 'url' => base_url('img/logo/no_logo.png')];
+        $candidates[] = ['file' => FCPATH . 'img/logo_library.png', 'url' => base_url('img/logo_library.png')];
+
+        foreach ($candidates as $candidate) {
+            if (is_file($candidate['file'])) {
+                return $candidate['url'];
             }
         }
-        $dt['Logo'] = $logo;
 
-        return $dt;
+        return base_url('img/logo_find.png');
+    }
+
+    public function normalizeLibrary(array $line): array
+    {
+        return [
+            'id' => $line['id_l'] ?? null,
+            'name' => $line['l_name'] ?? ($line['Library'] ?? 'Biblioteca'),
+            'code' => $line['l_code'] ?? ($line['ID'] ?? ''),
+            'logo' => $this->logoUrl($line),
+            'about' => trim((string) ($line['l_about'] ?? '')),
+        ];
+    }
+
+    public function getSelectedLibrary(string $value): ?array
+    {
+        $value = trim($value);
+        if ($value === '') {
+            return null;
+        }
+
+        $dt = $this->groupStart()
+            ->where('l_code', $value)
+            ->orWhere('id_l', $value)
+            ->groupEnd()
+            ->first();
+
+        return is_array($dt) ? $this->normalizeLibrary($dt) : null;
+    }
+
+    function le($id)
+    {
+        $dt = $this->where('l_id', $id)->first();
+
+        if (!is_array($dt)) {
+            return [];
+        }
+
+        $lib = $this->normalizeLibrary($dt);
+        return [
+            'Library' => $lib['name'],
+            'ID' => $lib['code'],
+            'Logo' => $lib['logo'],
+        ];
     }
 
     function listAll()
@@ -123,20 +173,13 @@ class Index extends Model
         $dt = $this
             ->orderBy('l_name')
             ->where('l_visible', 1)
-            ->orderby('l_name')
             ->findAll();
-        $LIBS = [];
-        $url = base_url();
-        $url = str_replace('v2/public', '', $url);
-        foreach ($dt as $id => $line) {
-            $lib = [];
-            $code = $line['l_code'];
-            $lib['name'] = $line['l_name'];
-            $lib['code'] = $code;
-            $lib['logo'] = $url . '/img/logo/logo_' . $line['l_code'] . '.jpg';
-            $lib['about'] = $line['l_about'];
-            array_push($LIBS, $lib);
+
+        $libs = [];
+        foreach ($dt as $line) {
+            $libs[] = $this->normalizeLibrary($line);
         }
-        return $LIBS;
+
+        return $libs;
     }
 }

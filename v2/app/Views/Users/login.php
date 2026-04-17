@@ -38,7 +38,7 @@
 
         <div class="col-lg-5">
             <div class="hero-section p-4 p-lg-5 h-100">
-                <img src="<?= base_url('img/logo/logo_find_big.png'); ?>" alt="FIND" class="hero-logo mb-3">
+                <img src="<?= base_url('public/img/logo/logo_find_big.png'); ?>" alt="FIND" class="hero-logo mb-3">
                 <h2 class="h4 fw-bold">Acesso rápido ao ecossistema FIND</h2>
                 <p class="text-secondary mb-0">Entre para pesquisar, organizar e acompanhar seus recursos dentro da plataforma.</p>
             </div>

@@ -4,10 +4,17 @@
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="<?= base_url('/'); ?>">
-            <img src="<?= base_url('img/logo/logo_find.png'); ?>" alt="FIND" height="36">
-            <span class="fw-semibold">FIND</span>
-        </a>
+        <div class="d-flex align-items-center gap-3">
+            <a class="navbar-brand d-flex align-items-center gap-2 mb-0" href="<?= base_url('/'); ?>">
+                <img src="<?= base_url('img/logo_find.png'); ?>" alt="FIND" height="36">
+                <span class="fw-semibold">FIND</span>
+            </a>
+
+            <a class="btn btn-outline-light btn-sm rounded-pill d-none d-lg-inline-flex align-items-center gap-2" href="<?= base_url('/bibliotecas'); ?>">
+                <i class="bi bi-buildings"></i>
+                <span>Bibliotecas</span>
+            </a>
+        </div>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#findNavbar" aria-controls="findNavbar" aria-expanded="false" aria-label="Alternar navegação">
             <span class="navbar-toggler-icon"></span>
@@ -16,6 +23,7 @@
         <div class="collapse navbar-collapse" id="findNavbar">
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
                 <li class="nav-item"><a class="nav-link active" href="<?= base_url('/'); ?>">Início</a></li>
+                <li class="nav-item d-lg-none"><a class="nav-link" href="<?= base_url('/bibliotecas'); ?>"><i class="bi bi-buildings me-1"></i> Bibliotecas</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('/'); ?>#recursos">Recursos</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('/'); ?>#parceiros">Parceiros</a></li>
 

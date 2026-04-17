@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="col-lg-5 text-center">
-                <img src="<?= base_url('img/logo/logo_find_big.png'); ?>" alt="Logo FIND" class="hero-logo img-fluid">
+                <img src="<?= base_url('public/img/logo/logo_find_big.png'); ?>" alt="Logo FIND" class="hero-logo img-fluid">
             </div>
         </div>
     </section>
@@ -64,10 +64,10 @@
         </div>
 
         <div class="row g-3">
-            <div class="col-6 col-md-3"><div class="logo-card"><img src="<?= base_url('img/logo/logo_find_big.png'); ?>" alt="FIND"></div></div>
-            <div class="col-6 col-md-3"><div class="logo-card"><img src="<?= base_url('img/logo/logo_bn.png'); ?>" alt="BN"></div></div>
-            <div class="col-6 col-md-3"><div class="logo-card"><img src="<?= base_url('img/logo/logo_lc.png'); ?>" alt="LC"></div></div>
-            <div class="col-6 col-md-3"><div class="logo-card"><img src="<?= base_url('img/logo/logo_google.png'); ?>" alt="Google Books"></div></div>
+            <div class="col-6 col-md-3"><div class="logo-card"><img src="<?= base_url('public/img/logo/logo_find_big.png'); ?>" alt="FIND"></div></div>
+            <div class="col-6 col-md-3"><div class="logo-card"><img src="<?= base_url('public/img/logo/logo_bn.png'); ?>" alt="BN"></div></div>
+            <div class="col-6 col-md-3"><div class="logo-card"><img src="<?= base_url('public/img/logo/logo_lc.png'); ?>" alt="LC"></div></div>
+            <div class="col-6 col-md-3"><div class="logo-card"><img src="<?= base_url('public/img/logo/logo_google.png'); ?>" alt="Google Books"></div></div>
         </div>
     </section>
 </main>
