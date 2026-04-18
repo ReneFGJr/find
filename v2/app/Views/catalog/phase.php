@@ -1,4 +1,6 @@
 <?php include(APPPATH . 'Views/layout/header.php'); ?>
+<?php include(APPPATH . 'Views/layout/navbar.php'); ?>
+<?php include(APPPATH.'Views/components/catalog_breadcrumbs.php'); ?>
 <div class="container py-4">
     <h2 class="mb-4"><i class="bi bi-list-check me-2"></i>Obras para Catalogar - Status: <?= htmlspecialchars($status) ?></h2>
     <?php if (session('msg')): ?>
@@ -26,7 +28,19 @@
                             <td><?= htmlspecialchars($obra['i_exemplar'] ?? '') ?></td>
                             <td><?= htmlspecialchars($obra['i_created'] ?? '') ?></td>
                             <td>
-                                <a href="/catalog/catalogar/isbn?isbn=<?= urlencode($obra['i_identifier'] ?? '') ?>&tombo=<?= urlencode($obra['i_tombo'] ?? '') ?>" class="btn btn-sm btn-outline-success mb-1" title="Continuar"><i class="bi bi-arrow-right-circle"></i></a>
+                                <?php
+                                switch($obra['i_status'] ?? '') {
+                                    case 1:
+                                        $url = base_url('/catalog/catalogar/metadadoSearch/'.urlencode($obra['id_i'] ?? ''));
+                                    break;
+                                        case 2: $badgeClass = 'bg-info'; break;
+                                        case 3: $badgeClass = 'bg-warning'; break;
+                                        case 4: $badgeClass = 'bg-primary'; break;
+                                    default:
+                                        $url = base_url('/catalog/catalogar/no_action/'.urlencode($obra['id_i'] ?? ''));
+                                }
+                                ?>
+                                <a href="<?= $url;?>" class="btn btn-sm btn-outline-success mb-1" title="Continuar"><i class="bi bi-arrow-right-circle"></i></a>
                                 <?php if (isset($obra['i_status']) && $obra['i_status'] < 5): ?>
                                     <button type="button" class="btn btn-sm btn-outline-danger" title="Excluir" onclick="excluirExemplar(<?= (int)$obra['id_i'] ?>, this)"><i class="bi bi-trash"></i></button>
                                 <?php endif; ?>

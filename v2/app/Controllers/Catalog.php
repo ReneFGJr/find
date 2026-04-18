@@ -21,31 +21,58 @@ class Catalog extends BaseController
         if (!$library) {
             $library = get_cookie('library_code') ?? get_cookie('library') ?? '';
         }
-        $resumo = [];
+        $statusResumo = [];
         if ($library) {
             $resumo = $itemModel->select('i_status, COUNT(*) as qtd')
                 ->where('i_library', $library)
                 ->groupBy('i_status')
                 ->findAll();
-        }
-        $statusList = $statusModel->findAll();
-        $statusNames = [];
-        foreach ($statusList as $status) {
-            $statusNames[$status['id_is']] = $status['is_name'];
-        }
-        $resumoArr = [];
-        foreach ($resumo as $row) {
-            $nome = $statusNames[$row['i_status']] ?? 'Status #' . $row['i_status'];
-            $resumoArr[$nome] = $row['qtd'];
+            $statusList = $statusModel->findAll();
+            $statusNames = [];
+            foreach ($statusList as $status) {
+                $statusNames[$status['id_is']] = $status['is_name'];
+            }
+            foreach ($resumo as $row) {
+                $nome = $statusNames[$row['i_status']] ?? 'Status #' . $row['i_status'];
+                $statusResumo[] = [
+                    'id' => $row['i_status'],
+                    'status' => $nome,
+                    'qtd' => $row['qtd']
+                ];
+            }
         }
         return view('catalog/index', [
-            'resumo' => $resumoArr,
+            'statusResumo' => $statusResumo,
             'library' => $library
         ]);
     }
     public function catalogar()
     {
         return view('catalog/catalogar');
+    }
+
+    public function metadadoSearch($IdItem = null)
+    {
+        $resultados = null;
+        $busca = $this->request->getGet('busca');
+        $itemInfo = null;
+        if ($IdItem) {
+            $itemModel = new ItemModel();
+            $itemInfo = $itemModel->find($IdItem);
+        }
+        if ($busca) {
+            // Exemplo: simulação de busca, substitua por consulta real
+            $resultados = [
+                ['titulo' => 'Livro Exemplo 1', 'autor' => 'Autor A', 'isbn' => '1234567890123'],
+                ['titulo' => 'Livro Exemplo 2', 'autor' => 'Autor B', 'isbn' => '9876543210987']
+            ];
+        }
+        return view('catalog/metadadoSearch', [
+            'resultados' => $resultados,
+            'itemInfo' => $itemInfo,
+            'idItem' => $IdItem,
+            'busca' => $busca
+        ]);
     }
 
     public function catalogar_phase($status = null)

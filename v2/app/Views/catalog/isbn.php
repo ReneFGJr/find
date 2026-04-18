@@ -1,3 +1,6 @@
+<?php include(APPPATH.'Views/layout/header.php'); ?>
+<?php include(APPPATH.'Views/layout/navbar.php'); ?>
+<?php include(APPPATH.'Views/components/catalog_breadcrumbs.php'); ?>
 <?php
 include(APPPATH.'Views/layout/header.php'); ?>
 <div class="container py-4">
