@@ -18,7 +18,8 @@ class UserGroupMember extends Model
         'id_grm',
         'grm_group',
         'grm_user',
-        'grm_library'
+        'grm_library',
+        'grm_status'
     ];
 
     // Dates
@@ -67,5 +68,15 @@ class UserGroupMember extends Model
             $RSP['message'] = 'Usuário adicionado ao grupo com sucesso';
         }
         return $RSP;
+    }
+
+    function disableMember($id_grm)
+    {
+        $row = $this->find($id_grm);
+        if (!$row) {
+            return ['status' => '404', 'message' => 'Registro não encontrado'];
+        }
+        $this->update($id_grm, ['grm_status' => 0]);
+        return ['status' => '200', 'message' => 'Papel desabilitado com sucesso'];
     }
 }

@@ -82,7 +82,7 @@ class UserGroup extends Model
         $cp = 'gr_name, id_grm, grm_user, us_nome, us_nickname, id_us, id_gr';
         $dt = $this
         ->select($cp)
-        ->join('users_group_members', 'grm_group = id_gr AND grm_library = \''.$library.'\'', 'left')
+        ->join('users_group_members', 'grm_group = id_gr AND grm_library = \''.$library.'\' AND (grm_status = 1 OR grm_status IS NULL)', 'left')
         ->join('users', 'id_us = grm_user', 'left')
         ->groupBy($cp)
         ->orderBy('gr_name, us_nome', 'ASC')

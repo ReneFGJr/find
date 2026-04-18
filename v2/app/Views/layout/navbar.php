@@ -25,8 +25,22 @@
                 <li class="nav-item d-lg-none"><a class="nav-link" href="<?= base_url('/bibliotecas'); ?>"><i class="bi bi-buildings me-1"></i> Bibliotecas</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('/'); ?>#recursos">Recursos</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('/'); ?>#parceiros">Parceiros</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Sobre
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="<?= base_url('/about'); ?>"><i class="bi bi-info-circle me-2"></i>Sobre o FIND</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('/contact'); ?>"><i class="bi bi-envelope me-2"></i>Contato</a></li>
+                    </ul>
+                </li>
 
                 <?php if ($isLoggedIn): ?>
+                    <li class="nav-item ms-lg-2">
+                        <a class="nav-link" href="<?= base_url('/admin/configuration'); ?>" title="Configurações">
+                            <i class="bi bi-gear"></i>
+                        </a>
+                    </li>
                     <li class="nav-item dropdown ms-lg-3">
                         <a class="nav-link dropdown-toggle nav-user-pill" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person-circle me-1"></i>

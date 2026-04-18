@@ -50,6 +50,17 @@ $routes->post('/bibliotecas/select', 'LibraryController::select');
 $routes->get('/library', 'LibraryController::library');
 $routes->get('/item/(:num)', 'LibraryController::item/$1');
 
+$routes->get('/admin/configuration', 'AdminController::configuration');
+$routes->get('/admin/roles', 'AdminController::roles');
+$routes->post('/admin/roles/add-member', 'AdminController::addMember');
+$routes->post('/admin/roles/disable-member', 'AdminController::disableMember');
+$routes->get('/admin/users/search', 'AdminController::searchUsers');
+$routes->get('/admin/places', 'AdminController::places');
+$routes->post('/admin/places/create', 'AdminController::createPlace');
+$routes->post('/admin/places/update-name', 'AdminController::updatePlaceName');
+$routes->get('/admin/library', 'AdminController::library');
+$routes->post('/admin/library/save', 'AdminController::saveLibrary');
+
 $routes->get('/api/', 'Api::index');
 $routes->get('/api', 'Api::index');
 
