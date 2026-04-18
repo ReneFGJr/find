@@ -6,6 +6,55 @@ use App\Controllers\BaseController;
 
 class AdminController extends BaseController
 {
+    public function uploadLogo()
+    {
+        helper(['url', 'cookie', 'form']);
+
+        if (!session()->get('logged_in')) {
+            return $this->response->setJSON(['status' => '401', 'message' => 'Não autorizado']);
+        }
+
+        $cookieCode = $this->getLibraryCode();
+        if (!$cookieCode) {
+            return $this->response->setJSON(['status' => '400', 'message' => 'Biblioteca não selecionada']);
+        }
+
+        $libModel = new \App\Models\Find\Library\Index();
+        $raw = $libModel
+            ->groupStart()
+                ->where('l_code', $cookieCode)
+                ->orWhere('id_l', $cookieCode)
+            ->groupEnd()
+            ->first();
+
+        if (!$raw) {
+            return $this->response->setJSON(['status' => '404', 'message' => 'Biblioteca não encontrada']);
+        }
+
+        $id = $raw['id_l'];
+
+        $file = $this->request->getFile('logo');
+        if (!$file || !$file->isValid()) {
+            return $this->response->setJSON(['status' => '400', 'message' => 'Arquivo inválido.']);
+        }
+
+        $ext = strtolower($file->getExtension());
+        if (!in_array($ext, ['jpg', 'jpeg', 'png'])) {
+            return $this->response->setJSON(['status' => '400', 'message' => 'Apenas JPG ou PNG são permitidos.']);
+        }
+
+        $newName = 'logo_' . $raw['l_code'] . '.' . $ext;
+        $path = FCPATH . 'img/logo/';
+        if (!is_dir($path)) {
+            mkdir($path, 0775, true);
+        }
+        $file->move($path, $newName, true);
+
+        $libModel->update($id, ['l_logo' => $newName]);
+
+        return $this->response->setJSON(['status' => '200', 'message' => 'Logotipo atualizado com sucesso.', 'logo' => base_url('img/logo/' . $newName)]);
+    }
+
     public function logo()
     {
         helper(['url', 'cookie']);
