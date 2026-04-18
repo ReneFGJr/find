@@ -69,6 +69,17 @@
             border-radius: 1.25rem;
             box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
         }
+
+        .form-control, .form-select {
+            border: 1px solid #000;
+            background-color: #F8F8F8;
+            transition: background-color .2s, border-color .2s;
+        }
+        .form-control:focus, .form-select:focus {
+            background-color: #FFFFFF;
+            border-color: #000;
+            box-shadow: 0 0 0 .15rem rgba(0, 0, 0, .15);
+        }
     </style>
 </head>
 <body>

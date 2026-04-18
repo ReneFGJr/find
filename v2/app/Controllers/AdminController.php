@@ -6,6 +6,26 @@ use App\Controllers\BaseController;
 
 class AdminController extends BaseController
 {
+    public function logo()
+    {
+        helper(['url', 'cookie']);
+
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('msg', 'Faça login para acessar.')->with('msg_type', 'warning');
+        }
+
+        $cookieCode = $this->getLibraryCode();
+        if ($cookieCode === '' || $cookieCode === null) {
+            return redirect()->to('/bibliotecas')->with('msg', 'Selecione uma biblioteca.')->with('msg_type', 'warning');
+        }
+
+        $libModel = new \App\Models\Find\Library\Index();
+        $library = $libModel->getSelectedLibrary($cookieCode);
+
+        return view('Admin/logo', [
+            'library' => $library,
+        ]);
+    }
     public function configuration()
     {
         helper(['url', 'cookie']);

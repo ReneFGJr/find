@@ -61,6 +61,9 @@ $routes->post('/admin/places/update-name', 'AdminController::updatePlaceName');
 $routes->get('/admin/library', 'AdminController::library');
 $routes->post('/admin/library/save', 'AdminController::saveLibrary');
 
+$routes->get('/admin/logo', 'AdminController::logo');
+$routes->post('/admin/logo/upload', 'AdminController::uploadLogo');
+
 $routes->get('/api/', 'Api::index');
 $routes->get('/api', 'Api::index');
 
