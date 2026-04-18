@@ -50,19 +50,45 @@ $routes->post('/bibliotecas/select', 'LibraryController::select');
 $routes->get('/library', 'LibraryController::library');
 $routes->get('/item/(:num)', 'LibraryController::item/$1');
 
-$routes->get('/admin/configuration', 'AdminController::configuration');
-$routes->get('/admin/roles', 'AdminController::roles');
-$routes->post('/admin/roles/add-member', 'AdminController::addMember');
-$routes->post('/admin/roles/disable-member', 'AdminController::disableMember');
-$routes->get('/admin/users/search', 'AdminController::searchUsers');
-$routes->get('/admin/places', 'AdminController::places');
-$routes->post('/admin/places/create', 'AdminController::createPlace');
-$routes->post('/admin/places/update-name', 'AdminController::updatePlaceName');
-$routes->get('/admin/library', 'AdminController::library');
-$routes->post('/admin/library/save', 'AdminController::saveLibrary');
+/*************** About */
 
-$routes->get('/admin/logo', 'AdminController::logo');
-$routes->post('/admin/logo/upload', 'AdminController::uploadLogo');
+$routes->group('about', function($routes) {
+    $routes->get('us', 'PagesController::about');
+    $routes->get('faq', 'PagesController::faq');
+    $routes->get('contact', 'PagesController::contact');
+    $routes->post('contact', 'PagesController::contact');
+});
+
+
+$routes->group('catalog', function($routes) {
+    $routes->get('index', 'Catalog::index');
+    $routes->get('catalogar', 'Catalog::catalogar');
+    $routes->get('catalogar/isbn', 'Catalog::catalogar_isbn');
+    $routes->post('catalogar/isbn', 'Catalog::catalogar_isbn');
+    // Adicione outras rotas de catalogação aqui se necessário
+});
+
+
+$routes->group('admin', function($routes) {
+    $routes->get('users', 'AdminController::users');
+    $routes->get('user/edit/(:num)', 'AdminController::editUser/$1');
+    $routes->post('user/edit/(:num)', 'AdminController::saveUser/$1');
+    $routes->get('user/profile/(:num)', 'AdminController::userProfile/$1');
+
+    $routes->get('configuration', 'AdminController::configuration');
+    $routes->get('roles', 'AdminController::roles');
+    $routes->post('roles/add-member', 'AdminController::addMember');
+    $routes->post('roles/disable-member', 'AdminController::disableMember');
+    $routes->get('users/search', 'AdminController::searchUsers');
+    $routes->get('places', 'AdminController::places');
+    $routes->post('places/create', 'AdminController::createPlace');
+    $routes->post('places/update-name', 'AdminController::updatePlaceName');
+    $routes->get('library', 'AdminController::library');
+    $routes->post('library/save', 'AdminController::saveLibrary');
+
+    $routes->get('logo', 'AdminController::logo');
+    $routes->post('logo/upload', 'AdminController::uploadLogo');
+});
 
 $routes->get('/api/', 'Api::index');
 $routes->get('/api', 'Api::index');

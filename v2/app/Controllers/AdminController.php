@@ -55,6 +55,95 @@ class AdminController extends BaseController
         return $this->response->setJSON(['status' => '200', 'message' => 'Logotipo atualizado com sucesso.', 'logo' => base_url('img/logo/' . $newName)]);
     }
 
+    /**
+     * Lista de usuários do sistema
+     * GET /admin/users
+     * Busca opcional por ?q=nome
+     */
+    public function users()
+    {
+        helper(['url', 'cookie']);
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('msg', 'Faça login para acessar.')->with('msg_type', 'warning');
+        }
+
+        $q = $this->request->getGet('q');
+        $userModel = new \App\Models\User\User();
+        if ($q && strlen($q) > 1) {
+            $users = $userModel->searchUser();
+        } else {
+            $users = $userModel
+                ->select('id_us, us_nome, us_email, us_login, us_last, us_image, us_genero, us_cadastro')
+                ->orderBy('us_nome', 'ASC')
+                ->findAll(50);
+        }
+        return view('Admin/users', [
+            'users' => $users,
+            'q' => $q,
+        ]);
+    }
+
+    /**
+     * Editar usuário (formulário)
+     * GET /admin/user/edit/{id}
+     */
+    public function editUser($id)
+    {
+        helper(['url', 'cookie']);
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('msg', 'Faça login para acessar.')->with('msg_type', 'warning');
+        }
+        $userModel = new \App\Models\User\User();
+        $user = $userModel->detailsUser($id);
+        if (!$user) {
+            return redirect()->to('/admin/users')->with('msg', 'Usuário não encontrado.')->with('msg_type', 'danger');
+        }
+        return view('Admin/user_edit', [
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * Salvar edição do usuário (POST)
+     * POST /admin/user/edit/{id}
+     */
+    public function saveUser($id)
+    {
+        helper(['url', 'cookie', 'form']);
+        if (!session()->get('logged_in')) {
+            return $this->response->setJSON(['status' => '401', 'message' => 'Não autorizado']);
+        }
+        $userModel = new \App\Models\User\User();
+        $data = [
+            'us_nome' => $this->request->getPost('us_nome'),
+            'us_email' => $this->request->getPost('us_email'),
+            'us_login' => $this->request->getPost('us_login'),
+            // Não alterar senha nem campos sensíveis aqui
+        ];
+        $userModel->update($id, $data);
+        return redirect()->to('/admin/users')->with('msg', 'Usuário atualizado com sucesso.')->with('msg_type', 'success');
+    }
+
+    /**
+     * Visualizar perfil do usuário
+     * GET /admin/user/profile/{id}
+     */
+    public function userProfile($id)
+    {
+        helper(['url', 'cookie']);
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login')->with('msg', 'Faça login para acessar.')->with('msg_type', 'warning');
+        }
+        $userModel = new \App\Models\User\User();
+        $user = $userModel->detailsUser($id);
+        if (!$user) {
+            return redirect()->to('/admin/users')->with('msg', 'Usuário não encontrado.')->with('msg_type', 'danger');
+        }
+        return view('Admin/user_profile', [
+            'user' => $user,
+        ]);
+    }
+
     public function logo()
     {
         helper(['url', 'cookie']);
@@ -296,9 +385,14 @@ class AdminController extends BaseController
             ->groupEnd()
             ->first();
 
+        // Carrega redes ativas
+        $redeModel = new \App\Models\Find\Library\LibraryRede();
+        $redes = $redeModel->listAllActive();
+
         return view('Admin/library', [
             'library' => $library,
             'raw' => $raw,
+            'redes' => $redes,
         ]);
     }
 

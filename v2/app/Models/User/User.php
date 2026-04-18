@@ -166,12 +166,13 @@ class User extends Model
 
     function searchUser()
     {
-        $d2 = get("q");
+        $d2 = \Config\Services::request()->getGet('q');
         $cp = 'id_us, us_nome, us_email, us_login, us_last, us_image, us_genero, us_cadastro, ul_library';
         $dt = $this
             ->select($cp)
             ->join('users_library', 'ul_user = id_us', 'left')
             ->like('us_nome', $d2)
+            ->groupBy('id_us')
             ->orderBy('us_nome', 'ASC')
             ->findAll(20);
         return $dt;
@@ -229,6 +230,7 @@ class User extends Model
         $dt = $this
             ->select($cp)
             ->join('users_library', 'ul_user = id_us', 'left')
+            ->groupBy('id_us')
             ->orderBy('us_nome', 'ASC')
             ->findAll();
         return $dt;

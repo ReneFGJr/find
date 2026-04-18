@@ -25,13 +25,19 @@
                 <li class="nav-item d-lg-none"><a class="nav-link" href="<?= base_url('/bibliotecas'); ?>"><i class="bi bi-buildings me-1"></i> Bibliotecas</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('/'); ?>#recursos">Recursos</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('/'); ?>#parceiros">Parceiros</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= base_url('/catalog/index'); ?>" title="Catalogação">
+                        <i class="bi bi-journal-text"></i>
+                    </a>
+                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Sobre
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="<?= base_url('/about'); ?>"><i class="bi bi-info-circle me-2"></i>Sobre o FIND</a></li>
-                        <li><a class="dropdown-item" href="<?= base_url('/contact'); ?>"><i class="bi bi-envelope me-2"></i>Contato</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('/about/us'); ?>"><i class="bi bi-info-circle me-2"></i>Sobre o FIND</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('/about/faq'); ?>"><i class="bi bi-question-circle me-2"></i>FAQ</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('/about/contact'); ?>"><i class="bi bi-envelope me-2"></i>Contato</a></li>
                     </ul>
                 </li>
 

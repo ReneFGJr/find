@@ -97,9 +97,18 @@
                         <label for="l_net" class="form-label fw-semibold">
                             <i class="bi bi-diagram-3 me-1"></i>Rede
                         </label>
-                        <input type="text" class="form-control" id="l_net" name="l_net"
-                               value="<?= esc($raw['l_net'] ?? ''); ?>" placeholder="Ex: Rede de Bibliotecas UFRGS">
-                        <div class="form-text">Rede ou consórcio ao qual a biblioteca pertence.</div>
+                        <select class="form-select" id="l_net" name="l_net">
+                            <option value="">Selecione uma rede...</option>
+                            <?php foreach (($redes ?? []) as $rede): ?>
+                                <option value="<?= esc($rede['rd_name']); ?>" <?= (isset($raw['l_net']) && $raw['l_net'] === $rede['rd_name']) ? 'selected' : ''; ?>>
+                                    <?= esc($rede['rd_name']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                            <?php if (!empty($raw['l_net']) && (!isset($redes) || !in_array($raw['l_net'], array_column($redes, 'rd_name')))): ?>
+                                <option value="<?= esc($raw['l_net']); ?>" selected><?= esc($raw['l_net']); ?> (personalizado)</option>
+                            <?php endif; ?>
+                        </select>
+                        <div class="form-text">Rede ou consórcio ao qual a biblioteca pertence. Se não encontrar, digite manualmente.</div>
                     </div>
                     <div class="col-sm-4">
                         <label class="form-label fw-semibold">Visibilidade</label>
