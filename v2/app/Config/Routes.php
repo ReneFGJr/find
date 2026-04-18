@@ -65,6 +65,8 @@ $routes->group('catalog', function($routes) {
     $routes->get('catalogar', 'Catalog::catalogar');
     $routes->get('catalogar/isbn', 'Catalog::catalogar_isbn');
     $routes->post('catalogar/isbn', 'Catalog::catalogar_isbn');
+    $routes->get('catalogar/phase/(:num)', 'Catalog::catalogar_phase/$1');
+    $routes->post('catalogar/excluir', 'Catalog::excluir_exemplar');
     // Adicione outras rotas de catalogação aqui se necessário
 });
 

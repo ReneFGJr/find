@@ -47,6 +47,42 @@ class Catalog extends BaseController
     {
         return view('catalog/catalogar');
     }
+
+    public function catalogar_phase($status = null)
+    {
+        $libraryCode = get_cookie('library_code') ?? get_cookie('library') ?? '';
+        $obras = [];
+        if ($libraryCode && $status !== null) {
+            $itemModel = new ItemModel();
+            $obras = $itemModel
+                ->where('i_library', $libraryCode)
+                ->where('i_status', $status)
+                ->orderBy('i_created', 'DESC')
+                ->findAll();
+        }
+        return view('catalog/phase', [
+            'status' => $status,
+            'obras' => $obras
+        ]);
+    }
+
+    public function excluir_exemplar()
+    {
+        if ($this->request->getMethod() === 'post') {
+            $id = $this->request->getPost('id');
+            if ($id) {
+                $itemModel = new ItemModel();
+                $item = $itemModel->find($id);
+                if ($item && isset($item['i_status']) && $item['i_status'] < 5) {
+                    $itemModel->delete($id);
+                    return redirect()->back()->with('msg', 'Exemplar excluído com sucesso!');
+                }
+            }
+            return redirect()->back()->with('msg', 'Não foi possível excluir o exemplar.');
+        }
+        return redirect()->back();
+    }
+
     public function catalogar_isbn()
     {
         $msg = '';
@@ -79,6 +115,7 @@ class Catalog extends BaseController
             foreach ($resumo as $row) {
                 $nome = $statusNames[$row['i_status']] ?? 'Status #' . $row['i_status'];
                 $statusResumo[] = [
+                    'id' => $row['i_status'],
                     'status' => $nome,
                     'qtd' => $row['qtd']
                 ];
@@ -99,15 +136,45 @@ class Catalog extends BaseController
                 $item = $itemModel->where('i_identifier', $isbn)->where('i_library', $libraryCode)->orderBy('i_exemplar', 'desc')->first();
                 $tombo = $auto_gerar ? $itemModel->nextTombo($libraryCode) : $patrimonio;
                 $exemplar = 1;
+                $msgRedirect = '';
                 if ($item) {
                     $titulo = isset($item['i_titulo']) && $item['i_titulo'] !== null ? $item['i_titulo'] : '';
                     $exemplar = isset($item['i_exemplar']) && $item['i_exemplar'] ? ((int)$item['i_exemplar']) + 1 : 1;
-                    $msg = '<div class="alert alert-success">Livro já cadastrado na base local: <b>' . htmlspecialchars($titulo) . '</b></div>';
+                    // Se não veio o GET 'confirmar', perguntar ao usuário
+                    if (!$this->request->getPost('confirmar')) {
+                        $msg = '<div class="alert alert-warning">Livro já cadastrado na base local: ' . htmlspecialchars($titulo) . '.<br>Deseja incluir um novo exemplar?<br>';
+                        $msg .= '<div class="d-flex gap-2 mt-2">';
+                        $msg .= '<form method="post">';
+                        $msg .= '<input type="hidden" name="isbn" value="' . htmlspecialchars($isbn) . '">';
+                        $msg .= '<input type="hidden" name="patrimonio" value="' . htmlspecialchars($patrimonio) . '">';
+                        $msg .= '<input type="hidden" name="auto_gerar" value="' . ($auto_gerar ? '1' : '') . '">';
+                        $msg .= '<input type="hidden" name="local" value="' . htmlspecialchars($local) . '">';
+                        $msg .= '<input type="hidden" name="confirmar" value="1">';
+                        $msg .= '<button type="submit" class="btn btn-sm btn-primary">Sim, incluir novo exemplar</button>';
+                        $msg .= '</form>';
+                        $msg .= '<form method="get">';
+                        $msg .= '<input type="hidden" name="isbn" value="' . htmlspecialchars($isbn) . '">';
+                        $msg .= '<button type="submit" class="btn btn-sm btn-secondary">Não, voltar</button>';
+                        $msg .= '</form>';
+                        $msg .= '</div>';
+                        $msg .= '</div>';
+                        return view('catalog/isbn', [
+                            'msg' => $msg,
+                            'isbn' => $isbn,
+                            'item' => $item,
+                            'patrimonio' => '',
+                            'auto_gerar' => true,
+                            'local' => '',
+                            'places' => $places,
+                            'statusResumo' => $statusResumo
+                        ]);
+                    }
+                    $msgRedirect = 'Novo exemplar cadastrado para o livro: ' . $titulo;
                 } else {
-                    $msg = '<div class="alert alert-success">Livro cadastrado com sucesso na biblioteca!</div>';
+                    $msgRedirect = 'Livro cadastrado com sucesso na biblioteca!';
                 }
-                // Sempre insere novo exemplar
-                if (!$item || $exemplar > 1) {
+                // Só insere se não existe ou se confirmou
+                if (!$item || $this->request->getPost('confirmar')) {
                     $data = [
                         'i_identifier' => $isbn,
                         'i_library' => $libraryCode,
@@ -119,26 +186,25 @@ class Catalog extends BaseController
                     ]; // Adicione outros campos conforme necessário
                     $itemModel->insert($data);
                 }
-                // Passa info para a view
-                $item = [
-                    'i_titulo' => $item['i_titulo'] ?? '',
-                    'i_identifier' => $isbn,
-                    'i_tombo' => $tombo,
-                    'i_exemplar' => $exemplar
-                ];
+                // Redirect para zerar o formulário
+                return redirect()->to(current_url() . '?msg=' . urlencode($msgRedirect));
             } else {
                 $msg = '<div class="alert alert-danger">Informe um ISBN-13 válido.</div>';
             }
         } else {
             $auto_gerar = true; // default checked
         }
+        // Mensagem de sucesso por GET
+        if (empty($msg) && $this->request->getGet('msg')) {
+            $msg = '<div class="alert alert-success">' . htmlspecialchars($this->request->getGet('msg')) . '</div>';
+        }
         return view('catalog/isbn', [
             'msg' => $msg,
-            'isbn' => $isbn,
-            'item' => $item,
-            'patrimonio' => $patrimonio,
-            'auto_gerar' => $auto_gerar,
-            'local' => $local,
+            'isbn' => '',
+            'item' => null,
+            'patrimonio' => '',
+            'auto_gerar' => true,
+            'local' => '',
             'places' => $places,
             'statusResumo' => $statusResumo
         ]);

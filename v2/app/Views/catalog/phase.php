@@ -1,0 +1,67 @@
+<?php include(APPPATH . 'Views/layout/header.php'); ?>
+<div class="container py-4">
+    <h2 class="mb-4"><i class="bi bi-list-check me-2"></i>Obras para Catalogar - Status: <?= htmlspecialchars($status) ?></h2>
+    <?php if (session('msg')): ?>
+        <div class="alert alert-info"> <?= htmlspecialchars(session('msg')) ?> </div>
+    <?php endif; ?>
+    <?php if (!empty($obras)) : ?>
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead class="table-light">
+                    <tr>
+                        <th>Título</th>
+                        <th>ISBN</th>
+                        <th>Tombo</th>
+                        <th>Exemplar</th>
+                        <th>Data de Cadastro</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($obras as $obra): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($obra['i_titulo'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($obra['i_identifier'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($obra['i_tombo'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($obra['i_exemplar'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($obra['i_created'] ?? '') ?></td>
+                            <td>
+                                <a href="/catalog/catalogar/isbn?isbn=<?= urlencode($obra['i_identifier'] ?? '') ?>&tombo=<?= urlencode($obra['i_tombo'] ?? '') ?>" class="btn btn-sm btn-outline-success mb-1" title="Continuar"><i class="bi bi-arrow-right-circle"></i></a>
+                                <?php if (isset($obra['i_status']) && $obra['i_status'] < 5): ?>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" title="Excluir" onclick="excluirExemplar(<?= (int)$obra['id_i'] ?>, this)"><i class="bi bi-trash"></i></button>
+                                <?php endif; ?>
+                            <script>
+                            function excluirExemplar(id, btn) {
+                                if (!confirm('Tem certeza que deseja excluir este exemplar?')) return;
+                                btn.disabled = true;
+                                fetch('/catalog/catalogar/excluir', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/x-www-form-urlencoded',
+                                        'X-Requested-With': 'XMLHttpRequest',
+                                    },
+                                    body: 'id=' + encodeURIComponent(id)
+                                })
+                                .then(response => response.text())
+                                .then(html => {
+                                    // Recarrega a página para atualizar a lista e mensagens
+                                    window.location.reload();
+                                })
+                                .catch(() => {
+                                    alert('Erro ao excluir exemplar.');
+                                    btn.disabled = false;
+                                });
+                            }
+                            </script>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php else: ?>
+        <div class="alert alert-info">Nenhuma obra encontrada para este status.</div>
+    <?php endif; ?>
+    <a href="/catalog/catalogar" class="btn btn-secondary mt-3"><i class="bi bi-arrow-left me-2"></i>Voltar</a>
+</div>
+<?php include(APPPATH . 'Views/layout/footer.php'); ?>

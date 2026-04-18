@@ -47,26 +47,7 @@ include(APPPATH.'Views/layout/header.php'); ?>
                     <?php endif; ?>
                 </div>
             </div>
-            <div class="card">
-                <div class="card-header bg-secondary text-white">
-                    <i class="bi bi-list-check me-2"></i>Status da Catalogação
-                </div>
-                <div class="card-body">
-                    <h6 class="mb-2">Resumo dos Status na Biblioteca</h6>
-                    <?php if (!empty($statusResumo)) : ?>
-                        <ul class="list-group">
-                            <?php foreach($statusResumo as $sr): ?>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <?= htmlspecialchars($sr['status']) ?>
-                                    <span class="badge bg-primary rounded-pill"><?= $sr['qtd'] ?></span>
-                                </li>
-                            <?php endforeach; ?>
-                        </ul>
-                    <?php else: ?>
-                        <p class="text-muted">Nenhum status encontrado para esta biblioteca.</p>
-                    <?php endif; ?>
-                </div>
-            </div>
+            <?php include(APPPATH.'Views/components/catalog_status.php'); ?>
         </div>
     </div>
 </div>
