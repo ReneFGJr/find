@@ -11,6 +11,13 @@
  * @version     v0.24.04.16
  */
 
+# [cover_image]
+function cover_image($isbn)
+{
+    $base = env('covers.baseURL', base_url('/_covers/image/'));
+    return $base . $isbn . '.jpg';
+}
+
 function get($var)
     {
         $RSP = '';

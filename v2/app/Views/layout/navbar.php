@@ -6,8 +6,7 @@
     <div class="container">
         <div class="d-flex align-items-center gap-3">
             <a class="navbar-brand d-flex align-items-center gap-2 mb-0" href="<?= base_url('/'); ?>">
-                <img src="<?= base_url('img/logo_find.png'); ?>" alt="FIND" height="36">
-                <span class="fw-semibold">FIND</span>
+                <img src="<?= base_url('img/logo_find.png'); ?>" alt="FIND" height="20">
             </a>
 
             <a class="btn btn-outline-light btn-sm rounded-pill d-none d-lg-inline-flex align-items-center gap-2" href="<?= base_url('/bibliotecas'); ?>">

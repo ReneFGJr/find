@@ -42,7 +42,8 @@ class RDF extends Model
     function index($d1, $d2, $d3, $d4, $cab) {}
 
     function le($id) {
-        $library = get("library");
+        helper('sisdoc');
+        $library = function_exists('get') ? get("library") : '';
         $ItemModel = new \App\Models\Find\Items\Index();
 
         $RSP = [];

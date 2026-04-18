@@ -35,7 +35,7 @@ $routes->set404Override();
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'Home::index');
+$routes->get('/', 'LibraryController::library');
 $routes->get('/login', 'AuthController::login');
 $routes->post('/authenticate', 'AuthController::authenticate');
 $routes->get('/register', 'AuthController::register');
@@ -48,6 +48,7 @@ $routes->get('/logout', 'AuthController::logout');
 $routes->get('/bibliotecas', 'LibraryController::bibliotecas');
 $routes->post('/bibliotecas/select', 'LibraryController::select');
 $routes->get('/library', 'LibraryController::library');
+$routes->get('/item/(:num)', 'LibraryController::item/$1');
 
 $routes->get('/api/', 'Api::index');
 $routes->get('/api', 'Api::index');

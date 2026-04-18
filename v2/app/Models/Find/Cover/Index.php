@@ -42,13 +42,7 @@ class Index extends Model
 
     function cover($isbn)
         {
-            $RSP = 'img/no_cover.png';
-            $img = "../_covers/image/$isbn.jpg";
-            if (file_exists($img))
-                {
-                    $RSP = '_covers/image/'.$isbn.'.jpg';
-                }
-            $RSP = PATH.$RSP;
-            return $RSP;
+            helper('sisdoc');
+            return cover_image($isbn);
         }
 }

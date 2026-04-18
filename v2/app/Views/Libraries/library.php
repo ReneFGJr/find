@@ -1,38 +1,54 @@
 <?= view('layout/header', ['title' => 'Biblioteca selecionada • FIND']); ?>
 <?= view('layout/navbar'); ?>
 
+<style>
+.text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: normal;
+}
+.cover-img {
+    max-height: 200px;
+    object-fit: contain;
+    box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease;
+}
+.cover-img:hover {
+    transform: scale(1.05);
+}
+</style>
+
 <main class="container py-5">
-    <?php if (session()->getFlashdata('msg')): ?>
-        <div class="alert alert-<?= esc(session()->getFlashdata('msg_type') ?? 'info'); ?> mb-4"><?= esc(session()->getFlashdata('msg')); ?></div>
-    <?php endif; ?>
 
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card auth-card border-0">
-                <div class="card-body p-4 p-lg-5">
-                    <span class="badge text-bg-success mb-3">Biblioteca ativa</span>
-                    <div class="row align-items-center g-4">
-                        <div class="col-md-4 text-center">
-                            <div class="logo-card">
-                                <img src="<?= esc($library['logo']); ?>" alt="<?= esc($library['name']); ?>">
-                            </div>
-                        </div>
-                        <div class="col-md-8">
-                            <h1 class="h3 fw-bold mb-2"><?= esc($library['name']); ?></h1>
-                            <p class="text-secondary mb-2">Código da biblioteca: <strong><?= esc((string) ($library['code'] ?? '')); ?></strong></p>
-                            <p class="text-secondary mb-3">ID recuperado do cookie: <strong><?= esc((string) $cookieId); ?></strong></p>
-                            <p class="mb-4"><?= esc($library['about'] ?: 'A biblioteca foi recuperada com sucesso a partir do cookie salvo no navegador.'); ?></p>
-
-                            <div class="d-flex flex-wrap gap-2">
-                                <a href="<?= base_url('/bibliotecas'); ?>" class="btn btn-outline-secondary">Trocar biblioteca</a>
-                                <a href="<?= base_url('/'); ?>" class="btn btn-primary">Ir para o FIND</a>
-                            </div>
-                        </div>
+    <?php if (!empty($vitrine)): ?>
+    <div>
+        <h2 class="h4 fw-bold mb-4">Obras mais recentes</h2>
+        <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
+            <?php foreach ($vitrine as $book): ?>
+            <div class="col">
+                <a href="<?= base_url('/item/' . esc($book['ID'], 'url')); ?>" class="text-decoration-none text-dark">
+                <div class="card h-100 border-0 shadow-sm text-center">
+                    <div class="p-2">
+                        <img src="<?= esc($book['cover']); ?>"
+                             alt="<?= esc($book['title']); ?>"
+                             class="img-fluid rounded cover-img"
+                             loading="lazy">
+                    </div>
+                    <div class="card-body p-2 pt-0">
+                        <p class="card-text text-truncate-2 mb-0" style="font-size:0.7rem;" title="<?= esc($book['title']); ?>">
+                            <?= esc($book['title']); ?>
+                        </p>
                     </div>
                 </div>
+                </a>
             </div>
+            <?php endforeach; ?>
         </div>
     </div>
+    <?php endif; ?>
 </main>
 
 <?= view('layout/footer'); ?>

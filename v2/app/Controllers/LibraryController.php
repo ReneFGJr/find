@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\Find\Library\Index as LibraryIndex;
+use App\Models\Find\Items\Index as ItemsIndex;
 
 class LibraryController extends BaseController
 {
@@ -73,9 +74,46 @@ class LibraryController extends BaseController
             return redirect()->to('/bibliotecas')->with('msg', 'A biblioteca salva no cookie não foi localizada.')->with('msg_type', 'warning');
         }
 
+        $itemsModel = new ItemsIndex();
+        $vitrine = $itemsModel->vitrine($library['code']);
+
         return view('Libraries/library', [
             'library' => $library,
             'cookieId' => $cookieId !== '' ? $cookieId : $cookieCode,
+            'vitrine' => $vitrine,
+        ]);
+    }
+
+    public function item($id)
+    {
+        helper(['url', 'cookie']);
+
+        $cookieCode = trim((string) (get_cookie('library_code') ?? get_cookie('library') ?? ''));
+        if ($cookieCode === '') {
+            return redirect()->to('/bibliotecas')->with('msg', 'Escolha uma biblioteca antes de continuar.')->with('msg_type', 'warning');
+        }
+
+        $itemsModel = new ItemsIndex();
+        $row = $itemsModel->where('id_i', $id)->first();
+
+        if (!$row) {
+            return redirect()->to('/library')->with('msg', 'Item não encontrado.')->with('msg_type', 'danger');
+        }
+
+        $isbn = $row['i_identifier'];
+        $lib = $row['i_library'];
+        $book = $itemsModel->getISBN($isbn, $lib);
+
+        if (empty($book)) {
+            return redirect()->to('/library')->with('msg', 'Item não encontrado.')->with('msg_type', 'danger');
+        }
+
+        $libModel = new LibraryIndex();
+        $library = $libModel->getSelectedLibrary((string) $lib);
+
+        return view('Libraries/item', [
+            'book' => $book,
+            'library' => $library,
         ]);
     }
 }
