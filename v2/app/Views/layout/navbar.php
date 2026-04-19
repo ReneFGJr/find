@@ -54,6 +54,7 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><span class="dropdown-item-text small text-muted"><?= esc(session()->get('us_email') ?? ''); ?></span></li>
+                            <li><a class="dropdown-item" href="<?= base_url('/perfil'); ?>"><i class="bi bi-person-lines-fill me-2"></i>Perfil</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="<?= base_url('/logout'); ?>">Sair</a></li>
                         </ul>

@@ -11,8 +11,37 @@ helper('cookie');
 
 class Catalog extends BaseController
 {
+    private function checkCatalogPermission()
+    {
+        $session = session();
+        $userId = $session->get('id_us');
+        if (!$userId) {
+            return false;
+        }
+        // Administrador: grupo 1
+        $UserGroupMember = new \App\Models\User\UserGroupMember();
+        $admin = $UserGroupMember->where('grm_user', $userId)->where('grm_group', 1)->where('grm_status', 1)->first();
+        if ($admin) {
+            return true;
+        }
+        // Catalogador: grupo 2 (ajuste conforme id do grupo de catalogadores)
+        $catalogador = $UserGroupMember->where('grm_user', $userId)->where('grm_group', 2)->where('grm_status', 1)->first();
+        if ($catalogador) {
+            return true;
+        }
+        return false;
+    }
+
+    private function denyIfNoPermission()
+    {
+        if (!$this->checkCatalogPermission()) {
+            return redirect()->to('/login')->with('msg', 'Acesso restrito. Apenas administradores e catalogadores podem acessar.');
+        }
+    }
+
     public function index()
     {
+        if ($resp = $this->denyIfNoPermission()) return $resp;
         // Exemplo: Resumo dos itens por status
         $itemModel = new ItemModel();
         $statusModel = new StatusModel();
@@ -48,11 +77,13 @@ class Catalog extends BaseController
     }
     public function catalogar()
     {
+        if ($resp = $this->denyIfNoPermission()) return $resp;
         return view('catalog/catalogar');
     }
 
     public function metadadoSearch($IdItem = null)
     {
+        if ($resp = $this->denyIfNoPermission()) return $resp;
         $resultados = null;
         $busca = $this->request->getGet('busca');
         $itemInfo = null;
@@ -77,6 +108,7 @@ class Catalog extends BaseController
 
     public function catalogar_phase($status = null)
     {
+        if ($resp = $this->denyIfNoPermission()) return $resp;
         $libraryCode = get_cookie('library_code') ?? get_cookie('library') ?? '';
         $obras = [];
         if ($libraryCode && $status !== null) {
@@ -95,6 +127,7 @@ class Catalog extends BaseController
 
     public function excluir_exemplar()
     {
+        if ($resp = $this->denyIfNoPermission()) return $resp;
         if ($this->request->getMethod() === 'post') {
             $id = $this->request->getPost('id');
             if ($id) {
@@ -112,6 +145,7 @@ class Catalog extends BaseController
 
     public function catalogar_isbn()
     {
+        if ($resp = $this->denyIfNoPermission()) return $resp;
         $msg = '';
         $isbn = '';
         $item = null;

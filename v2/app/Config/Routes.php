@@ -50,8 +50,9 @@ $routes->post('/bibliotecas/select', 'LibraryController::select');
 $routes->get('/library', 'LibraryController::library');
 $routes->get('/item/(:num)', 'LibraryController::item/$1');
 
-/*************** About */
+$routes->get('/perfil', 'Perfil::index');
 
+/*************** About */
 $routes->group('about', function($routes) {
     $routes->get('us', 'PagesController::about');
     $routes->get('faq', 'PagesController::faq');
