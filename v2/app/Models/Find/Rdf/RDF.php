@@ -4,6 +4,8 @@ namespace App\Models\Find\Rdf;
 
 use CodeIgniter\Model;
 
+helper('sisdoc');
+
 class RDF extends Model
 {
     var $table            = 'rdf_concept';
@@ -13,7 +15,14 @@ class RDF extends Model
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = [];
+    protected $allowedFields    = [
+        'cc_class',
+        'cc_origin',
+        'cc_pref_term',
+        'cc_update',
+        'cc_status',
+        'cc_use'
+    ];
 
     // Dates
     protected $useTimestamps = false;
@@ -170,6 +179,39 @@ class RDF extends Model
                     }
             }
         return $RSP;
+    }
+
+    function createConcept($Class, $Name, $Lang='pt_BR')
+    {
+        /******* Literal Name */
+        $NameModel = new \App\Models\Find\Rdf\RDF_Name();
+        $Class =  new \App\Models\Find\Rdf\RDF_Class();
+        $idN = $NameModel->createLiteral($Name, $Lang);
+
+        /******* Check Exist Concept */
+        $dt = $this
+            ->select('id_cc')
+            ->join('rdf_name', 'cc_pref_term = id_n', 'left')
+            ->where('cc_pref_term', $idN)
+            ->first();
+        if (!$dt) {
+            /* Recupeara Classe */
+            $idC = $Class->getIdByName('Work');
+            /* Cria ou Recupera Conceito */
+            $this->insert([
+                'cc_class' => $idC,
+                'cc_origin' => '',
+                'cc_pref_term' => $idN,
+                'cc_update' => date('Y-m-d'),
+                'cc_status' => 0,
+                'cc_use' => 1
+            ]);
+            $idCC = $this->getInsertID();
+        } else {
+            $idCC = $dt['id_cc'];
+        }
+
+        return ['status' => '200', 'message' => 'Conceito criado com sucesso', 'id_cc' => $idCC];
     }
 
 }

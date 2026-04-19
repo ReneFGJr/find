@@ -131,13 +131,13 @@ class Catalog extends BaseController
             $itemModel = new ItemModel();
             $itemInfo = $itemModel->find($IdItem);
         }
+        $isbn = $itemInfo['i_identifier'] ?? $this->request->getPost('isbn') ?? null;
 
         // Se for POST e import_z39_50=1, mostra view de loading e dispara consulta
         if ($this->request->getMethod() === 'post' && $this->request->getPost('import_z39_50') == 1) {
             // Exibe view auxiliar de loading
             echo view('catalog/z3950_loading');
             // Busca ISBN do item (se disponível)
-            $isbn = $itemInfo['i_identifier'] ?? $this->request->getPost('isbn') ?? null;
 
             if ($isbn) {
                 // Chama o model Z3950
@@ -153,6 +153,13 @@ class Catalog extends BaseController
 
         // Se houver resultado Z39 salvo, passa para a view
         $z3950_result = session()->getFlashdata('z3950_result');
+        if (isset($z3950_result)) {
+            $ProcessMetadata = new \App\Models\Find\Items\ProcessMetadata();
+            $result = $ProcessMetadata->processZ3950Result($z3950_result,$isbn);
+            echo "Processando Dados.";
+            pre($result);
+            exit;
+        }
 
         if ($busca) {
             // Exemplo: simulação de busca, substitua por consulta real

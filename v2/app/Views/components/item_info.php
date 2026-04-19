@@ -10,6 +10,16 @@ if (!empty($itemInfo['i_status'])) {
         $statusName = '';
     }
 }
+
+function linkRDF($id)
+    {
+        if ($id > 0)
+            {
+                return '<a href="'.base_url('rdf/form/'.$id).'" target="_blank" class="link link-secondary"><i class="bi bi-diagram-3 me-1"></i>'.$id.'</a>';
+            } else {
+                return '-';
+            }
+    }
 ?>
 <?php if (!empty($itemInfo)): ?>
     <div class="mb-4">
@@ -28,16 +38,19 @@ if (!empty($itemInfo['i_status'])) {
                     <tbody>
                         <tr>
                             <th width="10%" class="text-end">Título</th>
-                            <td width="70%"><?= htmlspecialchars($itemInfo['i_titulo'] ?? '') ?></td>
+                            <td width="60%"><?= htmlspecialchars($itemInfo['i_titulo'] ?? '') ?></td>
 
-                            <th width="10%" class="text-end">Tombo</th>
-                            <td width="10%"><?= htmlspecialchars($itemInfo['i_tombo'] ?? '') ?></td>
+                            <th width="10%" class="text-end">ID</th>
+                            <td width="20%"><?= htmlspecialchars($itemInfo['id_i'] ?? '') ?></td>
                         </tr>
                         <tr>
                             <th class="text-end">Autor</th>
                             <td><?= htmlspecialchars($itemInfo['i_autor'] ?? '') ?></td>
-                            <th class="text-end">ID</th>
-                            <td><?= htmlspecialchars($itemInfo['id_i'] ?? '') ?></td>
+
+                            <th class="text-end">Tombo</th>
+                            <td><?= htmlspecialchars($itemInfo['i_tombo'] ?? '') ?></td>
+
+
                         </tr>
                         <tr>
                             <th class="text-end">ISBN</th>
@@ -48,6 +61,11 @@ if (!empty($itemInfo['i_status'])) {
                         <tr>
                             <th class="text-end">Cadastrado</th>
                             <td><?= htmlspecialchars($itemInfo['i_created'] ?? '') ?></td>
+                            <th class="text-end">IDs</th>
+                            <td class="small text-secondary">
+                                Work: <?= linkRDF(htmlspecialchars($itemInfo['i_work'] ?? '')) ?></br>
+                                Expression: <?= linkRDF(htmlspecialchars($itemInfo['i_expression'] ?? '')) ?></br>
+                                Manifestation: <?= linkRDF(htmlspecialchars($itemInfo['i_manitestation'] ?? '')) ?></br>
                         </tr>
                     </tbody>
                 </table>
