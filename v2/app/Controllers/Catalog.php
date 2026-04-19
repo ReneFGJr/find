@@ -5,12 +5,25 @@ use App\Controllers\BaseController;
 use App\Models\Find\Items\Index as ItemModel;
 use App\Models\Find\Items\Status as StatusModel;
 
-// Necessário para usar get_cookie()
-helper('cookie');
+// Necessário para usar get_cookie() e pre()
+helper(['cookie', 'sisdoc']);
 
 
 class Catalog extends BaseController
+
 {
+    // Redireciona catalog/catalogar/phase para catalog/catalogar
+    public function phaseRedirect()
+    {
+        return redirect()->to('/catalog/catalogar');
+    }
+
+    // Redireciona catalog/catalogar/metadadoSearch para phase/1
+    public function metadadoSearchRedirect()
+    {
+        return redirect()->to('/catalog/catalogar/phase/1');
+    }
+
     private function checkCatalogPermission()
     {
         $session = session();
@@ -107,6 +120,7 @@ class Catalog extends BaseController
         ]);
     }
 
+
     public function metadadoSearch($IdItem = null)
     {
         if ($resp = $this->denyIfNoPermission()) return $resp;
@@ -117,6 +131,29 @@ class Catalog extends BaseController
             $itemModel = new ItemModel();
             $itemInfo = $itemModel->find($IdItem);
         }
+
+        // Se for POST e import_z39_50=1, mostra view de loading e dispara consulta
+        if ($this->request->getMethod() === 'post' && $this->request->getPost('import_z39_50') == 1) {
+            // Exibe view auxiliar de loading
+            echo view('catalog/z3950_loading');
+            // Busca ISBN do item (se disponível)
+            $isbn = $itemInfo['i_identifier'] ?? $this->request->getPost('isbn') ?? null;
+
+            if ($isbn) {
+                // Chama o model Z3950
+                $z3950 = new \App\Models\Z3950\Index();
+                $resultadoZ39 = $z3950->searchISBN($isbn);
+                // Aqui você pode salvar o resultado em sessão, banco ou redirecionar para mostrar o resultado
+                session()->setFlashdata('z3950_result', $resultadoZ39);
+                return redirect()->to(current_url());
+            }
+            // Se não houver ISBN, apenas retorna
+            return;
+        }
+
+        // Se houver resultado Z39 salvo, passa para a view
+        $z3950_result = session()->getFlashdata('z3950_result');
+
         if ($busca) {
             // Exemplo: simulação de busca, substitua por consulta real
             $resultados = [
@@ -128,7 +165,8 @@ class Catalog extends BaseController
             'resultados' => $resultados,
             'itemInfo' => $itemInfo,
             'idItem' => $IdItem,
-            'busca' => $busca
+            'busca' => $busca,
+            'z3950_result' => $z3950_result
         ]);
     }
 

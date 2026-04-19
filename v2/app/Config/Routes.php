@@ -62,6 +62,8 @@ $routes->group('about', function($routes) {
 
 
 $routes->group('catalog', function($routes) {
+        // Redirecionamento de /catalog/catalogar/phase para /catalog/catalogar
+        $routes->get('catalogar/phase', 'Catalog::phaseRedirect');
     $routes->get('index', 'Catalog::index');
     $routes->get('catalogar', 'Catalog::catalogar');
     $routes->get('catalogar/isbn', 'Catalog::catalogar_isbn');
@@ -70,6 +72,8 @@ $routes->group('catalog', function($routes) {
     $routes->get('catalogar/metadadoSearch/(:num)', 'Catalog::metadadoSearch/$1');
     $routes->post('catalogar/metadadoSearch/(:num)', 'Catalog::metadadoSearch/$1');
     $routes->post('catalogar/excluir', 'Catalog::excluir_exemplar');
+    // Nova rota para redirecionamento sem parâmetro
+    $routes->get('catalogar/metadadoSearch', 'Catalog::metadadoSearchRedirect');
     // Adicione outras rotas de catalogação aqui se necessário
 });
 

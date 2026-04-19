@@ -43,7 +43,7 @@ class Index extends Model
     function searchISBN($isbn)
     {
         // https://cip.brapci.inf.br/api/find/getISBN?query=9786589167501
-        $url = 'https://cip.brapci.inf.br/api/find/getISBN?query=9786589167501';
+        $url = 'https://cip.brapci.inf.br/api/find/getISBN?query=' . urlencode($isbn);
 
         try {
             $res = $this->api_request('GET', $url, ['query' => $isbn]);
