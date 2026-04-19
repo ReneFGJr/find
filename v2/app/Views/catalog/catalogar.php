@@ -30,5 +30,10 @@ include(APPPATH.'Views/layout/header.php'); ?>
             </div>
         </div>
     </div>
+    <div class="row mt-4">
+        <div class="col-12">
+            <?php include(APPPATH . 'Views/components/catalog_status.php'); ?>
+        </div>
+    </div>
 </div>
 <?php include(APPPATH.'Views/layout/footer.php'); ?>

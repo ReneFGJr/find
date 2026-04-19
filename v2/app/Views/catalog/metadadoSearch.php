@@ -16,10 +16,10 @@
 
             <!-- Botoes de ação -->
             <div class="mb-4 d-flex gap-2">
-                <form method="get" action="https://zeus.ufsc.br:8443/cgi-bin/wxis.exe/iah/?IsisScript=iah/iah.xis&base=livros&lang=p">
-                    <input type="hidden" name="search" value="<?= htmlspecialchars($itemInfo['i_identifier'] ?? '') ?>">
-                    <button type="submit" class="btn btn-outline-success">
-                        <i class="bi bi-cloud-download me-1"></i> Buscar no Z39.50 (Zeus-UFSC)
+                <form method="post" action="#">
+                    <input type="hidden" name="import_z39.50" value="1">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-file-earmark-arrow-down me-1"></i> Importar Z39.50
                     </button>
                 </form>
                 <form method="post" action="#">

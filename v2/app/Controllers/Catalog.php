@@ -18,18 +18,15 @@ class Catalog extends BaseController
         if (!$userId) {
             return false;
         }
-        // Administrador: grupo 1
-        $UserGroupMember = new \App\Models\User\UserGroupMember();
-        $admin = $UserGroupMember->where('grm_user', $userId)->where('grm_group', 1)->where('grm_status', 1)->first();
-        if ($admin) {
-            return true;
-        }
-        // Catalogador: grupo 2 (ajuste conforme id do grupo de catalogadores)
-        $catalogador = $UserGroupMember->where('grm_user', $userId)->where('grm_group', 2)->where('grm_status', 1)->first();
-        if ($catalogador) {
-            return true;
-        }
-        return false;
+        $db = \Config\Database::connect();
+        $builder = $db->table('users_group_members m')
+            ->select('m.*')
+            ->join('users_group g', 'g.id_gr = m.grm_group', 'inner')
+            ->where('m.grm_user', $userId)
+            ->where('(g.gr_hash = "#ADM" or g.gr_hash = "#CAT")')
+            ->where('(m.grm_status = 1 OR m.grm_status IS NULL)');
+        $result = $builder->get()->getFirstRow();
+        return $result ? true : false;
     }
 
     private function denyIfNoPermission()
@@ -78,7 +75,36 @@ class Catalog extends BaseController
     public function catalogar()
     {
         if ($resp = $this->denyIfNoPermission()) return $resp;
-        return view('catalog/catalogar');
+        $itemModel = new ItemModel();
+        $statusModel = new StatusModel();
+        $library = $this->request->getGet('library');
+        if (!$library) {
+            $library = get_cookie('library_code') ?? get_cookie('library') ?? '';
+        }
+        $statusResumo = [];
+        if ($library) {
+            $resumo = $itemModel->select('i_status, COUNT(*) as qtd')
+                ->where('i_library', $library)
+                ->groupBy('i_status')
+                ->findAll();
+            $statusList = $statusModel->findAll();
+            $statusNames = [];
+            foreach ($statusList as $status) {
+                $statusNames[$status['id_is']] = $status['is_name'];
+            }
+            foreach ($resumo as $row) {
+                $nome = $statusNames[$row['i_status']] ?? 'Status #' . $row['i_status'];
+                $statusResumo[] = [
+                    'id' => $row['i_status'],
+                    'status' => $nome,
+                    'qtd' => $row['qtd']
+                ];
+            }
+        }
+        return view('catalog/catalogar', [
+            'statusResumo' => $statusResumo,
+            'library' => $library
+        ]);
     }
 
     public function metadadoSearch($IdItem = null)

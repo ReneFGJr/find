@@ -1,6 +1,6 @@
 <?php
-    $isLoggedIn = (bool) session()->get('logged_in');
-    $firstName = session()->get('first_name') ?: 'Usuário';
+$isLoggedIn = (bool) session()->get('logged_in');
+$firstName = session()->get('first_name') ?: 'Usuário';
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top">
     <div class="container">
@@ -27,7 +27,7 @@
                 <li class="nav-item"><a class="nav-link" href="<?= base_url('/'); ?>#parceiros">Parceiros</a></li>
                 <li class="nav-item">
                     <a class="nav-link" href="<?= base_url('/catalog/index'); ?>" title="Catalogação">
-                        <i class="bi bi-journal-text"></i>
+                        Catalogação
                     </a>
                 </li>
                 <li class="nav-item dropdown">
@@ -55,7 +55,9 @@
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li><span class="dropdown-item-text small text-muted"><?= esc(session()->get('us_email') ?? ''); ?></span></li>
                             <li><a class="dropdown-item" href="<?= base_url('/perfil'); ?>"><i class="bi bi-person-lines-fill me-2"></i>Perfil</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li><a class="dropdown-item" href="<?= base_url('/logout'); ?>">Sair</a></li>
                         </ul>
                     </li>
