@@ -109,11 +109,9 @@ class Form_edit extends BaseController
 
         // Buscar nomes das classes
         $classNames = [];
-        if (!empty($rangeIds)) {
-            $rows = $classModel->whereIn('id_c', $rangeIds)->findAll();
-            foreach ($rows as $row) {
-                $classNames[$row['id_c']] = $row['c_class'];
-            }
+        $classNamesFull = $classModel->whereIn('c_type', ['C'])->orderBy('c_class', 'asc')->findAll();
+        foreach ($classNamesFull as $row) {
+            $classNames[$row['id_c']] = $row['c_class'];
         }
 
         $propertyNames = [];
@@ -123,7 +121,6 @@ class Form_edit extends BaseController
                 $propertyNames[$row['id_c']] = $row['c_class'];
             }
         }
-
 
         // Todas as propriedades para o select
         $allProperties = $classModel->where('c_type', 'P')->orderBy('c_class', 'asc')->findAll();

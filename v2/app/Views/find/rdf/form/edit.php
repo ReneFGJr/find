@@ -280,13 +280,14 @@
                 <table class="table table-bordered align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th>ID</th>
-                            <th>Propriedade</th>
-                            <th>Range</th>
-                            <th>Grupo</th>
-                            <th>Subgrupo</th>
-                            <th>Biblioteca</th>
-                            <th>Ordem</th>
+                            <th width="3%">ID</th>
+                            <th width="20%">Propriedade</th>
+                            <th width="30%">Range</th>
+                            <th width="10%">Grupo</th>
+                            <th width="10%">Subgrupo</th>
+                            <th width="5%">Biblioteca</th>
+                            <th width="3%">Ordem</th>
+                            <th width="6%">Ação</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -324,7 +325,7 @@
                                                 if (isset($classNames[$rid])) {
                                                     echo '<span class="badge bg-info text-dark me-1">' . htmlspecialchars($classNames[$rid]) . '</span>';
                                                 } else {
-                                                    echo '<span class="badge bg-info text-dark me-1">' . htmlspecialchars($rid) . '</span>';
+                                                    echo '<span class="badge bg-info text-dark me-1">' . htmlspecialchars($rid) . 'X</span>';
                                                 }
                                             }
                                         }
@@ -336,15 +337,17 @@
                                 <td><?= htmlspecialchars($f['form_library'] ?? '') ?></td>
                                 <td><?= htmlspecialchars($f['form_order'] ?? '') ?></td>
                                 <td>
-                                    <button type="button" class="btn btn-sm btn-outline-warning btn-editar-propriedade" data-id="<?= htmlspecialchars($f['id_form'] ?? '') ?>" title="Editar">
-                                        <i class="bi bi-pencil"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-info btn-editar-range ms-1" data-id="<?= htmlspecialchars($f['id_form'] ?? '') ?>" data-range="<?= htmlspecialchars($f['form_range'] ?? '') ?>" title="Editar Range">
-                                        <i class="bi bi-sliders"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger btn-deletar-propriedade ms-1" data-id="<?= htmlspecialchars($f['id_form'] ?? '') ?>" title="Deletar">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
+                                    <nobr>
+                                        <button type="button" class="btn btn-sm btn-outline-warning btn-editar-propriedade" data-id="<?= htmlspecialchars($f['id_form'] ?? '') ?>" title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-info btn-editar-range ms-1" data-id="<?= htmlspecialchars($f['id_form'] ?? '') ?>" data-range="<?= htmlspecialchars($f['form_range'] ?? '') ?>" title="Editar Range">
+                                            <i class="bi bi-sliders"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-danger btn-deletar-propriedade ms-1" data-id="<?= htmlspecialchars($f['id_form'] ?? '') ?>" title="Deletar">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                        </nobr>
             </div>
             <!-- Offcanvas: Editar Range extraído para componente -->
             <!-- O painel será incluído uma única vez no final da página -->
@@ -363,19 +366,19 @@
 <?php include(APPPATH . 'Views/components/range_edit_panel.php'); ?>
 
 <script>
-// Atualiza o src do iframe do painel de Range e abre o painel ao clicar no botão RANGE
-document.querySelectorAll('.btn-editar-range').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-        var id = this.getAttribute('data-id');
-        var iframe = document.getElementById('range-iframe');
-        if (iframe && id) {
-            iframe.src = '/rdf/range_id?id_form=' + encodeURIComponent(id);
-        }
-        // Abrir o painel manualmente
-        var offcanvas = bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('offcanvasEditarRange'));
-        offcanvas.show();
+    // Atualiza o src do iframe do painel de Range e abre o painel ao clicar no botão RANGE
+    document.querySelectorAll('.btn-editar-range').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var id = this.getAttribute('data-id');
+            var iframe = document.getElementById('range-iframe');
+            if (iframe && id) {
+                iframe.src = '/rdf/range_id?id_form=' + encodeURIComponent(id);
+            }
+            // Abrir o painel manualmente
+            var offcanvas = bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('offcanvasEditarRange'));
+            offcanvas.show();
+        });
     });
-});
 </script>
 </div>
 <?php include(APPPATH . 'Views/layout/footer.php'); ?>
