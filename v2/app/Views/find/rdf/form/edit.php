@@ -46,7 +46,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="form_range" class="form-label">Range (IDs separados por vírgula)</label>
-                    <input type="text" class="form-control" id="form_range" name="form_range">
+                    <input type="hidden" class="form-control" id="form_range" name="form_range">
                 </div>
                 <div class="mb-3">
                     <label for="form_group_subgroup" class="form-label">Subgrupo</label>
@@ -56,9 +56,17 @@
                     <label for="form_library" class="form-label">Biblioteca</label>
                     <select class="form-select" id="form_library" name="form_library">
                         <option value="1000">Global</option>
-                        <option value="1001">Biblioteca 1001</option>
-                        <option value="1002">Biblioteca 1002</option>
-                        <!-- Adicione mais opções conforme necessário -->
+                        <?php
+                        // Mostra a biblioteca selecionada se não for 1000
+                        // Pega a biblioteca selecionada do cookie
+                        if (!function_exists('get_cookie')) {
+                            helper('cookie');
+                        }
+                        $selectedLib = get_cookie('library_code') ?: get_cookie('library');
+                        if ($selectedLib && $selectedLib !== '1000') {
+                            echo '<option value="' . htmlspecialchars($selectedLib) . '" selected>ID: ' . htmlspecialchars($selectedLib) . '</option>';
+                        }
+                        ?>
                     </select>
                 </div>
                 <div class="mb-3">

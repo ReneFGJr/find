@@ -54,8 +54,15 @@ class Form extends BaseController
 
         $Expression = [];
         $Manifestation = [];
+        // Pega a biblioteca selecionada do cookie
+        if (!function_exists('get_cookie')) {
+            helper('cookie');
+        }
+        $library = get_cookie('library_code') ?: get_cookie('library');
 
-        $Work = $rdfForm->getForm('W', null, $id);
+        $Work = $rdfForm->getForm('W', $id, $library);
+
+        pre($Work);
 
 
         return view('find/rdf/form/index', [

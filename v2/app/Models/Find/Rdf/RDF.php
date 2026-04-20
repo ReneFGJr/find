@@ -180,6 +180,34 @@ class RDF extends Model
             }
         return $RSP;
     }
+    /* ($idDW, 'hasTitle', $idTitulo); */
+    function createLiteral($idC,$property,$term,$lang='')
+    {
+        $RDF_data = new \App\Models\Find\Rdf\RDF_data();
+        $RDF_class = new \App\Models\Find\Rdf\RDF_class();
+
+        /* Literal */
+        if ((round($term) > 0) and ($lang == ''))
+            {
+                $idN = round($term);
+            }
+
+        $idP = $RDF_class->getIdByName($property, 'P');
+        if ($idP > 0)
+            {
+                $RDF_data->insert([
+                    'd_r1' => $idC,
+                    'd_p' => $idP,
+                    'd_r2' => 0,
+                    'd_literal' => $idN,
+                    'd_creadted' => date('Y-m-d H:i:s'),
+                    'd_update' => date('Y-m-d H:i:s'),
+                    'd_library' => '',
+                    'd_user' => ''
+                ]);
+                return $RDF_data->getInsertID();
+            }
+    }
 
     function createConcept($Class, $Name, $Lang='pt_BR')
     {

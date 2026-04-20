@@ -32,10 +32,35 @@ class ProcessMetadata extends Model
         return null;
     }
 
+    public function updateTitle($idW, $title, $isbn)
+        {
+            $RDF = new \App\Models\Find\Rdf\RDF();
+            $RDF_name = new \App\Models\Find\Rdf\RDF_name();
+            $idTitulo = $RDF_name->createLiteral($title);
+
+            /***** Checa propriedade */
+            $data = $RDF->le($idW);
+            $idDW = 0;
+            foreach ($data['data'] as $row) {
+                if ($row['property'] === 'hasTitle') {
+                    $idDW = $row['id_dw'];
+                    break;
+                }
+            }
+
+            if ($idDW == 0) {
+                $RDF->createLiteral($idDW, 'hasTitle', $idTitulo);
+            } else {
+                echo "Já existe";
+            }
+            pre($idTitulo);
+        }
+
     public function processZ3950Result($z3950_result, $isbn = null)
     {
         $RSP = [];
         $Item = new \App\Models\Find\Items\Index();
+        $RDF_name = new \App\Models\Find\Rdf\RDF_name();
         $RDF = new \App\Models\Find\Rdf\RDF();
         // Exemplo de processamento específico para resultado Z39.50
         $titulo = $this->getTitleFromZ3950Result($z3950_result);
@@ -52,6 +77,9 @@ class ProcessMetadata extends Model
 
         $dd['i_work'] = $Work['id_cc'];
         $RSP[] = "ID do Work criado para ISBN $isbn: " . $Work['id_cc'];
+
+        /************************************************** Incluir Titulo (TEXT) */
+        $this->updateTitle($Work['id_cc'], $titulo, $isbn);
 
         /******************************************** Expression */
 

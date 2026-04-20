@@ -62,9 +62,12 @@ $routes->group('about', function($routes) {
 
 
 $routes->group('catalog', function($routes) {
-        // Redirecionamento de /catalog/catalogar/phase para /catalog/catalogar
-        $routes->get('catalogar/phase', 'Catalog::phaseRedirect');
+    // Redirecionamento de /catalog/catalogar/phase para /catalog/catalogar
+    $routes->get('catalogar/phase', 'Catalog::phaseRedirect');
     $routes->get('index', 'Catalog::index');
+    $routes->get('form', function() {
+        return redirect()->to('/catalog/index');
+    });
     $routes->get('catalogar', 'Catalog::catalogar');
     $routes->get('catalogar/isbn', 'Catalog::catalogar_isbn');
     $routes->post('catalogar/isbn', 'Catalog::catalogar_isbn');
