@@ -9,19 +9,15 @@ use CodeIgniter\Model;
 class RDF_form extends Model
 {
     protected $table = 'rdf_form_class_2';
-    protected $primaryKey = 'id_f2';
+    protected $primaryKey = 'id_form';
     protected $allowedFields = [
-        'f2_class',
-        'f2_ord',
-        'f2_label',
-        'f2_property',
-        'f2_type',
-        'f2_required',
-        'f2_help',
-        'f2_status',
-        'f2_created',
-        'f2_updated',
-        // Adicione outros campos conforme a estrutura da tabela
+        'form_frbr',
+        'form_property',
+        'form_range',
+        'form_group',
+        'form_group_subgroup',
+        'form_library',
+        'form_order',
     ];
     protected $useTimestamps = false;
     protected $returnType = 'array';

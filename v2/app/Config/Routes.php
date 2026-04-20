@@ -77,8 +77,12 @@ $routes->group('catalog', function($routes) {
     // Adicione outras rotas de catalogação aqui se necessário
 });
 
+
 $routes->group('rdf', function ($routes) {
     $routes->get('form/(:num)', 'Find\\Rdf\\Form::index/$1');
+    $routes->get('form_edit', 'Find\\Rdf\\Form_edit::index');
+    $routes->post('form/salvar', 'Find\\Rdf\\Form_edit::salvar');
+    $routes->post('form/excluir', 'Find\\Rdf\\Form_edit::excluir');
 });
 
 

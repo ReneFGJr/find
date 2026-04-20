@@ -95,6 +95,23 @@
             </a>
         </div>
 
+        <!-- Gerenciamento de Formulários FRBR -->
+        <div class="col">
+            <a href="<?= base_url('/rdf/form_edit'); ?>" class="text-decoration-none">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="bg-danger bg-opacity-10 rounded-3 p-3">
+                            <i class="bi bi-person-badge fs-3 text-danger"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-1 text-dark">Formulário FRBR</h5>
+                            <p class="card-text small text-secondary mb-0">Gerenciar formulários FRBR</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
     </div>
 
 </main>
