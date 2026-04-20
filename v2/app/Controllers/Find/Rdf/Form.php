@@ -62,10 +62,7 @@ class Form extends BaseController
 
         $Work = $rdfForm->getForm('W', $id, $library);
 
-        pre($Work);
-
-
-        return view('find/rdf/form/index', [
+        return view('find/rdf/form/rdf_edit_concept', [
             'concept' => $concept,
             'Work' => $Work,
             'Expression' => $Expression, // Exemplo, ajustar conforme a estrutura real
