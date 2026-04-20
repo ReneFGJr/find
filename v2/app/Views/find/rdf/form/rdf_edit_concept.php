@@ -2,7 +2,6 @@
 <?php include(APPPATH . 'Views/layout/navbar.php'); ?>
 <?php include(APPPATH . 'Views/components/catalog_breadcrumbs.php'); ?>
 
-<?= $this->section('content') ?>
 <div class="container my-4">
     <h2>Editor RDF - Conceito #<?= htmlspecialchars($concept['id'] ?? '') ?></h2>
     <!----------------------- Work ----------------------->
@@ -19,9 +18,9 @@
                     </tr>
                 </thead>
                 <tbody>
-                <?php
-                $lastGroup = null;
-                foreach ($Work as $i => $w):
+                    <?php
+                    $lastGroup = null;
+                    foreach ($Work as $i => $w):
                         if (empty($w['c_class'])) continue;
                         if ($lastGroup !== $w['form_group']) {
                             echo '<tr class="table-secondary"><td colspan="3"><strong>' . htmlspecialchars($w['form_group']) . '</strong></td></tr>';
@@ -39,8 +38,72 @@
                                 <?php if (!empty($w['n_lang'])): ?>
                                     <span class="badge bg-secondary ms-2"><?= htmlspecialchars($w['n_lang']) ?></span>
                                 <?php endif; ?>
-                                <?php pre($w,false); ?>
+                                <?php pre($w, false); ?>
+                                <?php if (($w['n_type'] ?? '') === 'TEXT'): ?>
+                                    <button type="button" class="btn btn-sm btn-outline-primary ms-2 btn-editar-literal"
+                                        data-idn="<?= htmlspecialchars($w['id_n'] ?? '') ?>"
+                                        data-value="<?= htmlspecialchars($w['n_name'] ?? '') ?>">
+                                        Editar texto
+                                    </button>
+                                <?php endif; ?>
                             </td>
+
+                            <!-- Offcanvas (painel lateral) para editar literal - fora do loop -->
+                            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasEditarLiteral" aria-labelledby="offcanvasEditarLiteralLabel" style="width:400px;max-width:100vw;">
+                                <div class="offcanvas-header">
+                                    <h5 class="offcanvas-title" id="offcanvasEditarLiteralLabel">Editar valor literal</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                </div>
+                                <div class="offcanvas-body">
+                                    <form id="formEditarLiteral">
+                                        <input type="hidden" id="edit-idn" name="id_n" value="">
+                                        <div class="mb-3">
+                                            <label for="edit-n-value" class="form-label">Valor literal</label>
+                                            <textarea class="form-control" id="edit-n-value" name="n_name" rows="5"></textarea>
+                                        </div>
+                                        <div class="d-flex justify-content-end">
+                                            <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="offcanvas">Cancelar</button>
+                                            <button type="button" class="btn btn-primary" id="btnSalvarLiteral">Salvar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                    // Abrir painel lateral ao clicar em editar
+                                    document.querySelectorAll('.btn-editar-literal').forEach(function(btn) {
+                                            btn.addEventListener('click', function() {
+                                                    var idn = this.getAttribute('data-idn');
+                                                    var value = this.getAttribute('data-value');
+                                                    document.getElementById('edit-idn').value = idn;
+                                                    document.getElementById('edit-n-value').value = value;
+                                                    var offcanvas = bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('offcanvasEditarLiteral'));
+                                                    offcanvas.show();
+                                            });
+                                    });
+                                    // Salvar literal via AJAX
+                                    document.getElementById('btnSalvarLiteral').onclick = function() {
+                                            var form = document.getElementById('formEditarLiteral');
+                                            var idn = form.querySelector('#edit-idn').value;
+                                            var value = form.querySelector('#edit-n-value').value;
+                                            fetch('/rdf/concept/salvar_literal', {
+                                                    method: 'POST',
+                                                    headers: { 'Content-Type': 'application/json' },
+                                                    body: JSON.stringify({ id_n: idn, n_name: value })
+                                            })
+                                            .then(resp => resp.json())
+                                            .then(data => {
+                                                    if (data.success) {
+                                                            location.reload();
+                                                    } else {
+                                                            alert('Erro ao salvar: ' + (data.message || 'Erro desconhecido.'));
+                                                    }
+                                            })
+                                            .catch(() => alert('Erro ao salvar: falha na requisição.'));
+                                    };
+                            });
+                            </script>
                             <td class="text-center">
                                 <button type="button" class="btn btn-outline-success btn-sm" title="Adicionar"><i class="bi bi-plus"></i></button>
                             </td>
@@ -51,9 +114,4 @@
             <button type="submit" class="btn btn-success">Salvar Work</button>
         </form>
     <?php endif; ?>
-
-    <?php pre($Expression); ?>
-    <?php pre($Manifestation); ?>
-
 </div>
-<?= $this->endSection() ?>
