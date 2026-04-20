@@ -187,6 +187,8 @@
 
             // Função para abrir o painel de edição de Range
             function abrirPainelRange(id, range) {
+                // Exibir id_form no painel
+                if (window.setRangeIdForm) window.setRangeIdForm(id);
                 // Parse do range atual (JSON ou CSV)
                 var selecionadas = [];
                 try {
@@ -345,7 +347,7 @@
                                     </button>
             </div>
             <!-- Offcanvas: Editar Range extraído para componente -->
-                <?php include(APPPATH . 'Views/components/range_edit_panel.php'); ?>
+            <!-- O painel será incluído uma única vez no final da página -->
             </td>
             </tr>
         <?php endforeach; ?>
@@ -356,5 +358,24 @@
 <?php else: ?>
     <div class="alert alert-info">Nenhum campo de formulário RDF encontrado.</div>
 <?php endif; ?>
+
+<!-- Inclui o painel de edição de Range apenas uma vez -->
+<?php include(APPPATH . 'Views/components/range_edit_panel.php'); ?>
+
+<script>
+// Atualiza o src do iframe do painel de Range e abre o painel ao clicar no botão RANGE
+document.querySelectorAll('.btn-editar-range').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        var id = this.getAttribute('data-id');
+        var iframe = document.getElementById('range-iframe');
+        if (iframe && id) {
+            iframe.src = '/rdf/range_id?id_form=' + encodeURIComponent(id);
+        }
+        // Abrir o painel manualmente
+        var offcanvas = bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('offcanvasEditarRange'));
+        offcanvas.show();
+    });
+});
+</script>
 </div>
 <?php include(APPPATH . 'Views/layout/footer.php'); ?>

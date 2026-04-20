@@ -83,6 +83,8 @@ $routes->group('rdf', function ($routes) {
     $routes->get('form_edit', 'Find\\Rdf\\Form_edit::index');
     $routes->post('form/salvar', 'Find\\Rdf\\Form_edit::salvar');
     $routes->post('form/excluir', 'Find\\Rdf\\Form_edit::excluir');
+    $routes->get('range_id', 'Find\\Rdf\\Range_id::index');
+    $routes->post('form/salvar_range', 'Find\\Rdf\\Form::salvar_range');
 });
 
 

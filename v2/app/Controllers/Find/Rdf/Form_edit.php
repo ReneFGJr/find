@@ -89,10 +89,12 @@ class Form_edit extends BaseController
         $propertyIds = [];
         foreach ($form as $f) {
             $ranges = $f['form_range'] ?? '';
+
             if (is_string($ranges)) {
                 $ranges = trim($ranges, '[]');
                 $ranges = $ranges ? explode(',', $ranges) : [];
             }
+
             foreach ($ranges as $rid) {
                 $rid = trim($rid);
                 if ($rid !== '' && !in_array($rid, $rangeIds)) {
@@ -113,6 +115,7 @@ class Form_edit extends BaseController
                 $classNames[$row['id_c']] = $row['c_class'];
             }
         }
+
         $propertyNames = [];
         if (!empty($propertyIds)) {
             $rows = $classModel->whereIn('id_c', $propertyIds)->findAll();
