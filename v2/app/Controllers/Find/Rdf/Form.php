@@ -70,4 +70,29 @@ class Form extends BaseController
             'data' => $data
         ]);
     }
+
+    public function salvar_literal()
+    {
+        $data = $this->request->getJSON(true);
+        $id_n = $data['id_n'] ?? null;
+        $n_name = $data['n_name'] ?? null;
+        if (!$id_n || $n_name === null) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Parâmetros obrigatórios não informados.'
+            ]);
+        }
+        $model = new \App\Models\Find\Rdf\RDF_name();
+
+        /************************* Atualização */
+        $ok = $model->update($id_n, ['n_name' => $n_name]);
+        if ($ok) {
+            return $this->response->setJSON(['success' => true]);
+        } else {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Erro ao salvar no banco de dados.'
+            ]);
+        }
+    }
 }
