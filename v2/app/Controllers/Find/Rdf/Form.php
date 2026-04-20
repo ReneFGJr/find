@@ -3,6 +3,8 @@ namespace App\Controllers\Find\Rdf;
 
 use App\Controllers\BaseController;
 
+helper('sisdoc');
+
 class Form extends BaseController
     {
     /**
@@ -10,9 +12,12 @@ class Form extends BaseController
      * Espera POST: id_form, form_range (JSON array)
      */
     public function salvar_range()
+        // Debug: mostrar dados antes de salvar
     {
-        $id_form = $this->request->getPost('id_form');
-        $form_range = $this->request->getPost('form_range');
+        // Suporte a JSON puro no corpo da requisição
+        $data = $this->request->getJSON(true);
+        $id_form = $data['id_form'] ?? $this->request->getPost('id_form');
+        $form_range = $data['form_range'] ?? $this->request->getPost('form_range');
         // Decodifica se vier como JSON string
         if (is_string($form_range)) {
             $decoded = json_decode($form_range, true);
@@ -20,12 +25,21 @@ class Form extends BaseController
                 $form_range = json_encode($decoded); // Salva como JSON string
             }
         }
+
+        // (Removido debug JS para garantir resposta JSON válida)
         $model = new \App\Models\Find\Rdf\RDF_form();
+        $msg = '';
+        if ($id_form < 1) {
+            $msg = 'ID do formulário inválido. ['.$id_form.']';
+            return $this->response->setJSON(['success' => false, 'message' => $msg]);
+        } // Validação extra para ID inválido
+
+
         $ok = $model->update($id_form, ['form_range' => $form_range]);
         if ($ok) {
             return $this->response->setJSON(['success' => true]);
         } else {
-            return $this->response->setJSON(['success' => false, 'message' => 'Erro ao salvar no banco de dados.']);
+            return $this->response->setJSON(['success' => false, 'message' => 'Erro ao salvar no banco de dados. '.$msg]);
         }
     }
 

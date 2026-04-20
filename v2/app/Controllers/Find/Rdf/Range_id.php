@@ -15,7 +15,25 @@ class Range_id extends BaseController
         $Classes = $RDF_class->where('c_type','C')->findAll();
 
         $id_form = $this->request->getGet('id_form');
+        if (!$id_form) {
+            return view('find/rdf/range_id', [
+                'id_form' => '',
+                'range' => null,
+                'ClassesMap' => [],
+                'ClassesNoMap' => [],
+                'error' => 'ID do formulário não informado.'
+            ]);
+        }
         $data = $RDF_form_model->find($id_form);
+        if (!$data) {
+            return view('find/rdf/range_id', [
+                'id_form' => $id_form,
+                'range' => null,
+                'ClassesMap' => [],
+                'ClassesNoMap' => [],
+                'error' => 'Formulário não encontrado.'
+            ]);
+        }
         $range = $data['form_range'] ?? [];
         $range = is_string($range) ? json_decode($range, true) : $range;
 
@@ -37,7 +55,8 @@ class Range_id extends BaseController
             'id_form' => $id_form,
             'range' => $data['form_range'] ?? null,
             'ClassesMap' => $ClassesMap,
-            'ClassesNoMap' => $ClassesNoMap
+            'ClassesNoMap' => $ClassesNoMap,
+            'error' => null
         ]);
     }
 }

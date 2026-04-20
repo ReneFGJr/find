@@ -21,8 +21,8 @@ include(APPPATH . 'Views/layout/header.php');
             </select>
         </div>
         <div class="d-flex flex-column justify-content-center align-items-center gap-2" style="margin-top: 1.7em;">
-            <button id="btn-remover" class="btn btn-outline-secondary" type="button">&lt;</button>
-            <button id="btn-adicionar" class="btn btn-outline-secondary" type="button">&gt;</button>
+            <button id="btn-remover" class="btn btn-outline-secondary" type="button">&gt;</button>
+            <button id="btn-adicionar" class="btn btn-outline-secondary" type="button">&lt;</button>
         </div>
         <div>
             <label><strong>Classes Não Selecionadas</strong></label>
