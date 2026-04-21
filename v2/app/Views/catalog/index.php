@@ -8,8 +8,8 @@
             <?php include(APPPATH.'Views/components/catalog_status.php'); ?>
         </div>
         <div class="col-md-4 d-flex flex-column gap-3">
-            <a href="/catalog/catalogar" class="btn btn-success btn-lg w-100"><i class="bi bi-plus-circle me-2"></i>Catalogar</a>
-            <a href="/catalog/etiquetas" class="btn btn-secondary btn-lg w-100"><i class="bi bi-printer me-2"></i>Impressão de Etiquetas</a>
+            <a href="<?= base_url('/catalog/catalogar') ?>" class="btn btn-success btn-lg w-100"><i class="bi bi-plus-circle me-2"></i>Catalogar</a>
+            <a href="<?= base_url('/catalog/etiquetas') ?>" class="btn btn-secondary btn-lg w-100"><i class="bi bi-printer me-2"></i>Impressão de Etiquetas</a>
         </div>
     </div>
 </div>

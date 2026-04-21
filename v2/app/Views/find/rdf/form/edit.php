@@ -380,7 +380,7 @@
             var id = this.getAttribute('data-id');
             var iframe = document.getElementById('range-iframe');
             if (iframe && id) {
-                iframe.src = '/rdf/range_id?id_form=' + encodeURIComponent(id);
+                iframe.src = '<?= base_url('/rdf/range_id') ?>?id_form=' + encodeURIComponent(id);
             }
             // Abrir o painel manualmente
             var offcanvas = bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('offcanvasEditarRange'));

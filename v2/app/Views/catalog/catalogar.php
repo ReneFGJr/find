@@ -14,7 +14,7 @@ include(APPPATH.'Views/layout/header.php'); ?>
                         <h4 class="card-title"><i class="bi bi-upc-scan me-2"></i>Livros com ISBN</h4>
                         <p class="card-text">Utilize esta opção para catalogar livros que possuem ISBN. O sistema buscará automaticamente os dados do livro pelo código informado.</p>
                     </div>
-                    <a href="/catalog/catalogar/isbn" class="btn btn-primary mt-3 w-100">Catalogar com ISBN</a>
+                    <a href="<?= base_url('/catalog/catalogar/isbn') ?>" class="btn btn-primary mt-3 w-100">Catalogar com ISBN</a>
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@ include(APPPATH.'Views/layout/header.php'); ?>
                         <h4 class="card-title"><i class="bi bi-journal-x me-2"></i>Livros sem ISBN</h4>
                         <p class="card-text">Para livros que não possuem ISBN, utilize esta opção para inserir os dados manualmente.</p>
                     </div>
-                    <a href="/catalog/catalogar/no_isbn" class="btn btn-secondary mt-3 w-100">Catalogar sem ISBN</a>
+                    <a href="<?= base_url('/catalog/catalogar/no_isbn') ?>" class="btn btn-secondary mt-3 w-100">Catalogar sem ISBN</a>
                 </div>
             </div>
         </div>

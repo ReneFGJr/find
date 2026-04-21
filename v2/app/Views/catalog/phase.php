@@ -1,6 +1,6 @@
 <?php include(APPPATH . 'Views/layout/header.php'); ?>
 <?php include(APPPATH . 'Views/layout/navbar.php'); ?>
-<?php include(APPPATH.'Views/components/catalog_breadcrumbs.php'); ?>
+<?php include(APPPATH . 'Views/components/catalog_breadcrumbs.php'); ?>
 <div class="container py-4">
     <h2 class="mb-4"><i class="bi bi-list-check me-2"></i>Obras para Catalogar - Status: <?= htmlspecialchars($status) ?></h2>
     <?php if (session('msg')): ?>
@@ -29,44 +29,50 @@
                             <td><?= htmlspecialchars($obra['i_created'] ?? '') ?></td>
                             <td>
                                 <?php
-                                switch($obra['i_status'] ?? '') {
+                                switch ($obra['i_status'] ?? '') {
                                     case 1:
-                                        $url = base_url('/catalog/catalogar/metadadoSearch/'.urlencode($obra['id_i'] ?? ''));
-                                    break;
-                                        case 2: $badgeClass = 'bg-info'; break;
-                                        case 3: $badgeClass = 'bg-warning'; break;
-                                        case 4: $badgeClass = 'bg-primary'; break;
+                                        $url = base_url('/catalog/catalogar/metadadoSearch/' . urlencode($obra['id_i'] ?? ''));
+                                        break;
+                                    case 2:
+                                        $badgeClass = 'bg-info';
+                                        break;
+                                    case 3:
+                                        $badgeClass = 'bg-warning';
+                                        break;
+                                    case 4:
+                                        $badgeClass = 'bg-primary';
+                                        break;
                                     default:
-                                        $url = base_url('/catalog/catalogar/no_action/'.urlencode($obra['id_i'] ?? ''));
+                                        $url = base_url('/catalog/catalogar/no_action/' . urlencode($obra['id_i'] ?? ''));
                                 }
                                 ?>
-                                <a href="<?= $url;?>" class="btn btn-sm btn-outline-success mb-1" title="Continuar"><i class="bi bi-arrow-right-circle"></i></a>
+                                <a href="<?= $url; ?>" class="btn btn-sm btn-outline-success mb-1" title="Continuar"><i class="bi bi-arrow-right-circle"></i></a>
                                 <?php if (isset($obra['i_status']) && $obra['i_status'] < 5): ?>
                                     <button type="button" class="btn btn-sm btn-outline-danger" title="Excluir" onclick="excluirExemplar(<?= (int)$obra['id_i'] ?>, this)"><i class="bi bi-trash"></i></button>
                                 <?php endif; ?>
-                            <script>
-                            function excluirExemplar(id, btn) {
-                                if (!confirm('Tem certeza que deseja excluir este exemplar?')) return;
-                                btn.disabled = true;
-                                fetch('/catalog/catalogar/excluir', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/x-www-form-urlencoded',
-                                        'X-Requested-With': 'XMLHttpRequest',
-                                    },
-                                    body: 'id=' + encodeURIComponent(id)
-                                })
-                                .then(response => response.text())
-                                .then(html => {
-                                    // Recarrega a página para atualizar a lista e mensagens
-                                    window.location.reload();
-                                })
-                                .catch(() => {
-                                    alert('Erro ao excluir exemplar.');
-                                    btn.disabled = false;
-                                });
-                            }
-                            </script>
+                                <script>
+                                    function excluirExemplar(id, btn) {
+                                        if (!confirm('Tem certeza que deseja excluir este exemplar?')) return;
+                                        btn.disabled = true;
+                                        fetch('/catalog/catalogar/excluir', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                                    'X-Requested-With': 'XMLHttpRequest',
+                                                },
+                                                body: 'id=' + encodeURIComponent(id)
+                                            })
+                                            .then(response => response.text())
+                                            .then(html => {
+                                                // Recarrega a página para atualizar a lista e mensagens
+                                                window.location.reload();
+                                            })
+                                            .catch(() => {
+                                                alert('Erro ao excluir exemplar.');
+                                                btn.disabled = false;
+                                            });
+                                    }
+                                </script>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -76,6 +82,6 @@
     <?php else: ?>
         <div class="alert alert-info">Nenhuma obra encontrada para este status.</div>
     <?php endif; ?>
-    <a href="/catalog/catalogar" class="btn btn-secondary mt-3"><i class="bi bi-arrow-left me-2"></i>Voltar</a>
+    <a href="<?= base_url('/catalog/catalogar/isbn') ?>" class="btn btn-secondary mt-3"><i class="bi bi-arrow-left me-2"></i>Voltar</a>
 </div>
 <?php include(APPPATH . 'Views/layout/footer.php'); ?>

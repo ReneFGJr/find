@@ -43,7 +43,7 @@ class Form extends BaseController
                 return redirect()->to('/catalog/catalogar/metadadoSearch/' . $id_item);
             }
             $msg = 'Capa enviada com sucesso!';
-            return view('catalog/cover_loading', ['msg' => '<div class="alert alert-success">' . $msg . '</div>']);
+            return redirect()->to('/catalog/catalogar/phase/1')->with('success', $msg);
         } else {
             $msg = 'Erro ao salvar o arquivo.';
             return view('catalog/cover_loading', ['msg' => '<div class="alert alert-danger">' . $msg . '</div>']);

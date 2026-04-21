@@ -13,7 +13,7 @@ $id_form = isset($id_form) ? $id_form : ($_GET['id_form'] ?? '');
             <?php include(APPPATH . 'Views/components/range_edit_panel.php'); ?>
         </div>
         <div class="col-md-6">
-            <iframe src="/rdf/range_id?id_form=<?= urlencode($id_form) ?>" width="100%" height="600" frameborder="0" style="border:1px solid #ccc;"></iframe>
+            <iframe src="<?= base_url('/rdf/range_id') ?>?id_form=<?= urlencode($id_form) ?>" width="100%" height="600" frameborder="0" style="border:1px solid #ccc;"></iframe>
         </div>
     </div>
 </div>

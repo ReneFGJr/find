@@ -103,7 +103,7 @@ document.getElementById('btn-salvar-range').onclick = function() {
     var selecionadas = Array.from(document.getElementById('classes-map').options).map(function(opt) {
         return opt.value;
     });
-    fetch('/index.php/rdf/form/salvar_range', {
+    fetch('<?= base_url('/index.php/rdf/form/salvar_range') ?>', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -11,7 +11,7 @@
             <ul class="list-group">
                 <?php foreach($statusResumo as $sr): ?>
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <a href="/catalog/catalogar/phase/<?= urlencode($sr['id']) ?>" class="text-decoration-none">
+                        <a href="<?= base_url('/catalog/catalogar/phase/'.urlencode($sr['id'])); ?>" class="text-decoration-none">
                             <?= htmlspecialchars($sr['status']) ?>
                         </a>
                         <span class="badge bg-primary rounded-pill"><?= $sr['qtd'] ?></span>
