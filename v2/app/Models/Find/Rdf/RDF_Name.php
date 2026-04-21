@@ -31,6 +31,9 @@ class RDF_Name extends Model
      */
     public function createLiteral($name, $lang = 'pt_BR')
     {
+        if (is_null($name)) {
+            return null;
+        }
         $name = trim(preg_replace('/\s+/', ' ', $name));
         if ($name == '') {
             return null;

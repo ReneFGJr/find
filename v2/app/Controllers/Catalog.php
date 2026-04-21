@@ -54,6 +54,8 @@ class Catalog extends BaseController
         if ($resp = $this->denyIfNoPermission()) return $resp;
         // Exemplo: Resumo dos itens por status
         $itemModel = new ItemModel();
+        $itemModel->set(['i_status' => 1])->where('i_status',0)->update();
+
         $statusModel = new StatusModel();
         // Obtém o código da biblioteca (GET ou cookie, conforme padrão do sistema)
         $library = $this->request->getGet('library');
@@ -165,8 +167,8 @@ class Catalog extends BaseController
         $z3950_result = session()->getFlashdata('z3950_result');
         if (isset($z3950_result)) {
             $ProcessMetadata = new \App\Models\Find\Items\ProcessMetadata();
-            $result = $ProcessMetadata->processZ3950Result($z3950_result,$isbn);
-            return redirect()->to(current_url());
+            $z3950_result = $ProcessMetadata->processZ3950Result($z3950_result,$isbn);
+            //return redirect()->to(current_url());
         }
 
         if ($busca) {

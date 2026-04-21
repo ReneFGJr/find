@@ -43,6 +43,7 @@ class Index extends Model
         'i_exemplar',
         'i_work',
         'i_expression',
+        'i_autores',
         'i_search','i_ln1','i_ln2','i_ln3','i_ln4'
     ];
 

@@ -98,14 +98,14 @@
                         rangeInput.value = JSON.stringify(rangeInput.value);
                     }
                     var formData = new FormData(form);
-                    fetch('/index.php/rdf/form/salvar', {
+                    var url = '<?= base_url('/index.php/rdf/form/salvar') ?>';
+                    fetch(url, {
                             method: 'POST',
                             body: formData
                         })
                         .then(response => response.json())
                         .then(data => {
                             if (data.success) {
-                                alert(form.querySelector('#id_form').value ? 'Propriedade atualizada com sucesso!' : 'Nova propriedade salva com sucesso!');
                                 var offcanvas = bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('offcanvasNovaPropriedade'));
                                 offcanvas.hide();
                                 form.reset();
@@ -161,7 +161,8 @@
                         var id = this.getAttribute('data-id');
                         if (!id) return;
                         if (!confirm('Tem certeza que deseja excluir este registro? Esta ação não poderá ser desfeita.')) return;
-                        fetch('/index.php/rdf/form/excluir', {
+                        var url = '<?= base_url('/index.php/rdf/form/excluir') ?>';
+                        fetch(url, {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/x-www-form-urlencoded'

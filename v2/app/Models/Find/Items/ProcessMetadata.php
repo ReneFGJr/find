@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models\Find\Items;
 
 use CodeIgniter\Model;
@@ -32,30 +33,31 @@ class ProcessMetadata extends Model
         return null;
     }
 
+
     public function updateTitle($idW, $title, $isbn)
-        {
-            $RDF = new \App\Models\Find\Rdf\RDF();
-            $RDF_Name = new \App\Models\Find\Rdf\RDF_Name();
-            $idTitulo = $RDF_Name->createLiteral($title);
+    {
+        $RDF = new \App\Models\Find\Rdf\RDF();
+        $RDF_Name = new \App\Models\Find\Rdf\RDF_Name();
+        $idTitulo = $RDF_Name->createLiteral($title);
 
-            /***** Checa propriedade */
-            $data = $RDF->le($idW);
-            $idDW = 0;
+        /***** Checa propriedade */
+        $data = $RDF->le($idW);
+        $idDW = 0;
 
-            foreach ($data['data'] as $row) {
-                if (isset($row['property']) && $row['property'] === 'hasTitle') {
-                    $idDW = $row['id_dw'];
-                    break;
-                }
+        foreach ($data['data'] as $row) {
+            if (isset($row['property']) && $row['property'] === 'hasTitle') {
+                $idDW = $row['id_dw'];
+                break;
             }
-
-            if ($idDW == 0) {
-                $RDF->createLiteral($idDW, 'hasTitle', $idTitulo);
-            } else {
-                echo "Já existe";
-            }
-            return $idDW;
         }
+
+        if ($idDW == 0) {
+            $RDF->createLiteral($idDW, 'hasTitle', $idTitulo);
+        } else {
+            echo "Já existe";
+        }
+        return $idDW;
+    }
 
     public function processZ3950Result($z3950_result, $isbn = null)
     {
@@ -63,6 +65,8 @@ class ProcessMetadata extends Model
         $Item = new \App\Models\Find\Items\Index();
         $RDF_Name = new \App\Models\Find\Rdf\RDF_Name();
         $RDF = new \App\Models\Find\Rdf\RDF();
+        $RDFdata = new \App\Models\Find\Rdf\RDF_Data();
+
         // Exemplo de processamento específico para resultado Z39.50
         $titulo = $this->getTitleFromZ3950Result($z3950_result);
         if ($titulo) {
@@ -73,18 +77,52 @@ class ProcessMetadata extends Model
         }
 
         /************************************************** WORK */
-        $wName = 'ISBN:'.$isbn;
+        $wName = 'ISBN:' . $isbn;
         $Work = $RDF->createConcept('Work', $wName);
 
         $dd['i_work'] = $Work['id_cc'];
         $RSP[] = "ID do Work criado para ISBN $isbn: " . $Work['id_cc'];
 
-        /************************************************** Incluir Titulo (TEXT) */
-        $this->updateTitle($Work['id_cc'], $titulo, $isbn);
+        $dd['i_work'] = $Work['id_cc'];
+        $RSP[] = "ID do Work criado para ISBN $isbn: " . $Work['id_cc'];
+
+        /************************************************** Expression */
+        if (isset($z3950_result['concept']['lang'])) {
+            $lang = substr($z3950_result['concept']['lang'], 0, 2);
+        } else {
+            $lang = 'pt';
+        }
+        $eName = 'ISBN:' . $isbn . ':' . $lang;
+        $Expression = $RDF->createConcept('Expression', $eName);
+
+        $dd['i_expression'] = $Expression['id_cc'];
+        $RSP[] = "ID da Expression criada para ISBN $isbn: " . $Expression['id_cc'];
+
+        /************************************************** Incluir Autores (TEXT) */
+        $dd['i_autores'] = '';
+        if (!empty($z3950_result['data']) && is_array($z3950_result['data'])) {
+            foreach ($z3950_result['data'] as $item) {
+
+                if (isset($item['property']) && $item['property'] === 'hasAuthor' && isset($item['literal'])) {
+                    $authorName = $item['literal'];
+                    $aName = 'AUTHOR:' . $authorName;
+                    $Author = $RDF->createConcept('Person', $aName);
+                    // Linkar Work ao Author
+
+                    $RDFdata->createLink($Work['id_cc'], 'hasAuthor', $Author['id_cc'], 0);
+                    $RSP[] = "Autor adicionado para ISBN $isbn: $authorName";
+                    if (strlen($dd['i_autores']) > 0) {
+                        $dd['i_autores'] .= '; ';
+                    }
+                    $dd['i_autores'] .=  $authorName;
+                }
+            }
+
+            /************************************************** Incluir Titulo (TEXT) */
+            $this->updateTitle($Work['id_cc'], $titulo, $isbn);
+        }
 
         /******************************************** Expression */
-
-
         if ($dd != []) {
             $Item->set($dd)
                 ->where('i_identifier', $isbn)
@@ -92,12 +130,15 @@ class ProcessMetadata extends Model
                 ->where('i_titulo', null)
                 ->orWhere('i_titulo', '')
                 ->orWhere('i_work', 0)
+                ->orWhere('i_expression', 0)
+                ->orWhere('i_manitestation', 0)
                 ->groupEnd()
                 ->update();
+            //echo $Item->getLastQuery();
         }
 
         // ... outros processamentos ...
-        return $RSP;
+        return $z3950_result;
     }
 
     /**

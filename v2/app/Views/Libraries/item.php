@@ -138,6 +138,7 @@
                 <table class="table table-striped table-sm align-middle">
                     <thead class="table-light">
                         <tr>
+                            <th>#</th>
                             <th>Tombo</th>
                             <th>Exemplar</th>
                             <th>Localização</th>
@@ -146,8 +147,10 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <?php $itemCount = 0; ?>
                         <?php foreach ($book['items'] as $ex): ?>
                         <tr>
+                            <td><?= esc(++$itemCount); ?></td>
                             <td><?= esc($ex['tombo'] ?? ''); ?></td>
                             <td><?= esc($ex['exemplar'] ?? ''); ?></td>
                             <td><?= esc($ex['local'] ?? ''); ?></td>

@@ -11,6 +11,7 @@
             <table class="table table-bordered table-striped">
                 <thead class="table-light">
                     <tr>
+                        <th width="3%">#</th>
                         <th>Título</th>
                         <th>ISBN</th>
                         <th>Tombo</th>
@@ -20,8 +21,10 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <?php $itemCount = 0; ?>
                     <?php foreach ($obras as $obra): ?>
                         <tr>
+                            <td><?= esc(++$itemCount);  ?></td>
                             <td><?= htmlspecialchars($obra['i_titulo'] ?? '') ?></td>
                             <td><?= htmlspecialchars($obra['i_identifier'] ?? '') ?></td>
                             <td><?= htmlspecialchars($obra['i_tombo'] ?? '') ?></td>
@@ -41,6 +44,9 @@
                                         break;
                                     case 4:
                                         $badgeClass = 'bg-primary';
+                                        break;
+                                    case 0:
+                                        $url = base_url('/catalog/catalogar/metadadoSearch/' . urlencode($obra['id_i'] ?? ''));
                                         break;
                                     default:
                                         $url = base_url('/catalog/catalogar/no_action/' . urlencode($obra['id_i'] ?? ''));

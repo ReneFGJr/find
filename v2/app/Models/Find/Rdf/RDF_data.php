@@ -24,4 +24,66 @@ class RDF_Data extends Model
     protected $returnType = 'array';
 
     // Adicione métodos customizados conforme necessário
+    function createLink($IDc, $property, $IDd, $literal)
+    {
+        $RDF_Class = new \App\Models\Find\Rdf\RDF_Class();
+        if (!is_numeric($property)) {
+            $idp = $RDF_Class->where('c_class', $property)->first();
+            if ($idp) {
+                $idp = $idp['id_c'];
+            } else {
+                $idp = null;
+            }
+        } else {
+            $idp = $property;
+        }
+
+        if (!$idp) {
+            return [
+                'status'  => 400,
+                'success' => false,
+                'message' => 'Propriedade não encontrada'
+            ];
+        }
+
+        // ❌ validação se ja existe o link (evita duplicidade)
+        $existing = $this->where([
+            'd_r1' => $IDc,
+            'd_p'  => $idp,
+            'd_r2' => $IDd,
+            'd_literal' => $literal
+        ])->first();
+        if ($existing) {
+            return [
+                'status'  => 400,
+                'success' => false,
+                'message' => 'Link já existe'
+            ];
+        }
+
+        // ❌ validação corrigida
+        if (!$IDc || !$idp || !$IDd) {
+            return $this->respond([
+                'status'  => 400,
+                'success' => false,
+                'message' => 'Parâmetros obrigatórios ausentes'
+            ], 400);
+        }
+
+        // ✅ monta dados
+        $dd = [
+            'd_r1'      => $IDc,
+            'd_p'       => $idp,
+            'd_r2'      => $IDd,
+            'd_literal' => $literal,
+            'd_updated' => date('Y-m-d H:i:s'),
+            'd_library' => 0,
+            'd_use'     => 0
+        ];
+
+        // ✅ insere
+        $idA = $this->insert($dd);// Lógica para criar um link RDF
+        return $idA;
+
+    }
 }

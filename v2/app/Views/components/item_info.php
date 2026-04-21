@@ -48,8 +48,8 @@ function linkRDF($id)
                             </td>
                         </tr>
                         <tr>
-                            <th class="text-end">Autor</th>
-                            <td><?= htmlspecialchars($itemInfo['i_autor'] ?? '') ?></td>
+                            <th class="text-end">Autor(es)</th>
+                            <td><?= htmlspecialchars($itemInfo['i_autores'] ?? '') ?></td>
 
                             <th class="text-end">Tombo</th>
                             <td><?= htmlspecialchars($itemInfo['i_tombo'] ?? '') ?></td>

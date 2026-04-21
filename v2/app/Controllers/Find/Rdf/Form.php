@@ -31,8 +31,8 @@ class Form extends BaseController
         $target = $dir . $isbn . '.jpg';
 
         // Valida tipo
-        if (!in_array($file->getMimeType(), ['image/jpeg', 'image/jpg'])) {
-            $msg = 'Apenas arquivos JPEG são permitidos.';
+        if (!in_array($file->getMimeType(), ['image/jpeg', 'image/jpg', 'image/webp', 'image/png'])) {
+            $msg = 'Apenas arquivos JPEG são permitidos. ['. $file->getMimeType().']';
             return view('catalog/cover_loading', ['msg' => '<div class="alert alert-danger">' . $msg . '</div>']);
         }
 
@@ -105,13 +105,19 @@ class Form extends BaseController
         $library = get_cookie('library_code') ?: get_cookie('library');
 
         $Work = $rdfForm->getForm('W', $id, $library);
+        $Expression = $rdfForm->getForm('E', $id, $library);
+        $Manifestation = $rdfForm->getForm('M', $id, $library);
+
+        $dataForm = [
+            'Work' => $Work,
+            'Expression' => $Expression,
+            'Manifestation' => $Manifestation
+        ];
 
         return view('find/rdf/form/rdf_edit_concept', [
             'concept' => $concept,
             'id'=>$id,
-            'Work' => $Work,
-            'Expression' => $Expression, // Exemplo, ajustar conforme a estrutura real
-            'Manifestation' => $Manifestation, // Exemplo, ajustar conforme a estrutura real
+            'dataForm' => $dataForm,
             'data' => $data
         ]);
     }

@@ -42,7 +42,7 @@
             <?php if (!empty($z3950_result)): ?>
                 <div class="alert alert-success">
                     <h5 class="mb-2"><i class="bi bi-cloud-download me-2"></i>Resultado da consulta Z39.50</h5>
-                    <pre class="bg-light p-2 border rounded small" style="max-height:300px;overflow:auto;">
+                    <pre class=" p-2 border rounded small" style="max-height:300px;overflow:auto;">
                     <?= htmlspecialchars(print_r($z3950_result, true)) ?>
                     </pre>
                 </div>

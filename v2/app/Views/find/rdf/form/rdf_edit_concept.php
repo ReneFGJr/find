@@ -17,89 +17,105 @@
     <div class="tab-content" id="tabEditConceptContent">
         <div class="tab-pane fade show active" id="tab-form" role="tabpanel" aria-labelledby="tab-form-tab">
             <!-- Conteúdo do formulário original -->
-            <?php if (!empty($Work)) : ?>
-                <h3>Work</h3>
-                <form method="get" action="">
-                    <table class="table table-bordered align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th width="20%">Propriedade</th>
-                                <th style="width:20px;"></th>
-                                <th width="76%">Valor</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            $lastGroup = null;
-                            $propLabel = '';
-                            foreach ($Work as $i => $w):
-                                if (($w['n_type'] === 'CONCEPT') and ($w['n_name'] != '')) {
-                                    $w['n_type'] = 'CONCEPT:EXIST';
-                                }
-                                if (empty($w['c_class'])) continue;
-                                if ($lastGroup !== $w['form_group']) {
-                                    echo '<tr class="table-secondary"><td colspan="3"><strong>' . htmlspecialchars($w['form_group']) . '</strong></td></tr>';
-                                    $lastGroup = $w['form_group'];
-                                }
-                            ?>
+            <?php
+            $forms = ['Work', 'Expression', 'Manifestation'];
+            foreach ($forms as $f) {
+                $dataf = $dataForm[$f] ?? [];
+            ?>
+
+                <?php if (!empty($dataf)) : ?>
+                    <h3><?= htmlspecialchars($f) ?></h3>
+                    <form method="get" action="">
+                        <table class="table table-bordered align-middle">
+                            <thead class="table-light">
                                 <tr>
-                                    <td>
-                                        <?php
-                                        $xpropLabel = $w['c_class'] ?? '';
-                                        if ($xpropLabel !== $propLabel) {
-                                            echo '<span title="'.htmlspecialchars($w['c_class']).'">';
-                                            echo htmlspecialchars($w['c_class']);
-                                            echo '</span>';
-                                            $propLabel = $xpropLabel;
-                                        }
-                                        ?>
-                                    </td>
-                                    <!-- Botoes -->
-                                    <td class="text-center">
-                                        <nobr>
-                                            <?php switch ($w['n_type']) {
-                                                case 'TEXT': ?>
-                                                    <button type="button" class="btn btn-outline-success btn-sm" title="Adicionar"><i class="bi bi-plus"></i></button>
-                                                    <button type="button" class="btn btn-sm btn-outline-primary ms-1 btn-editar-literal"
-                                                        id="btn-editar-literal-<?= htmlspecialchars($w['id_n'] ?? '') ?>"
-                                                        data-idn="<?= htmlspecialchars($w['id_n'] ?? '') ?>"
-                                                        data-value="<?= htmlspecialchars($w['n_name'] ?? '') ?>"
-                                                        title="Editar texto">
-                                                        <i class="bi bi-pencil"></i>
-                                                    </button>
-                                                <?php break;
-                                                case 'CONCEPT': ?>
-                                                    <button type="button" class="btn btn-outline-success btn-sm btn-adicionar-atributo" title="Adicionar"
-                                                        data-idc="<?= htmlspecialchars($id ?? '') ?>"
-                                                        data-prop="<?= htmlspecialchars($w['c_class'] ?? '') ?>"
-                                                        data-group="<?= htmlspecialchars($w['form_group'] ?? '') ?>"
-                                                        data-type="<?= htmlspecialchars($w['n_type'] ?? '') ?>"
-                                                        data-value="<?= htmlspecialchars($w['n_name'] ?? '') ?>"
-                                                        data-range="<?= htmlspecialchars($w['form_range'] ?? '') ?>">
-                                                        <i class="bi bi-plus"></i>
-                                                    </button>
-                                                <?php break;
-                                                case 'CONCEPT:EXIST': ?>
-                                                    <button type="button" class="btn btn-outline-danger btn-sm btn-remover-atributo" title="Excluir">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                    <?php break; ?>
-                                            <?php } ?>
-                                        </nobr>
-                                    </td>
-                                    <td>
-                                        <?= htmlspecialchars($w['n_name'] ?? '') ?>
-                                        <?php if (!empty($w['n_lang'])): ?>
-                                            <span class="badge bg-secondary ms-1"><?= htmlspecialchars($w['n_lang']) ?></span>
-                                        <?php endif; ?>
-                                    </td>
+                                    <th width="20%">Propriedade</th>
+                                    <th style="width:20px;"></th>
+                                    <th width="76%">Valor</th>
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                    <button type="submit" class="btn btn-success">Salvar Work</button>
-                </form>
-            <?php endif; ?>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $lastGroup = null;
+                                $propLabel = '';
+                                foreach ($dataf as $i => $w):
+                                    if (($w['n_type'] === 'CONCEPT') and ($w['n_name'] != '')) {
+                                        $w['n_type'] = 'CONCEPT:EXIST';
+                                    }
+                                    if (empty($w['c_class'])) continue;
+                                    if ($lastGroup !== $w['form_group']) {
+                                        if ($w['form_group'] != '') {
+                                            echo '<tr class="table-secondary"><td colspan="3" class="bg-secondary text-center"><strong>' . htmlspecialchars($w['form_group']) . '</strong></td></tr>';
+                                        }
+                                        $lastGroup = $w['form_group'];
+                                    }
+                                ?>
+                                    <tr>
+                                        <td>
+                                            <?php
+                                            $xpropLabel = $w['c_class'] ?? '';
+                                            if ($xpropLabel !== $propLabel) {
+                                                echo '<span title="' . htmlspecialchars($w['c_class']) . '">';
+                                                echo htmlspecialchars($w['c_class']);
+                                                echo '</span>';
+                                                $propLabel = $xpropLabel;
+                                            }
+                                            ?>
+                                        </td>
+                                        <!-- Botoes -->
+                                        <td class="text-center">
+                                            <nobr>
+                                                <?php switch ($w['n_type']) {
+                                                    case 'TEXT': ?>
+                                                        <button type="button" class="btn btn-outline-success btn-sm" title="Adicionar"><i class="bi bi-plus"></i></button>
+                                                        <?php if ($w['n_name'] != ''): ?>
+                                                            <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir"><i class="bi bi-trash"></i></button>
+                                                        <?php endif; ?>
+
+                                                        <?php if ($w['n_name'] != ''): ?>
+                                                            <button type="button" class="btn btn-sm btn-outline-primary ms-1 btn-editar-literal"
+                                                                id="btn-editar-literal-<?= htmlspecialchars($w['id_n'] ?? '') ?>"
+                                                                data-idn="<?= htmlspecialchars($w['id_n'] ?? '') ?>"
+                                                                data-value="<?= htmlspecialchars($w['n_name'] ?? '') ?>"
+                                                                title="Editar texto">
+                                                                <i class="bi bi-pencil"></i>
+                                                            </button>
+                                                        <?php endif; ?>
+                                                    <?php break;
+                                                    case 'CONCEPT': ?>
+                                                        <button type="button" class="btn btn-outline-success btn-sm btn-adicionar-atributo" title="Adicionar"
+                                                            data-idc="<?= htmlspecialchars($id ?? '') ?>"
+                                                            data-prop="<?= htmlspecialchars($w['c_class'] ?? '') ?>"
+                                                            data-group="<?= htmlspecialchars($w['form_group'] ?? '') ?>"
+                                                            data-type="<?= htmlspecialchars($w['n_type'] ?? '') ?>"
+                                                            data-value="<?= htmlspecialchars($w['n_name'] ?? '') ?>"
+                                                            data-range="<?= htmlspecialchars($w['form_range'] ?? '') ?>">
+                                                            <i class="bi bi-plus"></i>
+                                                        </button>
+                                                    <?php break;
+                                                    case 'CONCEPT:EXIST': ?>
+                                                        <button type="button" class="btn btn-outline-danger btn-sm btn-remover-atributo" title="Excluir">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                        <?php break; ?>
+                                                <?php } ?>
+                                            </nobr>
+                                        </td>
+                                        <td>
+                                            <?= htmlspecialchars($w['n_name'] ?? '') ?>
+                                            <?php if (!empty($w['n_lang'])): ?>
+                                                <span class="badge bg-secondary ms-1"><?= htmlspecialchars($w['n_lang']) ?></span>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </form>
+                <?php endif; ?>
+            <?php } // Fim do loop dos forms
+            ?>
+            <button type="submit" class="btn btn-success">Retornar</button>
         </div>
         <div class="tab-pane fade" id="tab-data" role="tabpanel" aria-labelledby="tab-data-tab">
             <h4>Dados brutos ($data)</h4>

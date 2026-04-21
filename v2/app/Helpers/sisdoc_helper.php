@@ -79,8 +79,20 @@ function download_cover($isbn, $urls)
             }
             curl_close($ch);
         }
-        $fileO = FCPATH . 'assets/img/no_cover.png';
-        file_put_contents($path, file_get_contents($fileO));
+        $fileO = FCPATH . 'public/assets/img/no_cover.png';
+        if (file_exists($fileO)) {
+            file_put_contents($path, file_get_contents($fileO));
+        } else {
+            // Se a imagem de fallback não existir, cria um arquivo vazio para evitar tentativas futuras
+            $fileO = FCPATH . 'assets/img/no_cover.png';
+            if (file_exists($fileO)) {
+                file_put_contents($path, file_get_contents($fileO));
+            } else {
+                echo "OPS, arquivo de fallback para capa não encontrado: " . $fileO;
+                exit;
+            }
+
+        }
         return false;
     } else {
         return true;

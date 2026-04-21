@@ -189,10 +189,15 @@ class RDF extends Model
         $RDF_Class = new \App\Models\Find\Rdf\RDF_Class();
 
         /* Literal */
-        if ((round($term) > 0) and ($lang == ''))
-            {
-                $idN = round($term);
-            }
+        $idN = null;
+        if (is_numeric($term) && $lang == '') {
+            $idN = (int) round($term);
+        }
+
+        if (!$idN) {
+            echo "OPS, Literal invalido: $term";
+            return null;
+        }
 
         $idP = $RDF_Class->getIdByName($property, 'P');
         if ($idP > 0)

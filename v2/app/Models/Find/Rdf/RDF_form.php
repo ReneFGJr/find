@@ -3,6 +3,8 @@ namespace App\Models\Find\Rdf;
 
 use CodeIgniter\Model;
 
+helper('cookie');
+
 /**
  * Model para a tabela rdf_form_class_2
  */
@@ -31,7 +33,9 @@ class RDF_Form extends Model
      */
     public function getForm($frbr, $conceptId, $library = '')
     {
-        helper('cookie');
+        if ($conceptId == null || $conceptId < 1) {
+            return [];
+        }
         if (!$library == '') {
             $library = get_cookie('library_code') ?? get_cookie('library') ?? null;
         }
@@ -78,9 +82,9 @@ class RDF_Form extends Model
                     0 as id_cc, 0 as cc_use, n_name, n_lang, 'TEXT' AS n_type, form_range
                 FROM rdf_form_class_2
                 INNER JOIN rdf_class ON form_property = id_c
-                INNER JOIN rdf_data ON d_p = id_c and d_r2 = 0 and d_r1 = ?
-                INNER JOIN rdf_name ON d_literal = id_n
-                WHERE form_frbr = ? and (form_library = ? or form_library = '1000' or form_library = '0')
+                LEFT JOIN rdf_data ON d_p = id_c and d_r2 = 0 and d_r1 = ?
+                LEFT JOIN rdf_name ON d_literal = id_n
+                WHERE form_frbr = ? and (form_library = ? or form_library = '1000' or form_library = '0') AND (form_range = '[\"132\"]')
             ) AS all_forms
             ORDER BY form_order
         ";
