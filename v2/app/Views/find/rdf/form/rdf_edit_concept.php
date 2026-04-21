@@ -13,14 +13,19 @@
                 <thead class="table-light">
                     <tr>
                         <th>Propriedade</th>
+                        <th style="width:20px;"></th>
                         <th>Valor</th>
-                        <th style="width:40px;"></th>
+
                     </tr>
                 </thead>
                 <tbody>
                     <?php
                     $lastGroup = null;
+                    $propLabel = '';
                     foreach ($Work as $i => $w):
+                        if (($w['n_type'] === 'CONCEPT') and ($w['n_name'] != '')) {
+                            $w['n_type'] = 'CONCEPT:EXIST';
+                        }
                         if (empty($w['c_class'])) continue;
                         if ($lastGroup !== $w['form_group']) {
                             echo '<tr class="table-secondary"><td colspan="3"><strong>' . htmlspecialchars($w['form_group']) . '</strong></td></tr>';
@@ -29,20 +34,20 @@
                     ?>
                         <tr>
                             <td>
-                                <span title="<?= htmlspecialchars($w['c_class']) ?>">
-                                    <?= htmlspecialchars($w['c_class']) ?>
-                                </span>
+                                <?php
+                                $xpropLabel = $w['c_class'] ?? '';
+                                if ($xpropLabel !== $propLabel) {
+                                    echo '<span title="'.htmlspecialchars($w['c_class']).'">';
+                                    echo htmlspecialchars($w['c_class']);
+                                    echo '</span>';
+                                    $propLabel = $xpropLabel;
+                                }
+                                ?>
                             </td>
-                            <td>
-                                <?= htmlspecialchars($w['n_name'] ?? '') ?>
-                                <?php if (!empty($w['n_lang'])): ?>
-                                    <span class="badge bg-secondary ms-1"><?= htmlspecialchars($w['n_lang']) ?></span>
-                                <?php endif; ?>
-                                <?php pre($w, false); ?>
-                            </td>
+
+                            <!-- Botoes -->
                             <td class="text-center">
                                 <nobr>
-
                                     <?php switch ($w['n_type']) {
                                         case 'TEXT': ?>
                                             <button type="button" class="btn btn-outline-success btn-sm" title="Adicionar"><i class="bi bi-plus"></i></button>
@@ -65,10 +70,24 @@
                                                 data-range="<?= htmlspecialchars($w['form_range'] ?? '') ?>">
                                                 <i class="bi bi-plus"></i>
                                             </button>
-                                    <?php break;
-                                    } ?>
+                                        <?php break;
+                                        case 'CONCEPT:EXIST': ?>
+                                            <button type="button" class="btn btn-outline-danger btn-sm btn-remover-atributo" title="Excluir">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                            <?php break; ?>
+                                    <?php } ?>
                                 </nobr>
                             </td>
+                            <td>
+                                <?= htmlspecialchars($w['n_name'] ?? '') ?>
+                                <?php if (!empty($w['n_lang'])): ?>
+                                    <span class="badge bg-secondary ms-1"><?= htmlspecialchars($w['n_lang']) ?></span>
+                                <?php endif; ?>
+                                <?php //pre($w, false);
+                                ?>
+                            </td>
+
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -175,8 +194,10 @@
                 // Preenche campos do formulário
                 var nomeInput = document.getElementById('atributo-nome');
                 var valorInput = document.getElementById('atributo-valor');
+                var idcInput = document.getElementById('atributo-idc');
                 if (nomeInput) nomeInput.value = nome;
                 if (valorInput) valorInput.value = '';
+                if (idcInput) idcInput.value = idc;
                 // Passa o range corretamente para o campo e debug
                 if (window.setAtributoRange) {
                     window.setAtributoRange(range);

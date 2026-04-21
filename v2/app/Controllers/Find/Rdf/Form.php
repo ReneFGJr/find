@@ -8,6 +8,44 @@ helper('sisdoc');
 class Form extends BaseController
     {
     /**
+     * Upload de capa de livro por ISBN
+     * Salva como _covers/image/{isbn}.jpg
+     */
+    public function upload_cover()
+    {
+        helper(['filesystem', 'form']);
+        $isbn = $this->request->getPost('isbn');
+        $file = $this->request->getFile('cover_file');
+        $msg = '';
+        if (!$isbn || !$file || !$file->isValid()) {
+            $msg = 'ISBN ou arquivo inválido.';
+            return view('catalog/cover_loading', ['msg' => '<div class="alert alert-danger">' . $msg . '</div>']);
+        }
+
+        // Garante diretório
+        $dir = FCPATH . '_covers/image/';
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+        $target = $dir . $isbn . '.jpg';
+
+        // Valida tipo
+        if (!in_array($file->getMimeType(), ['image/jpeg', 'image/jpg'])) {
+            $msg = 'Apenas arquivos JPEG são permitidos.';
+            return view('catalog/cover_loading', ['msg' => '<div class="alert alert-danger">' . $msg . '</div>']);
+        }
+
+        // Move arquivo
+        if ($file->move($dir, $isbn . '.jpg', true)) {
+            $msg = 'Capa enviada com sucesso!';
+            return view('catalog/cover_loading', ['msg' => '<div class="alert alert-success">' . $msg . '</div>']);
+        } else {
+            $msg = 'Erro ao salvar o arquivo.';
+            return view('catalog/cover_loading', ['msg' => '<div class="alert alert-danger">' . $msg . '</div>']);
+        }
+    }
+
+    /**
      * Salva o campo form_range de um formulário RDF
      * Espera POST: id_form, form_range (JSON array)
      */
@@ -45,9 +83,10 @@ class Form extends BaseController
 
     public function index($id = null)
     {
-        // Buscar conceito e propriedades reais pelo ID
-        $rdfModel = new \App\Models\Find\Rdf\RDF();
         $rdfForm = new \App\Models\Find\Rdf\RDF_form();
+        $rdfModel = new \App\Models\Find\Rdf\RDF();
+
+        // Buscar conceito e propriedades reais pelo ID
         $conceptData = $rdfModel->le($id);
         $concept = $conceptData['concept'] ?? [];
         $data = $conceptData['data'] ?? [];

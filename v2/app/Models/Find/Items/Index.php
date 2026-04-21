@@ -335,14 +335,40 @@ class Index extends Model
             $RSP['items'] = $this->exemplares($isbn, $lib);
             $RSP['cover'] = $Cover->cover($isbn);
 
+            $metadata = [];
+
             $RSP['ID'] = $dt['i_manitestation'];
 
             $RDF = new \App\Models\Find\Rdf\RDF();
+
+            /********************* Expression ****/
+            $idW = $dt['i_work'];
+            if ($idW > 0) {
+                $dtW = $RDF->le($idW);
+            } else {
+                $dtW = [];
+            }
+
+            /********************* Expression ****/
+            $idE = $dt['i_expression'];
+            if ($idE > 0) {
+                $dtE = $RDF->le($idE);
+            } else {
+                $dtE = [];
+            }
+
+            /********************* Manifestation */
             $idM = $dt['i_manitestation'];
-            $dtR = $RDF->le($idM);
+            if ($idM > 0)
+                {
+                    $dtR = $RDF->le($idM);
+                } else {
+                    $dtR = [];
+                }
+            $metadata = array_merge($dtR, $dtW, $dtE);
 
             $Metadata = new \App\Models\Find\Metadata\Index();
-            $META = $Metadata->metadata($dtR, $META);
+            $META = $Metadata->metadata($metadata, $META);
 
             /*********** Expression */
             $expression = $RDF->extract($dtR, 'isAppellationOfManifestation', 'A');

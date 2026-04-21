@@ -6,6 +6,8 @@ use App\Controllers\BaseController;
 use App\Models\Find\Library\Index as LibraryIndex;
 use App\Models\Find\Items\Index as ItemsIndex;
 
+helper('sisdoc');
+
 class LibraryController extends BaseController
 {
     public function bibliotecas()
@@ -95,6 +97,7 @@ class LibraryController extends BaseController
 
         $itemsModel = new ItemsIndex();
         $row = $itemsModel->where('id_i', $id)->first();
+
 
         if (!$row) {
             return redirect()->to('/library')->with('msg', 'Item não encontrado.')->with('msg_type', 'danger');

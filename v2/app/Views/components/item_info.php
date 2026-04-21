@@ -38,10 +38,14 @@ function linkRDF($id)
                     <tbody>
                         <tr>
                             <th width="10%" class="text-end">Título</th>
-                            <td width="60%"><?= htmlspecialchars($itemInfo['i_titulo'] ?? '') ?></td>
+                            <td width="50%"><?= htmlspecialchars($itemInfo['i_titulo'] ?? '') ?></td>
 
                             <th width="10%" class="text-end">ID</th>
-                            <td width="20%"><?= htmlspecialchars($itemInfo['id_i'] ?? '') ?></td>
+                            <td width="30%"><?= htmlspecialchars($itemInfo['id_i'] ?? '') ?></td>
+
+                            <td rowspan="10" class="small">Capa:<br>
+                            <img src="<?= cover_image($itemInfo['i_identifier'] ?? '') ?>" alt="Capa"  style="width: 100px;">
+                            </td>
                         </tr>
                         <tr>
                             <th class="text-end">Autor</th>

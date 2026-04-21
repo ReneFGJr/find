@@ -8,17 +8,13 @@
         <input type="text" class="form-control" id="atributo-valor" name="atributo_valor" required>
     </div>
     <div>
-        Range:
-        <input type="text" id="atributo-range" name="atributo_range">
-        IDc:
-        <input type="text" id="atributo-idc" name="atributo_idc">
+        <input type="hidden" id="atributo-range" name="atributo_range">
+        <input type="hidden" id="atributo-idc" name="atributo_idc">
     </div>
-    XXXXXXXXX
     <div class="mb-3" id="autocomplete-candidatos" style="display:none;">
         <label for="atributo-candidatos" class="form-label">Selecione um valor</label>
         <select class="form-select" id="atributo-candidatos" name="atributo_candidatos" size="10"></select>
     </div>
-    XXXXXXXXX
     <div class="d-flex justify-content-end">
         <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="offcanvas">Cancelar</button>
         <button type="submit" class="btn btn-success">Adicionar</button>
@@ -40,31 +36,46 @@
         } else {
             valor = document.getElementById('atributo-valor').value;
         }
-        // alert("Range: " + range);
-        alert("IDc:" + idC);
-        alert("Prop:" + prop);
 
-        // TODO: Ajuste a URL e payload conforme sua API
-        fetch('/rdf/concept/adicionar_atributo', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    nome: nome,
-                    valor: valor,
-                })
-            })
-            .then(resp => resp.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Erro ao adicionar: ' + (data.message || 'Erro desconhecido.'));
+        // Envio AJAX tradicional (form-urlencoded)
+        var url = '<?= base_url(); ?>/rdf/concept/add_link_concept';
+        var params = new URLSearchParams();
+        params.append('property', prop);
+        params.append('value', valor);
+        params.append('idc', idC);
+
+        console.log('Enviando dados:', {
+            property: prop,
+            value: valor,
+            idc: idC
+        });
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', url, true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                try {
+                    var data = JSON.parse(xhr.responseText);
+                    if (xhr.status === 200 && data.success) {
+                        location.reload();
+                    } else {
+                        alert('Erro ao adicionar 2: ' + (data.message || 'Erro desconhecido.'));
+                    }
+                } catch (err) {
+                    let msg = 'Erro ao adicionar 3: falha na requisição.';
+                    if (err) {
+                        if (err.message) msg += '\nMensagem: ' + err.message;
+                        if (err.stack) msg += '\nStack: ' + err.stack;
+                        msg += '\nObjeto: ' + JSON.stringify(err);
+                    }
+                    alert(msg + '\nResposta: ' + xhr.responseText);
                 }
-            })
-            .catch(() => alert('Erro ao adicionar: falha na requisição.'));
+            }
+        };
+        xhr.send(params.toString());
     };
+
     // Função para mostrar os dados recebidos no painel
     function mostrarDebugAtributo(dados) {
         var debug = document.getElementById('atributo-debug');
@@ -84,13 +95,15 @@
     var selectCandidatos = document.getElementById('atributo-candidatos');
     var divCandidatos = document.getElementById('autocomplete-candidatos');
     var inputRange = document.getElementById('atributo-range');
+    var inputIDc = document.getElementById('atributo-idc');
 
     inputValor.addEventListener('input', function() {
         var range = document.getElementById('atributo-range').value;
         var termo = inputValor.value;
         var range = inputRange.value;
+        var idc = inputIDc.value;
         var url = '<?= base_url(); ?>/rdf/searchConcept?term=' + encodeURIComponent(termo) + '&range=' + encodeURIComponent(range);
-        console.log(url)
+
         if (termo.length < 2 || !range) {
             divCandidatos.style.display = 'none';
             selectCandidatos.innerHTML = '';
@@ -161,6 +174,8 @@
             inputValor.value = opt.textContent;
         }
     });
+
+
     // Permite setar o range externamente
     window.setAtributoRange = function(range) {
         if (!inputRange) {
@@ -182,7 +197,9 @@
         } else {
             inputRange.value = String(range);
         }
-        var evt = new Event('input', { bubbles: true });
+        var evt = new Event('input', {
+            bubbles: true
+        });
         inputRange.dispatchEvent(evt);
         mostrarDebugAtributo({
             Info: 'Range carregado',
@@ -192,13 +209,22 @@
 
     // Permite setar o idc externamente (igual ao range)
     window.setAtributoIdc = function(idc) {
+        // Garante que o campo existe e está visível
         var inputIdc = document.getElementById('atributo-idc');
         if (inputIdc) {
-            inputIdc.value = idc;
+            inputIdc.value = idc !== undefined && idc !== null ? String(idc) : '';
             mostrarDebugAtributo({
                 Info: 'IDC carregado',
                 IDC: inputIdc.value
             });
+        } else {
+            console.warn('Campo atributo-idc não encontrado!');
         }
+    };
+
+    // Permite setar range e idc juntos (caso queira facilitar chamada externa)
+    window.setAtributoRangeIdc = function(range, idc) {
+        window.setAtributoRange(range);
+        window.setAtributoIdc(idc);
     };
 </script>

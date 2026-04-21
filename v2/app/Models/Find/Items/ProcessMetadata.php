@@ -41,8 +41,9 @@ class ProcessMetadata extends Model
             /***** Checa propriedade */
             $data = $RDF->le($idW);
             $idDW = 0;
+
             foreach ($data['data'] as $row) {
-                if ($row['property'] === 'hasTitle') {
+                if (isset($row['property']) && $row['property'] === 'hasTitle') {
                     $idDW = $row['id_dw'];
                     break;
                 }
@@ -53,7 +54,7 @@ class ProcessMetadata extends Model
             } else {
                 echo "Já existe";
             }
-            pre($idTitulo);
+            return $idDW;
         }
 
     public function processZ3950Result($z3950_result, $isbn = null)

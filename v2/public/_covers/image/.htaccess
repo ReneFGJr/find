@@ -1,0 +1,12 @@
+# Bloqueia execução de scripts perigosos
+<FilesMatch "\.(php|php5|php7|php8|phtml|phar|pl|py|jsp|asp|aspx|cgi|sh)$">
+    Require all denied
+</FilesMatch>
+
+# Permite imagens
+<FilesMatch "\.(jpg|jpeg|png|gif|webp|svg)$">
+    Require all granted
+</FilesMatch>
+
+# Evita listagem de diretório
+Options -Indexes

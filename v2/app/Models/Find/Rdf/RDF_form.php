@@ -51,7 +51,7 @@ class RDF_form extends Model
                 FROM rdf_form_class_2
                 INNER JOIN rdf_class ON form_property = id_c
                 LEFT JOIN rdf_data ON d_p = id_c and d_r2 = ?
-                LEFT JOIN rdf_concept ON id_cc = d_r2
+                LEFT JOIN rdf_concept ON id_cc = d_r1
                 LEFT JOIN rdf_name ON cc_pref_term = id_n
                 WHERE form_frbr = ? and (form_library = ? or form_library = '1000')
                 AND form_range <> '[\"132\"]'
@@ -60,12 +60,12 @@ class RDF_form extends Model
 
                 SELECT
                     id_form, form_frbr, form_group, form_group_subgroup, form_order,
-                    id_c, c_class_reverse as c_class, c_order, id_n,
+                    id_c, c_class as c_class, c_order, id_n,
                     id_cc, cc_use, n_name, n_lang, 'CONCEPT' AS n_type, form_range
                 FROM rdf_form_class_2
                 INNER JOIN rdf_class ON form_property = id_c
                 LEFT JOIN rdf_data ON d_p = id_c and d_r1 = ?
-                LEFT JOIN rdf_concept ON id_cc = d_r1
+                LEFT JOIN rdf_concept ON id_cc = d_r2
                 LEFT JOIN rdf_name ON cc_pref_term = id_n
                 WHERE form_frbr = ? and (form_library = ? or form_library = '1000')
                 AND form_range <> '[\"132\"]'
@@ -90,8 +90,9 @@ class RDF_form extends Model
             $conceptId, $frbr, $library  // 3º SELECT
         ];
         $query = $db->query($sql, $params);
-        // echo '<pre>';
-        // echo $db->getLastQuery(); // Debug: exibe a consulta SQL gerada
+        //echo '<pre>';
+        //echo $db->getLastQuery(); // Debug: exibe a consulta SQL gerada
+        //exit;
         return $query->getResultArray();
     }
 

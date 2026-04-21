@@ -123,6 +123,7 @@ class Catalog extends BaseController
 
     public function metadadoSearch($IdItem = null)
     {
+        $cover_result = null;
         if ($resp = $this->denyIfNoPermission()) return $resp;
         $resultados = null;
         $busca = $this->request->getGet('busca');
@@ -132,6 +133,15 @@ class Catalog extends BaseController
             $itemInfo = $itemModel->find($IdItem);
         }
         $isbn = $itemInfo['i_identifier'] ?? $this->request->getPost('isbn') ?? null;
+
+        /**************************************************** Cover */
+        // Se for POST e import_z39_50=1, mostra view de loading e dispara consulta
+        if ($this->request->getMethod() === 'post' && $this->request->getPost('import_cover') == 1) {
+            // Exibe view auxiliar de loading
+            $cover_result = view('catalog/cover_loading', ['isbn' => $isbn]);
+            //echo searchGoogle($isbn);
+            // Busca ISBN do item (se disponível)
+        }
 
         // Se for POST e import_z39_50=1, mostra view de loading e dispara consulta
         if ($this->request->getMethod() === 'post' && $this->request->getPost('import_z39_50') == 1) {
@@ -156,9 +166,7 @@ class Catalog extends BaseController
         if (isset($z3950_result)) {
             $ProcessMetadata = new \App\Models\Find\Items\ProcessMetadata();
             $result = $ProcessMetadata->processZ3950Result($z3950_result,$isbn);
-            echo "Processando Dados.";
-            pre($result);
-            exit;
+            return redirect()->to(current_url());
         }
 
         if ($busca) {
@@ -173,7 +181,8 @@ class Catalog extends BaseController
             'itemInfo' => $itemInfo,
             'idItem' => $IdItem,
             'busca' => $busca,
-            'z3950_result' => $z3950_result
+            'z3950_result' => $z3950_result,
+            'cover_result' => $cover_result
         ]);
     }
 

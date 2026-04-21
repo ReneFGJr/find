@@ -147,6 +147,8 @@ class RDF extends Model
             ->where('rdf_concept.id_cc', $id)
             ->where('d_literal', 0)
             ->findAll();
+
+        /* Adaptation for RDF3 */
         $dt3 = $this
             ->select($cp1)
             ->join('rdf_data', 'd_r1 = id_cc')
@@ -183,7 +185,7 @@ class RDF extends Model
     /* ($idDW, 'hasTitle', $idTitulo); */
     function createLiteral($idC,$property,$term,$lang='')
     {
-        $RDF_data = new \App\Models\Find\Rdf\RDF_data();
+        $RDF_Data = new \App\Models\Find\Rdf\RDF_Data();
         $RDF_class = new \App\Models\Find\Rdf\RDF_class();
 
         /* Literal */
@@ -195,7 +197,7 @@ class RDF extends Model
         $idP = $RDF_class->getIdByName($property, 'P');
         if ($idP > 0)
             {
-                $RDF_data->insert([
+                $RDF_Data->insert([
                     'd_r1' => $idC,
                     'd_p' => $idP,
                     'd_r2' => 0,
@@ -205,7 +207,7 @@ class RDF extends Model
                     'd_library' => '',
                     'd_user' => ''
                 ]);
-                return $RDF_data->getInsertID();
+                return $RDF_Data->getInsertID();
             }
     }
 

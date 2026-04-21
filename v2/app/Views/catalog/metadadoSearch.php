@@ -29,6 +29,14 @@
                         <i class="bi bi-file-earmark-arrow-down me-1"></i> Importar Marc21
                     </button>
                 </form>
+
+                <form method="post" action="#">
+                    <input type="hidden" name="import_cover" value="1">
+                    <button type="submit" class="btn btn-outline-primary">
+                        <i class="bi bi-file-earmark-arrow-down me-1"></i> Procurar Capa
+                    </button>
+                </form>
+
             </div>
 
             <?php if (!empty($z3950_result)): ?>
@@ -37,6 +45,12 @@
                     <pre class="bg-light p-2 border rounded small" style="max-height:300px;overflow:auto;">
                     <?= htmlspecialchars(print_r($z3950_result, true)) ?>
                     </pre>
+                </div>
+            <?php endif; ?>
+
+            <?php if (!empty($cover_result)): ?>
+                <div class="alertx alert-success">
+                    <?= $cover_result ?>
                 </div>
             <?php endif; ?>
 

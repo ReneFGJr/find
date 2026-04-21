@@ -4,7 +4,7 @@ namespace App\Controllers\Find\Rdf;
 
 use CodeIgniter\Controller;
 use CodeIgniter\API\ResponseTrait;
-use App\Models\Find\Rdf\RDF_concept;
+use App\Models\Find\Rdf\RDF_Concept;
 
 helper("sisdoc");
 
@@ -34,14 +34,14 @@ class Autocomplete extends Controller
         $terms = array_filter(explode(" ", $term));
 
         // ✅ Model
-        $model = new RDF_concept();
+        $model = new RDF_Concept();
 
         // ✅ Builder
         $builder = $model->builder();
 
         $builder->select("
-            RDF_concept.id_cc,
-            RDF_concept.cc_class,
+            RDF_Concept.id_cc,
+            RDF_Concept.cc_class,
             RDF_class.c_class,
             RDF_name.n_name,
             RDF_name.n_lang
@@ -50,14 +50,14 @@ class Autocomplete extends Controller
         // 🔗 JOIN com nome preferido
         $builder->join(
             "RDF_name",
-            "RDF_name.id_n = RDF_concept.cc_pref_term",
+            "RDF_name.id_n = RDF_Concept.cc_pref_term",
             "inner"
         );
 
         // 🔗 ✅ JOIN FALTANTE (corrige erro)
         $builder->join(
             "RDF_class",
-            "RDF_class.id_c = RDF_concept.cc_class",
+            "RDF_class.id_c = RDF_Concept.cc_class",
             "left"
         );
 
@@ -75,7 +75,7 @@ class Autocomplete extends Controller
         */
 
         // 🔎 Filtro de classe
-        $builder->whereIn("RDF_concept.cc_class", $range);
+        $builder->whereIn("RDF_Concept.cc_class", $range);
 
         // 🧠 Ordenação inteligente
         $builder->orderBy("RDF_name.n_name", "ASC");
