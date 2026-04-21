@@ -46,6 +46,7 @@
                                     <?php switch ($w['n_type']) {
                                         case 'TEXT': ?>
                                             <button type="button" class="btn btn-outline-success btn-sm" title="Adicionar"><i class="bi bi-plus"></i></button>
+
                                             <button type="button" class="btn btn-sm btn-outline-primary ms-1 btn-editar-literal"
                                                 id="btn-editar-literal-<?= htmlspecialchars($w['id_n'] ?? '') ?>"
                                                 data-idn="<?= htmlspecialchars($w['id_n'] ?? '') ?>"
@@ -55,7 +56,15 @@
                                             </button>
                                         <?php break;
                                         case 'CONCEPT': ?>
-                                            <button type="button" class="btn btn-outline-success btn-sm" title="Adicionar"><i class="bi bi-plus"></i></button>
+                                            <button type="button" class="btn btn-outline-success btn-sm btn-adicionar-atributo" title="Adicionar"
+                                                data-idc="<?= htmlspecialchars($id ?? '') ?>"
+                                                data-prop="<?= htmlspecialchars($w['c_class'] ?? '') ?>"
+                                                data-group="<?= htmlspecialchars($w['form_group'] ?? '') ?>"
+                                                data-type="<?= htmlspecialchars($w['n_type'] ?? '') ?>"
+                                                data-value="<?= htmlspecialchars($w['n_name'] ?? '') ?>"
+                                                data-range="<?= htmlspecialchars($w['form_range'] ?? '') ?>">
+                                                <i class="bi bi-plus"></i>
+                                            </button>
                                     <?php break;
                                     } ?>
                                 </nobr>
@@ -88,6 +97,18 @@
                 <button type="button" class="btn btn-primary" id="btnSalvarLiteral">Salvar</button>
             </div>
         </form>
+    </div>
+</div>
+
+
+<!-- Offcanvas para adicionar atributo (fora do loop) -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAdicionarAtributo" aria-labelledby="offcanvasAdicionarAtributoLabel" style="width:400px;max-width:100vw;">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasAdicionarAtributoLabel">Adicionar atributo</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <?php include(APPPATH . 'Views/find/rdf/form/rdf_concept_attribute.php'); ?>
     </div>
 </div>
 
@@ -139,6 +160,40 @@
                     .catch(() => alert('Erro ao salvar: falha na requisição.'));
             };
         }
+
+        // Abrir painel de adicionar atributo ao clicar no botão de adicionar
+        document.querySelectorAll('.btn-adicionar-atributo').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                // Passa dados do $w para o painel
+                var nome = this.getAttribute('data-prop') || '';
+                var valor = this.getAttribute('data-value') || '';
+                var group = this.getAttribute('data-group') || '';
+                var type = this.getAttribute('data-type') || '';
+                var idc = this.getAttribute('data-idc') || '';
+                var range = this.getAttribute('data-range') || '';
+
+                // Preenche campos do formulário se existirem
+                var nomeInput = document.getElementById('atributo-nome');
+                var valorInput = document.getElementById('atributo-valor');
+                if (nomeInput) nomeInput.value = nome;
+                if (valorInput) valorInput.value = '';
+
+                // Mostra os dados recebidos no painel
+                if (window.mostrarDebugAtributo) {
+                    window.mostrarDebugAtributo({
+                        idc: idc,
+                        prop: nome,
+                        group: group,
+                        type: type,
+                        value: valor,
+                        range: range
+                    });
+                }
+
+                var offcanvas = bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('offcanvasAdicionarAtributo'));
+                offcanvas.show();
+            });
+        });
     });
 </script>
 </div>

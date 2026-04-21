@@ -64,6 +64,7 @@ class Form extends BaseController
 
         return view('find/rdf/form/rdf_edit_concept', [
             'concept' => $concept,
+            'id'=>$id,
             'Work' => $Work,
             'Expression' => $Expression, // Exemplo, ajustar conforme a estrutura real
             'Manifestation' => $Manifestation, // Exemplo, ajustar conforme a estrutura real
