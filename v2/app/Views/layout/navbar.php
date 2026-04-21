@@ -41,6 +41,13 @@ $firstName = session()->get('first_name') ?: 'Usuário';
                     </ul>
                 </li>
 
+                <!-- Botão Dark Mode -->
+                <li class="nav-item ms-lg-2">
+                    <button id="darkModeToggle" class="btn btn-outline-secondary rounded-circle" title="Alternar modo escuro" style="width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;">
+                        <i id="darkModeIcon" class="bi bi-moon"></i>
+                    </button>
+                </li>
+
                 <?php if ($isLoggedIn): ?>
                     <li class="nav-item ms-lg-2">
                         <a class="nav-link" href="<?= base_url('/admin/configuration'); ?>" title="Configurações">

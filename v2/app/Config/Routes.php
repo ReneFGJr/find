@@ -89,6 +89,9 @@ $routes->group('rdf', function ($routes) {
     $routes->get('range_id', 'Find\\Rdf\\Range_id::index');
     $routes->post('form/salvar_range', 'Find\\Rdf\\Form::salvar_range');
     $routes->post('concept/salvar_literal', 'Find\\Rdf\\Form::salvar_literal');
+    $routes->get('searchConcept', 'Find\\Rdf\\Autocomplete::searchConcept');
+    // Nova rota para adicionar atributo ao conceito
+    $routes->post('concept/adicionar_atributo', 'Find\\Rdf\\Concept::adicionar_atributo');
 });
 
 

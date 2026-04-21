@@ -10,16 +10,121 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+                        /* Dark mode para offcanvas Bootstrap */
+                        body.dark-mode .offcanvas {
+                            background-color: #23272b !important;
+                            color: #f1f1f1 !important;
+                            border-left: 1px solid #333a40;
+                        }
+                        body.dark-mode .offcanvas-header {
+                            background-color: #23272b !important;
+                            color: #f1f1f1 !important;
+                            border-bottom: 1px solid #333a40;
+                        }
+                        body.dark-mode .offcanvas-title {
+                            color: #f1f1f1 !important;
+                        }
+                        body.dark-mode .offcanvas-body {
+                            background-color: #23272b !important;
+                            color: #f1f1f1 !important;
+                        }
+                        body.dark-mode .btn-close {
+                            filter: invert(1) grayscale(1);
+                        }
+                        body.dark-mode .form-label {
+                            color: #f1f1f1 !important;
+                        }
+                /* Dark mode para tabelas Bootstrap */
+                body.dark-mode table.table {
+                    background-color: #23272b;
+                    color: #f1f1f1;
+                }
+                body.dark-mode table.table th,
+                body.dark-mode table.table td {
+                    background-color: #23272b;
+                    color: #f1f1f1;
+                    border-color: #333a40;
+                }
+                body.dark-mode .table-light th,
+                body.dark-mode .table-light td,
+                body.dark-mode .table-light {
+                    background-color: #181a1b !important;
+                    color: #f1f1f1 !important;
+                    border-color: #333a40 !important;
+                }
+                body.dark-mode .table-secondary {
+                    background-color: #343a40 !important;
+                    color: #f1f1f1 !important;
+                }
+                body.dark-mode .table-bordered {
+                    border-color: #333a40 !important;
+                }
+                body.dark-mode pre {
+                    background: #181a1b;
+                    color: #f1f1f1;
+                    border: 1px solid #333a40;
+                }
         :root {
             --find-primary: #0d6efd;
             --find-dark: #0f172a;
             --find-soft: #eef4ff;
+            --find-bg-dark: #181a1b;
+            --find-bg-dark-2: #23272b;
+            --find-text-dark: #f1f1f1;
+            --find-border-dark: #333a40;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
             color: #1f2937;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background: var(--find-bg-dark) !important;
+            color: var(--find-text-dark) !important;
+        }
+
+        body.dark-mode .navbar,
+        body.dark-mode .dropdown-menu {
+            background-color: var(--find-bg-dark-2) !important;
+            color: var(--find-text-dark) !important;
+        }
+        body.dark-mode .navbar .nav-link,
+        body.dark-mode .dropdown-item {
+            color: var(--find-text-dark) !important;
+        }
+        body.dark-mode .navbar-brand img,
+        body.dark-mode .logo-card img {
+            filter: brightness(0.85) contrast(1.2);
+        }
+        body.dark-mode .form-control,
+        body.dark-mode .form-select {
+            background-color: var(--find-bg-dark-2) !important;
+            color: var(--find-text-dark) !important;
+            border-color: var(--find-border-dark) !important;
+        }
+        body.dark-mode .form-control:focus,
+        body.dark-mode .form-select:focus {
+            background-color: #23272b !important;
+            color: var(--find-text-dark) !important;
+        }
+        body.dark-mode .btn-outline-light {
+            color: #fff;
+            border-color: #888;
+        }
+        body.dark-mode .btn-outline-light:hover {
+            background: #333a40;
+            color: #fff;
+        }
+        body.dark-mode .bg-white,
+        body.dark-mode .border-top {
+            background: var(--find-bg-dark-2) !important;
+            border-color: var(--find-border-dark) !important;
+        }
+        body.dark-mode .text-muted {
+            color: #b0b0b0 !important;
         }
 
         .hero-section {
@@ -83,3 +188,28 @@
     </style>
 </head>
 <body>
+<script>
+// Dark mode toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const toggle = document.getElementById('darkModeToggle');
+    const icon = document.getElementById('darkModeIcon');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    let dark = localStorage.getItem('find_dark_mode');
+    if (dark === null) {
+        dark = prefersDark ? '1' : '0';
+    }
+    function setDarkMode(on) {
+        document.body.classList.toggle('dark-mode', on);
+        if (icon) icon.className = on ? 'bi bi-sun' : 'bi bi-moon';
+        localStorage.setItem('find_dark_mode', on ? '1' : '0');
+    }
+    setDarkMode(dark === '1');
+    if (toggle) {
+        toggle.addEventListener('click', function() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            if (icon) icon.className = isDark ? 'bi bi-sun' : 'bi bi-moon';
+            localStorage.setItem('find_dark_mode', isDark ? '1' : '0');
+        });
+    }
+});
+</script>

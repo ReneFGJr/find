@@ -172,12 +172,15 @@
                 var idc = this.getAttribute('data-idc') || '';
                 var range = this.getAttribute('data-range') || '';
 
-                // Preenche campos do formulário se existirem
+                // Preenche campos do formulário
                 var nomeInput = document.getElementById('atributo-nome');
                 var valorInput = document.getElementById('atributo-valor');
                 if (nomeInput) nomeInput.value = nome;
                 if (valorInput) valorInput.value = '';
-
+                // Passa o range corretamente para o campo e debug
+                if (window.setAtributoRange) {
+                    window.setAtributoRange(range);
+                }
                 // Mostra os dados recebidos no painel
                 if (window.mostrarDebugAtributo) {
                     window.mostrarDebugAtributo({
@@ -189,7 +192,6 @@
                         range: range
                     });
                 }
-
                 var offcanvas = bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('offcanvasAdicionarAtributo'));
                 offcanvas.show();
             });
