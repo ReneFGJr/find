@@ -186,7 +186,7 @@ class RDF extends Model
     function createLiteral($idC,$property,$term,$lang='')
     {
         $RDF_Data = new \App\Models\Find\Rdf\RDF_Data();
-        $RDF_Cass = new \App\Models\Find\Rdf\RDF_Cass();
+        $RDF_Class = new \App\Models\Find\Rdf\RDF_Class();
 
         /* Literal */
         if ((round($term) > 0) and ($lang == ''))
@@ -194,7 +194,7 @@ class RDF extends Model
                 $idN = round($term);
             }
 
-        $idP = $RDF_Cass->getIdByName($property, 'P');
+        $idP = $RDF_Class->getIdByName($property, 'P');
         if ($idP > 0)
             {
                 $RDF_Data->insert([

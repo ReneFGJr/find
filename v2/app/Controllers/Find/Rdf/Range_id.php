@@ -10,9 +10,9 @@ class Range_id extends BaseController
     public function index()
     {
         $RDF_form_model = new \App\Models\Find\Rdf\RDF_Form();
-        $RDF_Cass = new \App\Models\Find\Rdf\RDF_Cass();
+        $RDF_Class = new \App\Models\Find\Rdf\RDF_Class();
 
-        $Classes = $RDF_Cass->where('c_type','C')->findAll();
+        $Classes = $RDF_Class->where('c_type','C')->findAll();
 
         $id_form = $this->request->getGet('id_form');
         if (!$id_form) {

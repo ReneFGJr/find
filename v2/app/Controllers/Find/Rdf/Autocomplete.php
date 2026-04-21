@@ -42,7 +42,7 @@ class Autocomplete extends Controller
         $builder->select("
             RDF_Concept.id_cc,
             RDF_Concept.cc_class,
-            RDF_Cass.c_class,
+            RDF_Class.c_class,
             RDF_Name.n_name,
             RDF_Name.n_lang
         ");
@@ -56,8 +56,8 @@ class Autocomplete extends Controller
 
         // 🔗 ✅ JOIN FALTANTE (corrige erro)
         $builder->join(
-            "RDF_Cass",
-            "RDF_Cass.id_c = RDF_Concept.cc_class",
+            "RDF_Class",
+            "RDF_Class.id_c = RDF_Concept.cc_class",
             "left"
         );
 
