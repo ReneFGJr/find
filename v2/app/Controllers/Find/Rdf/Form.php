@@ -16,6 +16,7 @@ class Form extends BaseController
         helper(['filesystem', 'form']);
         $isbn = $this->request->getPost('isbn');
         $file = $this->request->getFile('cover_file');
+        $id_item = $this->request->getPost('id_item');
         $msg = '';
         if (!$isbn || !$file || !$file->isValid()) {
             $msg = 'ISBN ou arquivo inválido.';
@@ -37,6 +38,10 @@ class Form extends BaseController
 
         // Move arquivo
         if ($file->move($dir, $isbn . '.jpg', true)) {
+            // Se veio id_item, redireciona para edição
+            if ($id_item) {
+                return redirect()->to('/catalog/catalogar/metadadoSearch/' . $id_item);
+            }
             $msg = 'Capa enviada com sucesso!';
             return view('catalog/cover_loading', ['msg' => '<div class="alert alert-success">' . $msg . '</div>']);
         } else {

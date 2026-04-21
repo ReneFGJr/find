@@ -127,6 +127,30 @@
             color: #b0b0b0 !important;
         }
 
+        /* Dark mode para cards Bootstrap */
+        body.dark-mode .card,
+        body.dark-mode .card-header,
+        body.dark-mode .card-body {
+            background-color: #23272b !important;
+            color: #f1f1f1 !important;
+            border-color: #333a40 !important;
+        }
+        body.dark-mode .card-header {
+            border-bottom: 1px solid #333a40 !important;
+        }
+        body.dark-mode .card {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+        }
+        body.dark-mode .btn-outline-primary {
+            color: #90caf9 !important;
+            border-color: #90caf9 !important;
+        }
+        body.dark-mode .btn-outline-primary:hover {
+            background: #1565c0 !important;
+            color: #fff !important;
+            border-color: #1565c0 !important;
+        }
+
         .hero-section {
             background: linear-gradient(135deg, rgba(13,110,253,.08), rgba(25,135,84,.08));
             border: 1px solid rgba(13,110,253,.08);

@@ -82,7 +82,7 @@ $routes->group('catalog', function($routes) {
 
 
 $routes->group('rdf', function ($routes) {
-        $routes->match(['get', 'post'], 'form/upload_cover', 'Find\Rdf\Form::upload_cover');
+    $routes->match(['get', 'post'], 'form/upload_cover', 'Find\Rdf\Form::upload_cover');
     $routes->get('form/(:num)', 'Find\\Rdf\\Form::index/$1');
     $routes->get('form_edit', 'Find\\Rdf\\Form_edit::index');
     $routes->post('form/salvar', 'Find\\Rdf\\Form_edit::salvar');

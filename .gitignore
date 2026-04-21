@@ -137,3 +137,4 @@ nb-configuration.xml
 app/Models/Book/Itens.php
 /v2/writable
 /v2/writable
+/v2/public/_covers/image
