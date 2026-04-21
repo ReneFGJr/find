@@ -42,35 +42,35 @@ class Autocomplete extends Controller
         $builder->select("
             RDF_Concept.id_cc,
             RDF_Concept.cc_class,
-            RDF_class.c_class,
-            RDF_name.n_name,
-            RDF_name.n_lang
+            RDF_Cass.c_class,
+            RDF_Name.n_name,
+            RDF_Name.n_lang
         ");
 
         // 🔗 JOIN com nome preferido
         $builder->join(
-            "RDF_name",
-            "RDF_name.id_n = RDF_Concept.cc_pref_term",
+            "RDF_Name",
+            "RDF_Name.id_n = RDF_Concept.cc_pref_term",
             "inner"
         );
 
         // 🔗 ✅ JOIN FALTANTE (corrige erro)
         $builder->join(
-            "RDF_class",
-            "RDF_class.id_c = RDF_Concept.cc_class",
+            "RDF_Cass",
+            "RDF_Cass.id_c = RDF_Concept.cc_class",
             "left"
         );
 
         // 🔥 AND entre termos (precisão)
         foreach ($terms as $t) {
-            $builder->like("RDF_name.n_name", $t);
+            $builder->like("RDF_Name.n_name", $t);
         }
 
         // 🔥 Prioridade para prefixo
         /*
         $builder->groupStart()
-            ->like("RDF_name.n_name", $term, 'after')
-            ->orLike("RDF_name.n_name", $term)
+            ->like("RDF_Name.n_name", $term, 'after')
+            ->orLike("RDF_Name.n_name", $term)
             ->groupEnd();
         */
 
@@ -78,7 +78,7 @@ class Autocomplete extends Controller
         $builder->whereIn("RDF_Concept.cc_class", $range);
 
         // 🧠 Ordenação inteligente
-        $builder->orderBy("RDF_name.n_name", "ASC");
+        $builder->orderBy("RDF_Name.n_name", "ASC");
 
         // 🚀 Limite
         $builder->limit(20);

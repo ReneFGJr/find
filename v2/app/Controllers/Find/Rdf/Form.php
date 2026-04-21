@@ -65,7 +65,7 @@ class Form extends BaseController
         }
 
         // (Removido debug JS para garantir resposta JSON válida)
-        $model = new \App\Models\Find\Rdf\RDF_form();
+        $model = new \App\Models\Find\Rdf\RDF_Form();
         $msg = '';
         if ($id_form < 1) {
             $msg = 'ID do formulário inválido. ['.$id_form.']';
@@ -83,7 +83,7 @@ class Form extends BaseController
 
     public function index($id = null)
     {
-        $rdfForm = new \App\Models\Find\Rdf\RDF_form();
+        $rdfForm = new \App\Models\Find\Rdf\RDF_Form();
         $rdfModel = new \App\Models\Find\Rdf\RDF();
 
         // Buscar conceito e propriedades reais pelo ID
@@ -122,7 +122,7 @@ class Form extends BaseController
                 'message' => 'Parâmetros obrigatórios não informados.'
             ]);
         }
-        $model = new \App\Models\Find\Rdf\RDF_name();
+        $model = new \App\Models\Find\Rdf\RDF_Name();
 
         /************************* Atualização */
         $ok = $model->update($id_n, ['n_name' => $n_name]);

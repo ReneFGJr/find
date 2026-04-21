@@ -12,13 +12,13 @@ class Concept extends Controller
     function add_link_concept()
     {
         $RDF_Data = new \App\Models\Find\Rdf\RDF_Data();
-        $RDF_class = new \App\Models\Find\Rdf\RDF_class();
+        $RDF_Cass = new \App\Models\Find\Rdf\RDF_Cass();
 
         $idc      = $this->request->getPost('idc');
         $property = $this->request->getPost('property');
         $value    = $this->request->getPost('value');
 
-        $idp = $RDF_class->where('c_class', $property)->first();
+        $idp = $RDF_Cass->where('c_class', $property)->first();
         if ($idp) {
             $idp = $idp['id_c'];
         } else {
