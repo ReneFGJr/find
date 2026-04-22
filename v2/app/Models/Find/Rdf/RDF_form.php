@@ -49,6 +49,7 @@ class RDF_Form extends Model
         $sql = "
             SELECT DISTINCT * FROM (
                 SELECT
+                    id_d,
                     id_form, form_frbr, form_group, form_group_subgroup, form_order,
                     id_c, c_class, c_order, id_n,
                     id_cc, cc_use, n_name, n_lang, 'CONCEPT' AS n_type, form_range
@@ -63,6 +64,7 @@ class RDF_Form extends Model
                 UNION ALL
 
                 SELECT
+                    id_d,
                     id_form, form_frbr, form_group, form_group_subgroup, form_order,
                     id_c, c_class as c_class, c_order, id_n,
                     id_cc, cc_use, n_name, n_lang, 'CONCEPT' AS n_type, form_range
@@ -77,6 +79,7 @@ class RDF_Form extends Model
                 UNION ALL
 
                 SELECT
+                    id_d,
                     id_form, form_frbr, form_group, form_group_subgroup, form_order,
                     id_c, c_class, c_order, id_n,
                     0 as id_cc, 0 as cc_use, n_name, n_lang, 'TEXT' AS n_type, form_range

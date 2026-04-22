@@ -104,7 +104,7 @@
         </div>
 
         <?php if ($w['n_name'] != ''): ?>
-            <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir"><i class="bi bi-trash"></i></button>X
+            <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir" data-id_d="<?= htmlspecialchars($w['id_d'] ?? '') ?>"><i class="bi bi-trash"></i></button>
 
             <button type="button" class="btn btn-sm btn-outline-primary ms-1 btn-editar-literal"
                 id="btn-editar-literal-<?= htmlspecialchars($w['id_n'] ?? '') ?>"
@@ -115,8 +115,8 @@
             </button>
         <?php endif; ?>
     <?php break;
-    /*********************************************************************************************/
-        case 'CONCEPT': ?>
+                                                    /*********************************************************************************************/
+                                                    case 'CONCEPT': ?>
         <button type="button" class="btn btn-outline-success btn-sm btn-adicionar-atributo" title="Adicionar"
             data-idc="<?= htmlspecialchars($id ?? '') ?>"
             data-prop="<?= htmlspecialchars($w['c_class'] ?? '') ?>"
@@ -127,12 +127,10 @@
             <i class="bi bi-plus"></i>
         </button>
     <?php break;
-    /*********************************************************************************************/
-        case 'CONCEPT:EXIST': ?>
-        <button type="button" class="btn btn-outline-danger btn-sm btn-remover-atributo" title="Excluir">
-            <i class="bi bi-trash"></i>
-        </button>
-        <?php break; ?>
+                                                    /*********************************************************************************************/
+                                                    case 'CONCEPT:EXIST': ?>
+        <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir" data-id_d="<?= htmlspecialchars($w['id_d'] ?? '') ?>"><i class="bi bi-trash"></i></button>
+    <?php break; ?>
 <?php } ?>
 </nobr>
 </td>
@@ -233,7 +231,7 @@
                 params.append('property', prop);
 
                 var url = '<?= base_url(); ?>/rdf/form/adicionar_literal';
-                açlert(url);
+                alert(url);
 
                 fetch(url, {
                         method: 'POST',
@@ -333,6 +331,35 @@
                 }
                 var offcanvas = bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('offcanvasAdicionarAtributo'));
                 offcanvas.show();
+            });
+        });
+
+        // Excluir registro rdf_data
+        document.querySelectorAll('.btn-outline-danger.btn-sm[title="Excluir"]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                var tr = btn.closest('tr');
+                var id_d = tr && tr.dataset && tr.dataset.idd ? tr.dataset.idd : (btn.getAttribute('data-id_d') || btn.getAttribute('data-idd'));
+                if (!id_d) {
+                    alert('ID do registro não encontrado!');
+                    return;
+                }
+                if (!confirm('Tem certeza que deseja excluir este registro?')) return;
+                fetch('<?= base_url(); ?>/rdf/form/excluir_rdf_data', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: 'id_d=' + encodeURIComponent(id_d)
+                    })
+                    .then(resp => resp.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert('Erro ao excluir: ' + (data.message || 'Erro desconhecido.'));
+                        }
+                    })
+                    .catch(() => alert('Erro ao excluir: falha na requisição.'));
             });
         });
     });

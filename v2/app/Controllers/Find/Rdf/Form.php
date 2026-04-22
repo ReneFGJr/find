@@ -136,6 +136,35 @@ class Form extends BaseController
         }
     }
 
+    /**
+     * Remove um registro único da tabela rdf_data
+     * Espera POST: id_d
+     * Retorna JSON: {success: true/false, message: ''}
+     */
+    public function excluirRdfData()
+    {
+        $id_d = $this->request->getPost('id_d');
+        if (!$id_d) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'ID não informado.'
+            ]);
+        }
+        $RDF_Data = new \App\Models\Find\Rdf\RDF_Data();
+        $deleted = $RDF_Data->delete($id_d);
+        if ($deleted) {
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Registro removido com sucesso.'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Erro ao remover registro.'
+            ]);
+        }
+    }
+
     public function index($id = null)
     {
         $rdfForm = new \App\Models\Find\Rdf\RDF_Form();

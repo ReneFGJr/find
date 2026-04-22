@@ -78,10 +78,13 @@ $routes->group('catalog', function($routes) {
     // Nova rota para redirecionamento sem parâmetro
     $routes->get('catalogar/metadadoSearch', 'Catalog::metadadoSearchRedirect');
     // Adicione outras rotas de catalogação aqui se necessário
+    $routes->get('check', 'Catalog::checkerModel');
 });
 
 
 $routes->group('rdf', function ($routes) {
+        // Rota para exclusão de registro rdf_data
+        $routes->post('form/excluir_rdf_data', 'Find\Rdf\Form::excluirRdfData');
     $routes->match(['get', 'post'], 'form/upload_cover', 'Find\Rdf\Form::upload_cover');
     $routes->get('form/(:num)', 'Find\\Rdf\\Form::index/$1');
     $routes->get('form_edit', 'Find\\Rdf\\Form_edit::index');

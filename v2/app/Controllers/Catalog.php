@@ -24,6 +24,12 @@ class Catalog extends BaseController
         return redirect()->to('/catalog/catalogar/phase/1');
     }
 
+    public function checkerModel()
+    {
+        $CheckerModel = new \App\Models\Find\Check\CheckerModel();
+        return $CheckerModel->checkFindItem();
+    }
+
     private function checkCatalogPermission()
     {
         $session = session();

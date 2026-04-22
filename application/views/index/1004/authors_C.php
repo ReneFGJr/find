@@ -1,3 +1,0 @@
-<div class="row"><div class="col-md-1 text-right"><h1 style="font-size: 500%;">C</h1></div><div class="col-md-11"><ul style="list-style: none; columns: 300px 4; column-gap: 0;"><li><a href="https://www.ufrgs.br/find/index.php/main/v/24048" style="font-size: 85%; color: #505050;">Catherine Cymone Fourshey</a> <sup style="font-size: 70%;"></sup></li>
-<li><a href="https://www.ufrgs.br/find/index.php/main/v/22293" style="font-size: 85%; color: #505050;">Conselho Federal de Psicologia</a> <sup style="font-size: 70%;"></sup></li>
-</ul></div></div>
