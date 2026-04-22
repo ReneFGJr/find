@@ -171,7 +171,7 @@ class Form extends BaseController
                 break;
         }
         //echo '<h1>'.$Class.'</h1>';
-        pre($dataForm);
+        //pre($dataForm);
 
         return view('find/rdf/form/rdf_edit_concept', [
             'concept' => $concept,
