@@ -53,6 +53,7 @@ class RDF_Data extends Model
             'd_r2' => $IDd,
             'd_literal' => $literal
         ])->first();
+
         if ($existing) {
             return [
                 'status'  => 400,
@@ -61,14 +62,7 @@ class RDF_Data extends Model
             ];
         }
 
-        // ❌ validação corrigida
-        if (!$IDc || !$idp || !$IDd) {
-            return $this->respond([
-                'status'  => 400,
-                'success' => false,
-                'message' => 'Parâmetros obrigatórios ausentes'
-            ], 400);
-        }
+
 
         // ✅ monta dados
         $dd = [
@@ -82,8 +76,7 @@ class RDF_Data extends Model
         ];
 
         // ✅ insere
-        $idA = $this->insert($dd);// Lógica para criar um link RDF
+        $idA = $this->set($dd)->insert();
         return $idA;
-
     }
 }

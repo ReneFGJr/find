@@ -95,6 +95,8 @@ $routes->group('rdf', function ($routes) {
     $routes->post('concept/adicionar_atributo', 'Find\\Rdf\\Concept::adicionar_atributo');
     $routes->post('concept/add_link_concept', 'Find\\Rdf\\Concept::add_link_concept');
     $routes->get('concept/add_link_concept', 'Find\\Rdf\\Concept::add_link_concept');
+    // Adiciona literal RDF
+    $routes->post('form/adicionar_literal', 'Find\\Rdf\\Form::adicionar_literal');
 });
 
 

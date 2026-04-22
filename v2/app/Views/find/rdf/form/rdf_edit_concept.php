@@ -67,61 +67,96 @@
                                             <nobr>
                                                 <?php switch ($w['n_type']) {
                                                     case 'TEXT': ?>
-                                                        <button type="button" class="btn btn-outline-success btn-sm" title="Adicionar"><i class="bi bi-plus"></i></button>
-                                                        <?php if ($w['n_name'] != ''): ?>
-                                                            <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir"><i class="bi bi-trash"></i></button>
-                                                        <?php endif; ?>
-
-                                                        <?php if ($w['n_name'] != ''): ?>
-                                                            <button type="button" class="btn btn-sm btn-outline-primary ms-1 btn-editar-literal"
-                                                                id="btn-editar-literal-<?= htmlspecialchars($w['id_n'] ?? '') ?>"
-                                                                data-idn="<?= htmlspecialchars($w['id_n'] ?? '') ?>"
-                                                                data-value="<?= htmlspecialchars($w['n_name'] ?? '') ?>"
-                                                                title="Editar texto">
-                                                                <i class="bi bi-pencil"></i>
+                                                        <?php if ($w['n_name'] == ''): ?>
+                                                            <button type="button" class="btn btn-outline-success btn-sm btn-adicionar-literal" title="Adicionar"
+                                                                data-prop="<?= htmlspecialchars($w['c_class'] ?? '') ?>"
+                                                                data-group="<?= htmlspecialchars($w['form_group'] ?? '') ?>"
+                                                                data-type="<?= htmlspecialchars($w['n_type'] ?? '') ?>"
+                                                                data-range="<?= htmlspecialchars($w['form_range'] ?? '') ?>">
+                                                                <i class="bi bi-plus"></i>
                                                             </button>
                                                         <?php endif; ?>
-                                                    <?php break;
-                                                    case 'CONCEPT': ?>
-                                                        <button type="button" class="btn btn-outline-success btn-sm btn-adicionar-atributo" title="Adicionar"
-                                                            data-idc="<?= htmlspecialchars($id ?? '') ?>"
-                                                            data-prop="<?= htmlspecialchars($w['c_class'] ?? '') ?>"
-                                                            data-group="<?= htmlspecialchars($w['form_group'] ?? '') ?>"
-                                                            data-type="<?= htmlspecialchars($w['n_type'] ?? '') ?>"
-                                                            data-value="<?= htmlspecialchars($w['n_name'] ?? '') ?>"
-                                                            data-range="<?= htmlspecialchars($w['form_range'] ?? '') ?>">
-                                                            <i class="bi bi-plus"></i>
-                                                        </button>
-                                                    <?php break;
-                                                    case 'CONCEPT:EXIST': ?>
-                                                        <button type="button" class="btn btn-outline-danger btn-sm btn-remover-atributo" title="Excluir">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                        <?php break; ?>
-                                                <?php } ?>
-                                            </nobr>
-                                        </td>
-                                        <td>
-                                            <?= htmlspecialchars($w['n_name'] ?? '') ?>
-                                            <?php if (!empty($w['n_lang'])): ?>
-                                                <span class="badge bg-secondary ms-1"><?= htmlspecialchars($w['n_lang']) ?></span>
-                                            <?php endif; ?>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </form>
-                <?php endif; ?>
-            <?php } // Fim do loop dos forms
-            ?>
-            <button type="submit" class="btn btn-success">Retornar</button>
         </div>
-        <div class="tab-pane fade" id="tab-data" role="tabpanel" aria-labelledby="tab-data-tab">
-            <h4>Dados brutos ($data)</h4>
-            <pre style="max-height:400px;overflow:auto;"><?php echo htmlspecialchars(print_r($data, true)); ?></pre>
+
+        <!-- Offcanvas para adicionar literal (fora do loop) -->
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAdicionarLiteral" aria-labelledby="offcanvasAdicionarLiteralLabel" style="width:400px;max-width:100vw;">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasAdicionarLiteralLabel">Adicionar valor literal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <form id="formAdicionarLiteral">
+                    1-<input type="text" id="add-idC" name="add-idC" value="<?= $id; ?>">
+                    2-<input type="text" id="add-prop" name="c_class" value="">
+                    3-<input type="text" id="add-group" name="form_group" value="">
+                    4-<input type="text" id="add-type" name="n_type" value="">
+                    5-<input type="text" id="add-range" name="form_range" value="">
+                    <div class="mb-3">
+                        <label for="add-n-value" class="form-label">Valor literal - <?= $id; ?></label>
+                        <textarea class="form-control" id="add-n-value" name="n_name" rows="5"></textarea>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="offcanvas">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="btnSalvarAdicionarLiteral">Adicionar</button>
+                    </div>
+                </form>
+            </div>
         </div>
+
+        <?php if ($w['n_name'] != ''): ?>
+            <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir"><i class="bi bi-trash"></i></button>X
+
+            <button type="button" class="btn btn-sm btn-outline-primary ms-1 btn-editar-literal"
+                id="btn-editar-literal-<?= htmlspecialchars($w['id_n'] ?? '') ?>"
+                data-idn="<?= htmlspecialchars($w['id_n'] ?? '') ?>"
+                data-value="<?= htmlspecialchars($w['n_name'] ?? '') ?>"
+                title="Editar texto">
+                <i class="bi bi-pencil"></i>
+            </button>
+        <?php endif; ?>
+    <?php break;
+    /*********************************************************************************************/
+        case 'CONCEPT': ?>
+        <button type="button" class="btn btn-outline-success btn-sm btn-adicionar-atributo" title="Adicionar"
+            data-idc="<?= htmlspecialchars($id ?? '') ?>"
+            data-prop="<?= htmlspecialchars($w['c_class'] ?? '') ?>"
+            data-group="<?= htmlspecialchars($w['form_group'] ?? '') ?>"
+            data-type="<?= htmlspecialchars($w['n_type'] ?? '') ?>"
+            data-value="<?= htmlspecialchars($w['n_name'] ?? '') ?>"
+            data-range="<?= htmlspecialchars($w['form_range'] ?? '') ?>">
+            <i class="bi bi-plus"></i>
+        </button>
+    <?php break;
+    /*********************************************************************************************/
+        case 'CONCEPT:EXIST': ?>
+        <button type="button" class="btn btn-outline-danger btn-sm btn-remover-atributo" title="Excluir">
+            <i class="bi bi-trash"></i>
+        </button>
+        <?php break; ?>
+<?php } ?>
+</nobr>
+</td>
+<td>
+    <?= htmlspecialchars($w['n_name'] ?? '') ?>
+    <?php if (!empty($w['n_lang'])): ?>
+        <span class="badge bg-secondary ms-1"><?= htmlspecialchars($w['n_lang']) ?></span>
+    <?php endif; ?>
+</td>
+</tr>
+<?php endforeach; ?>
+</tbody>
+</table>
+</form>
+<?php endif; ?>
+<?php } // Fim do loop dos forms
+?>
+<button type="submit" class="btn btn-success">Retornar</button>
     </div>
+    <div class="tab-pane fade" id="tab-data" role="tabpanel" aria-labelledby="tab-data-tab">
+        <h4>Dados brutos ($data)</h4>
+        <pre style="max-height:400px;overflow:auto;"><?php echo htmlspecialchars(print_r($data, true)); ?></pre>
+    </div>
+</div>
 </div>
 
 <!-- Offcanvas (painel lateral) para editar literal - FORA do loop -->
@@ -162,6 +197,62 @@
 <script>
     // Garante que o Bootstrap está disponível
     window.addEventListener('DOMContentLoaded', function() {
+        // Abrir painel lateral ao clicar em adicionar literal
+        document.querySelectorAll('.btn-adicionar-literal').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                // Passa dados do $w para o painel
+                var prop = this.getAttribute('data-prop') || '';
+                var group = this.getAttribute('data-group') || '';
+                var type = this.getAttribute('data-type') || '';
+                var range = this.getAttribute('data-range') || '';
+                document.getElementById('add-prop').value = prop;
+                document.getElementById('add-group').value = group;
+                document.getElementById('add-type').value = type;
+                document.getElementById('add-range').value = range;
+                document.getElementById('add-n-value').value = '';
+                if (window.bootstrap && bootstrap.Offcanvas) {
+                    var offcanvas = bootstrap.Offcanvas.getOrCreateInstance(document.getElementById('offcanvasAdicionarLiteral'));
+                    offcanvas.show();
+                } else {
+                    alert('Bootstrap JS não carregado!');
+                }
+            });
+        });
+
+        // Salvar novo literal via AJAX
+        var btnSalvarAdicionar = document.getElementById('btnSalvarAdicionarLiteral');
+        if (btnSalvarAdicionar) {
+            btnSalvarAdicionar.onclick = function() {
+                var IDc = document.getElementById('add-idC').value;
+                var value = document.getElementById('add-n-value').value;
+                var prop = document.getElementById('add-prop').value;
+                var params = new URLSearchParams();
+
+                params.append('n_name', value);
+                params.append('idc', IDc);
+                params.append('property', prop);
+
+                var url = '<?= base_url(); ?>/rdf/form/adicionar_literal';
+                açlert(url);
+
+                fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: params.toString()
+                    })
+                    .then(resp => resp.json())
+                    .then(data => {
+                        if (data.success) {
+                            location.reload();
+                        } else {
+                            alert('Erro ao adicionar: ' + (data.message || 'Erro desconhecido.'));
+                        }
+                    })
+                    .catch(() => alert('Erro ao adicionar: falha na requisição.'));
+            };
+        }
         // Abrir painel lateral ao clicar em editar
         document.querySelectorAll('.btn-editar-literal').forEach(function(btn) {
             btn.addEventListener('click', function() {
@@ -184,7 +275,8 @@
                 var form = document.getElementById('formEditarLiteral');
                 var idn = form.querySelector('#edit-idn').value;
                 var value = form.querySelector('#edit-n-value').value;
-                fetch('/rdf/concept/salvar_literal', {
+                var url = '<?= base_url(); ?>/rdf/concept/salvar_literal';
+                fetch(url, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'

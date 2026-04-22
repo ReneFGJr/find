@@ -8,6 +8,56 @@ helper('sisdoc');
 class Form extends BaseController
     {
     /**
+     * Adiciona um novo valor literal (n_name) para uma propriedade/conceito
+     * Espera POST: c_class, form_group, n_type, form_range, n_name
+     * Retorna JSON: {success: true/false, message: ''}
+     */
+    public function adicionar_literal()
+    {
+        $IDc = $this->request->getPost('idc');
+        $n_name = $this->request->getPost('n_name');
+        $property = $this->request->getPost('property');
+
+        if (!$property || $n_name === null || $IDc === '') {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Parâmetros obrigatórios não informados. [property: ' . $property . ', n_name: ' . $n_name . ', idc: ' . $idc . ']',
+            ]);
+        }
+
+        // Insere novo literal
+        $RDF_Name = new \App\Models\Find\Rdf\RDF_Name();
+        $lang = 'pt_BR'; // ou defina conforme necessário
+        $DTname = $RDF_Name->where(['n_name' => $n_name, 'n_lang' => $lang])->first();
+        if ($DTname) {
+            $id_n = $DTname['id_n'];
+        } else {
+            $id_n = $RDF_Name->insert([
+                'n_name' => $n_name,
+                'n_lang' => $lang,
+                'n_lock'=>0,
+
+            ]);
+        }
+        if (!$id_n) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Erro ao inserir literal no banco de dados.'
+            ]);
+        }
+
+        /**************************/
+        $RDF_Data = new \App\Models\Find\Rdf\RDF_Data();
+
+        $RDF_Data->createLink($IDc, $property, 0, $id_n);
+
+        return $this->response->setJSON([
+            'success' => true,
+            'message' => 'Literal adicionado com sucesso.',
+        ]);
+    }
+
+    /**
      * Upload de capa de livro por ISBN
      * Salva como _covers/image/{isbn}.jpg
      */
@@ -104,15 +154,24 @@ class Form extends BaseController
         }
         $library = get_cookie('library_code') ?: get_cookie('library');
 
-        $Work = $rdfForm->getForm('W', $id, $library);
-        $Expression = $rdfForm->getForm('E', $id, $library);
-        $Manifestation = $rdfForm->getForm('M', $id, $library);
+        /******************************* From Type */
+        $Class = $concept['Class'] ?? null;
+        echo '<h1>Class: ' . htmlspecialchars($Class) . '</h1>';
 
-        $dataForm = [
-            'Work' => $Work,
-            'Expression' => $Expression,
-            'Manifestation' => $Manifestation
-        ];
+        $dataForm = [];
+        switch ($Class) {
+            case 'Work': // Work
+                $dataForm['Work'] = $rdfForm->getForm('W', $id, $library);
+                break;
+            case 'Expression': // Expression
+                $dataForm['Expression'] = $rdfForm->getForm('E', $id, $library);
+                break;
+            case 'Manifestation': // Manifestation
+                $dataForm['Manifestation'] = $rdfForm->getForm('M', $id, $library);
+                break;
+        }
+        //echo '<h1>'.$Class.'</h1>';
+        pre($dataForm);
 
         return view('find/rdf/form/rdf_edit_concept', [
             'concept' => $concept,

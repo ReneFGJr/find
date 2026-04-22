@@ -220,7 +220,7 @@ class RDF extends Model
     {
         /******* Literal Name */
         $NameModel = new \App\Models\Find\Rdf\RDF_Name();
-        $Class =  new \App\Models\Find\Rdf\RDF_Class();
+        $ClassModel =  new \App\Models\Find\Rdf\RDF_Class();
         $idN = $NameModel->createLiteral($Name, $Lang);
 
         /******* Check Exist Concept */
@@ -229,9 +229,10 @@ class RDF extends Model
             ->join('rdf_name', 'cc_pref_term = id_n', 'left')
             ->where('cc_pref_term', $idN)
             ->first();
+
         if (!$dt) {
             /* Recupeara Classe */
-            $idC = $Class->getIdByName('Work');
+            $idC = $ClassModel->getIdByName($Class);
             /* Cria ou Recupera Conceito */
             $this->insert([
                 'cc_class' => $idC,
