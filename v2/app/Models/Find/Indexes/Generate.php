@@ -46,13 +46,13 @@ class Generate extends Model
             $sx = '';
             $this->where('i_expression',0);
             $this->where('i_library',$lib);
-            $this->where('i_manitestation <> 0');
+            $this->where('i_manifestation <> 0');
             $this->where('i_expression = 0');
 
             $dt = $this->findAll(1000);
             foreach($dt as $idl=>$linel)
                 {
-                    $manifestation = $linel['i_manitestation'];
+                    $manifestation = $linel['i_manifestation'];
                     $ID = $linel['id_i'];
 
                     $dtm = $RDF->le($manifestation);

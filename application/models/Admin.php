@@ -1,15 +1,15 @@
-<?php 
+<?php
 class admin extends CI_model
 {
     function row($id='')
-    {                
+    {
         $sx = $this->libraries->row($id);
         return($sx);
     }
 
     function index($a='',$action='',$id='')
-    {                
-        $this->load->model('libraries');     
+    {
+        $this->load->model('libraries');
 
         if (!perfil("#ADMIN"))
         {
@@ -37,7 +37,7 @@ class admin extends CI_model
                     default:
                     $sx = $ai->export_index($a,$id,$action);
                 }
-            
+
             break;
 
             case 'mercadoeditorial_editoras':
@@ -50,7 +50,7 @@ class admin extends CI_model
             break;
 
             case 'email':
-            $sx .= email_menu('admin/email_test');            
+            $sx .= email_menu('admin/email_test');
             $sx .= email_data();
             break;
 
@@ -58,10 +58,10 @@ class admin extends CI_model
             $dt = email_le();
             $sx .= 'Enviando ... '.$dt['smtp_protocol'].' '.msg('protocol').'.';
             $sx .= enviaremail('renefgj@gmail.com','E-mail de teste ','Teste de email '.date("d/m/Y H:i:s"),1);
-            break;            
+            break;
 
             case 'email_ed':
-            $socials = new socials;            
+            $socials = new socials;
             $sx .= $socials->social('email');
             $dt = email_edit();
             $sx .= $dt[0];
@@ -69,15 +69,15 @@ class admin extends CI_model
             {
                 redirect(base_url(PATH.'admin/email'));
             }
-            break;            
+            break;
 
             /************************ MENU ***********/
             default:
-            $sx = $this->menu();            
+            $sx = $this->menu();
             break;
         }
         $sx .= '</div>'; /* Container */
-        return($sx);                
+        return($sx);
     }
 
     function rede($d1,$d2)
@@ -94,14 +94,14 @@ class admin extends CI_model
                     break;
                 }
             return($sx);
-        } 
+        }
     function menu()
     {
         $sx = '<div class="container">';
         $sx .= '<div class="row">';
         $sx .= '<div class="'.bscol(12).'">';
         $sx .= '<h1>Relatórios</h1>';
-        $sx .= '<ul>';        
+        $sx .= '<ul>';
         $sx .= '<li>'.'<a href="'.base_url(PATH.'reports').'">'.msg('Reports').'</a>'.'</li>';
         $sx .= '</ul>';
 
@@ -109,7 +109,7 @@ class admin extends CI_model
         $sx .= '<ul>';
         //$sx .= '<li>'.'<a href="'.base_url(PATH.'admin/mercadoeditorial_editoras').'">'.msg("mercadoeditorial_editoras").'</a></li>';
         $sx .= '<li>'.'<a href="'.base_url(PATH.'social/group').'">Permissões de grupos e usuários</a></li>';
-        $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/email/').'">'.msg("Email_configuration").'</a></li>';        
+        $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/email/').'">'.msg("Email_configuration").'</a></li>';
         $sx .= '<li>'.'<a href="'.base_url(PATH.'setup').'">Configurações</a></li>';
         $sx .= '</ul>';
 
@@ -122,8 +122,8 @@ class admin extends CI_model
         $sx .= '<h1>FRBR</h1>';
         $sx .= '<ul>';
         //$sx .= '<li>'.'<a href="'.base_url(PATH.'admin/mercadoeditorial_editoras').'">'.msg("mercadoeditorial_editoras").'</a></li>';
-        $sx .= '<li>'.'<a href="'.base_url(PATH.'config/forms').'">'.msg("Catalog Forms").'</a></li>';        
-        $sx .= '<li>'.'<a href="'.base_url(PATH.'config/class').'">'.msg("RDF Classes").'</a></li>';        
+        $sx .= '<li>'.'<a href="'.base_url(PATH.'config/forms').'">'.msg("Catalog Forms").'</a></li>';
+        $sx .= '<li>'.'<a href="'.base_url(PATH.'config/class').'">'.msg("RDF Classes").'</a></li>';
 
         /* Index */
         $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/index/author_index').'">'.msg("Índice de autores").'</a></li>';
@@ -140,12 +140,12 @@ class admin extends CI_model
         $sx .= '</div>'; /* Row */
         $sx .= '</div>'; /* Container */
         return($sx);
-    }    
+    }
     function menu_index()
         {
-            $sql = "SELECT c_class, count(*) as total FROM rdf_class 
+            $sql = "SELECT c_class, count(*) as total FROM rdf_class
                         INNER JOIN rdf_data ON d_p = id_c
-                        INNER JOIN find_item ON i_manitestation = d_r1 and i_library = '".LIBRARY."'
+                        INNER JOIN find_item ON i_manifestation = d_r1 and i_library = '".LIBRARY."'
                         WHERE (c_class like 'hasClass%') or (c_class like 'hasSub%')
                         group by c_class
                         ";
@@ -158,5 +158,5 @@ class admin extends CI_model
                     $sx .= '<li>'.'<a href="'.base_url(PATH.'admin/index/'.$line['c_class']).'">'.msg("Index of").' '.msg($line['c_class']).'</a></li>';
                 }
             return($sx);
-        } 
+        }
 }

@@ -79,7 +79,7 @@ class RDF extends Model
                     }
                     $TT = $ItemModel
                             ->select('i_work')
-                            ->wherein('i_manitestation', $IT)
+                            ->wherein('i_manifestation', $IT)
                             ->where('i_library', $library)
                             ->groupby('i_work')
                             ->findAll();

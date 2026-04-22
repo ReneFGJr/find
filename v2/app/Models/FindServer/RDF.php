@@ -120,7 +120,7 @@ class RDF extends Model
                         $conceptID = $Item['i_expression'];
                         break;
                     case 'M':
-                        $conceptID = $Item['i_manitestation'];
+                        $conceptID = $Item['i_manifestation'];
                         break;
                     default:
                         $RSP['message'] = 'Form group not identified - '. $Form["form_frbr"];

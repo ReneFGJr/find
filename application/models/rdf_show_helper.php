@@ -4,13 +4,13 @@ function rdf_show_Work($dt)
 {
 	$CI = &get_instance();
 	$CI->load->model("books_item");
-	
-	$rdf = new rdf;		
+
+	$rdf = new rdf;
 	$manif = array();
 	$idc = $dt['id_cc'];
 	$dt = works($idc);
 	$sx = '';
-	
+
 	/********************************** Expressoes ***********/
 	if (count($dt['expression']) > 0)
 	{
@@ -27,7 +27,7 @@ function rdf_show_Work($dt)
 			$sx .= $CI->books_item->mainfestation_item($idm);
 		}
 	}
-	
+
 	return($sx);
 }
 
@@ -36,34 +36,34 @@ function rdf_show_Manifestation($dt)
 {
 	$CI = &get_instance();
 	$CI->load->model("books_item");
-	
+
 	$sx = 'Nothing';
 	$rdf = new rdf;
 	$CI = &get_instance();
 	$expression = array();
 	$work = array();
 	$idcc = $dt['id_cc'];
-	
+
 	$dts = $rdf->le_data($dt['id_cc']);
-	/********************************** Expressoes ***********/		
+	/********************************** Expressoes ***********/
 	$expression = $rdf->extract_id($dts,'isAppellationOfManifestation',$idcc);
-	
+
 	if (count($expression) > 0)
 	{
 		$ide = $expression[0];
 		$dt = $rdf->le_data($ide);
 		$work = $rdf->extract_id($dt,'isAppellationOfExpression',$ide);
 	}
-	
+
 	if (count($work) > 0)
 	{
 		$idw = $work[0];
 		$dtw = works($idw);
 		$sx = manifestation($idcc,$dtw);
 	}
-	
+
 	$sx .= $CI->books_item->mainfestation_item($idcc);
-	
+
 	return($sx);
 }
 
@@ -86,7 +86,7 @@ function show_works($id)
                         $sx .= $l['d_r1'];
                         $sx .= ' ';
                     }
-                
+
             }
         return($sx);
     }
@@ -102,37 +102,37 @@ function rdf_show_data_generic($line = array())
 		$sx = '<div class="'.bscol(12).'"><sup>'.$class.':</sup> '.$line['n_name'].'</h1></div>';
 
 		/* Manifestation */
-		$sql = "SELECT 
+		$sql = "SELECT
 				distinct d_r1 as dr1, d_r2 as dr2,
-				i_manitestation, i_titulo, i_identifier 
+				i_manifestation, i_titulo, i_identifier
 				FROM rdf_data
-				LEFT JOIN find_item ON i_manitestation = d_r1
+				LEFT JOIN find_item ON i_manifestation = d_r1
 				where (d_r1 = $id or d_r2 = $id)
-					and i_manitestation > 0
+					and i_manifestation > 0
 					and i_library = '".LIBRARY."'
-				order by i_titulo";							
+				order by i_titulo";
 
 		/********** Pessoa */
 		if ($class == 'Person')
 		{
 		/* Author */
-		$sql = "SELECT 
+		$sql = "SELECT
 				distinct
-				d1.d_r1 as dr1 , d1.d_r2  as dl1, 
-				d2.d_r1 as dr2 , d2.d_r2  as dl2, 
-				d3.d_r1 as dr3 , d3.d_r2  as dl3, 
-				c_class, i_manitestation, i_titulo, i_identifier 
+				d1.d_r1 as dr1 , d1.d_r2  as dl1,
+				d2.d_r1 as dr2 , d2.d_r2  as dl2,
+				d3.d_r1 as dr3 , d3.d_r2  as dl3,
+				c_class, i_manifestation, i_titulo, i_identifier
 				FROM rdf_data as d1
 				INNER JOIN rdf_data as d2 ON d1.d_r1 = d2.d_r1
 				INNER JOIN rdf_data as d3 ON d2.d_r2 = d3.d_r1
 
-				INNER JOIN find_item ON i_manitestation = d3.d_r2
+				INNER JOIN find_item ON i_manifestation = d3.d_r2
 
-				LEFT JOIN rdf_class ON d3.d_p = id_c 
+				LEFT JOIN rdf_class ON d3.d_p = id_c
 
 				where (d1.d_r1 = $id or d1.d_r2 = $id)
 					and (d1.d_r1 <> 0 or d1.d_r2 <> 0)
-					and i_manitestation > 0
+					and i_manifestation > 0
 					and i_library = '".LIBRARY."'
 				order by i_titulo";
 		}
@@ -181,7 +181,7 @@ function show_books($l)
 		return($books);
 
 		$line = $rlt[$r];
-		$id = $line['i_manitestation'];
+		$id = $line['i_manifestation'];
 		$isbn = $line['i_identifier'];
 		$img = $this->covers->img($isbn);
 		$link = '<a href="'.base_url(PATH.'v/'.$id).'">';
@@ -206,7 +206,7 @@ function show_books($l)
 			$title .= ' ...';
 		}
 		$sx .= $title;
-		$sx .= '</div>';		
+		$sx .= '</div>';
 	}
 
 function works($id)
@@ -217,7 +217,7 @@ function works($id)
 	$d['title'] = '';
 	$d['authors'] = '';
 	$expression = array();
-	
+
 	$authors = '';
 	$rdf = new rdf;
 	$dts = $rdf->le_data($id);
@@ -230,39 +230,39 @@ function works($id)
 		$lng = $line['n_lang'];
 		$idr1 = $line['d_r1'];
 		$idr2 = $line['d_r2'];
-		
+
 		/* Links */
 		$link = '<a href="'.base_url(PATH.'v/'.$idr2).'" class="'.$prop.'">';
 		$linka = '</a>';
-		
+
 		$rlink = '<a href="'.base_url(PATH.'v/'.$idr1).'" class="'.$prop.'">';
 		$rlinka = '</a>';
-		
+
 		switch($prop)
 		{
 			case 'prefLabel':
 				$d['title'] = $rlink.$vlr.$rlinka;
 			break;
-			
+
 			case 'hasAuthor':
 				if ($au > 0) { $authors .= '; '; }
 				$authors .= $link.$vlr.$linka;
 				$au++;
 			break;
-			
+
 			case 'isAppellationOfExpression':
 				array_push($expression, $idr2);
 			break;
 		}
 	}
-	
+
 	/********************************** Autores **************/
-	if ($au > 0) 
-	{ 
+	if ($au > 0)
+	{
 		$d['authors'] = $authors;
 	}
 	$d['expression'] = $expression;
-	return($d);		
+	return($d);
 }
 
 function manifestation($id,$d)
@@ -278,14 +278,14 @@ function manifestation($id,$d)
 	$serie = '';
 	$vol = '';
 	$rdf = new rdf;
-	$dd = $rdf->le($id);				
+	$dd = $rdf->le($id);
 	$isbn = $dd['n_name'];
 	$editora = '';
 	$img = $CI->covers->img(sonumero($isbn));
-	
-	
+
+
 	$dt = $rdf->le_data($id);
-	$subsj = '';		
+	$subsj = '';
 	for ($r=0;$r < count($dt);$r++)
 	{
 		$prop = trim($dt[$r]['c_class']);
@@ -316,28 +316,28 @@ function manifestation($id,$d)
             if (strlen($vlr) > 0)
 				$subsj .= $link. '<span class="btn-outline-primary pad5">'.trim($vlr).'.'.'</span>'.$linka.'';
 			break;
-			
+
 			case 'description':
 				$desc = $vlr;
 			break;
-			
+
 			case 'isPublisher':
 				$editora = msg('Editora').': '.$link.$vlr.$linka;
 			break;
-			
+
 			case 'hasPage':
 				$pags = msg('Pages').': '.$vlr;
-			break;				
-			
+			break;
+
 			case 'dateOfPublication':
 				$date = msg('Year').': '.$link.$vlr.$linka;
-			break;	
+			break;
 
             case 'hasColorclassification':
                 if (strpos($vlr,'#'))
                     {
-						$corl = '#000000';                     
-						/* Cores */   
+						$corl = '#000000';
+						/* Cores */
                         $cor = substr($vlr,strpos($vlr,'#')+1,strlen($vlr));
 						if (strpos($cor,'#') > 0)
 							{
@@ -349,17 +349,17 @@ function manifestation($id,$d)
 						$link = '<a href="'.base_url(PATH.'v/'.$idx).'" style="color: '.$corl.'; padding: 2px 5px;">';
                         $vlrx = '<div style="width: 100%; padding: 3px; background-color: '.$cor.';">';
                         $vlrx .= $link.$vlr.$linka;
-                        $vlrx .= '</div>';		
+                        $vlrx .= '</div>';
                     } else {
 						$vlrx = '<b>'.$vlr.'</b>';
-					}									
+					}
                 $class .= $vlrx;
             break;
 
             case 'hasClassificationCDU':
                 $link = '<a href="'.base_url(PATH.'v/'.$idx).'">';
 				$class .= $link.$vlr.$linka;
-            break;			
+            break;
 
             case 'hasClassificationCDD':
                 $link = '<a href="'.base_url(PATH.'v/'.$idx).'">';
@@ -373,23 +373,23 @@ function manifestation($id,$d)
                 $vlrx .= '</div>';
 				$class3 .= $vlrx;
 			break;
-			
+
             case 'hasClassificationCountry':
                 $link = '<a href="'.base_url(PATH.'v/'.$idx).'">';
                 $vlrx = '<div style="width: 100%; padding: 3px;">';
                 $vlrx .= $link.$vlr.$linka;
                 $vlrx .= '</div>';
 				$class3 .= $vlrx;
-			break;			
-			
+			break;
+
             case 'hasCutter':
                 $link = '<a href="'.base_url(PATH.'v/'.$idx).'">';
                 $vlrx = '<div style="width: 100%; padding: 3px;">';
                 $vlrx .= $link.$vlr.$linka;
                 $vlrx .= '</div>';
 				$class2 .= $vlrx;
-            break;						
-			
+            break;
+
 		}
 	}
 
@@ -403,7 +403,7 @@ function manifestation($id,$d)
 		$sxx .= '</tr>';
 		$sxx .= '<tr>';
 		$sxx .= '<td width="90%">'.$class3.'</td>';
-        $sxx .= '</tr>';		
+        $sxx .= '</tr>';
 		$sxx .= '<tr>';
 		$sxx .= '<td width="90%">'.$class2.'</td>';
         $sxx .= '</tr>';
@@ -439,7 +439,7 @@ function manifestation($id,$d)
 		{
 			$sx .= '<div class="manifestation_serie">';
 			/* Serie */
-			if (strlen($serie) > 0) 
+			if (strlen($serie) > 0)
 			{
 				$sx .= msg('Serie').': ';
 				$sx .= '<b>';
@@ -452,10 +452,10 @@ function manifestation($id,$d)
 					$sx .= '. ';
 				}
 			$sx .= trim($vol);
-			
+
 			$sx .= '</div>';
 		}
-	
+
 
 	$isbn = $CI->isbn->isbns(sonumero($isbn));
 	$sx .= '<div class="manifestation_date">'.$date.'</div>';
@@ -476,7 +476,7 @@ function manifestation($id,$d)
 	{
 		$sx .= '<div class="manifestation_descrition">'.msg('description').': '.$desc.'</div>'.cr();
 	}
-	
+
 	$sx .= '</div>';
 	return($sx);
-}    
+}

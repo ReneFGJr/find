@@ -218,12 +218,12 @@ class Index extends Model
     function indexManifestation($lib, $class = 'hasSubject')
     {
         $this->select('d_r2 as ID, n_name as name');
-        $this->join('rdf_data', 'i_manitestation = d_r1');
+        $this->join('rdf_data', 'i_manifestation = d_r1');
         $this->join('rdf_class', 'd_p = id_c');
         $this->join('rdf_concept', 'd_r2 = id_cc');
         $this->join('rdf_literal', 'cc_pref_term = id_n');
         $this->where('i_library', $lib);
-        $this->where('i_manitestation > 0');
+        $this->where('i_manifestation > 0');
         $this->where('c_class', $class);
         $this->groupBy('d_r2, n_name');
         $this->orderby('n_name');

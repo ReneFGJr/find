@@ -53,7 +53,7 @@ class RDFform extends Model
         }
 
         $Work = $dd['i_work'];
-        $Manifestation = $dd['i_manitestation'];
+        $Manifestation = $dd['i_manifestation'];
         $Expression = $dd['i_expression'];
 
         $RDF = new \App\Models\Find\Rdf\RDF();

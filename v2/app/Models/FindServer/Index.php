@@ -15,7 +15,7 @@ class Index extends Model
     protected $allowedFields    = [
         'i_concept',
         'i_library',
-        'i_manitestation',
+        'i_manifestation',
         'i_titulo',
         'i_status',
         'i_search'
@@ -96,7 +96,7 @@ class Index extends Model
             $dtd['i_concept'] = $idC;
             $dtd['i_library'] = 0;
             $dtd['i_work'] = $idC;
-            //$dtd['i_manitestation'] = $idC;
+            //$dtd['i_manifestation'] = $idC;
             $dtd['i_titulo'] = $title;
             $dtd['i_status'] = 5;
             $dtd['i_identifier'] = $isbn;

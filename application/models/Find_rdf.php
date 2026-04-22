@@ -34,9 +34,9 @@ class find_rdf extends CI_model
 			$tombo = sonumero($dt['tombo']);
 			$idex = $this->books_item->tombo_insert($tombo,$isbn,$tipo,9,$place,0,1);
 
-			$sql = "select * from find_item 
-			LEFT JOIN find_manifestation ON i_manitestation = id_m
-			where i_tombo = ".$tombo;		
+			$sql = "select * from find_item
+			LEFT JOIN find_manifestation ON i_manifestation = id_m
+			where i_tombo = ".$tombo;
 			$rlt = $this->db->query($sql);
 			$rlt = $rlt->result_array();
 
@@ -44,7 +44,7 @@ class find_rdf extends CI_model
 			$sx .= $this->books->process_register($isbn,$dt,'FINDS');
 			echo $sx;
 			exit;
-		}			
+		}
 	}
 
 	function book($isbn)
@@ -59,13 +59,13 @@ class find_rdf extends CI_model
 		$ida = 0;
 		$idt = 0;
 		return($dt);
-		
+
 		$dt['serie'] = '';
 		$dt['cover'] = '';
 		$dt['editora'] = '';
 		$dt['subject']= array();
 		$dt['item'] = $isbn;
-		$dt['descricao'] = '';	
+		$dt['descricao'] = '';
 		$dt['pages'] = '';
 		$dt['authors'] = array();
 		$dt['translator'] = array();
@@ -75,8 +75,8 @@ class find_rdf extends CI_model
 		$dt['url'] = '';
 		$dt['type'] = $type;
 		$dt['library'] = '';
-		
-		
+
+
 		$t = json_decode($t);
 		foreach ($t as $key => $value) {
 			echo '<br>'.$key.'=='.$value;
@@ -95,11 +95,11 @@ class find_rdf extends CI_model
 
 				case 'isOwnedBy':
 				$dt['tombo_own'] = $value;
-				break;	
+				break;
 
 				case 'wayOfAcquisition':
 				$dt['tombo_acquisition'] = $value;
-				break;					
+				break;
 
 
 				case 'hasCover':
@@ -141,8 +141,8 @@ class find_rdf extends CI_model
 				case 'hasISBN':
 				$isbnx = $this->isbn->isbns(sonumero($value));
 				$dt['isbn'] = $isbnx;
-				$isbn = $isbnx['isbn13'];				
-				
+				$isbn = $isbnx['isbn13'];
+
 				default:
 					# code...
 				break;

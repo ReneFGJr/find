@@ -17,7 +17,7 @@ class Index extends Model
     protected $allowedFields    = [
         'id_i',
         'i_tombo',
-        'i_manitestation',
+        'i_manifestation',
         'i_titulo',
         'i_status',
         'i_aquisicao',
@@ -141,7 +141,7 @@ class Index extends Model
             }
             $dt = $this
                 ->where('i_work', 0)
-                ->where('i_manitestation >', 0)
+                ->where('i_manifestation >', 0)
                 ->FindAll(1000);
 
             foreach($dt as $id=>$line)
@@ -150,7 +150,7 @@ class Index extends Model
                         ->select('d2.d_r1 as W, rdf_data.d_r1 as E, rdf_data.d_r2 as M')
                         ->join('rdf_data as d2', 'd2.d_r2 = rdf_data.d_r1', 'left')
                         ->where('rdf_data.d_p', $Class)
-                        ->where('rdf_data.d_r2', $line['i_manitestation'])
+                        ->where('rdf_data.d_r2', $line['i_manifestation'])
                         ->first();
 
                     $DD = [];
@@ -338,7 +338,7 @@ class Index extends Model
 
             $metadata = [];
 
-            $RSP['ID'] = $dt['i_manitestation'];
+            $RSP['ID'] = $dt['i_manifestation'];
 
             $RDF = new \App\Models\Find\Rdf\RDF();
 
@@ -359,7 +359,7 @@ class Index extends Model
             }
 
             /********************* Manifestation */
-            $idM = $dt['i_manitestation'];
+            $idM = $dt['i_manifestation'];
             if ($idM > 0)
                 {
                     $dtR = $RDF->le($idM);

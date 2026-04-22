@@ -31,7 +31,7 @@ DROP TABLE IF EXISTS `find_item`;
 CREATE TABLE IF NOT EXISTS `find_item` (
   `id_i` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT,
   `i_tombo` bigint(20) NOT NULL DEFAULT 0,
-  `i_manitestation` int(11) DEFAULT 0,
+  `i_manifestation` int(11) DEFAULT 0,
   `i_titulo` text COLLATE utf8_bin DEFAULT NULL,
   `i_status` int(11) NOT NULL DEFAULT 0,
   `i_aquisicao` int(11) NOT NULL DEFAULT 0,

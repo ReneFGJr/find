@@ -102,7 +102,7 @@ class RDFform2 extends Model
 
         $dd = $RDFItem->where('id_i', $itemId)->first();
         $workId = $dd['i_work'];
-        $manId = $dd['i_manitestation'];
+        $manId = $dd['i_manifestation'];
         $expId = $dd['i_expression'];
 
         /**************** Verificar Título do Work */
@@ -160,7 +160,7 @@ class RDFform2 extends Model
         }
         $dd = [];
         $dd['i_expression'] = $expId;
-        $dd['i_manitestation'] = $manId;
+        $dd['i_manifestation'] = $manId;
         $RDFItem->set($dd)->where('id_i', $itemId)->update();
         return true;
     }
@@ -232,7 +232,7 @@ class RDFform2 extends Model
             return $RSP;
         }
         $workId = $dd['i_work'];
-        $manId = $dd['i_manitestation'];
+        $manId = $dd['i_manifestation'];
         $expId = $dd['i_expression'];
 
         /******************** Verifica integridade e errado, cria estrutura W, E, M*/

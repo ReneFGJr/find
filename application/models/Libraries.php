@@ -20,7 +20,7 @@ class libraries extends CI_model {
             } else {
                 $page = 'root';
             }
-            
+
             if (strpos($page, '/library')) {                // PAGE
                 /* Selecionar a Library */
             } else {
@@ -33,11 +33,11 @@ class libraries extends CI_model {
 
         if (!isset($id))
         {
-            if (strpos($page, '/library')) { 
+            if (strpos($page, '/library')) {
                 define('PATH', 'index.php/main/');
                 /* Nothing */
             } else {
-                redirect(base_url('index.php/main/library/'));    
+                redirect(base_url('index.php/main/library/'));
             }
 
         } else {
@@ -46,7 +46,7 @@ class libraries extends CI_model {
             define('PATH', 'index.php/main/');
             define('LOGO', $data['l_logo']);
             define('LIBRARY_NAME', $data['l_name']);
-            define('LIBRARY_LEMA', $data['l_about']);                  
+            define('LIBRARY_LEMA', $data['l_about']);
         }
 
         return ('');
@@ -97,7 +97,7 @@ class libraries extends CI_model {
                     if ($url == 1)
                         {
                             $sx = base_url($file);
-                        }                    
+                        }
                 }
 
             /******************************************************* POSTAR */
@@ -125,7 +125,7 @@ class libraries extends CI_model {
     function contact()
     {
         $sx = 'Contato';
-        return($sx);            
+        return($sx);
     }
 
     function about_places($dt=array())
@@ -199,7 +199,7 @@ class libraries extends CI_model {
         foreach ($s as $key => $value) {
             setcookie($key, $value, $unexpired_cookie_exp_time);
             $this -> input -> set_cookie($key, $value, $unexpired_cookie_exp_time);
-        }        
+        }
         return (1);
     }
 
@@ -209,11 +209,11 @@ class libraries extends CI_model {
         $rlt = $rlt -> result_array();
         if (count($rlt) > 0)
         {
-            $line = $rlt[0];            
+            $line = $rlt[0];
         } else {
             $line = array();
         }
-        
+
         return ($line);
     }
 
@@ -223,18 +223,18 @@ class libraries extends CI_model {
         $rlt = $rlt -> result_array();
         if (count($rlt) > 0)
         {
-            $line = $rlt[0];            
+            $line = $rlt[0];
         } else {
             $line = array();
         }
-        
+
         return ($line);
-    }    
+    }
 
     function list_libraries($id = '') {
         $wh = 'where l_visible = 1';
         //if (perfil("#ADM")) { $wh = ''; }
-        $sql = "select * from library 
+        $sql = "select * from library
                     $wh
                     order by l_name";
         $rlt = $this -> db -> query($sql);
@@ -330,8 +330,8 @@ class libraries extends CI_model {
         array_push($cp, array('$S80', 'lp_coord_y', msg('lp_coord_y'), false, true));
 
 
-        array_push($cp, array('$SN', 'lp_active', msg('lp_active'), true, true));        
-        
+        array_push($cp, array('$SN', 'lp_active', msg('lp_active'), true, true));
+
         $form = new form;
         $form -> id = $id;
         $sx = $form -> editar($cp, $this -> table_place);
@@ -346,27 +346,27 @@ class libraries extends CI_model {
             $force = 1;
         }
         $lib = $_SESSION['library'];
-        $sql = "select i_identifier, min(i_manitestation) as i_manitestation, i_ln1, i_ln2
-                    from find_item 
-                    where i_library = '".LIBRARY."' 
-                    group by i_manitestation, i_identifier, i_ln1, i_ln2
+        $sql = "select i_identifier, min(i_manifestation) as i_manifestation, i_ln1, i_ln2
+                    from find_item
+                    where i_library = '".LIBRARY."'
+                    group by i_manifestation, i_identifier, i_ln1, i_ln2
                     order by i_ln1, i_ln2";
         $rlt = $this->db->query($sql);
         $rlt = $rlt->result_array();
         $sx = '';
         $sx .= '<div class="container">';
         $sx .= '<div class="row">';
-        
+
         for ($r=0;$r < count($rlt);$r++)
             {
                 $line = $rlt[$r];
-                $link = '<a href="'.base_url(PATH.'v/'.$line['i_manitestation']).'">';
+                $link = '<a href="'.base_url(PATH.'v/'.$line['i_manifestation']).'">';
                 $sx .= '<div class="col-md-2" style="margin-bottom: 20px";>';
                 $sx .= $link;
                 $sx .= '<img src="'.$this->image($line['i_identifier']).'" class="img-fluid">';
                 $sx .= '</a>';
                 $sx .= '</div>';
-            } 
+            }
         $sx .= '</div></div>';
         return($sx);
     }
@@ -409,7 +409,7 @@ class libraries extends CI_model {
                         {
                             $this->png2jpg($filename,$filename,100);
                         }
-                        $this->image_resize($filename,$sw,$sh);                    
+                        $this->image_resize($filename,$sw,$sh);
                     }
                 }
             }
@@ -501,7 +501,7 @@ class libraries extends CI_model {
             }
         }
         return ($sx);
-    }    
+    }
 
     /********************** ITENS ************************************/
     function library_place_bookshelf($id=0,$name='')
@@ -525,10 +525,10 @@ class libraries extends CI_model {
         } else {
             $sql = "select * from library_place_bookshelf where id_bs = '".$id."'";
             $rlt = $this->db->query($sql);
-            $rlt = $rlt->result_array();            
+            $rlt = $rlt->result_array();
         }
         $line = $rlt[0];
-        return($line);        
+        return($line);
     }
     function library_place($id,$name='')
     {
@@ -551,17 +551,17 @@ class libraries extends CI_model {
         } else {
             $sql = "select * from library_place where id_lp = '".$id."'";
             $rlt = $this->db->query($sql);
-            $rlt = $rlt->result_array();            
+            $rlt = $rlt->result_array();
         }
         $line = $rlt[0];
         return($line);
     }
-    function itens_check($id) { 
+    function itens_check($id) {
         $place = 0;
 
         $rdf = new rdf;
         $sql = "select d_r1 as item, d_r2 as manitestation, d_p as prop from rdf_data
-        INNER JOIN rdf_class ON d_p = id_c 
+        INNER JOIN rdf_class ON d_p = id_c
         where c_class = 'isExemplifiedBy' and d_r2 = " . $id . "
         order by c_order
         ";
@@ -617,8 +617,8 @@ class libraries extends CI_model {
                     }
                     break;
                     case 'hasRegisterId' :
-                    if ($ex > 0) 
-                    { 
+                    if ($ex > 0)
+                    {
                         $sx .= '; ';
                     } else {
                         $sx .= '<td>';
@@ -649,7 +649,7 @@ class libraries extends CI_model {
                 $sql = "insert into itens
                 (i_tombo, i_library, i_place,
                 i_bookshelf, i_shelf, i_status,
-                i_update, i_user, i_date_return, 
+                i_update, i_user, i_date_return,
                 i_label_1, i_label_2, i_label_3,
                 i_manifestation, i_inventario, i_consulta_local
                 ) values (
@@ -687,7 +687,7 @@ class libraries extends CI_model {
         $this->itens_check($id);
         /****************************************************** versaõ 2 ****************************/
         $si = '';
-        $sql = "select * from itens 
+        $sql = "select * from itens
         inner join library_place ON i_place = id_lp
         inner join library_place_bookshelf ON i_bookshelf = id_bs
         where i_manifestation = ".round($id);
@@ -699,7 +699,7 @@ class libraries extends CI_model {
             $si .= $this->label($line);
         }
         return ($si);
-    }    
+    }
     function v($id) {
         $tela = '';
         $rdf = new rdf;
@@ -803,7 +803,7 @@ class libraries extends CI_model {
             }
         }
         return ($tela);
-    }    
+    }
     function exemplar_situacao($tb) {
         $sql = "select * from itens where i_tombo = '$tb' ";
         $rlt = $this -> db -> query($sql);
@@ -813,7 +813,7 @@ class libraries extends CI_model {
             return ($line['i_status']);
         }
         return (0);
-    }    
+    }
     function chapters($id = 0) {
         $rdf = new rdf;
         $cap = array();
@@ -827,12 +827,12 @@ class libraries extends CI_model {
             }
         }
         return ($cap);
-    }    
+    }
     function show_works($id = '') {
         $rdf = new rdf;
         $class = $rdf -> find_class('work');
-        $sql = "select id_cc as w 
-        from rdf_concept 
+        $sql = "select id_cc as w
+        from rdf_concept
         where cc_class = " . $class . "
         AND cc_library = " . LIBRARY . "
         ORDER BY id_cc desc
@@ -848,7 +848,7 @@ class libraries extends CI_model {
             $sx .= '</il>' . cr();
         }
         return ($sx);
-    }    
+    }
     function show_manifestation_by_works($id = '', $img_size = 200, $mini = 0) {
         $img = base_url('img/no_cover.png');
         $rdf = new rdf;
@@ -890,7 +890,7 @@ class libraries extends CI_model {
         /* expression */
         $class = "isRealizedThrough";
         $id_cl = $rdf -> find_class($class);
-        $sql = "select * from rdf_data 
+        $sql = "select * from rdf_data
         WHERE d_r1 = $id and
         d_p = $id_cl ";
         $xrlt = $this -> db -> query($sql);
@@ -901,7 +901,7 @@ class libraries extends CI_model {
             /************************************ manifestation ********/
             $class = "isEmbodiedIn";
             $id_cl = $rdf -> find_class($class);
-            $sql = "select * from rdf_data 
+            $sql = "select * from rdf_data
             WHERE d_r1 = $ide and
             d_p = $id_cl ";
             $xrlt = $this -> db -> query($sql);
@@ -952,7 +952,7 @@ class libraries extends CI_model {
         }
         //echo $line['c_class'].'<br>';
         return ($sx);
-    }    
+    }
     function label($line=array())
     {
         $sx = '';
@@ -973,7 +973,7 @@ class libraries extends CI_model {
             break;
             case '5':
             $corc = 'alert-info';
-            break;                                                                                               
+            break;
             default:
             $corc = 'alert-primary';
             break;
@@ -985,7 +985,7 @@ class libraries extends CI_model {
         $sx .= $line['lp_name'];
         $sx .= '<br/>';
         $sx .= $line['bs_name'];
-        $sx .= '<br/>'.msg('status').': '.msg('situacao_exemplar_'.$status); 
+        $sx .= '<br/>'.msg('status').': '.msg('situacao_exemplar_'.$status);
         $sx .= '</div>';
         return($sx);
     }
@@ -1009,9 +1009,9 @@ class libraries extends CI_model {
         $class_3 = $rdf -> find_class('ClassificacaoCromatica');
         $class_work = $rdf -> find_class('work');
 
-        $sql = "select id_cc as c, n_name 
+        $sql = "select id_cc as c, n_name
         from rdf_concept
-        inner join rdf_name ON id_n = cc_pref_term 
+        inner join rdf_name ON id_n = cc_pref_term
         where (cc_class = " . $class_1 . " or cc_class = " . $class_2 . " or cc_class = " . $class_3 . ")
         /* AND cc_library = " . LIBRARY . " */
         ORDER BY n_name
@@ -1022,8 +1022,8 @@ class libraries extends CI_model {
         for ($r = 0; $r < count($rlt); $r++) {
             $line = $rlt[$r];
 
-            $sql = "select n_name, id_cc as w from rdf_data as data1 
-            inner join rdf_data as data2 ON data1.d_r1 = data2.d_r2 
+            $sql = "select n_name, id_cc as w from rdf_data as data1
+            inner join rdf_data as data2 ON data1.d_r1 = data2.d_r2
             inner join rdf_data as data3 ON data2.d_r1 = data3.d_r2
             inner join rdf_concept ON data3.d_r1 = id_cc and cc_class= $class_work
             inner join rdf_name ON id_n = cc_pref_term

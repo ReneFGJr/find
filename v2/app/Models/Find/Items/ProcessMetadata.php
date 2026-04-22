@@ -83,8 +83,6 @@ class ProcessMetadata extends Model
         $dd['i_work'] = $Work['id_cc'];
         $RSP[] = "ID do Work criado para ISBN $isbn: " . $Work['id_cc'];
 
-        $dd['i_work'] = $Work['id_cc'];
-        $RSP[] = "ID do Work criado para ISBN $isbn: " . $Work['id_cc'];
 
         /************************************************** Expression */
         if (isset($z3950_result['concept']['lang'])) {
@@ -97,6 +95,14 @@ class ProcessMetadata extends Model
 
         $dd['i_expression'] = $Expression['id_cc'];
         $RSP[] = "ID da Expression criada para ISBN $isbn: " . $Expression['id_cc'];
+
+        /************************************************** Expression */
+        $mName = 'ISBN:' . $isbn . ':book' ;
+        $Manifestation = $RDF->createConcept('Manifestation', $mName);
+
+        $dd['i_manifestation'] = $Manifestation['id_cc'];
+        $RSP[] = "ID da Manifestation criada para ISBN $isbn: " . $Manifestation['id_cc'];
+
 
         /************************************************** Incluir Autores (TEXT) */
         $dd['i_autores'] = '';
@@ -131,7 +137,7 @@ class ProcessMetadata extends Model
                 ->orWhere('i_titulo', '')
                 ->orWhere('i_work', 0)
                 ->orWhere('i_expression', 0)
-                ->orWhere('i_manitestation', 0)
+                ->orWhere('i_manifestation', 0)
                 ->groupEnd()
                 ->update();
             //echo $Item->getLastQuery();
