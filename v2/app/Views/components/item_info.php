@@ -12,14 +12,13 @@ if (!empty($itemInfo['i_status'])) {
 }
 
 function linkRDF($id)
-    {
-        if ($id > 0)
-            {
-                return '<a href="'.base_url('rdf/form/'.$id).'" target="_blank" class="link link-secondary"><i class="bi bi-diagram-3 me-1"></i>'.$id.'</a>';
-            } else {
-                return '-';
-            }
+{
+    if ($id > 0) {
+        return '<a href="' . base_url('rdf/form/' . $id) . '" target="_blank" class="link link-secondary"><i class="bi bi-diagram-3 me-1"></i>' . $id . '</a>';
+    } else {
+        return '-';
     }
+}
 ?>
 <?php if (!empty($itemInfo)): ?>
     <div class="mb-4">
@@ -44,7 +43,7 @@ function linkRDF($id)
                             <td width="30%"><?= htmlspecialchars($itemInfo['id_i'] ?? '') ?></td>
 
                             <td rowspan="10" class="small">Capa:<br>
-                            <img src="<?= cover_image($itemInfo['i_identifier'] ?? '') ?>" alt="Capa"  style="width: 100px;">
+                                <img src="<?= cover_image($itemInfo['i_identifier'] ?? '') ?>" alt="Capa" style="width: 100px;">
                             </td>
                         </tr>
                         <tr>
@@ -65,11 +64,17 @@ function linkRDF($id)
                         <tr>
                             <th class="text-end">Cadastrado</th>
                             <td><?= htmlspecialchars($itemInfo['i_created'] ?? '') ?></td>
-                            <th class="text-end">IDs</th>
+                            <th class="text-end" rowspan="3">IDs</th>
                             <td class="small text-secondary">
                                 Work: <?= linkRDF(htmlspecialchars($itemInfo['i_work'] ?? '')) ?></br>
                                 Expression: <?= linkRDF(htmlspecialchars($itemInfo['i_expression'] ?? '')) ?></br>
                                 Manifestation: <?= linkRDF(htmlspecialchars($itemInfo['i_manifestation'] ?? '')) ?></br>
+                        </tr>
+                        <tr>
+                            <th class="text-end">Etiqueta</th>
+                            <td>
+                                <?= view('components/label_view',['itemInfo' => $itemInfo]); ?>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

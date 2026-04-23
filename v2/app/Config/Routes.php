@@ -85,6 +85,7 @@ $routes->group('catalog', function ($routes) {
     $routes->post('label', 'Find\\Item::etiquetas');
     $routes->get('label/(:any)', 'Find\\Item::etiquetas/$1');
     $routes->get('status/(:num)', 'Find\\Item::change_status/$1');
+    $routes->post('label/save', 'Find\\Item::etiquetas_save');
 });
 
 

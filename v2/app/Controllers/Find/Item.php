@@ -9,6 +9,34 @@ helper('sisdoc');
 class Item extends BaseController
 {
 
+    public function etiquetas_save()
+    {
+        $id_i = $this->request->getPost('id_i');
+        $ln1 = $this->request->getPost('i_ln1');
+        $ln2 = $this->request->getPost('i_ln2');
+        $ln3 = $this->request->getPost('i_ln3');
+        $ln4 = $this->request->getPost('i_ln4');
+
+        if (!$id_i) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'ID do item não informado.']);
+        }
+
+        $data = [
+            'i_ln1' => $ln1,
+            'i_ln2' => $ln2,
+            'i_ln3' => $ln3,
+            'i_ln4' => $ln4,
+        ];
+        $Items = new \App\Models\Find\Items\Index();
+        $updated = $Items->update($id_i, $data);
+
+        if ($updated) {
+            return $this->response->setJSON(['status' => 'success', 'message' => 'Etiqueta atualizada com sucesso!']);
+        } else {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Erro ao atualizar etiqueta.']);
+        }
+    }
+
     public function change_status($id_i = '')
     {
         $dd = [];

@@ -40,6 +40,16 @@
                 <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#checkPanel" aria-controls="checkPanel">
                     <i class="bi bi-arrow-clockwise"></i> Verificar Dados
                 </button>
+
+                <button class="btn btn-outline-warning" type="button" data-bs-toggle="offcanvas" data-bs-target="#labelEditPanel" aria-controls="labelEditPanel">
+                    <i class="bi bi-pencil-square"></i> Editar Etiqueta
+                </button>
+            <?php include(APPPATH . 'Views/components/label_edit.php'); ?>
+
+            </div>
+
+
+
             <!-- Offcanvas Panel -->
             <div class="offcanvas offcanvas-end" tabindex="-1" id="checkPanel" aria-labelledby="checkPanelLabel">
                 <div class="offcanvas-header">
