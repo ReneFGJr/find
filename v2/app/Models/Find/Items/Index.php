@@ -176,160 +176,57 @@ class Index extends Model
         return $LT;
     }
 
-    public function rebuildAllFields()
+    public function rebuildAllFields($offset)
     {
-        // 🔥 limpa buffers
-        while (ob_get_level() > 0) {
-            ob_end_flush();
-        }
-
-        header('Content-Type: text/html; charset=utf-8');
-        header('Cache-Control: no-cache');
-        header('X-Accel-Buffering: no');
-
-        echo view('layout/header', ['title' => 'Configurações • FIND']);
-
-        // 🔥 HTML inicial
-        echo '
-        <div id="reindex" class="p-2">
-            <div id="status">Iniciando Rebuilding...</div>
-        </div>
-
-    <script>
-    function setStatus(msg) {
-        var el = document.getElementById("status");
-        if (el) {
-            el.innerHTML = msg;
-        }
-    }
-    </script>
-    ';
-
-        // 🔥 força render inicial
-        echo str_repeat(' ', 1024);
-        flush();
-
         $count = 0;
         $totalAtualizados = 0;
-        $limit = 999999;
-        $offset = 0;
+        $limit = 100;
 
         $CheckerModel = new CheckerModel();
 
         $dt = $this
+            ->orderBy('id_i', 'ASC')
             ->findAll($limit, $offset);
 
+        foreach ($dt as $line) {
+            $CheckerModel->updateDataTitleAuthor($line);
+        }
 
+        if (count($dt) == 0)
+            {   return ""; }
+            else {
+                return "Continue";
+            }
+    }
+
+    public function reindexAll($offset = 0, $limit = 100)
+    {
+        $dt = $this->where('i_titulo !=', '')
+            ->findAll($limit, $offset);
 
         foreach ($dt as $line) {
 
-            $msg2 = $CheckerModel->updateDataTitleAuthor($line);
-            if ($msg2 != '') {
-                $totalAtualizados++;
-            } else {
-                continue;
-            }
+            $search  = ascii($line['i_titulo']);
+            $search .= ' ' . ascii($line['i_autores']);
+            $search .= ' ' . ascii($line['i_ln1']);
+            $search .= ' ' . ascii($line['i_ln2']);
+            $search .= ' ' . ascii($line['i_ln3']);
+            $search .= ' ' . ascii($line['i_ln4']);
+            $search = strtolower($search);
+            $search = preg_replace('/[^\p{L}0-9 ]/u', '', $search);
 
-            $count++;
-
-            // 🔥 atualiza a cada 100 registros
-            if ($count % 10 == 0) {
-                $percent = round(($count / count($dt))*100, 1);
-                $msg = "<div class=\"card p-2 ms-2 me-2\"><tt>Reprocessados: {$count}/" . count($dt) . " itens ($percent%)<br>Atualizados: {$totalAtualizados}</tt></div>";
-                $msg .= '<div class=\"card p-2 ms-2 me-2\">'.$msg2.'</div>';
-                echo "<script>setStatus(" . json_encode($msg) . ");</script>";
-                flush();
+            if ($search != $line['i_search']) {
+                $this->set(['i_search' => $search])
+                    ->where('id_i', $line['id_i'])
+                    ->update();
             }
         }
 
-
-        // 🔥 final
-        echo "<script>setStatus('✔ Finalizado! Total atualizados: {$totalAtualizados}');</script>";
-        flush();
-
-        exit;
-    }
-
-    public function reindexAll()
-    {
-        // 🔥 limpa buffers
-        while (ob_get_level() > 0) {
-            ob_end_flush();
+        if (count($dt) == 0) {
+            return "";
+        } else {
+            return "Continue";
         }
-
-        header('Content-Type: text/html; charset=utf-8');
-        header('Cache-Control: no-cache');
-        header('X-Accel-Buffering: no');
-
-        echo view('layout/header', ['title' => 'Configurações • FIND']);
-
-        // 🔥 HTML inicial
-        echo '
-        <div id="reindex" class="p-2">
-            <div id="status">Iniciando...</div>
-        </div>
-
-    <script>
-    function setStatus(msg) {
-        var el = document.getElementById("status");
-        if (el) {
-            el.innerHTML = msg;
-        }
-    }
-    </script>
-    ';
-
-        // 🔥 força render inicial
-        echo str_repeat(' ', 1024);
-        flush();
-
-        $limit = 500;
-        $offset = 0;
-        $count = 0;
-        $totalAtualizados = 0;
-
-        do {
-            $dt = $this->where('i_titulo !=', '')
-                ->findAll($limit, $offset);
-
-            foreach ($dt as $line) {
-
-                $search  = ascii($line['i_titulo']);
-                $search .= ' ' . ascii($line['i_autores']);
-                $search .= ' ' . ascii($line['i_ln1']);
-                $search .= ' ' . ascii($line['i_ln2']);
-                $search .= ' ' . ascii($line['i_ln3']);
-                $search .= ' ' . ascii($line['i_ln4']);
-                $search = strtolower($search);
-
-                if ($search != $line['i_search']) {
-                    $this->set(['i_search' => $search])
-                        ->where('id_i', $line['id_i'])
-                        ->update();
-
-                    $totalAtualizados++;
-                }
-
-                $count++;
-
-                // 🔥 atualiza a cada 100 registros
-                if ($count % 100 == 0) {
-                    $percent = round(($count / count($dt)), 1);
-                    $msg = "<div class=\"card p-2 ms-2 me-2\"><tt>Processados: {$count} itens ($percent%)| Atualizados: {$totalAtualizados}</tt></div>";
-                    echo "<script>setStatus(" . json_encode($msg) . ");</script>";
-
-                    flush();
-                }
-            }
-
-            $offset += $limit;
-        } while (count($dt) > 0);
-
-        // 🔥 final
-        echo "<script>setStatus('✔ Finalizado! Total atualizados: {$totalAtualizados}');</script>";
-        flush();
-
-        exit;
     }
 
 
