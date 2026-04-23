@@ -16,12 +16,14 @@ class CheckerModel {
         $items = $itemModel
             ->select('id_i, i_work, i_expression, i_manifestation, i_identifier')
             ->groupStart()
-                ->where('i_titulo', '')
-                ->where('i_work >', 0)
+                ->where('i_titulo', null)
+                ->orWhere('i_titulo', '')
             ->groupEnd()
-            ->findAll(100);
+            ->where('i_work >', 0)
+            ->findAll(1000);
 
-            echo "Itens encontrados: " . count($items) . '<br>';
+            $rsp = "Itens encontrados: " . count($items) . '<br>';
+
 
         $rdf = new \App\Models\Find\Rdf\RDF();
         foreach ($items as $item) {
@@ -32,7 +34,7 @@ class CheckerModel {
             $dados1 = [];
             $dados2 = [];
             $dados3 = [];
-            if (!$i_manifestation) continue;
+            //if (!$i_manifestation) continue;
 
             // Lê dados RDF da manifestação
             if ($i_work > 0) {
@@ -51,39 +53,53 @@ class CheckerModel {
             $Title = '';
             $Author = '';
 
+            $rsp .= "<li>Processando i_work: " . $i_work . "</li>";
+
             foreach ($dados as $d) {
                 $prop = $d['Property'];
                 // Identifica o work (Work)
+                if (!isset($d['Caption'])) continue;
+                if (is_null($d['Caption'])) continue;
+
+                $txt = trim($d['Caption']);
+
+                if ($txt == '') continue;
                 switch($prop)
                     {
                         case 'prefLabel':
-                            $Title = $d['Caption'];
+                            $Title = $txt;
                             break;
                         case 'hasTitle':
-                            $Title = $d['Caption'];
+                            $Title = $txt;
                             break;
                         case 'hasAuthor':
                             if ($Author != '') {
                                 $Author .= '; ';
                             }
-                            $Author .= $d['Caption'];
+                            $Author .= $txt;
                             break;
                     }
             }
 
+            if ($Title == '') {
+                $rsp .= "<span style='color: red;'>Título não encontrado para i_work: " . $i_work . "</span><br>";
+            } else {
+                $rsp .= "<span style='color: green;'>Título encontrado para i_work: " . $i_work . " - " . $Title . "</span><br>";
+            }
+
             if ((strlen($item['i_identifier']) > 10) and ($Title != '')) {
-                echo "==" . $Title . '<br>';
-                echo "==" . $Author . '<br>';
 
                 $dd['i_titulo'] = $Title;
                 $dd['i_autores'] = $Author;
 
                 $itemModel->set($dd)->where('i_identifier', $item['i_identifier'])->update();
-                echo $itemModel->getLastQuery() . '<br>';
-                pre($dd);
-                exit;
+                $rsp .= "<span style='color: blue;'>Item atualizado para i_identifier: " . $item['i_identifier'] . "</span><br>";
             }
         }
+
+        $data['content'] = '<tt>'.$rsp.'</tt>';
+        return view('components/content', $data);
+
         return $result;
     }
 }

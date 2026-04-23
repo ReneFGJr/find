@@ -112,6 +112,23 @@
             </a>
         </div>
 
+        <!-- Cadastro dos Status -->
+        <div class="col">
+            <a href="<?= base_url('/admin/status'); ?>" class="text-decoration-none">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="bg-secondary bg-opacity-10 rounded-3 p-3">
+                            <i class="bi bi-list-check fs-3 text-secondary"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-1 text-dark">Cadastro dos Status</h5>
+                            <p class="card-text small text-secondary mb-0">Gerenciar os status do sistema</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
     </div>
 
 </main>

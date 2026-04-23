@@ -185,7 +185,6 @@ class Form extends BaseController
 
         /******************************* From Type */
         $Class = $concept['Class'] ?? null;
-        echo '<h1>Class: ' . htmlspecialchars($Class) . '</h1>';
 
         $dataForm = [];
         switch ($Class) {

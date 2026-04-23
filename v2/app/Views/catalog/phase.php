@@ -38,11 +38,14 @@
                                         break;
                                     case 2:
                                         $badgeClass = 'bg-info';
+                                        $url = base_url('/catalog/catalogar/metadadoSearch/' . urlencode($obra['id_i'] ?? ''));
                                         break;
                                     case 3:
+                                        $url = base_url('/catalog/catalogar/metadadoSearch/' . urlencode($obra['id_i'] ?? ''));
                                         $badgeClass = 'bg-warning';
                                         break;
                                     case 4:
+                                        $url = base_url('/catalog/catalogar/metadadoSearch/' . urlencode($obra['id_i'] ?? ''));
                                         $badgeClass = 'bg-primary';
                                         break;
                                     case 0:

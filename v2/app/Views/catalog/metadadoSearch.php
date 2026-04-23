@@ -37,6 +37,23 @@
                     </button>
                 </form>
 
+                <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#checkPanel" aria-controls="checkPanel">
+                    <i class="bi bi-arrow-clockwise"></i> Verificar Dados
+                </button>
+            <!-- Offcanvas Panel -->
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="checkPanel" aria-labelledby="checkPanelLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="checkPanelLabel">Verificação de Dados</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <iframe src="<?= base_url('/catalog/check'); ?>" style="width:100%;height:70vh;border:0;"></iframe>
+                    <div class="mt-3 text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Fechar</button>
+                    </div>
+                </div>
+            </div>
+
             </div>
 
             <?php if (!empty($z3950_result)): ?>

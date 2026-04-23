@@ -46,10 +46,17 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+    public $library = '';
+
+    function setLibrary($library)
+    {
+        $this->library = $library;
+    }
+
     function setToPrint()
         {
             $lb = get("tomboID");
-            $library = get("library");
+            $library = $this->library;
             $lbs = explode(chr(13), $lb);
             $tot = 0;
             foreach ($lbs as $lb) {
@@ -68,9 +75,11 @@ class Index extends Model
             return $RSP;
         }
 
-    function getLabels($status=0)
+    function getLabels($status=0, $library = '')
     {
-        $library = get("library");
+        if ($library == '') {
+            $library = $this->library;
+        }
         $dd = [];
         $dd['i_status'] = 2;
         $dt = $this
@@ -85,7 +94,7 @@ class Index extends Model
         $RSP = [];
         $RSP['status'] = '200';
         $RSP['msg'] = 'Zerado com sucesso';
-        $library = get("library");
+        $library = $this->library;
         $dd = [];
         $dd['i_status'] = 5;
         $this->set($dd)->where('i_library', $library)->update();
@@ -102,7 +111,7 @@ class Index extends Model
         $dt = [];
         $da = [];
 
-        $lib = 1016;
+        $lib = $this->library;
         $ord = 'id_i';
         if ($d1 != '') {
             $lib = $d1;
@@ -186,7 +195,7 @@ class Index extends Model
         $dt = [];
         $da = [];
 
-        $lib = 1016;
+        $lib = $this->library;
         $ord = 'id_i';
         if ($d1 != '')
             {
@@ -261,7 +270,7 @@ class Index extends Model
 
     function print2($lib = '')
     {
-        $lib = 1016;
+        $lib = $this->library;
         $limit = 1000;
         $offset = 0;
         $dt = $this

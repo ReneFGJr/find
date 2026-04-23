@@ -53,7 +53,7 @@ $routes->get('/item/(:num)', 'LibraryController::item/$1');
 $routes->get('/perfil', 'Perfil::index');
 
 /*************** About */
-$routes->group('about', function($routes) {
+$routes->group('about', function ($routes) {
     $routes->get('us', 'PagesController::about');
     $routes->get('faq', 'PagesController::faq');
     $routes->get('contact', 'PagesController::contact');
@@ -61,11 +61,11 @@ $routes->group('about', function($routes) {
 });
 
 
-$routes->group('catalog', function($routes) {
+$routes->group('catalog', function ($routes) {
     // Redirecionamento de /catalog/catalogar/phase para /catalog/catalogar
     $routes->get('catalogar/phase', 'Catalog::phaseRedirect');
     $routes->get('index', 'Catalog::index');
-    $routes->get('form', function() {
+    $routes->get('form', function () {
         return redirect()->to('/catalog/index');
     });
     $routes->get('catalogar', 'Catalog::catalogar');
@@ -79,12 +79,18 @@ $routes->group('catalog', function($routes) {
     $routes->get('catalogar/metadadoSearch', 'Catalog::metadadoSearchRedirect');
     // Adicione outras rotas de catalogação aqui se necessário
     $routes->get('check', 'Catalog::checkerModel');
+
+    // Etiquetas //
+    $routes->get('label', 'Find\\Item::etiquetas');
+    $routes->post('label', 'Find\\Item::etiquetas');
+    $routes->get('label/(:any)', 'Find\\Item::etiquetas/$1');
+    $routes->get('status/(:num)', 'Find\\Item::change_status/$1');
 });
 
 
 $routes->group('rdf', function ($routes) {
-        // Rota para exclusão de registro rdf_data
-        $routes->post('form/excluir_rdf_data', 'Find\Rdf\Form::excluirRdfData');
+    // Rota para exclusão de registro rdf_data
+    $routes->post('form/excluir_rdf_data', 'Find\Rdf\Form::excluirRdfData');
     $routes->match(['get', 'post'], 'form/upload_cover', 'Find\Rdf\Form::upload_cover');
     $routes->get('form/(:num)', 'Find\\Rdf\\Form::index/$1');
     $routes->get('form_edit', 'Find\\Rdf\\Form_edit::index');
@@ -102,9 +108,7 @@ $routes->group('rdf', function ($routes) {
     $routes->post('form/adicionar_literal', 'Find\\Rdf\\Form::adicionar_literal');
 });
 
-
-
-$routes->group('admin', function($routes) {
+$routes->group('admin', function ($routes) {
     $routes->get('users', 'AdminController::users');
     $routes->get('user/edit/(:num)', 'AdminController::editUser/$1');
     $routes->post('user/edit/(:num)', 'AdminController::saveUser/$1');
@@ -123,6 +127,15 @@ $routes->group('admin', function($routes) {
 
     $routes->get('logo', 'AdminController::logo');
     $routes->post('logo/upload', 'AdminController::uploadLogo');
+
+    /* Status */
+    $routes->get('status', 'AdminController::indexStatus');
+    $routes->get('status/create', 'AdminController::createStatus');
+    $routes->post('status/create', 'AdminController::createStatus');
+    $routes->get('status/edit/(:num)', 'AdminController::editStatus/$1');
+    $routes->post('status/edit/(:num)', 'AdminController::editStatus/$1');
+    $routes->get('status/delete/(:num)', 'AdminController::deleteStatus/$1');
+
 });
 
 $routes->get('/api/', 'Api::index');
