@@ -44,7 +44,11 @@ class Index extends Model
         'i_work',
         'i_expression',
         'i_autores',
-        'i_search','i_ln1','i_ln2','i_ln3','i_ln4'
+        'i_search',
+        'i_ln1',
+        'i_ln2',
+        'i_ln3',
+        'i_ln4'
     ];
 
     // Dates
@@ -71,107 +75,174 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    function index($d1='',$d2='',$d3='')
-        {
-            $RSP = [];
-            switch($d1)
-                {
-                    case 'search':
-                        $RDFform2 = new \App\Models\FindServer\RDFform2();
-                        $term = get("searchTerm");
-                        $formID = get("formID");
-                        $RSP['term'] = $term;
-                        $RSP['formID'] = $formID;
-                        $RSP['options'] = $RDFform2->searchAPI($term,$formID);
-                        break;
-                    case 'concept':
-                        $RSP['ppsot'] = $_POST;
-                        break;
-                    case 'check':
-                        $RDFform = new \App\Models\FindServer\RDFform2();
-                        $RSP = $RDFform->checkRegister($d2);
-                        break;
-                    case 'edit':
-                        $RDFform = new \App\Models\FindServer\RDFform2();
-                        $RSP = $RDFform->editForm($d2,get("library"));
-                        break;
-                    case 'rdf':
-                        $Editor = new \App\Models\FindServer\RDFform();
-                        $RSP = $Editor->getForm($d2,get("library"));
-                        break;
-                    case 'property':
-                        $RDFform = new \App\Models\FindServer\RDFform();
-                        $RSP = $RDFform->getForm(get("type"),get("library"));
-                        break;
-                    case 'moveProperty':
-                        $RDFform = new \App\Models\FindServer\RDFform2();
-                        $RSP = $RDFform->moveProperty(get("type"),get("library"),get("subgroup"),get("id"),get("pos"));
-                        break;
-                    case 'formByLibrary':
-                        $RDFform = new \App\Models\FindServer\RDFform2();
-                        if ($d2 == '') {
-                            $d2 = get("library");
-                        }
-                        if ($d3 == '') {
-                            $d3 = get("id");
-                        }
-                        $RSP = $RDFform->formByLibrary($d2, $d1);
-                        break;
-                    case 'property_save':
-                        $RDFform = new \App\Models\FindServer\RDFform2();
-                        $RSP = $RDFform->property_save(get("type"), get("library"));
-                        break;
+    function index($d1 = '', $d2 = '', $d3 = '')
+    {
+        $RSP = [];
+        switch ($d1) {
+            case 'search':
+                $RDFform2 = new \App\Models\FindServer\RDFform2();
+                $term = get("searchTerm");
+                $formID = get("formID");
+                $RSP['term'] = $term;
+                $RSP['formID'] = $formID;
+                $RSP['options'] = $RDFform2->searchAPI($term, $formID);
+                break;
+            case 'concept':
+                $RSP['ppsot'] = $_POST;
+                break;
+            case 'check':
+                $RDFform = new \App\Models\FindServer\RDFform2();
+                $RSP = $RDFform->checkRegister($d2);
+                break;
+            case 'edit':
+                $RDFform = new \App\Models\FindServer\RDFform2();
+                $RSP = $RDFform->editForm($d2, get("library"));
+                break;
+            case 'rdf':
+                $Editor = new \App\Models\FindServer\RDFform();
+                $RSP = $Editor->getForm($d2, get("library"));
+                break;
+            case 'property':
+                $RDFform = new \App\Models\FindServer\RDFform();
+                $RSP = $RDFform->getForm(get("type"), get("library"));
+                break;
+            case 'moveProperty':
+                $RDFform = new \App\Models\FindServer\RDFform2();
+                $RSP = $RDFform->moveProperty(get("type"), get("library"), get("subgroup"), get("id"), get("pos"));
+                break;
+            case 'formByLibrary':
+                $RDFform = new \App\Models\FindServer\RDFform2();
+                if ($d2 == '') {
+                    $d2 = get("library");
                 }
-            $RSP['d1'] = $d1;
-            $RSP['d2'] = $d2;
-            $RSP['d3'] = get("library");
-            return $RSP;
+                if ($d3 == '') {
+                    $d3 = get("id");
+                }
+                $RSP = $RDFform->formByLibrary($d2, $d1);
+                break;
+            case 'property_save':
+                $RDFform = new \App\Models\FindServer\RDFform2();
+                $RSP = $RDFform->property_save(get("type"), get("library"));
+                break;
         }
+        $RSP['d1'] = $d1;
+        $RSP['d2'] = $d2;
+        $RSP['d3'] = get("library");
+        return $RSP;
+    }
+
+    public function reindexAll()
+    {
+        // 🔥 limpa buffers
+        while (ob_get_level() > 0) {
+            ob_end_flush();
+        }
+
+        header('Content-Type: text/html; charset=utf-8');
+        header('Cache-Control: no-cache');
+        header('X-Accel-Buffering: no');
+
+        echo "<div>";
+        echo "Reindexando itens...<br>";
+        flush();
+
+        $limit = 99999999;
+        $offset = 0;
+        $count = 0;
+
+        $dt = $this->where('i_titulo !=', '')
+            ->findAll($limit, $offset);
+        $total = count($dt);
+
+        foreach ($dt as $line) {
+            $ch = '.';
+
+            $search  = ascii($line['i_titulo']);
+            $search .= ' ' . ascii($line['i_autores']);
+            $search .= ' ' . ascii($line['i_ln1']);
+            $search .= ' ' . ascii($line['i_ln2']);
+            $search .= ' ' . ascii($line['i_ln3']);
+            $search .= ' ' . ascii($line['i_ln4']);
+            $search = strtolower($search);
+
+            if ($search != $line['i_search']) {
+                $this->set(['i_search' => $search])
+                    ->where('id_i', $line['id_i'])
+                    ->update();
+                $ch = '✔';
+                $total++;
+            }
+
+            $count++;
+            if ($ch != '.') {
+                echo $ch . ' ';
+                flush();
+            } else {
+                if ($count % 100 == 0) {
+                    echo "<br>" . number_format($count / $total * 100, 1, ',', '.') . '% itens processados... <br>';
+                    flush();
+                } else {
+                    if ($count % 10 == 0) {
+                        echo $ch . ' ';
+                        flush();
+                    }
+                }
+            }
+        }
+        $offset += $limit;
+        echo "</div>";
+
+        echo "\n✔ Reindexação finalizada. Total atualizados: $total\n";
+        flush();
+        exit;
+
+        return ['total' => $total];
+    }
+
 
     function check()
-        {
-            $RDFclass = new \App\Models\FindServer\RDFclass();
-            $RDFdata = new \App\Models\FindServer\RDFdata();
-            $Class = $RDFclass->getClass('isAppellationOfManifestation');
-            if ($Class != []) {
-                $Class = $Class['id_c'];
-            } else {
-                echo "OPS - Classe não encontrada";
-                exit;
-            }
-            $dt = $this
-                ->where('i_work', 0)
-                ->where('i_manifestation >', 0)
-                ->FindAll(1000);
-
-            foreach($dt as $id=>$line)
-                {
-                    $dti = $RDFdata
-                        ->select('d2.d_r1 as W, rdf_data.d_r1 as E, rdf_data.d_r2 as M')
-                        ->join('rdf_data as d2', 'd2.d_r2 = rdf_data.d_r1', 'left')
-                        ->where('rdf_data.d_p', $Class)
-                        ->where('rdf_data.d_r2', $line['i_manifestation'])
-                        ->first();
-
-                    $DD = [];
-                    $DD['i_work'] = $dti['W'];
-                    $DD['i_expression'] = $dti['E'];
-                    $this->set($DD)->where('id_i', $line['id_i'])->update();
-                }
-            return ["Total" => count($dt) . " itens"];
-        }
-
-    function addItem($ISBN,$LIBRARY)
     {
-        if (($ISBN=='') or ($LIBRARY=='')) {
+        $RDFclass = new \App\Models\FindServer\RDFclass();
+        $RDFdata = new \App\Models\FindServer\RDFdata();
+        $Class = $RDFclass->getClass('isAppellationOfManifestation');
+        if ($Class != []) {
+            $Class = $Class['id_c'];
+        } else {
+            echo "OPS - Classe não encontrada";
+            exit;
+        }
+        $dt = $this
+            ->where('i_work', 0)
+            ->where('i_manifestation >', 0)
+            ->FindAll(1000);
+
+        foreach ($dt as $id => $line) {
+            $dti = $RDFdata
+                ->select('d2.d_r1 as W, rdf_data.d_r1 as E, rdf_data.d_r2 as M')
+                ->join('rdf_data as d2', 'd2.d_r2 = rdf_data.d_r1', 'left')
+                ->where('rdf_data.d_p', $Class)
+                ->where('rdf_data.d_r2', $line['i_manifestation'])
+                ->first();
+
+            $DD = [];
+            $DD['i_work'] = $dti['W'];
+            $DD['i_expression'] = $dti['E'];
+            $this->set($DD)->where('id_i', $line['id_i'])->update();
+        }
+        return ["Total" => count($dt) . " itens"];
+    }
+
+    function addItem($ISBN, $LIBRARY)
+    {
+        if (($ISBN == '') or ($LIBRARY == '')) {
             return [
                 'status' => '400',
                 'msg'    => 'ISBN e Biblioteca são obrigatórios'
             ];
         }
         $dt = $this->where('i_identifier', $ISBN)
-                ->where('i_library', $LIBRARY)
-                ->first();
+            ->where('i_library', $LIBRARY)
+            ->first();
         if ($dt == []) {
             $dt = $this->where('i_identifier', $ISBN)
                 ->first();
@@ -181,7 +252,7 @@ class Index extends Model
         $dt['i_tombo'] = $this->nextTombo($LIBRARY);
         $dt['i_created'] = date('Y-m-d H:i:s');
         $dt['i_ip'] = $_SERVER['REMOTE_ADDR'];
-        $dt['i_exemplar'] = $this->nextExemplar($ISBN,$LIBRARY);
+        $dt['i_exemplar'] = $this->nextExemplar($ISBN, $LIBRARY);
         $dt['i_dt_emprestimo'] = '0000-00-00';
         $dt['i_dt_prev'] = 0;
         $dt['i_dt_renovavao'] = 0;
@@ -193,7 +264,7 @@ class Index extends Model
         return $RSP;
     }
 
-    function nextExemplar($ISBN,$LIBRARY)
+    function nextExemplar($ISBN, $LIBRARY)
     {
         $dt = $this
             ->where('i_library', $LIBRARY)
@@ -207,37 +278,76 @@ class Index extends Model
     }
 
     function nextTombo($LIBRARY)
-        {
-            $dt = $this->where('i_library', $LIBRARY)
-                ->orderBy('i_tombo', 'desc')
-                ->first();
-            if ($dt) {
-                return $dt['i_tombo'] + 1;
-            }
-            return 1;
+    {
+        $dt = $this->where('i_library', $LIBRARY)
+            ->orderBy('i_tombo', 'desc')
+            ->first();
+        if ($dt) {
+            return $dt['i_tombo'] + 1;
         }
+        return 1;
+    }
+
+    function buscaAvancada($termo, $place, $lib)
+    {
+        $limit = 48;
+        $offset = 0;
+
+        $builder = $this
+            ->select('i_titulo, i_identifier, max(id_i) as id_i, i_library')
+            ->where('i_library', $lib);
+        if ($place > 0) {
+            $builder = $builder->where('i_library_place', $place);
+        }
+        $termo = ascii($termo);
+        $t = explode(' ', $termo);
+        $first = true;
+        foreach ($t as $w) {
+            if (strlen($w) > 2) {
+                if ($first) {
+                    $builder = $builder->like('i_search', $w);
+                    $first = false;
+                } else {
+                    $builder = $builder->orLike('i_search', $w);
+                }
+            }
+        }
+
+        $dt = $builder->groupBy('i_titulo, i_identifier')
+            ->orderBy('id_i desc')
+            ->findAll($limit, $offset);
+
+        echo $this->getlastquery();
+
+        return $this->prepare_record($dt);
+    }
 
     function vitrine($lib = '')
     {
-        $Covers = new \App\Models\Find\Cover\Index();
         $limit = 48;
         $offset = 0;
         $dt = $this
-            ->select('i_titulo, i_identifier, max(id_i) as id_i')
+            ->select('i_titulo, i_identifier, max(id_i) as id_i, i_library')
             ->where('i_library', $lib)
             ->where('i_titulo <> ""')
             ->groupBy('i_titulo, i_identifier')
             ->orderBy('id_i desc')
             ->findAll($limit, $offset);
 
+        return $this->prepare_record($dt);
+    }
+
+    function prepare_record($dt)
+    {
         $RSP = [];
+        $Covers = new \App\Models\Find\Cover\Index();
         foreach ($dt as $id => $line) {
             $dd = [];
             $dd['title'] = $line['i_titulo'];
             $dd['isbn'] = $line['i_identifier'];
             $dd['cover'] = $Covers->cover($line['i_identifier']);
             $dd['ID'] = $line['id_i'];
-            $dd['library'] = $lib;
+            $dd['library'] = $line['i_library'];
             array_push($RSP, $dd);
         }
         return $RSP;
@@ -283,39 +393,34 @@ class Index extends Model
     function searchTitle($title, $library = '')
     {
         $t = explode(' ', $title);
-        foreach($t as $w)
-            {
-                if (strlen($w) > 2)
-                    {
-                        $this->like('i_titulo', $w);
-                    }
+        foreach ($t as $w) {
+            if (strlen($w) > 2) {
+                $this->like('i_titulo', $w);
             }
-        if ($library != '')
-            {
-                $this->where('i_library', $library);
-            }
+        }
+        if ($library != '') {
+            $this->where('i_library', $library);
+        }
         $dt = $this->orderBy('i_titulo')->findAll(30);
 
         $RSP = [];
         $ISBN = [];
         foreach ($dt as $id => $line) {
             $ISBNb = $line['i_identifier'];
-            if (!isset($ISBN[$ISBNb]))
-                {
-                    $ISBN[$ISBNb] = 1;
-                    $da = $this->getISBN($line['i_identifier'], $line['i_library']);
-                    $RSP[] = $da;
-                }
+            if (!isset($ISBN[$ISBNb])) {
+                $ISBN[$ISBNb] = 1;
+                $da = $this->getISBN($line['i_identifier'], $line['i_library']);
+                $RSP[] = $da;
+            }
         }
         return $RSP;
     }
 
-    function getISBN($isbn, $lib='')
+    function getISBN($isbn, $lib = '')
     {
         $Cover = new \App\Models\Find\Cover\Index();
 
-        if ($lib == '')
-        {
+        if ($lib == '') {
             $dt = $this
                 ->where('i_identifier', $isbn)
                 ->first();
@@ -360,12 +465,11 @@ class Index extends Model
 
             /********************* Manifestation */
             $idM = $dt['i_manifestation'];
-            if ($idM > 0)
-                {
-                    $dtR = $RDF->le($idM);
-                } else {
-                    $dtR = [];
-                }
+            if ($idM > 0) {
+                $dtR = $RDF->le($idM);
+            } else {
+                $dtR = [];
+            }
             $metadata = array_merge($dtR, $dtW, $dtE);
 
             $Metadata = new \App\Models\Find\Metadata\Index();

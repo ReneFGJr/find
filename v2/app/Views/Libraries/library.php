@@ -23,6 +23,12 @@
 
 <main class="container py-5">
 
+    <?php if (!empty($searchComponent)): ?>
+        <div class="mb-4">
+            <?= $searchComponent ?>
+        </div>
+    <?php endif; ?>
+
     <?php if (!empty($vitrine)): ?>
     <div>
         <h2 class="h4 fw-bold mb-4">Obras mais recentes</h2>

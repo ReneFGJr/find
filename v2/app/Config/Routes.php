@@ -36,6 +36,7 @@ $routes->set404Override();
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 $routes->get('/', 'LibraryController::library');
+$routes->get('/busca/resultado', 'LibraryController::buscaResultado');
 $routes->get('/login', 'AuthController::login');
 $routes->post('/authenticate', 'AuthController::authenticate');
 $routes->get('/register', 'AuthController::register');
@@ -49,6 +50,8 @@ $routes->get('/bibliotecas', 'LibraryController::bibliotecas');
 $routes->post('/bibliotecas/select', 'LibraryController::select');
 $routes->get('/library', 'LibraryController::library');
 $routes->get('/item/(:num)', 'LibraryController::item/$1');
+
+$routes->get('/busca-avancada', 'BuscaAvancada::index');
 
 $routes->get('/perfil', 'Perfil::index');
 
@@ -79,6 +82,7 @@ $routes->group('catalog', function ($routes) {
     $routes->get('catalogar/metadadoSearch', 'Catalog::metadadoSearchRedirect');
     // Adicione outras rotas de catalogação aqui se necessário
     $routes->get('check', 'Catalog::checkerModel');
+    $routes->get('reindex', 'Catalog::reindexModel');
 
     // Etiquetas //
     $routes->get('label', 'Find\\Item::etiquetas');

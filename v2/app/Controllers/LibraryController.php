@@ -6,14 +6,12 @@ use App\Controllers\BaseController;
 use App\Models\Find\Library\Index as LibraryIndex;
 use App\Models\Find\Items\Index as ItemsIndex;
 
-helper('sisdoc');
+helper(['sisdoc','url', 'cookie']);
 
 class LibraryController extends BaseController
 {
     public function bibliotecas()
     {
-        helper(['url', 'cookie']);
-
         $model = new LibraryIndex();
         $libraries = $model->listAll();
         $selectedId = get_cookie('library') ?: get_cookie('library_code') ?: get_cookie('library_id');
@@ -26,8 +24,6 @@ class LibraryController extends BaseController
 
     public function select()
     {
-        helper(['url', 'cookie']);
-
         $selection = trim((string) $this->request->getPost('library_id'));
         if ($selection === '') {
             return redirect()->to('/bibliotecas')->with('msg', 'Selecione uma biblioteca.')->with('msg_type', 'warning');
@@ -52,8 +48,6 @@ class LibraryController extends BaseController
 
     public function library()
     {
-        helper(['url', 'cookie']);
-
         $cookieId = trim((string) (get_cookie('library_id') ?? ''));
         $cookieCode = trim((string) (get_cookie('library_code') ?? get_cookie('library') ?? ''));
 
@@ -79,17 +73,22 @@ class LibraryController extends BaseController
         $itemsModel = new ItemsIndex();
         $vitrine = $itemsModel->vitrine($library['code']);
 
+        // Componente de busca avançada
+        $searchComponent = view('widgets/bibliofind/bibliofind_search_advanced', [
+            'libraryCode' => $library['code'],
+            'places' => (new \App\Models\Find\Library\LibraryPlace())->listByLibrary($library['code'])
+        ]);
+
         return view('Libraries/library', [
             'library' => $library,
             'cookieId' => $cookieId !== '' ? $cookieId : $cookieCode,
             'vitrine' => $vitrine,
+            'searchComponent' => $searchComponent,
         ]);
     }
 
     public function item($id)
     {
-        helper(['url', 'cookie']);
-
         $cookieCode = trim((string) (get_cookie('library_code') ?? get_cookie('library') ?? ''));
         if ($cookieCode === '') {
             return redirect()->to('/bibliotecas')->with('msg', 'Escolha uma biblioteca antes de continuar.')->with('msg_type', 'warning');
@@ -117,6 +116,26 @@ class LibraryController extends BaseController
         return view('Libraries/item', [
             'book' => $book,
             'library' => $library,
+        ]);
+    }
+
+    public function buscaResultado()
+    {
+        $itemsModel = new ItemsIndex();
+        $cookieId = trim((string) (get_cookie('library_id') ?? ''));
+        $cookieCode = trim((string) (get_cookie('library_code') ?? get_cookie('library') ?? ''));
+
+        // Recebe parâmetros do formulário
+        $termo = $this->request->getVar('q');
+        $place = $this->request->getVar('place');
+        $library = get_cookie('library_code') ?? get_cookie('library') ?? '';
+
+        $vitrine = $itemsModel->buscaAvancada($termo, $place, $cookieCode);
+
+        return view('Libraries/library', [
+            'library' => $library,
+            'cookieId' => $cookieId !== '' ? $cookieId : $cookieCode,
+            'vitrine' => $vitrine
         ]);
     }
 }

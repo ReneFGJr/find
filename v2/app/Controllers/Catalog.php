@@ -24,6 +24,14 @@ class Catalog extends BaseController
         return redirect()->to('/catalog/catalogar/phase/1');
     }
 
+    public function reindexModel()
+    {
+        $ItemModel = new ItemModel();
+        $ItemModel->reindexAll();
+        exit;
+        return redirect()->back()->with('msg', 'Reindexação concluída com sucesso!')->with('msg_type', 'success');
+    }
+
     public function checkerModel()
     {
         $CheckerModel = new \App\Models\Find\Check\CheckerModel();

@@ -5,9 +5,9 @@
 
         <?php
         foreach ($data as $id => $line) {
-            echo bsc($line['d_doc'], 1,'text-center');
-            echo bsc($line['w_TITLE'], 10);
-            echo bsc(number_format($line['score'],4,','), 1);
+            echo ($line['d_doc'] ?? 'ID: ' . $id) . ' - ';
+            echo $line['w_TITLE'];
+            echo number_format($line['score'], 4, ',', '.') ;
         }
         ?>
     </div>
