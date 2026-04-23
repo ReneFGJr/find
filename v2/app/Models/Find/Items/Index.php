@@ -141,9 +141,14 @@ class Index extends Model
         header('Content-Type: text/html; charset=utf-8');
         header('Cache-Control: no-cache');
         header('X-Accel-Buffering: no');
+        flush();
 
-        echo "<div>";
-        echo "Reindexando itens...<br>";
+
+        $dd = [];
+        echo view('layout/header', ['title' => 'Configurações • FIND']);
+
+        $content = '<div id="reindex"><h1>Reindex</h1><div id="status">$status</div></div>';
+        echo view('components/content', ['content' => $content]);
         flush();
 
         $limit = 99999999;
@@ -179,7 +184,9 @@ class Index extends Model
                 flush();
             } else {
                 if ($count % 100 == 0) {
-                    echo "<br>" . number_format($count / $total * 100, 1, ',', '.') . '% itens processados... <br>';
+                    $status = "<br>" . number_format($count / $total * 100, 1, ',', '.') . '% itens processados... <br>';
+                    $contentA = '<script></script>';
+                    echo view('components/content', ['content' => $contentA]);
                     flush();
                 } else {
                     if ($count % 10 == 0) {
