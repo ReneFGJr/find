@@ -206,17 +206,31 @@ class Catalog extends BaseController
         if ($resp = $this->denyIfNoPermission()) return $resp;
         $libraryCode = get_cookie('library_code') ?? get_cookie('library') ?? '';
         $obras = [];
+        $busca = $this->request->getGet('busca');
         if ($libraryCode && $status !== null) {
             $itemModel = new ItemModel();
-            $obras = $itemModel
+            $builder = $itemModel
                 ->where('i_library', $libraryCode)
-                ->where('i_status', $status)
-                ->orderBy('i_created', 'DESC')
-                ->findAll();
+                ->where('i_status', $status);
+            if ($status == 5) {
+                if ($busca) {
+                    $builder = $builder
+                        ->groupStart()
+                        ->like('i_tombo', $busca)
+                        ->orLike('i_titulo', $busca)
+                        ->orLike('i_autores', $busca)
+                        ->orLike('i_identifier', $busca)
+                        ->groupEnd();
+                }
+                $obras = $builder->orderBy('i_created', 'DESC')->findAll(50);
+            } else {
+                $obras = $builder->orderBy('i_created', 'DESC')->findAll();
+            }
         }
         return view('catalog/phase', [
             'status' => $status,
-            'obras' => $obras
+            'obras' => $obras,
+            'busca' => $busca
         ]);
     }
 
@@ -403,5 +417,10 @@ class Catalog extends BaseController
     {
         // Exemplo de view simples para utilitários
         return view('catalog/util');
+    }
+
+    public function no_action($id = null)
+    {
+        return view('catalog/no_action', ['id' => $id]);
     }
 }

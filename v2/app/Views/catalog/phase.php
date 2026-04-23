@@ -6,6 +6,13 @@
     <?php if (session('msg')): ?>
         <div class="alert alert-info"> <?= htmlspecialchars(session('msg')) ?> </div>
     <?php endif; ?>
+    <?php if ($status == 5): ?>
+        <form method="get" class="mb-4 d-flex gap-2 align-items-end">
+            <input type="hidden" name="status" value="5">
+            <input type="text" name="busca" class="form-control" placeholder="Buscar por Tombo, Título, Autor ou ISBN" value="<?= htmlspecialchars($busca ?? '') ?>">
+            <button type="submit" class="btn btn-primary">Buscar</button>
+        </form>
+    <?php endif; ?>
     <?php if (!empty($obras)) : ?>
         <div class="table-responsive">
             <table class="table table-bordered table-striped">

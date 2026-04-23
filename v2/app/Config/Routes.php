@@ -78,6 +78,9 @@ $routes->group('catalog', function ($routes) {
     $routes->get('catalogar/metadadoSearch/(:num)', 'Catalog::metadadoSearch/$1');
     $routes->post('catalogar/metadadoSearch/(:num)', 'Catalog::metadadoSearch/$1');
     $routes->post('catalogar/excluir', 'Catalog::excluir_exemplar');
+
+    $routes->get('catalogar/no_action/(:num)', 'Catalog::no_action/$1');
+
     // Nova rota para redirecionamento sem parâmetro
     $routes->get('catalogar/metadadoSearch', 'Catalog::metadadoSearchRedirect');
     // Adicione outras rotas de catalogação aqui se necessário
