@@ -2,7 +2,7 @@
 
 namespace App\Models\Find\Check;
 
-helper('sisdoc');
+helper(['sisdoc','nbr']);
 
 class CheckerModel
 {
@@ -102,6 +102,8 @@ class CheckerModel
         }
 
         if ((strlen($item['i_identifier']) > 10) and ($Title != '')) {
+
+            $Title = nbr_title($Title);
 
             $dd['i_titulo'] = $Title;
             $dd['i_autores'] = $Author;
