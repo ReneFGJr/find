@@ -86,6 +86,8 @@ $routes->group('catalog', function ($routes) {
     // Adicione outras rotas de catalogação aqui se necessário
     $routes->get('check', 'Catalog::checkerModel');
     $routes->get('reindex', 'Catalog::reindexModel');
+    $routes->get('rebuild_fields', 'Catalog::rebuildModel');
+
 
 
     // utilitários //
@@ -99,6 +101,12 @@ $routes->group('catalog', function ($routes) {
     $routes->post('label/save', 'Find\\Item::etiquetas_save');
 });
 
+
+$routes->group(
+    'indexes',
+    function ($routes) {
+        $routes->get('(:any)', 'LibraryController::indexes/$1');
+    });
 
 $routes->group('rdf', function ($routes) {
     // Rota para exclusão de registro rdf_data

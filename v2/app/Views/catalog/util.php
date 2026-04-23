@@ -22,6 +22,22 @@
                 </div>
             </button>
         </div>
+        <!-- Card de Rebuild Fields -->
+        <div class="col">
+            <button type="button" class="text-decoration-none btn p-0 w-100" onclick="openRebuildFieldsPanel()">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="bg-primary bg-opacity-10 rounded-3 p-3">
+                            <i class="bi bi-tools fs-3 text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-1 text-dark">Rebuild Fields</h5>
+                            <p class="card-text small text-secondary mb-0">Reconstruir campos dos registros</p>
+                        </div>
+                    </div>
+                </div>
+            </button>
+        </div>
     </div>
     <!-- Painel lateral para reindexação -->
     <div id="reindexPanel" style="position:fixed;top:0;right:-600px;width:600px;max-width:100vw;height:100vh;z-index:1050;background:#fff;box-shadow:-2px 0 16px rgba(0,0,0,0.2);transition:right 0.3s;overflow:auto;">
@@ -30,6 +46,14 @@
             <button class="btn btn-sm btn-outline-secondary ms-2" onclick="closeReindexPanel()">&times;</button>
         </div>
         <iframe id="reindexIframe" src="" style="width:100%;height:calc(100vh - 56px);border:0;"></iframe>
+    </div>
+    <!-- Painel lateral para Rebuild Fields -->
+    <div id="rebuildFieldsPanel" style="position:fixed;top:0;right:-600px;width:600px;max-width:100vw;height:100vh;z-index:1050;background:#fff;box-shadow:-2px 0 16px rgba(0,0,0,0.2);transition:right 0.3s;overflow:auto;">
+        <div class="d-flex align-items-center p-3 border-bottom">
+            <h5 class="mb-0 flex-grow-1 text-start">Rebuild Fields - Aguarde</h5>
+            <button class="btn btn-sm btn-outline-secondary ms-2" onclick="closeRebuildFieldsPanel()">&times;</button>
+        </div>
+        <iframe id="rebuildFieldsIframe" src="" style="width:100%;height:calc(100vh - 56px);border:0;"></iframe>
     </div>
 </main>
 
@@ -41,6 +65,14 @@ function openReindexPanel() {
 function closeReindexPanel() {
     document.getElementById('reindexPanel').style.right = '-600px';
     document.getElementById('reindexIframe').src = "";
+}
+function openRebuildFieldsPanel() {
+    document.getElementById('rebuildFieldsPanel').style.right = '0';
+    document.getElementById('rebuildFieldsIframe').src = "<?= base_url('catalog/rebuild_fields') ?>";
+}
+function closeRebuildFieldsPanel() {
+    document.getElementById('rebuildFieldsPanel').style.right = '-600px';
+    document.getElementById('rebuildFieldsIframe').src = "";
 }
 </script>
 

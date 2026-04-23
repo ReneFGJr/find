@@ -24,6 +24,13 @@ class Catalog extends BaseController
         return redirect()->to('/catalog/catalogar/phase/1');
     }
 
+    public function rebuildModel()
+    {
+        $ItemModel = new ItemModel();
+        $ItemModel->rebuildAllFields();
+        return redirect()->back()->with('msg', 'Reconstrução de campos concluída com sucesso!')->with('msg_type', 'success');
+    }
+
     public function reindexModel()
     {
         $ItemModel = new ItemModel();

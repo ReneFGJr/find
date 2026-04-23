@@ -23,15 +23,29 @@ $firstName = session()->get('first_name') ?: 'Usuário';
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
                 <li class="nav-item"><a class="nav-link active" href="<?= base_url('/'); ?>">Início</a></li>
                 <li class="nav-item d-lg-none"><a class="nav-link" href="<?= base_url('/bibliotecas'); ?>"><i class="bi bi-buildings me-1"></i> Bibliotecas</a></li>
+                <?php if ($isLoggedIn): ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="catalogacaoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Catalogação
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="catalogacaoDropdown">
+                            <li><a class="dropdown-item" href="<?= base_url('catalog/index'); ?>">Bibliografia</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url('catalog/label'); ?>">Etiquetas</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="<?= base_url('catalog/util'); ?>">Utilitários</a></li>
+                        </ul>
+                    </li>
+                <?php endif; ?>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="catalogacaoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Catalogação
+                    <a class="nav-link dropdown-toggle" href="#" id="indicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Índices
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="catalogacaoDropdown">
-                        <li><a class="dropdown-item" href="<?= base_url('catalog/index'); ?>">Bibliografia</a></li>
-                        <li><a class="dropdown-item" href="<?= base_url('catalog/label'); ?>">Etiquetas</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="<?= base_url('catalog/util'); ?>">Utilitários</a></li>
+                    <ul class="dropdown-menu" aria-labelledby="indicesDropdown">
+                        <li><a class="dropdown-item" href="<?= base_url('indexes/title'); ?>">Títulos</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('indexes/author'); ?>">Autores</a></li>
+                        <li><a class="dropdown-item" href="<?= base_url('indexes/subject'); ?>">Assuntos</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">

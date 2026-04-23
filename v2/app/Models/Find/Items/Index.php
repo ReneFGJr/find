@@ -3,6 +3,7 @@
 namespace App\Models\Find\Items;
 
 use CodeIgniter\Model;
+use App\Models\Find\Check\CheckerModel;
 
 class Index extends Model
 {
@@ -131,6 +132,124 @@ class Index extends Model
         return $RSP;
     }
 
+    public function getIndexesByType($type, $lib, $place = '')
+    {
+        switch ($type) {
+            case 'title':
+                $ord = 'i_titulo';
+                break;
+            case 'author':
+                $ord = 'i_autores';
+                break;
+            case 'subject':
+                $ord = 'i_ln1';
+                break;
+            default:
+                $ord = 'i_titulo';
+        }
+        $this
+            ->select($ord . ' as label, i_identifier, max(id_i) as id_i, i_library')
+            ->where('i_library', $lib)
+            ->where('i_titulo <> ""');
+        if ($place != '') {
+            $this->where('i_library_place', $place);
+        }
+        $dt = $this->groupBy($ord . ', i_identifier, i_library')
+            ->orderBy($ord)
+            ->findAll();
+
+        $LT = [];
+        foreach ($dt as $id => $line) {
+            $text = strtoupper(ascii($line['label']));
+            $letra = substr($text, 0, 1);
+            if (!isset($LT[$letra])) {
+                $LT[$letra] = [];
+            }
+            $LT[$letra][] = [
+                'label' => $line['label'],
+                'isbn' => $line['i_identifier'],
+                'ID' => $line['id_i'],
+                'library' => $line['i_library']
+            ];
+        }
+        ksort($LT);
+        return $LT;
+    }
+
+    public function rebuildAllFields()
+    {
+        // 🔥 limpa buffers
+        while (ob_get_level() > 0) {
+            ob_end_flush();
+        }
+
+        header('Content-Type: text/html; charset=utf-8');
+        header('Cache-Control: no-cache');
+        header('X-Accel-Buffering: no');
+
+        echo view('layout/header', ['title' => 'Configurações • FIND']);
+
+        // 🔥 HTML inicial
+        echo '
+        <div id="reindex" class="p-2">
+            <div id="status">Iniciando Rebuilding...</div>
+        </div>
+
+    <script>
+    function setStatus(msg) {
+        var el = document.getElementById("status");
+        if (el) {
+            el.innerHTML = msg;
+        }
+    }
+    </script>
+    ';
+
+        // 🔥 força render inicial
+        echo str_repeat(' ', 1024);
+        flush();
+
+        $count = 0;
+        $totalAtualizados = 0;
+        $limit = 999999;
+        $offset = 0;
+
+        $CheckerModel = new CheckerModel();
+
+        $dt = $this
+            ->findAll($limit, $offset);
+
+
+
+        foreach ($dt as $line) {
+
+            $msg2 = $CheckerModel->updateDataTitleAuthor($line);
+            if ($msg2 != '') {
+                $totalAtualizados++;
+            } else {
+                continue;
+            }
+
+            $count++;
+
+            // 🔥 atualiza a cada 100 registros
+            if ($count % 10 == 0) {
+                $percent = round(($count / count($dt))*100, 1);
+                $msg = "<div class=\"card p-2 ms-2 me-2\"><tt>Reprocessados: {$count}/" . count($dt) . " itens ($percent%)<br>Atualizados: {$totalAtualizados}</tt></div>";
+                $msg .= '<div class=\"card p-2 ms-2 me-2\">'.$msg2.'</div>';
+                echo "<script>setStatus(" . json_encode($msg) . ");</script>";
+                flush();
+            }
+        }
+
+
+        // 🔥 final
+        echo "<script>setStatus('✔ Finalizado! Total atualizados: {$totalAtualizados}');</script>";
+        flush();
+
+        exit;
+    }
+
     public function reindexAll()
     {
         // 🔥 limpa buffers
@@ -195,7 +314,7 @@ class Index extends Model
 
                 // 🔥 atualiza a cada 100 registros
                 if ($count % 100 == 0) {
-                    $percent = round(($count / count($dt)) ,1);
+                    $percent = round(($count / count($dt)), 1);
                     $msg = "<div class=\"card p-2 ms-2 me-2\"><tt>Processados: {$count} itens ($percent%)| Atualizados: {$totalAtualizados}</tt></div>";
                     echo "<script>setStatus(" . json_encode($msg) . ");</script>";
 

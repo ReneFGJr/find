@@ -138,4 +138,29 @@ class LibraryController extends BaseController
             'vitrine' => $vitrine
         ]);
     }
+
+    public function indexes($type='')
+    {
+        $cookieCode = trim((string) (get_cookie('library_code') ?? get_cookie('library') ?? ''));
+        if ($cookieCode === '') {
+            return redirect()->to('/bibliotecas')->with('msg', 'Escolha uma biblioteca antes de continuar.')->with('msg_type', 'warning');
+        }
+
+        $model = new LibraryIndex();
+        $library = $model->getSelectedLibrary($cookieCode);
+        $place = $this->request->getGet('place');
+
+        if (!$library) {
+            return redirect()->to('/bibliotecas')->with('msg', 'A biblioteca salva no cookie não foi localizada.')->with('msg_type', 'warning');
+        }
+
+        $itemsModel = new ItemsIndex();
+        $indexes = $itemsModel->getIndexesByType($type, $library['code'], $place);
+
+        return view('Libraries/indexes', [
+            'library' => $library,
+            'indexes' => $indexes,
+            'type' => $type
+        ]);
+    }
 }
