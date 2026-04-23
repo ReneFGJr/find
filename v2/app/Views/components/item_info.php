@@ -56,25 +56,28 @@ function linkRDF($id)
 
                         </tr>
                         <tr>
-                            <th class="text-end">ISBN</th>
-                            <td><?= htmlspecialchars($itemInfo['i_identifier'] ?? '') ?></td>
+                            <th class="text-end" rowspan="5">Etiqueta</th>
+                            <td rowspan="5">
+                                <?= view('components/label_view', ['itemInfo' => $itemInfo]); ?>
+                            </td>
+
                             <th class="text-end">Exemplar</th>
                             <td><?= htmlspecialchars($itemInfo['i_exemplar'] ?? '') ?></td>
                         </tr>
                         <tr>
+                            <th class="text-end">ISBN</th>
+                            <td><?= htmlspecialchars($itemInfo['i_identifier'] ?? '') ?></td>
+                        </tr>
+                        <tr>
                             <th class="text-end">Cadastrado</th>
                             <td><?= htmlspecialchars($itemInfo['i_created'] ?? '') ?></td>
-                            <th class="text-end" rowspan="3">IDs</th>
+                        </tr>
+                        <tr>
+                            <th class="text-end">IDs</th>
                             <td class="small text-secondary">
                                 Work: <?= linkRDF(htmlspecialchars($itemInfo['i_work'] ?? '')) ?></br>
                                 Expression: <?= linkRDF(htmlspecialchars($itemInfo['i_expression'] ?? '')) ?></br>
                                 Manifestation: <?= linkRDF(htmlspecialchars($itemInfo['i_manifestation'] ?? '')) ?></br>
-                        </tr>
-                        <tr>
-                            <th class="text-end">Etiqueta</th>
-                            <td>
-                                <?= view('components/label_view',['itemInfo' => $itemInfo]); ?>
-                            </td>
                         </tr>
                     </tbody>
                 </table>
