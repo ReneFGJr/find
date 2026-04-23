@@ -47,7 +47,7 @@ class Index extends Model
                 ->where('i_search','')
                 ->where('i_library', $lib)
                 ->findAll(1000);
-            
+
                 if ($dt == [])
                     {
                         return;
@@ -73,7 +73,7 @@ class Index extends Model
                     $ID = $line['i_identifier'];
                     $item->set($dd)->where('i_identifier',$line['i_identifier'])->update();
                 }
-            
+
         }
 
     function searchTitle($title,$library)
@@ -136,11 +136,6 @@ class Index extends Model
             $item->groupby($cp);
             $item->orderBy($ord);
             $dt = $item->findAll(200);
-
-            //echo $item->getlastquery();
-
-            //echo $item->getlastquery();
-            //exit;
             $RSP = [];
 
             foreach ($dt as $idb => $line) {

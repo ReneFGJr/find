@@ -30,6 +30,8 @@ $firstName = session()->get('first_name') ?: 'Usuário';
                     <ul class="dropdown-menu" aria-labelledby="catalogacaoDropdown">
                         <li><a class="dropdown-item" href="<?= base_url('catalog/index'); ?>">Bibliografia</a></li>
                         <li><a class="dropdown-item" href="<?= base_url('catalog/label'); ?>">Etiquetas</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="<?= base_url('catalog/util'); ?>">Utilitários</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">

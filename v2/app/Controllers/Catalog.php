@@ -136,7 +136,6 @@ class Catalog extends BaseController
         ]);
     }
 
-
     public function metadadoSearch($IdItem = null)
     {
         $cover_result = null;
@@ -398,5 +397,11 @@ class Catalog extends BaseController
         }
         $check = (10 - ($sum % 10)) % 10;
         return $check == (int)$isbn[12];
+    }
+
+    public function util()
+    {
+        // Exemplo de view simples para utilitários
+        return view('catalog/util');
     }
 }

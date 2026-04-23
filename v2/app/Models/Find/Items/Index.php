@@ -141,69 +141,76 @@ class Index extends Model
         header('Content-Type: text/html; charset=utf-8');
         header('Cache-Control: no-cache');
         header('X-Accel-Buffering: no');
-        flush();
 
-
-        $dd = [];
         echo view('layout/header', ['title' => 'Configurações • FIND']);
 
-        $content = '<div id="reindex"><h1>Reindex</h1><div id="status">$status</div></div>';
-        echo view('components/content', ['content' => $content]);
+        // 🔥 HTML inicial
+        echo '
+        <div id="reindex" class="p-2">
+            <div id="status">Iniciando...</div>
+        </div>
+
+    <script>
+    function setStatus(msg) {
+        var el = document.getElementById("status");
+        if (el) {
+            el.innerHTML = msg;
+        }
+    }
+    </script>
+    ';
+
+        // 🔥 força render inicial
+        echo str_repeat(' ', 1024);
         flush();
 
-        $limit = 99999999;
+        $limit = 500;
         $offset = 0;
         $count = 0;
+        $totalAtualizados = 0;
 
-        $dt = $this->where('i_titulo !=', '')
-            ->findAll($limit, $offset);
-        $total = count($dt);
+        do {
+            $dt = $this->where('i_titulo !=', '')
+                ->findAll($limit, $offset);
 
-        foreach ($dt as $line) {
-            $ch = '.';
+            foreach ($dt as $line) {
 
-            $search  = ascii($line['i_titulo']);
-            $search .= ' ' . ascii($line['i_autores']);
-            $search .= ' ' . ascii($line['i_ln1']);
-            $search .= ' ' . ascii($line['i_ln2']);
-            $search .= ' ' . ascii($line['i_ln3']);
-            $search .= ' ' . ascii($line['i_ln4']);
-            $search = strtolower($search);
+                $search  = ascii($line['i_titulo']);
+                $search .= ' ' . ascii($line['i_autores']);
+                $search .= ' ' . ascii($line['i_ln1']);
+                $search .= ' ' . ascii($line['i_ln2']);
+                $search .= ' ' . ascii($line['i_ln3']);
+                $search .= ' ' . ascii($line['i_ln4']);
+                $search = strtolower($search);
 
-            if ($search != $line['i_search']) {
-                $this->set(['i_search' => $search])
-                    ->where('id_i', $line['id_i'])
-                    ->update();
-                $ch = '✔';
-                $total++;
-            }
+                if ($search != $line['i_search']) {
+                    $this->set(['i_search' => $search])
+                        ->where('id_i', $line['id_i'])
+                        ->update();
 
-            $count++;
-            if ($ch != '.') {
-                echo $ch . ' ';
-                flush();
-            } else {
+                    $totalAtualizados++;
+                }
+
+                $count++;
+
+                // 🔥 atualiza a cada 100 registros
                 if ($count % 100 == 0) {
-                    $status = "<br>" . number_format($count / $total * 100, 1, ',', '.') . '% itens processados... <br>';
-                    $contentA = '<script></script>';
-                    echo view('components/content', ['content' => $contentA]);
+                    $percent = round(($count / count($dt)) ,1);
+                    $msg = "<div class=\"card p-2 ms-2 me-2\"><tt>Processados: {$count} itens ($percent%)| Atualizados: {$totalAtualizados}</tt></div>";
+                    echo "<script>setStatus(" . json_encode($msg) . ");</script>";
+
                     flush();
-                } else {
-                    if ($count % 10 == 0) {
-                        echo $ch . ' ';
-                        flush();
-                    }
                 }
             }
-        }
-        $offset += $limit;
-        echo "</div>";
 
-        echo "\n✔ Reindexação finalizada. Total atualizados: $total\n";
+            $offset += $limit;
+        } while (count($dt) > 0);
+
+        // 🔥 final
+        echo "<script>setStatus('✔ Finalizado! Total atualizados: {$totalAtualizados}');</script>";
         flush();
-        exit;
 
-        return ['total' => $total];
+        exit;
     }
 
 
@@ -323,8 +330,6 @@ class Index extends Model
         $dt = $builder->groupBy('i_titulo, i_identifier')
             ->orderBy('id_i desc')
             ->findAll($limit, $offset);
-
-        echo $this->getlastquery();
 
         return $this->prepare_record($dt);
     }

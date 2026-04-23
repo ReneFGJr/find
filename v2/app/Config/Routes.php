@@ -84,6 +84,10 @@ $routes->group('catalog', function ($routes) {
     $routes->get('check', 'Catalog::checkerModel');
     $routes->get('reindex', 'Catalog::reindexModel');
 
+
+    // utilitários //
+    $routes->get('util', 'Catalog::util');
+
     // Etiquetas //
     $routes->get('label', 'Find\\Item::etiquetas');
     $routes->post('label', 'Find\\Item::etiquetas');
