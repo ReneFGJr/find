@@ -56,6 +56,28 @@ class Index extends Model
         return $RSP;
     }
 
+    function logotype($code)
+    {
+        if ((!$code) or ($code == '0') or ($code == '')) {
+            return "";
+        }
+
+        $candidates = [
+            FCPATH . 'img/logo/logo_' . $code . '.png',
+            FCPATH . 'img/logo/logo_' . $code . '.jpg',
+            FCPATH . 'img/logo/logo_' . $code . '.jpeg',
+            FCPATH . 'img/logo/no_logo.png',
+            FCPATH . 'img/logo_library.png',
+        ];
+
+        foreach ($candidates as $file) {
+            if (is_file($file)) {
+                return base_url('img/logo/' . basename($file));
+            }
+        }
+        return base_url('img/logo_find.png');
+    }
+
     function saveLibrary()
     {
         $RSP = [];

@@ -176,12 +176,8 @@ class Index extends Model
         return $LT;
     }
 
-    public function rebuildAllFields($offset)
+    public function rebuildAllFields($offset, $limit = 100)
     {
-        $count = 0;
-        $totalAtualizados = 0;
-        $limit = 100;
-
         $CheckerModel = new CheckerModel();
 
         $dt = $this
@@ -189,7 +185,7 @@ class Index extends Model
             ->findAll($limit, $offset);
 
         foreach ($dt as $line) {
-            $CheckerModel->updateDataTitleAuthor($line);
+            echo $CheckerModel->updateDataTitleAuthor($line);
         }
 
         if (count($dt) == 0)
@@ -330,6 +326,7 @@ class Index extends Model
             $builder = $builder->where('i_library_place', $place);
         }
         $termo = ascii($termo);
+        $termo = strtolower($termo);
         $t = explode(' ', $termo);
         $first = true;
         foreach ($t as $w) {
@@ -338,7 +335,7 @@ class Index extends Model
                     $builder = $builder->like('i_search', $w);
                     $first = false;
                 } else {
-                    $builder = $builder->orLike('i_search', $w);
+                    $builder = $builder->Like('i_search', $w);
                 }
             }
         }
@@ -346,6 +343,11 @@ class Index extends Model
         $dt = $builder->groupBy('i_titulo, i_identifier')
             ->orderBy('id_i desc')
             ->findAll($limit, $offset);
+
+        if (count($dt) == 0) {
+            echo '<div class="alert alert-warning">Nenhum resultado encontrado para "' . htmlspecialchars($termo) . '"</div>';
+            echo '<div class="alert alert-warning"><tt>' . $this->getlastquery() . '</tt></div>';
+        }
 
         return $this->prepare_record($dt);
     }

@@ -29,15 +29,16 @@ class Catalog extends BaseController
         $offset = $this->request->getGet('offset') ?? 0;
         $ItemModel = new ItemModel();
         $total = $ItemModel->countAll();
+        $limit = 500;
 
         if ($ItemModel->rebuildAllFields($offset))
             {
-                $url = base_url('/catalog/rebuild_fields?offset=') . ($offset + 100);
+                $url = base_url('/catalog/rebuild_fields?offset=') . ($offset + $limit);
                 echo view('layout/header', ['title' => 'Rebuild em andamento...']);
                 echo '<div class="p-5">';
                 echo $url;
                 echo '<br>'.date("Y-m-d H:i:s");
-                echo '<br>'.$total.'/'.$offset.' registros';
+                echo '<br>'.$total.'/'.$offset.' registros - limit '.$limit;
                 echo '<br>'.round(($offset / $total) * 100, 2).'% processado';
                 echo '</div>';
                 echo '<meta http-equiv="refresh" content="0;url=' . $url . '">';

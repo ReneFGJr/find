@@ -1,12 +1,18 @@
 <?php
 $isLoggedIn = (bool) session()->get('logged_in');
 $firstName = session()->get('first_name') ?: 'Usuário';
+
+$library = get_cookie('library_code') ?? get_cookie('library') ?? '';
+$LibraryLogo = new \App\Models\Find\Library\Index();
+$logo = $LibraryLogo->logotype($library ?? '');
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top">
     <div class="container">
         <div class="d-flex align-items-center gap-3">
             <a class="navbar-brand d-flex align-items-center gap-2 mb-0" href="<?= base_url('/'); ?>">
+                <?php if ($logo != '') echo '<img src="' . $logo . '" alt="FIND" height="30">'; ?>
                 <img src="<?= base_url('img/logo_find.png'); ?>" alt="FIND" height="20">
+
             </a>
 
             <a class="btn btn-outline-light btn-sm rounded-pill d-none d-lg-inline-flex align-items-center gap-2" href="<?= base_url('/bibliotecas'); ?>">
@@ -45,7 +51,9 @@ $firstName = session()->get('first_name') ?: 'Usuário';
                     <ul class="dropdown-menu" aria-labelledby="indicesDropdown">
                         <li><a class="dropdown-item" href="<?= base_url('indexes/title'); ?>">Títulos</a></li>
                         <li><a class="dropdown-item" href="<?= base_url('indexes/author'); ?>">Autores</a></li>
+                        <!--
                         <li><a class="dropdown-item" href="<?= base_url('indexes/subject'); ?>">Assuntos</a></li>
+                        -->
                     </ul>
                 </li>
                 <li class="nav-item dropdown">

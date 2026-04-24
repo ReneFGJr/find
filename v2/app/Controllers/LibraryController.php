@@ -89,6 +89,7 @@ class LibraryController extends BaseController
 
     public function item($id)
     {
+        $rdf = new \App\Models\Find\Rdf\RDF();
         $cookieCode = trim((string) (get_cookie('library_code') ?? get_cookie('library') ?? ''));
         if ($cookieCode === '') {
             return redirect()->to('/bibliotecas')->with('msg', 'Escolha uma biblioteca antes de continuar.')->with('msg_type', 'warning');
@@ -113,9 +114,24 @@ class LibraryController extends BaseController
         $libModel = new LibraryIndex();
         $library = $libModel->getSelectedLibrary((string) $lib);
 
+        $meta = [];
+
+        if ($row['i_work'] > 0) {
+            $meta['work'] = $rdf->le($row['i_work']);
+        }
+        if ($row['i_expression'] > 0) {
+            $meta['expression'] = $rdf->le($row['i_expression']);
+        }
+        if ($row['i_manifestation'] > 0) {
+            $meta['manifestation'] = $rdf->le($row['i_manifestation']);
+        }
+
+        pre($meta);
+
         return view('Libraries/item', [
             'book' => $book,
             'library' => $library,
+            'itemInfo' => $row
         ]);
     }
 

@@ -41,6 +41,7 @@ class CheckerModel
         //set_time_limit(0);
         $rdf = new \App\Models\Find\Rdf\RDF();
         $itemModel = new \App\Models\Find\Items\Index();
+        $update = 0;
 
         $i_work = $item['i_work'];
         $i_expression = $item['i_expression'];
@@ -68,7 +69,7 @@ class CheckerModel
         $Title = '';
         $Author = '';
 
-        $rsp = "<li>Processando i_work: " . $i_work . "</li>";
+        $rsp = "";
 
         foreach ($dados as $d) {
             $prop = $d['Property'];
@@ -95,14 +96,13 @@ class CheckerModel
             }
         }
 
-        if ($Title == '') {
-            $rsp .= "<span style='color: red;'>Título não encontrado para i_work: " . $i_work . "</span><br>";
-        } else {
-            $rsp .= "<span style='color: green;'>Título encontrado para i_work: " . $i_work . " - " . $Title . "</span><br>";
+        if ($Title != '') {
+            $rsp = "<span style='color: green;'>Title: " . $i_work . " - " . $Title . "</span><br>";
         }
 
         if ((strlen($item['i_identifier']) > 10) and ($Title != '')) {
 
+            $Title = preg_replace('/[^\p{L}0-9 ]/u', '', $Title);
             $Title = nbr_title($Title);
 
             $dd['i_titulo'] = $Title;
@@ -110,7 +110,6 @@ class CheckerModel
 
             if (($item['i_titulo'] != $Title) or ($item['i_autores'] != $Author) or ($item['i_work'] != $i_work)) {
                 $itemModel->set($dd)->where('i_identifier', $item['i_identifier'])->update();
-                $rsp .= "<span style='color: blue;'>Item atualizado para i_identifier: " . $item['i_identifier'] . "</span><br>";
                 return $rsp;
             }
             return "";
