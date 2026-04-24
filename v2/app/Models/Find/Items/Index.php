@@ -496,17 +496,17 @@ class Index extends Model
             /********************* Manifestation */
             $idM = $dt['i_manifestation'];
             if ($idM > 0) {
-                $dtR = $RDF->le($idM);
+                $dtM = $RDF->le($idM);
             } else {
-                $dtR = [];
+                $dtM = [];
             }
-            $metadata = array_merge($dtR, $dtW, $dtE);
+            $metadata = array_merge($dtM, $dtW, $dtE);
 
             $Metadata = new \App\Models\Find\Metadata\Index();
             $META = $Metadata->metadata($metadata, $META);
 
             /*********** Expression */
-            $expression = $RDF->extract($dtR, 'isAppellationOfManifestation', 'A');
+            $expression = $RDF->extract($dtM, 'isAppellationOfManifestation', 'A');
 
             $WORK = [];
 
@@ -520,6 +520,8 @@ class Index extends Model
                     $META = $Metadata->metadata($dtW, $META);
                 }
             }
+
+            $META = $Metadata->metadata($dtM, $META);
 
 
             $META = $this->prepara_classe_colors($META);

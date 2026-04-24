@@ -50,7 +50,8 @@
                 </div>
                 <div class="offcanvas-body">
                     <?= view('components/item_info', ['$itemInfo' => $book]); ?>
-                    <?= view('components/item_array', ['$itemInfo' => $book]); ?>
+                    <?= view('components/item_meta', ['$meta' => $meta]); ?>
+                    <?= view('components/item_meta_book', ['$meta' => $book['meta'] ?? []]); ?>
                 </div>
             </div>
 
@@ -128,16 +129,7 @@
                     </tr>
                 <?php endif; ?>
 
-                <?php if (!empty($book['meta']['Subject'])): ?>
-                    <tr>
-                        <th class="text-secondary">Assuntos</th>
-                        <td>
-                            <?php foreach ($book['meta']['Subject'] as $s): ?>
-                                <span class="badge bg-primary bg-opacity-10 text-primary me-1"><?= esc($s['name']); ?></span>
-                            <?php endforeach; ?>
-                        </td>
-                    </tr>
-                <?php endif; ?>
+                <?php echo view('components/item_subject', ['book' => $book]); ?>
 
                 <?php if (!empty($book['meta']['Langage'])): ?>
                     <tr>

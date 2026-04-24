@@ -126,12 +126,11 @@ class LibraryController extends BaseController
             $meta['manifestation'] = $rdf->le($row['i_manifestation']);
         }
 
-        pre($meta);
-
         return view('Libraries/item', [
             'book' => $book,
             'library' => $library,
-            'itemInfo' => $row
+            'itemInfo' => $row,
+            'meta' => $meta
         ]);
     }
 

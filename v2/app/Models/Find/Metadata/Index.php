@@ -103,6 +103,8 @@ class Index extends Model
                 case 'hasPage':
                     array_push($RSP['Page'], $value);
                     break;
+                case 'X1':
+                    break;
                 /********* None */
                 case 'isAppellationOfExpression':
                     break;
