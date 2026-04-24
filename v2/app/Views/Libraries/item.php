@@ -55,11 +55,17 @@
                 </div>
             </div>
 
-            <table class="table table-sm table-borderless mb-4" style="max-width:600px;">
+            <table class="table table-sm table-borderless mb-4" style="max-width:100%;">
+                <tr>
+                    <th width="140px"></th>
+                    <th width="400px"></th>
+                    <th width="140px"></th>
+                    <th></th>
+                </tr>
                 <?php if (!empty($book['meta']['Authors'])): ?>
                     <tr>
                         <th class="text-secondary" style="width:140px;">Autor(es)</th>
-                        <td>
+                        <td colspan="3">
                             <?php foreach ($book['meta']['Authors'] as $a): ?>
                                 <span class="badge bg-light text-dark me-1"><?= esc($a['name']); ?></span>
                             <?php endforeach; ?>
@@ -70,16 +76,12 @@
                 <?php if (!empty($book['meta']['Publisher'])): ?>
                     <tr>
                         <th class="text-secondary">Editora</th>
-                        <td>
+                        <td colspan="1">
                             <?php foreach ($book['meta']['Publisher'] as $p): ?>
                                 <?= esc($p['name']); ?>
                             <?php endforeach; ?>
                         </td>
-                    </tr>
-                <?php endif; ?>
 
-                <?php if (!empty($book['meta']['PublisherPlace']) || !empty($book['meta']['Place'])): ?>
-                    <tr>
                         <th class="text-secondary">Local</th>
                         <td>
                             <?php foreach (($book['meta']['PublisherPlace'] ?? $book['meta']['Place'] ?? []) as $p): ?>
@@ -88,24 +90,22 @@
                         </td>
                     </tr>
                 <?php endif; ?>
+                <tr>
+                    <?php if (!empty($book['isbn'])): ?>
 
-                <?php if (!empty($book['isbn'])): ?>
-                    <tr>
                         <th class="text-secondary">ISBN</th>
                         <td><?= esc($book['isbn']); ?></td>
-                    </tr>
-                <?php endif; ?>
+                    <?php endif; ?>
 
-                <?php if (!empty($book['meta']['Page'])): ?>
-                    <tr>
+                    <?php if (!empty($book['meta']['Page'])): ?>
                         <th class="text-secondary">Páginas</th>
                         <td>
                             <?php foreach ($book['meta']['Page'] as $p): ?>
                                 <?= esc($p['name']); ?>
                             <?php endforeach; ?>
                         </td>
-                    </tr>
-                <?php endif; ?>
+                    <?php endif; ?>
+                </tr>
 
                 <?php if (!empty($book['meta']['CDD'])): ?>
                     <tr>
@@ -129,7 +129,12 @@
                     </tr>
                 <?php endif; ?>
 
-                <?php echo view('components/item_subject', ['book' => $book]); ?>
+                <tr>
+                    <th class="text-secondary">Idioma</th>
+                    <td colspan="3">
+                        <?php echo view('components/item_subject', ['book' => $book]); ?>
+                    </td>
+                </tr>
 
                 <?php if (!empty($book['meta']['Langage'])): ?>
                     <tr>
@@ -141,11 +146,25 @@
                         </td>
                     </tr>
                 <?php endif; ?>
+
+                <!--  Classification -->
+                <tr>
+                    <th class="text-secondary">Classificação</th>
+                    <!-- Color Classification -->
+                    <?php if (!empty($book['meta']['ColorClassification'])): ?>
+                        <td width="300px;">
+                            <div class="p-1" style="border:2px solid #ddd;">
+                                <?= view('components/item_color_classification', ['meta' => $book['meta'] ?? []]); ?>
+                            </div>
+                        </td>
+                    <?php endif; ?>
+                </tr>
+
             </table>
 
             <!-- Exemplares -->
             <?php if (!empty($book['items'])): ?>
-                <h2 class="h5 fw-bold mb-3">Exemplares</h2>
+                <h2 class=" h5 fw-bold mb-3">Exemplares</h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-sm align-middle">
                         <thead class="table-light">

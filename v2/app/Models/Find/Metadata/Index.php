@@ -62,10 +62,10 @@ class Index extends Model
                 return $RSP;
             }
 
-
         foreach ($dt['data'] as $id => $line) {
             $Prop = $line['Property'];
             $value = $this->getValue($line);
+
             switch ($Prop) {
                 case 'prefLabel':
                     array_push($RSP['Title'], $value);
@@ -98,6 +98,9 @@ class Index extends Model
                     array_push($RSP['Langage'],$value);
                     break;
                 case 'hasSubject':
+                    array_push($RSP['Subject'], $value);
+                    break;
+                case 'hasClassificationCountry':
                     array_push($RSP['Subject'], $value);
                     break;
                 case 'hasPage':

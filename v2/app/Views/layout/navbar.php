@@ -1,4 +1,5 @@
 <?php
+helper('cookie');
 $isLoggedIn = (bool) session()->get('logged_in');
 $firstName = session()->get('first_name') ?: 'Usuário';
 
