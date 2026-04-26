@@ -1,3 +1,11 @@
+<script>
+    function submitLibraryForm(element) {
+        var form = element.closest('form');
+        if (form) {
+            form.submit();
+        }
+    }
+</script>
 <?= view('layout/header', ['title' => 'Bibliotecas • FIND']); ?>
 <?= view('layout/navbar'); ?>
 
@@ -24,28 +32,27 @@
             <?php foreach ($libraries as $library): ?>
                 <div class="col-md-4 col-xl-3">
                     <div class="card feature-card h-100">
-                        <div class="card-body p-0 d-flex flex-column">
-                            <div class="logo-card mb-1">
-                                <img src="<?= esc($library['logo']); ?>" alt="<?= esc($library['name']); ?>">
-                            </div>
-                            <h3 class="h5 mb-1"><?= esc($library['name']); ?></h3>
+                        <form action="<?= base_url('/bibliotecas/select'); ?>" method="post" class="mt-auto">
+                            <div class="card-body p-0 d-flex flex-column">
 
-                            <form action="<?= base_url('/bibliotecas/select'); ?>" method="post" class="mt-auto">
                                 <input type="hidden" name="library_id" value="<?= esc((string) ($library['code'] ?? $library['id'] ?? '')); ?>">
+                                <div class="logo-card mb-1" style="cursor:pointer" onclick="submitLibraryForm(this)">
+                                    <img src="<?= esc($library['logo']); ?>" alt="<?= esc($library['name']); ?>">
+                                </div>
+                                <h3 class="h5 mb-1" style="cursor:pointer" onclick="submitLibraryForm(this)"><?= esc($library['name']); ?></h3>
                                 <button type="submit" class="btn <?= ((string) ($selectedId ?? '') === (string) ($library['code'] ?? '')) ? 'btn-success' : 'btn-primary'; ?> w-100">
                                     <i class="bi bi-check2-circle me-1"></i> Selecionar
                                 </button>
-                            </form>
-                        </div>
                     </div>
                 </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <div class="col-12">
-                <div class="alert alert-warning mb-0">Nenhuma biblioteca visível foi encontrada.</div>
-            </div>
-        <?php endif; ?>
     </div>
+<?php endforeach; ?>
+<?php else: ?>
+    <div class="col-12">
+        <div class="alert alert-warning mb-0">Nenhuma biblioteca visível foi encontrada.</div>
+    </div>
+<?php endif; ?>
+</div>
 </main>
 
 <?= view('layout/footer'); ?>
