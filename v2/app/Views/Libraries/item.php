@@ -107,28 +107,6 @@
                     <?php endif; ?>
                 </tr>
 
-                <?php if (!empty($book['meta']['CDD'])): ?>
-                    <tr>
-                        <th class="text-secondary">CDD</th>
-                        <td>
-                            <?php foreach ($book['meta']['CDD'] as $c): ?>
-                                <?= esc($c['name']); ?>
-                            <?php endforeach; ?>
-                        </td>
-                    </tr>
-                <?php endif; ?>
-
-                <?php if (!empty($book['meta']['CDU'])): ?>
-                    <tr>
-                        <th class="text-secondary">CDU</th>
-                        <td>
-                            <?php foreach ($book['meta']['CDU'] as $c): ?>
-                                <?= esc($c['name']); ?>
-                            <?php endforeach; ?>
-                        </td>
-                    </tr>
-                <?php endif; ?>
-
                 <tr>
                     <th class="text-secondary">Idioma</th>
                     <td colspan="3">
@@ -138,27 +116,53 @@
 
                 <?php if (!empty($book['meta']['Langage'])): ?>
                     <tr>
-                        <th class="text-secondary">Idioma</th>
-                        <td>
-                            <?php foreach ($book['meta']['Langage'] as $l): ?>
-                                <?= esc($l['name']); ?>
-                            <?php endforeach; ?>
+                        <th class="text-secondary">Expressão</th>
+                        <td colspan="3">
+                            <?= view('components/item_expression', ['meta' => $book['meta'] ?? []]); ?>
                         </td>
                     </tr>
                 <?php endif; ?>
 
                 <!--  Classification -->
                 <tr>
-                    <th class="text-secondary">Classificação</th>
-                    <!-- Color Classification -->
-                    <?php if (!empty($book['meta']['ColorClassification'])): ?>
-                        <td width="300px;">
-                            <div class="p-1" style="border:2px solid #ddd;">
-                                <?= view('components/item_color_classification', ['meta' => $book['meta'] ?? []]); ?>
-                            </div>
-                        </td>
-                    <?php endif; ?>
+
+
+                    <?php if (!empty($book['meta']['CDU'])): ?>
+                <tr>
+                    <th class="text-secondary">CDU</th>
+                    <td>
+                        <?php foreach ($book['meta']['CDU'] as $c): ?>
+                            <?= esc($c['name']); ?>
+                        <?php endforeach; ?>
+                    </td>
                 </tr>
+            <?php endif; ?>
+
+            <tr>
+                <th class="text-secondary">Classificação</th>
+                <!-- Color Classification -->
+                <?php if (!empty($book['meta']['ColorClassification'])) { ?>
+                    <td width="300px;">
+                        <div class="p-1" style="border:2px solid #ddd;">
+                            <?= view('components/item_color_classification', ['meta' => $book['meta'] ?? []]); ?>
+                        </div>
+                    </td>
+                <?php } ?>
+                <?php if (!empty($book['meta']['CDD'])) { ?>
+                    <td><span class="small">CDD:</span><?= view('components/item_cdd', ['meta' => $book['meta'] ?? []]); ?></td>
+                <?php } ?>
+                <?php if (!empty($book['meta']['CDU'])) { ?>
+                    <td><span class="small">CDU:</span><?= view('components/item_cdd', ['meta' => $book['meta'] ?? []]); ?></td>
+                <?php } ?>
+            </tr>
+
+            <!-- Description -->
+            <?php if (!empty($book['meta']['Description'])) { ?>
+                <tr>
+                    <td class="text-secondary">Descrição</td>
+                    <td colspan="3" class="small"><?= view('components/item_description', ['meta' => $book['meta'] ?? []]); ?></td>
+                </tr>
+            <?php } ?>
 
             </table>
 

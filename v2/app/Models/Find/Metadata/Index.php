@@ -47,6 +47,7 @@ class Index extends Model
             'Place', 'CDD', 'CDU', 'Subject',
             'Langage','Page',
             'ColorClassification',
+            'Description',
             'Cutter'];
 
         foreach($fld as $name)
@@ -106,7 +107,8 @@ class Index extends Model
                 case 'hasPage':
                     array_push($RSP['Page'], $value);
                     break;
-                case 'X1':
+                case 'description':
+                    array_push($RSP['Description'], $value);
                     break;
                 /********* None */
                 case 'isAppellationOfExpression':
