@@ -20,18 +20,18 @@
         </div>
         <div class="col-md-6">
             <h4>Remissiva</h4>
-                        <button class="btn btn-sm btn-primary mb-2" type="button" id="btnRemissive">Incluir remissiva</button>
+            <button class="btn btn-sm btn-primary mb-2" type="button" id="btnRemissive">Incluir remissiva</button>
 
-                        <!-- Offcanvas painel lateral -->
-                        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRemissive" aria-labelledby="offcanvasRemissiveLabel">
-                            <div class="offcanvas-header">
-                                <h5 class="offcanvas-title" id="offcanvasRemissiveLabel">Incluir Remissiva</h5>
-                                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Fechar" id="closeRemissive"></button>
-                            </div>
-                            <div class="offcanvas-body p-0">
-                                <iframe id="iframeRemissive" src="" style="border:0;width:100%;height:80vh;"></iframe>
-                            </div>
-                        </div>
+            <!-- Offcanvas painel lateral -->
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRemissive" aria-labelledby="offcanvasRemissiveLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="offcanvasRemissiveLabel">Incluir Remissiva</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Fechar" id="closeRemissive"></button>
+                </div>
+                <div class="offcanvas-body p-0">
+                    <iframe id="iframeRemissive" src="" style="border:0;width:100%;height:80vh;"></iframe>
+                </div>
+            </div>
             <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     var btn = document.getElementById('btnRemissive');
@@ -50,16 +50,16 @@
                     });
                 });
             </script>
-            <?php if (!empty($AuthorityRemissive['concept'])): ?>
-                <ul class="list-group mb-3">
-                    <li class="list-group-item"><strong>ID:</strong> <?= esc($AuthorityRemissive['concept']['id'] ?? '') ?></li>
-                    <li class="list-group-item"><strong>Nome:</strong> <?= esc($AuthorityRemissive['concept']['name'] ?? '') ?></li>
-                    <li class="list-group-item"><strong>Classe:</strong> <?= esc($AuthorityRemissive['concept']['Class'] ?? '') ?></li>
-                    <li class="list-group-item"><strong>Idioma:</strong> <?= esc($AuthorityRemissive['concept']['lang'] ?? '') ?></li>
-                    <li class="list-group-item"><strong>Tipo:</strong> <?= esc($AuthorityRemissive['concept']['type'] ?? '') ?></li>
-                    <li class="list-group-item"><strong>Uso:</strong> <?= esc($AuthorityRemissive['concept']['use'] ?? '') ?></li>
-                </ul>
-            <?php endif; ?>
+            <?php
+            // Se AuthorityRemissive['concept'] for uma lista de arrays, exibe todos
+            if (!empty($AuthorityRemissive)) {
+                echo '<ul class="list-group mb-3">';
+                foreach ($AuthorityRemissive as $rem): ?>
+                        <li class="list-group-item"><?= esc($rem['name'] ?? '') ?> <sup> <?= esc($rem['id'] ?? '') ?></sup></li>
+            <?php endforeach;
+            echo '</ul>';
+            }
+            ?>
         </div>
     </div>
 

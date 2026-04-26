@@ -9,7 +9,7 @@ use CodeIgniter\Model;
 class RDF_Concept extends Model
 {
     protected $table = 'rdf_concept';
-    protected $primaryKey = 'id_c';
+    protected $primaryKey = 'id_cc';
     protected $allowedFields = [
         'cc_class',
         'cc_use',

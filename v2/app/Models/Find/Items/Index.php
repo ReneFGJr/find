@@ -143,14 +143,18 @@ class Index extends Model
             ->select('d_r2, n_name, id_cc')
             ->join('rdf_data', 'rdf_data.d_p in (' . $prop1 . ',' . $prop2 . ') and (rdf_data.d_r1 = find_item.i_manifestation or rdf_data.d_r1 = find_item.i_work)')
             ->join('rdf_concept', 'rdf_concept.id_cc = rdf_data.d_r2')
-            ->join('rdf_name', 'rdf_concept.cc_pref_term = rdf_name.id_n')
-            ->where('i_library', $library)
-            ->where('i_autores <> ""');
+            ->join('rdf_name', 'rdf_concept.cc_pref_term = rdf_name.id_n');
+
+        if ($library != '') {
+            $this->where('i_library', $library);
+        }
+
+        $this->where('i_autores <> ""');
         if ($search != '') {
             $this
-            ->group()
-            ->like('n_name', $search)
-            ->endGroup();
+                ->groupStart()
+                ->like('n_name', $search)
+                ->groupEnd();
         }
         $dt = $this->groupby('d_r2, n_name, id_cc')
             ->findAll();

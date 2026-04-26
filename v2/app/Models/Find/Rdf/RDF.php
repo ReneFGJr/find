@@ -130,7 +130,8 @@ class RDF extends Model
             ->join('rdf_name', 'cc_pref_term = id_n', 'left')
             ->where('cc_use', $id)
             ->where('cc_use <> id_cc')
-            ->first() ;
+            ->orderBy("n_name")
+            ->findAll() ;
         return $dt;
     }
 

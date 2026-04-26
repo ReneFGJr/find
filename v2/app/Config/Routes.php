@@ -103,6 +103,9 @@ $routes->group('catalog', function ($routes) {
     // Autoridade (Autores e Tradutores)
     $routes->get('authority', 'Catalog\\Authority::index');
     $routes->get('authority/(:num)', 'Catalog\\Authority::edit/$1');
+    $routes->post('authority/(:num)/save', 'Catalog\\Authority::save_remissive/$1');
+    $routes->get('authority/form_remissive', 'Catalog\\Authority::form_remissive');
+    $routes->post('authority/form_remissive', 'Catalog\\Authority::form_remissive');
 });
 
 
