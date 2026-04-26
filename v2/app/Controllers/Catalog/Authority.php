@@ -27,7 +27,14 @@ class Authority extends BaseController
             return redirect()->to('/bibliotecas')->with('msg', 'Escolha uma biblioteca antes de continuar.')->with('msg_type', 'warning');
         }
         $RDF = new \App\Models\Find\Rdf\RDF();
+        $RDF->updateRemissive();
+
         $Authority = $RDF->le($id);
-        pre($Authority);
+        $AuthorityRemissive = $RDF->getRemissive($id);
+
+        return view('catalog/authority_view', [
+            'Authority' => $Authority,
+            'AuthorityRemissive' => $AuthorityRemissive
+        ]);
     }
 }

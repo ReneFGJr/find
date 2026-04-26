@@ -123,6 +123,17 @@ class RDF extends Model
         return $RSP;
     }
 
+    function getRemissive($id) {
+        $dt = $this
+            ->select('id_cc as id, n_name as name, n_lang as lang, c_class as Class, c_type as type, cc_use as use')
+            ->join('rdf_class', 'cc_class = id_c', 'left')
+            ->join('rdf_name', 'cc_pref_term = id_n', 'left')
+            ->where('cc_use', $id)
+            ->where('cc_use <> id_cc')
+            ->first() ;
+        return $dt;
+    }
+
     function getData($id) {
         $RSP = [];
         $cp = 'c_class as Property, c_type as type, c2.id_cc as ID, c2.cc_use as use, n_lang as Lang, n_name as Caption, id_c as IDClass, id_d as IDd, id_n as IdN';
@@ -214,6 +225,13 @@ class RDF extends Model
                 ]);
                 return $RDF_Data->getInsertID();
             }
+    }
+
+    function updateRemissive()
+    {
+        $db = \Config\Database::connect();
+        $sql = "UPDATE rdf_concept SET cc_use = id_cc WHERE cc_use = 0";
+        $db->query($sql);
     }
 
     function createConcept($Class, $Name, $Lang='pt_BR')
