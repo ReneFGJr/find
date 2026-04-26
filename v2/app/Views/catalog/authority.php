@@ -11,7 +11,7 @@
             <?php foreach ($authors as $author): ?>
                 <?php foreach ($author as $id => $nome): ?>
                     <li class="list-group-item authority-item" data-nome="<?= strtolower(esc($nome)) ?>" style="<?= (++$count > 20) ? 'display:none;' : '' ?>">
-                        <a href="<?= base_url('catalog/authority/' . $id); ?>">
+                        <a href="<?= base_url('catalog/authority/' . $id); ?>" class="link">
                             <i class="bi bi-person-badge me-2"></i>
                             <strong><?= esc($nome) ?></strong> <span class="text-muted small">[<?= esc($id) ?>]</span>
                         </a>

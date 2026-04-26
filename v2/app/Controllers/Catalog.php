@@ -195,8 +195,6 @@ class Catalog extends BaseController
         }
         $isbn = $itemInfo['i_identifier'] ?? $this->request->getPost('isbn') ?? null;
 
-
-
         /**************************************************** Cover */
         // Se for POST e import_z39_50=1, mostra view de loading e dispara consulta
         if ($this->request->getMethod() === 'post' && $this->request->getPost('import_cover') == 1) {

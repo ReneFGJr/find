@@ -19,4 +19,15 @@ class Authority extends BaseController
 
         return view('catalog/authority', ['authors' => $Authors]);
     }
+
+    public function edit($id)
+    {
+        $selectedId = get_cookie('library') ?: get_cookie('library_code') ?: get_cookie('library_id');
+        if (!$selectedId) {
+            return redirect()->to('/bibliotecas')->with('msg', 'Escolha uma biblioteca antes de continuar.')->with('msg_type', 'warning');
+        }
+        $RDF = new \App\Models\Find\Rdf\RDF();
+        $Authority = $RDF->le($id);
+        pre($Authority);
+    }
 }

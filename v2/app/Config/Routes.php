@@ -102,6 +102,7 @@ $routes->group('catalog', function ($routes) {
 
     // Autoridade (Autores e Tradutores)
     $routes->get('authority', 'Catalog\\Authority::index');
+    $routes->get('authority/(:num)', 'Catalog\\Authority::edit/$1');
 });
 
 
