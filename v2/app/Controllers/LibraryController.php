@@ -26,6 +26,10 @@ class LibraryController extends BaseController
     {
         $selection = trim((string) $this->request->getPost('library_id'));
         if ($selection === '') {
+            $selection = trim((string) $this->request->getGet('library_id'));
+        }
+
+        if ($selection === '') {
             return redirect()->to('/bibliotecas')->with('msg', 'Selecione uma biblioteca.')->with('msg_type', 'warning');
         }
 

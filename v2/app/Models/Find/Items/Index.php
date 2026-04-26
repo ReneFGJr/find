@@ -132,6 +132,43 @@ class Index extends Model
         return $RSP;
     }
 
+    public function getAuthorsByLibrary($library,$search = '')
+    {
+        $Class = new \App\Models\Find\Rdf\RDF_Class();
+        $prop1 = $Class->getIdByName('hasAuthor');
+        $prop2 = $Class->getIdByName('hasTranslator');
+
+
+        $this
+            ->select('d_r2, n_name, id_cc')
+            ->join('rdf_data', 'rdf_data.d_p in (' . $prop1 . ',' . $prop2 . ') and (rdf_data.d_r1 = find_item.i_manifestation or rdf_data.d_r1 = find_item.i_work)')
+            ->join('rdf_concept', 'rdf_concept.id_cc = rdf_data.d_r2')
+            ->join('rdf_name', 'rdf_concept.cc_pref_term = rdf_name.id_n')
+            ->where('i_library', $library)
+            ->where('i_autores <> ""');
+        if ($search != '') {
+            $this
+            ->group()
+            ->like('n_name', $search)
+            ->endGroup();
+        }
+        $dt = $this->groupby('d_r2, n_name, id_cc')
+            ->findAll();
+
+        $authors = [];
+        foreach ($dt as $line) {
+            $id = $line['id_cc'];
+            $authors[][$id] = $line['n_name'];
+        }
+        // Ordena pelo valor (nome)
+        usort($authors, function($a, $b) {
+            $nameA = reset($a);
+            $nameB = reset($b);
+            return strcoll($nameA, $nameB);
+        });
+        return $authors;
+    }
+
     public function getIndexesByType($type, $lib, $place = '')
     {
         switch ($type) {

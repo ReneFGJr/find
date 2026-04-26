@@ -21,6 +21,21 @@ class CutterModel extends Model
         return $cutter ? $cutter['cutter_code'] : null;
     }
 
+    public function getCutterFullName($d2 = '', $d3 = '', $d4 = '')
+    {
+        if ($d2 != '') {
+
+            $name = nbr_author($d2,1);
+            if (strpos($name, ',') !== false) {
+                //$name = substr($name, 0, strpos($name, ',')); // Pega apenas o sobrenome antes da vírgula
+            }
+            $cutterArr = $this->getCutterBySurname($name);
+            $cutterCode = $cutterArr ? substr($name,0,1).$cutterArr['cutter_code'] : null;
+            return ['cutter_code' => $cutterCode, 'author_name' => $name];
+        }
+        return ['error' => 'Nome completo não fornecido'];
+    }
+
     /**
      * Busca o Cutter mais próximo para o sobrenome informado
      */
@@ -28,8 +43,13 @@ class CutterModel extends Model
     {
         $surname = ucfirst(strtolower(trim($surname)));
 
-        return $this->where('cutter_abrev <=', $surname)
+        $RSP = $this->where('cutter_abrev <=', $surname)
             ->orderBy('cutter_abrev', 'DESC')
             ->first();
+        if ($RSP) {
+            return $RSP;
+        } else {
+            return null;
+        }
     }
 }

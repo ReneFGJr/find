@@ -37,6 +37,7 @@ $logo = $LibraryLogo->logotype($library ?? '');
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="catalogacaoDropdown">
                             <li><a class="dropdown-item" href="<?= base_url('catalog/index'); ?>">Bibliografia</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url('catalog/authority'); ?>">Autoridade</a></li>
                             <li><a class="dropdown-item" href="<?= base_url('catalog/label'); ?>">Etiquetas</a></li>
                             <li>
                                 <hr class="dropdown-divider">

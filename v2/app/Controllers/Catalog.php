@@ -180,16 +180,22 @@ class Catalog extends BaseController
 
     public function metadadoSearch($IdItem = null)
     {
+        $itemModel = new ItemModel();
+        $CheckerModel = new \App\Models\Find\Check\CheckerModel();
         $cover_result = null;
         if ($resp = $this->denyIfNoPermission()) return $resp;
         $resultados = null;
         $busca = $this->request->getGet('busca');
         $itemInfo = null;
         if ($IdItem) {
-            $itemModel = new ItemModel();
             $itemInfo = $itemModel->find($IdItem);
+            if ($CheckerModel->updateDataTitleAuthor($itemInfo) != "") {
+                $itemInfo = $itemModel->find($IdItem);
+            }
         }
         $isbn = $itemInfo['i_identifier'] ?? $this->request->getPost('isbn') ?? null;
+
+
 
         /**************************************************** Cover */
         // Se for POST e import_z39_50=1, mostra view de loading e dispara consulta

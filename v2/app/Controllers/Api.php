@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-helper(['boostrap', 'url', 'sessions', 'cookie', 'sisdoc']);
+helper(['boostrap', 'url', 'sessions', 'cookie', 'sisdoc','nbr']);
 $session = \Config\Services::session();
 define("PATH", 'https://www.ufrgs.br/find/');
 
@@ -26,6 +26,11 @@ class Api extends BaseController
         }
 
         switch ($verb) {
+            case 'cutter':
+                $Cutter = new \App\Models\CutterModel();
+                $name = get("name");
+                $RSP = $Cutter->getCutterFullName($name);
+                break;
             case 'indices':
                 $Indices = new \App\Models\Find\Indexes\Index();
                 $library = get("library");

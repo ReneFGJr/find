@@ -62,6 +62,11 @@ function nbr_author($xa, $xp)
         return "";
     }
 
+    if (strpos($xa, ',')) {
+        $xa = substr($xa, strpos($xa, ',') + 1).' '.substr($xa, 0, strpos($xa, ','));
+        $xa = trim(str_replace('  ', ' ', $xa));
+    }
+
     // Corrigir encoding se necessário
     if (mb_detect_encoding($xa) != 'UTF-8') {
         $xa = mb_convert_encoding($xa, 'UTF-8', 'ISO-8859-1');
