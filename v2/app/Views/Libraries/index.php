@@ -22,17 +22,13 @@
     <div class="row g-4">
         <?php if (!empty($libraries)): ?>
             <?php foreach ($libraries as $library): ?>
-                <div class="col-md-6 col-xl-4">
+                <div class="col-md-4 col-xl-3">
                     <div class="card feature-card h-100">
-                        <div class="card-body p-4 d-flex flex-column">
-                            <div class="logo-card mb-3">
+                        <div class="card-body p-0 d-flex flex-column">
+                            <div class="logo-card mb-1">
                                 <img src="<?= esc($library['logo']); ?>" alt="<?= esc($library['name']); ?>">
                             </div>
-                            <h2 class="h5 mb-1"><?= esc($library['name']); ?></h2>
-                            <p class="text-secondary small mb-2">Código: <?= esc((string) ($library['code'] ?? '')); ?></p>
-                            <p class="text-secondary flex-grow-1 mb-3">
-                                <?= esc($library['about'] ?: 'Biblioteca disponível para navegação no projeto FIND.'); ?>
-                            </p>
+                            <h3 class="h5 mb-1"><?= esc($library['name']); ?></h3>
 
                             <form action="<?= base_url('/bibliotecas/select'); ?>" method="post" class="mt-auto">
                                 <input type="hidden" name="library_id" value="<?= esc((string) ($library['code'] ?? $library['id'] ?? '')); ?>">

@@ -198,7 +198,7 @@
             background: #fff;
             border: 1px solid #e9ecef;
             border-radius: 1rem;
-            min-height: 110px;
+            min-height: 190px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -208,7 +208,7 @@
 
         .logo-card img {
             max-width: 100%;
-            max-height: 54px;
+            max-height: 150px;
             object-fit: contain;
         }
 
