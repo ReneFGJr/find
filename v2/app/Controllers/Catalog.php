@@ -205,6 +205,38 @@ class Catalog extends BaseController
         ]);
     }
 
+    public function form_item()
+        {
+            $libraryID = get_cookie('library') ?? get_cookie('library_code') ?? '';
+            if (!$libraryID) {
+                return redirect()->to('/bibliotecas')->with('msg', 'Escolha uma biblioteca antes de continuar.')->with('msg_type', 'warning');
+            }
+
+            $rdfForm = new \App\Models\Find\Rdf\RDF_Form();
+
+            $item = $this->request->getGet('item') ?? $this->request->getPost('item') ?? null;
+            $Item = new \App\Models\Find\Items\Index();
+            $dt = $Item->where('id_i', $item)->first();
+            $id = $dt['id_i'] ?? 0;
+            $i_work = $dt['i_work'] ?? 0;
+            $i_expression = $dt['i_expression'] ?? 0;
+            $i_manifestation = $dt['id_i'] ?? 0;
+
+            if ($i_work == 0 || $i_expression == 0 || $i_manifestation == 0) {
+                echo "<div class='alert alert-danger'>Item não encontrado ou com dados incompletos (Work: $i_work, Expression: $i_expression, Manifestation: $i_manifestation).</div>";
+                exit;
+            }
+
+            $form = [
+                'item' => $item,
+                'work' => $rdfForm->getForm('W', $id, $libraryID),
+                'expression' => $rdfForm->getForm('E', $id, $libraryID),
+                'manifestation' => $rdfForm->getForm('M', $id, $libraryID),
+            ];
+
+            return view('catalog/form_item', $form);
+        }
+
     public function inport_z3050()
     {
         $isbn = $this->request->getPost('isbn') ?? $this->request->getGet('isbn') ?? null;

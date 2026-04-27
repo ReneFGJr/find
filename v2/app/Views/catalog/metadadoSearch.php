@@ -34,6 +34,10 @@
             <!-- Botoes de ação -->
             <div class="mb-4 d-flex gap-2">
 
+                <a href="<?= base_url('catalog/item/form') ?>?item=<?= $itemInfo['id_i']; ?>" class="btn btn-outline-warning" type="button">
+                    <i class="bi bi-file-earmark-arrow-down me-1"></i> Catalogar
+                </a>
+
                 <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#z3950Panel" aria-controls="z3950Panel">
                     <i class="bi bi-file-earmark-arrow-down me-1"></i> Importar Z39.50
                 </button>
@@ -67,6 +71,10 @@
                         </div>
                     </div>
                 </div>
+
+            </div>
+            <div class="mb-4 d-flex gap-2">
+
 
 
                 <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#coverPanel" aria-controls="coverPanel">
@@ -112,22 +120,6 @@
             </div>
 
         </div>
-
-        <?php if (!empty($z3950_result)): ?>
-            <div class="alert alert-success">
-                <h5 class="mb-2"><i class="bi bi-cloud-download me-2"></i>Resultado da consulta Z39.50</h5>
-                <pre class=" p-2 border rounded small" style="max-height:300px;overflow:auto;">
-                    <?= htmlspecialchars(print_r($z3950_result, true)) ?>
-                    </pre>
-            </div>
-        <?php endif; ?>
-
-        <?php if (!empty($cover_result)): ?>
-            <div class="alertx alert-success">
-                <?= $cover_result ?>
-            </div>
-        <?php endif; ?>
-
     </div>
 </div>
 </div>

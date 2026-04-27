@@ -93,6 +93,9 @@ $routes->group('catalog', function ($routes) {
 
     $routes->match(['get', 'post'], 'import_z3950', 'Catalog::inport_z3050');
 
+    // Catalogar Item //
+    $routes->get('item/form', 'Catalog::form_item');
+
     // utilitários //
     $routes->get('util', 'Catalog::util');
 
