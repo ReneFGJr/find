@@ -13,11 +13,11 @@
     </div>
 
     <div class="d-flex justify-content-end">
-        <button type="button" class="btn btn-outline-danger me-2" data-bs-dismiss="offcanvas" disabled>
+        <button type="button" class="btn btn-outline-danger me-2" id="btn-novo-conceito" data-bs-dismiss="offcanvas" disabled>
             <i class="bi bi-plus-circle"></i> Conceito
         </button>
         <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="offcanvas">Cancelar</button>
-        <button type="submit" class="btn btn-outline-success" disabled>Adicionar</button>
+        <button type="submit" class="btn btn-outline-success" id="btn-adicionar-conceito" disabled>Adicionar</button>
     </div>
 
     <div class="mb-3" id="autocomplete-candidatos" style="display:none;">
@@ -85,13 +85,16 @@
 
     // Função para mostrar os dados recebidos no painel
     function mostrarDebugAtributo(dados) {
-        var debug = document.getElementById('atributo-debug');
-        if (debug) {
-            debug.innerHTML = '';
-            for (var k in dados) {
-                debug.innerHTML += '<strong>' + k + ':</strong> ' + dados[k] + '<br>';
+        if (1 ==2)
+        {
+            var debug = document.getElementById('atributo-debug');
+            if (debug) {
+                debug.innerHTML = '';
+                for (var k in dados) {
+                    debug.innerHTML += '<strong>' + k + ':</strong> ' + dados[k] + '<br>';
+                }
+                debug.style.display = 'block';
             }
-            debug.style.display = 'block';
         }
     }
     // Torna a função global para ser chamada pelo script principal
@@ -175,10 +178,25 @@
             });
     });
     // Ao selecionar um candidato, preenche o campo valor
+
+    // Habilita o botão Adicionar só se houver item selecionado
+    var btnAdicionar = document.getElementById('btn-adicionar-conceito');
     selectCandidatos.addEventListener('change', function() {
         var opt = selectCandidatos.options[selectCandidatos.selectedIndex];
         if (opt) {
             inputValor.value = opt.textContent;
+            btnAdicionar.disabled = false;
+        } else {
+            btnAdicionar.disabled = true;
+        }
+    });
+
+    // Garante que o botão está desabilitado se não houver opções
+    selectCandidatos.addEventListener('input', function() {
+        if (selectCandidatos.options.length > 0 && selectCandidatos.selectedIndex >= 0) {
+            btnAdicionar.disabled = false;
+        } else {
+            btnAdicionar.disabled = true;
         }
     });
 
@@ -234,4 +252,14 @@
         window.setAtributoRange(range);
         window.setAtributoIdc(idc);
     };
+
+    // Ativa o botão "Conceito" se o campo valor tiver mais de 4 caracteres
+    var btnNovoConceito = document.getElementById('btn-novo-conceito');
+    inputValor.addEventListener('input', function() {
+        if (inputValor.value.length > 4) {
+            btnNovoConceito.disabled = false;
+        } else {
+            btnNovoConceito.disabled = true;
+        }
+    });
 </script>
