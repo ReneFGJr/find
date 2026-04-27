@@ -262,4 +262,33 @@
             btnNovoConceito.disabled = true;
         }
     });
+
+    // Função AJAX para criar conceito
+    btnNovoConceito.addEventListener('click', function() {
+        var classe = document.getElementById('atributo-nome').value;
+        var nome = inputValor.value;
+        if (!classe || nome.length <= 4) return;
+        btnNovoConceito.disabled = true;
+        btnNovoConceito.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Conceito';
+        fetch('<?= base_url(); ?>/rdf/concept/create_concept', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'classe=' + encodeURIComponent(classe) + '&nome=' + encodeURIComponent(nome)
+        })
+        .then(resp => resp.json())
+        .then(data => {
+            if (data && data.success) {
+                location.reload();
+            } else {
+                alert('Erro ao criar conceito: ' + (data && data.message ? data.message : 'Erro desconhecido.'));
+            }
+        })
+        .catch(err => {
+            alert('Erro na requisição: ' + (err && err.message ? err.message : err));
+        })
+        .finally(() => {
+            btnNovoConceito.disabled = false;
+            btnNovoConceito.innerHTML = '<i class="bi bi-plus-circle"></i> Conceito';
+        });
+    });
 </script>

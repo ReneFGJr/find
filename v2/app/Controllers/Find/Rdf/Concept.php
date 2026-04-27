@@ -9,6 +9,15 @@ class Concept extends Controller
 {
     use ResponseTrait;
 
+    function create_concept()
+        {
+            return $this->respond([
+                'status'  => 200,
+                'success' => true,
+                'message' => 'Rota create_concept funcionando!'
+            ]);
+        }
+
     function add_link_concept()
     {
         $RDF_Data = new \App\Models\Find\Rdf\RDF_Data();
