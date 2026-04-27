@@ -11,16 +11,22 @@
         <input type="hidden" id="atributo-range" name="atributo_range">
         <input type="hidden" id="atributo-idc" name="atributo_idc">
     </div>
+
+    <div class="d-flex justify-content-end">
+        <button type="button" class="btn btn-outline-danger me-2" data-bs-dismiss="offcanvas" disabled>
+            <i class="bi bi-plus-circle"></i> Conceito
+        </button>
+        <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="offcanvas">Cancelar</button>
+        <button type="submit" class="btn btn-outline-success" disabled>Adicionar</button>
+    </div>
+
     <div class="mb-3" id="autocomplete-candidatos" style="display:none;">
         <label for="atributo-candidatos" class="form-label">Selecione um valor</label>
         <select class="form-select" id="atributo-candidatos" name="atributo_candidatos" size="10"></select>
     </div>
-    <div class="d-flex justify-content-end">
-        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="offcanvas">Cancelar</button>
-        <button type="submit" class="btn btn-success">Adicionar</button>
-    </div>
+
 </form>
-<div class="alert alert-info p-2" id="atributo-debug" style="font-size:0.95em; display:none;"></div>
+<div class="alert alert-info p-2 mt-2" id="atributo-debug" style="font-size:0.95em; display:none;"></div>
 <script>
     // Exemplo de envio AJAX (ajuste conforme backend)
     document.getElementById('formAdicionarAtributo').onsubmit = function(e) {
@@ -74,6 +80,7 @@
             }
         };
         xhr.send(params.toString());
+
     };
 
     // Função para mostrar os dados recebidos no painel
@@ -104,11 +111,11 @@
         var idc = inputIDc.value;
         var url = '<?= base_url(); ?>/rdf/searchConcept?term=' + encodeURIComponent(termo) + '&range=' + encodeURIComponent(range);
 
-        if (termo.length < 2 || !range) {
+        if (termo.length < 5 || !range) {
             divCandidatos.style.display = 'none';
             selectCandidatos.innerHTML = '';
             mostrarDebugAtributo({
-                Info: 'Digite ao menos 2 letras e selecione o range.',
+                Info: 'Digite ao menos 5 letras e selecione o range.',
                 URL: url
             });
             return;
