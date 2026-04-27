@@ -136,6 +136,11 @@
                     },
                     success: function(response) {
                         // Sucesso: recarrega a página ou atualiza a tabela
+                        // Salva a aba ativa antes de recarregar
+                        var activeTab = $('.nav-tabs .nav-link.active').attr('id');
+                        if (activeTab) {
+                            localStorage.setItem('activeTab', activeTab);
+                        }
                         location.reload();
                     },
                     error: function(xhr, status, error) {
@@ -144,5 +149,16 @@
                 });
             }
         }
+        // Ao carregar, restaura a aba ativa se existir
+        $(document).ready(function() {
+            var activeTab = localStorage.getItem('activeTab');
+            if (activeTab) {
+                var tab = $('#' + activeTab);
+                if (tab.length) {
+                    tab.tab('show');
+                }
+                localStorage.removeItem('activeTab');
+            }
+        });
     </script>
 <?php } ?>
