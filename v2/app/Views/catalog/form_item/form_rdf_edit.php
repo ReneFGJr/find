@@ -1,75 +1,90 @@
 <h3><?= htmlspecialchars($f) ?></h3>
+<div class="card-header bg-primary text-white">
+    <i class="bi bi-pencil-square me-2"></i> Edição de Metadados RDF
+</div>
 <form method="get" action="">
     <table class="table table-bordered align-middle">
         <thead class="table-light">
             <tr>
                 <th width="20%">Propriedade</th>
                 <th style="width:20px;"></th>
+                <th width="80%">Valor</th>
+            </tr>
+        </thead>
 
+        <?php if (!empty($form)): ?>
+            <tbody>
                 <?php
-                // Exibe o formulário RDF se existir
-                if (!empty($form)) {
-                    echo '<form method="get" action="">';
-                    echo '<table class="table table-bordered align-middle">';
-                    echo '<thead class="table-light">';
-                    echo '<tr><th width="20%">Propriedade</th><th style="width:20px;"></th><th width="76%">Valor</th></tr>';
-                    echo '</thead><tbody>';
-                    $lastGroup = null;
-                    $propLabel = '';
-                    foreach ($form as $i => $w) {
-                        if (($w['n_type'] === 'CONCEPT') && ($w['n_name'] != '')) {
-                            $w['n_type'] = 'CONCEPT:EXIST';
-                        }
-                        if (empty($w['c_class'])) continue;
-                        if ($lastGroup !== $w['form_group']) {
-                            if ($w['form_group'] != '') {
-                                echo '<tr class="table-secondary"><td colspan="3" class="bg-secondary text-center"><strong>' . htmlspecialchars($w['form_group']) . '</strong></td></tr>';
-                            }
-                            $lastGroup = $w['form_group'];
-                        }
-                        echo '<tr>';
-                        echo '<td>';
-                        $xpropLabel = $w['c_class'] ?? '';
-                        if ($xpropLabel !== $propLabel) {
-                            echo '<span title="' . htmlspecialchars($w['c_class']) . '">';
-                            echo htmlspecialchars($w['c_class']);
-                            echo '</span>';
-                            $propLabel = $xpropLabel;
-                        }
-                        echo '</td>';
-                        // Botões de ação
-                        echo '<td class="text-center"><nobr>';
-                        switch ($w['n_type']) {
-                            case 'TEXT':
-                                if ($w['n_name'] == '') {
-                                    echo '<button type="button" class="btn btn-outline-success btn-sm btn-adicionar-literal" title="Adicionar" data-prop="' . htmlspecialchars($w['c_class'] ?? '') . '" data-group="' . htmlspecialchars($w['form_group'] ?? '') . '" data-type="' . htmlspecialchars($w['n_type'] ?? '') . '" data-range="' . htmlspecialchars($w['form_range'] ?? '') . '"><i class="bi bi-plus"></i></button>';
-                                }
-                                if ($w['n_name'] != '') {
-                                    echo '<button type="button" class="btn btn-outline-danger btn-sm" title="Excluir" data-id_d="' . htmlspecialchars($w['id_d'] ?? '') . '"><i class="bi bi-trash"></i></button>';
-                                    echo '<button type="button" class="btn btn-sm btn-outline-primary ms-1 btn-editar-literal" id="btn-editar-literal-' . htmlspecialchars($w['id_n'] ?? '') . '" data-idn="' . htmlspecialchars($w['id_n'] ?? '') . '" data-value="' . htmlspecialchars($w['n_name'] ?? '') . '" title="Editar texto"><i class="bi bi-pencil"></i></button>';
-                                }
-                                break;
-                            case 'CONCEPT':
-                                echo '<button type="button" class="btn btn-outline-success btn-sm btn-adicionar-atributo" title="Adicionar" data-idc="' . htmlspecialchars($id ?? '') . '" data-prop="' . htmlspecialchars($w['c_class'] ?? '') . '" data-group="' . htmlspecialchars($w['form_group'] ?? '') . '" data-type="' . htmlspecialchars($w['n_type'] ?? '') . '" data-value="' . htmlspecialchars($w['n_name'] ?? '') . '" data-range="' . htmlspecialchars($w['form_range'] ?? '') . '"><i class="bi bi-plus"></i></button>';
-                                break;
-                            case 'CONCEPT:EXIST':
-                                echo '<button type="button" class="btn btn-outline-danger btn-sm" title="Excluir" data-id_d="' . htmlspecialchars($w['id_d'] ?? '') . '"><i class="bi bi-trash"></i></button>';
-                                break;
-                        }
-                        echo '</nobr></td>';
-                        echo '<td>' . htmlspecialchars($w['n_name'] ?? '');
-                        if (!empty($w['n_lang'])) {
-                            echo ' <span class="badge bg-secondary ms-1">' . htmlspecialchars($w['n_lang']) . '</span>';
-                        }
-                        echo '</td>';
-                        echo '</tr>';
+                $lastGroup = null;
+                $propLabel = '';
+
+                foreach ($form as $i => $w):
+
+                    if (($w['n_type'] === 'CONCEPT') && ($w['n_name'] != '')) {
+                        $w['n_type'] = 'CONCEPT:EXIST';
                     }
-                    echo '</tbody></table></form>';
-                }
-                ?>
-                <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="offcanvas">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="btnSalvarLiteral">Salvar</button>
-                </div>
+                    if (empty($w['c_class'])) continue;
+
+                    if ($lastGroup !== $w['form_group']):
+                        if ($w['form_group'] != ''):
+                            echo '<tr class="table-secondary">';
+                            echo '<td colspan="3" class="bg-secondary text-center"><strong>';
+                            echo htmlspecialchars($w['form_group']);
+                            echo '</strong></td>';
+                            echo '</tr>';
+                        endif;
+                        $lastGroup = $w['form_group'];
+                    endif;
+
+                    /***************************************************  */
+                    echo '<tr>';
+                    echo '<td>';
+                    echo $w['c_class'];
+                    echo '</td>';
+                    echo '<td>';
+
+                    switch ($w['n_type']) {
+                        case 'TEXT':
+                            if ($w['n_name'] == ''): ?>
+                                <button type="button" class="btn btn-outline-success btn-sm btn-adicionar-literal" title="Adicionar valor literal" data-bs-toggle="tooltip" data-prop="<?= htmlspecialchars($w['c_class'] ?? '') ?>" data-group="<?= htmlspecialchars($w['form_group'] ?? '') ?>" data-type="<?= htmlspecialchars($w['n_type'] ?? '') ?>" data-range="<?= htmlspecialchars($w['form_range'] ?? '') ?>">
+                                    <i class="bi bi-plus"></i>
+                                </button>
+                            <?php endif;
+                            if ($w['n_name'] != ''): ?>
+                                <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir valor" data-bs-toggle="tooltip" data-id_d="<?= htmlspecialchars($w['id_d'] ?? '') ?>">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-primary btn-sm ms-1 btn-editar-literal" id="btn-editar-literal-<?= htmlspecialchars($w['id_n'] ?? '') ?>" data-idn="<?= htmlspecialchars($w['id_n'] ?? '') ?>" data-value="<?= htmlspecialchars($w['n_name'] ?? '') ?>" title="Editar valor literal" data-bs-toggle="tooltip">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                            <?php endif;
+                            break;
+                        case 'CONCEPT': ?>
+                            <button type="button" class="btn btn-outline-success btn-sm btn-adicionar-atributo" title="Adicionar atributo" data-bs-toggle="tooltip" data-idc="<?= htmlspecialchars($id ?? '') ?>" data-prop="<?= htmlspecialchars($w['c_class'] ?? '') ?>" data-group="<?= htmlspecialchars($w['form_group'] ?? '') ?>" data-type="<?= htmlspecialchars($w['n_type'] ?? '') ?>" data-value="<?= htmlspecialchars($w['n_name'] ?? '') ?>" data-range="<?= htmlspecialchars($w['form_range'] ?? '') ?>">
+                                <i class="bi bi-plus"></i>
+                            </button>
+                        <?php break;
+                        case 'CONCEPT:EXIST': ?>
+                            <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir conceito" data-bs-toggle="tooltip" data-id_d="<?= htmlspecialchars($w['id_d'] ?? '') ?>">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                <?php break;
+                    }
+                    echo '</td>';
+                    echo '<td>';
+                    echo htmlspecialchars($w['n_name'] ?? '');
+                    if (!empty($w['n_lang'])):
+                        echo '<span class="badge bg-secondary ms-2">' . htmlspecialchars($w['n_lang']) . '?></span>';
+                    endif;
+
+                    echo '</td>';
+                    echo '</tr>';
+                endforeach; ?>
+            </tbody>
+    </table>
+</form>
+<?php endif; ?>
+
 </form>
 
 
