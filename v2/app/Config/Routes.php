@@ -88,7 +88,8 @@ $routes->group('catalog', function ($routes) {
     $routes->get('reindex', 'Catalog::reindexModel');
     $routes->get('rebuild_fields', 'Catalog::rebuildModel');
 
-
+    // Cover
+    $routes->match(['get', 'post'], 'upload_cover', 'Find\Rdf\Form::upload_cover');
 
     // utilitários //
     $routes->get('util', 'Catalog::util');
@@ -118,7 +119,6 @@ $routes->group(
 $routes->group('rdf', function ($routes) {
     // Rota para exclusão de registro rdf_data
     $routes->post('form/excluir_rdf_data', 'Find\Rdf\Form::excluirRdfData');
-    $routes->match(['get', 'post'], 'form/upload_cover', 'Find\Rdf\Form::upload_cover');
     $routes->get('form/(:num)', 'Find\\Rdf\\Form::index/$1');
     $routes->get('form_edit', 'Find\\Rdf\\Form_edit::index');
     $routes->post('form/salvar', 'Find\\Rdf\\Form_edit::salvar');

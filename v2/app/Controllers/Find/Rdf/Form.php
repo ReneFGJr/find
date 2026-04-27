@@ -64,13 +64,19 @@ class Form extends BaseController
     public function upload_cover()
     {
         helper(['filesystem', 'form']);
-        $isbn = $this->request->getPost('isbn');
-        $file = $this->request->getFile('cover_file');
+        $isbn = $this->request->getPost('isbn') ?? $this->request->getGet('isbn');
+        if (!$isbn) {
+            $data['content'] = 'ISBN não fornecido.';
+            return view('components/content', $data);
+        }
+
+        $file = $this->request->getFile('coverFile');
         $id_item = $this->request->getPost('id_item');
+
         $msg = '';
         if (!$isbn || !$file || !$file->isValid()) {
-            $msg = 'ISBN ou arquivo inválido.';
-            return view('catalog/cover_loading', ['msg' => '<div class="alert alert-danger">' . $msg . '</div>']);
+            $msg = 'ISBN ou arquivo inválido. ISBN: ' . $isbn . ', File error: ' . ($file ? $file->getErrorString() : 'No file uploaded');
+            return view('catalog/upload_cover', ['isbn'=>$isbn, 'msg' => '<div class="alert alert-danger">' . $msg . '</div>']);
         }
 
         // Garante diretório
@@ -83,20 +89,17 @@ class Form extends BaseController
         // Valida tipo
         if (!in_array($file->getMimeType(), ['image/jpeg', 'image/jpg', 'image/webp', 'image/png'])) {
             $msg = 'Apenas arquivos JPEG são permitidos. ['. $file->getMimeType().']';
-            return view('catalog/cover_loading', ['msg' => '<div class="alert alert-danger">' . $msg . '</div>']);
+            return view('catalog/upload_cover', ['isbn' => $isbn,'msg' => '<div class="alert alert-danger">' . $msg . '</div>']);
         }
 
         // Move arquivo
         if ($file->move($dir, $isbn . '.jpg', true)) {
             // Se veio id_item, redireciona para edição
-            if ($id_item) {
-                return redirect()->to('/catalog/catalogar/metadadoSearch/' . $id_item);
-            }
-            $msg = 'Capa enviada com sucesso!';
-            return redirect()->to('/catalog/catalogar/phase/1')->with('success', $msg);
+            $dd['content'] = view('layout/header').'<div class="alert alert-success">Capa enviada com sucesso!</div>';
+            return view('components/content', $dd);
         } else {
             $msg = 'Erro ao salvar o arquivo.';
-            return view('catalog/cover_loading', ['msg' => '<div class="alert alert-danger">' . $msg . '</div>']);
+            return view('catalog/upload_cover', ['isbn' => $isbn,'msg' => '<div class="alert alert-danger">' . $msg . '</div>']);
         }
     }
 

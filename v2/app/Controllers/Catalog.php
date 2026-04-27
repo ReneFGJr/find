@@ -195,15 +195,6 @@ class Catalog extends BaseController
         }
         $isbn = $itemInfo['i_identifier'] ?? $this->request->getPost('isbn') ?? null;
 
-        /**************************************************** Cover */
-        // Se for POST e import_z39_50=1, mostra view de loading e dispara consulta
-        if ($this->request->getMethod() === 'post' && $this->request->getPost('import_cover') == 1) {
-            // Exibe view auxiliar de loading
-            $cover_result = view('catalog/cover_loading', ['isbn' => $isbn]);
-            //echo searchGoogle($isbn);
-            // Busca ISBN do item (se disponível)
-        }
-
         // Se for POST e import_z39_50=1, mostra view de loading e dispara consulta
         if ($this->request->getMethod() === 'post' && $this->request->getPost('import_z39_50') == 1) {
             // Exibe view auxiliar de loading
@@ -238,6 +229,7 @@ class Catalog extends BaseController
             ];
         }
         return view('catalog/metadadoSearch', [
+            'isbn' => $isbn,
             'resultados' => $resultados,
             'itemInfo' => $itemInfo,
             'idItem' => $IdItem,

@@ -1,3 +1,13 @@
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var coverPanel = document.getElementById('coverPanel');
+    if (coverPanel) {
+        coverPanel.addEventListener('hidden.bs.offcanvas', function () {
+            location.reload();
+        });
+    }
+});
+</script>
 <?php include(APPPATH . 'Views/layout/header.php'); ?>
 <?php include(APPPATH . 'Views/layout/navbar.php'); ?>
 <?php include(APPPATH . 'Views/components/catalog_breadcrumbs.php'); ?>
@@ -30,12 +40,10 @@
                     </button>
                 </form>
 
-                <form method="post" action="#">
-                    <input type="hidden" name="import_cover" value="1">
-                    <button type="submit" class="btn btn-outline-primary">
-                        <i class="bi bi-file-earmark-arrow-down me-1"></i> Procurar Capa
-                    </button>
-                </form>
+
+                <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#coverPanel" aria-controls="coverPanel">
+                    <i class="bi bi-file-earmark-arrow-down me-1"></i> Procurar Capa
+                </button>
 
                 <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#checkPanel" aria-controls="checkPanel">
                     <i class="bi bi-arrow-clockwise"></i> Verificar Dados
@@ -45,10 +53,7 @@
                     <i class="bi bi-pencil-square"></i> Editar Etiqueta
                 </button>
             <?php include(APPPATH . 'Views/components/label_edit.php'); ?>
-
             </div>
-
-
 
             <!-- Offcanvas Panel -->
             <div class="offcanvas offcanvas-end" tabindex="-1" id="checkPanel" aria-labelledby="checkPanelLabel">
@@ -58,6 +63,20 @@
                 </div>
                 <div class="offcanvas-body">
                     <iframe src="<?= base_url('/catalog/check'); ?>" style="width:100%;height:70vh;border:0;"></iframe>
+                    <div class="mt-3 text-end">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Fechar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Painel lateral para Procurar Capa -->
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="coverPanel" aria-labelledby="coverPanelLabel">
+                <div class="offcanvas-header">
+                    <h5 class="offcanvas-title" id="coverPanelLabel">Procurar Capa</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <iframe src="<?= base_url('/catalog/upload_cover'); ?>?isbn=<?= $isbn; ?>" style="width:100%;height:70vh;border:0;"></iframe>
                     <div class="mt-3 text-end">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Fechar</button>
                     </div>
