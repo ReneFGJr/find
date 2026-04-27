@@ -111,7 +111,7 @@ class ProcessMetadata extends Model
 
                 if (isset($item['property']) && $item['property'] === 'hasAuthor' && isset($item['literal'])) {
                     $authorName = $item['literal'];
-                    $aName = 'AUTHOR:' . $authorName;
+                    $aName = nbr_author($authorName,7);
                     $Author = $RDF->createConcept('Person', $aName);
                     // Linkar Work ao Author
 

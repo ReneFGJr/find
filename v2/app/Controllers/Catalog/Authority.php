@@ -65,8 +65,6 @@ class Authority extends BaseController
         if (!$n_name) {
             $n_name = $Authority['concept']['name'] ?? '';
         }
-        pre($n_name,false);
-
         $options = [];
 
         if ($n_name) {

@@ -71,6 +71,9 @@ class Index extends Model
                 case 'prefLabel':
                     array_push($RSP['Title'], $value);
                     break;
+                case 'hasTitle':
+                    array_push($RSP['Title'], $value);
+                    break;
                 case 'hasAuthor':
                     array_push($RSP['Authors'], $value);
                     break;

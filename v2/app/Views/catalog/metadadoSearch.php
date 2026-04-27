@@ -25,7 +25,7 @@
                 </form>
                 <form method="post" action="#">
                     <input type="hidden" name="import_marc21" value="1">
-                    <button type="submit" class="btn btn-outline-primary">
+                    <button type="submit" class="btn btn-outline-primary" disabled>
                         <i class="bi bi-file-earmark-arrow-down me-1"></i> Importar Marc21
                     </button>
                 </form>

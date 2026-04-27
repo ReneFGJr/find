@@ -55,17 +55,21 @@ class RDF extends Model
         $library = function_exists('get') ? get("library") : '';
         $ItemModel = new \App\Models\Find\Items\Index();
 
+        $this->updateRemissive();
+
         $RSP = [];
         $RSP['id'] = $id;
 
         $dt = $this
-            ->select('id_cc as id, n_name as name, n_lang as lang, c_class as Class, c_type as type, cc_use as use')
+            ->select('cc_use as id, n_name as name, n_lang as lang, c_class as Class, c_type as type, cc_use as use')
             ->join('rdf_class', 'cc_class = id_c', 'left')
             ->join('rdf_name', 'cc_pref_term = id_n', 'left')
-            ->where('id_cc', $id)
+            ->where('cc_use', $id)
             ->first() ;
         $RSP['concept'] = $dt;
         $RSP['data'] = $this->getData($id);
+
+
 
         $Class = $RSP['concept']['Class'];
         $IT = [];
@@ -145,7 +149,7 @@ class RDF extends Model
             ->join('rdf_class', 'd_p = id_c')
             ->join('rdf_concept as c2', 'd_r2 = c2.id_cc')
             ->join('rdf_name', 'c2.cc_pref_term = id_n', 'left')
-            ->where('rdf_concept.id_cc', $id)
+            ->where('rdf_concept.cc_use', $id)
             ->where('d_literal',0)
             ->findAll() ;
 
@@ -156,7 +160,7 @@ class RDF extends Model
             ->join('rdf_class', 'd_p = id_c')
             ->join('rdf_concept as c2', 'd_r1 = c2.id_cc')
             ->join('rdf_name', 'c2.cc_pref_term = id_n', 'left')
-            ->where('rdf_concept.id_cc', $id)
+            ->where('rdf_concept.cc_use', $id)
             ->where('d_literal', 0)
             ->findAll();
 
@@ -166,7 +170,7 @@ class RDF extends Model
             ->join('rdf_data', 'd_r1 = id_cc')
             ->join('rdf_class', 'd_p = id_c')
             ->join('rdf_name', 'd_literal = id_n', 'left')
-            ->where('rdf_concept.id_cc', $id)
+            ->where('rdf_concept.cc_use', $id)
             ->where('d_literal <> 0')
             ->findAll();
 
@@ -231,7 +235,7 @@ class RDF extends Model
     function updateRemissive()
     {
         $db = \Config\Database::connect();
-        $sql = "UPDATE rdf_concept SET cc_use = id_cc WHERE cc_use = 0";
+        $sql = "UPDATE rdf_concept SET cc_use = id_cc WHERE (cc_use = 0 OR cc_use IS NULL OR (cc_use = 1 AND id_cc > 1))";
         $db->query($sql);
     }
 

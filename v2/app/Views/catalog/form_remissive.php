@@ -3,6 +3,7 @@
     <h2 class="mb-3">Incluir Remissiva</h2>
     <form id="formVincularRemissiva" method="post" action="<?= base_url('/catalog/authority/') . '/' . esc(get('id_cc')) ?>/save">
         <input type="hidden" name="id" id="id" value="<?= esc(get('id_cc')) ?>">
+        <input type="hidden" name="initialFilter" id="initialFilter" value="<?= esc($initialFilter ?? '') ?>">
         <div class="mb-3">
             <label for="remissiveFilter" class="form-label">Filtrar termo</label>
             <div class="input-group">
@@ -40,6 +41,16 @@
                 opt.style.display = 'none';
             }
         });
+    });
+
+    // Botão Buscar: submete o filtro para o controller correto
+    document.getElementById('btnLupaFiltro').addEventListener('click', function() {
+        var filtro = document.getElementById('remissiveFilter').value;
+        var id_cc = document.getElementById('id').value;
+        // Redireciona via GET para o controller, passando filtro e id_cc
+        var url = '<?= base_url('/catalog/authority/form_remissive') ?>';
+        url += '?id_cc=' + encodeURIComponent(id_cc) + '&initialFilter=' + encodeURIComponent(filtro);
+        window.location.href = url;
     });
 
     // Vincular remissiva: ao submeter, pega o valor selecionado

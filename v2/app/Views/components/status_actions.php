@@ -19,7 +19,3 @@
         [Informações sobre o processo de catalogação]
     </div>
 </div>
-
-<?php
-    pre($itemInfo,false);
-?>

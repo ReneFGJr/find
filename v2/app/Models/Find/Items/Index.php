@@ -140,7 +140,7 @@ class Index extends Model
 
 
         $this
-            ->select('d_r2, n_name, id_cc')
+            ->select('d_r2, n_name, cc_use as id_cc')
             ->join('rdf_data', 'rdf_data.d_p in (' . $prop1 . ',' . $prop2 . ') and (rdf_data.d_r1 = find_item.i_manifestation or rdf_data.d_r1 = find_item.i_work)')
             ->join('rdf_concept', 'rdf_concept.id_cc = rdf_data.d_r2')
             ->join('rdf_name', 'rdf_concept.cc_pref_term = rdf_name.id_n');
@@ -155,8 +155,9 @@ class Index extends Model
                 ->groupStart()
                 ->like('n_name', $search)
                 ->groupEnd();
+            $this->where('rdf_concept.id_cc = rdf_concept.cc_use');
         }
-        $dt = $this->groupby('d_r2, n_name, id_cc')
+        $dt = $this->groupby('d_r2, n_name, cc_use')
             ->findAll();
 
         $authors = [];
@@ -541,10 +542,11 @@ class Index extends Model
             } else {
                 $dtM = [];
             }
-            $metadata = array_merge($dtM, $dtW, $dtE);
+            $meta = [];
+            $meta['data'] = array_merge($dtM['data'], $dtW['data'], $dtE['data']);
 
             $Metadata = new \App\Models\Find\Metadata\Index();
-            $META = $Metadata->metadata($metadata, $META);
+            $META = $Metadata->metadata($meta, $META);
 
             /*********** Expression */
             $expression = $RDF->extract($dtM, 'isAppellationOfManifestation', 'A');
