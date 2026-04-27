@@ -244,6 +244,9 @@
             box-shadow: 0 0 0 .15rem rgba(0, 0, 0, .15);
         }
     </style>
+
+    <!-- jQuery (necessário para scripts que usam $) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>

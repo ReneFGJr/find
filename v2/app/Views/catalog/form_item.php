@@ -29,21 +29,21 @@
             <h5>Work</h5>
             <div class="mb-3">
                 <label class="form-label">ID do Work</label>
-                <?= view('catalog/form_item/form_rdf_edit', ['form' => $work, 'f' => 'WORK']); ?>
+                <?= view('catalog/form_item/form_rdf_edit', ['form' => $work, 'f' => 'WORK', 'idC' => $i_work]); ?>
             </div>
         </div>
         <div class="tab-pane fade" id="tabExpression" role="tabpanel" aria-labelledby="tab-expression">
             <h5>Expression</h5>
             <div class="mb-3">
                 <label class="form-label">ID do Expression</label>
-                <?= view('catalog/form_item/form_rdf_edit', ['form' => $expression, 'f' => 'EXPRESSION']); ?>
+                <?= view('catalog/form_item/form_rdf_edit', ['form' => $expression, 'f' => 'EXPRESSION', 'idC' => $i_expression]); ?>
             </div>
         </div>
         <div class="tab-pane fade" id="tabManifestation" role="tabpanel" aria-labelledby="tab-manifestation">
             <h5>Manifestation</h5>
             <div class="mb-3">
                 <label class="form-label">ID do Manifestation</label>
-                <?= view('catalog/form_item/form_rdf_edit', ['form' => $manifestation, 'f' => 'MANIFESTATION']); ?>
+                <?= view('catalog/form_item/form_rdf_edit', ['form' => $manifestation, 'f' => 'MANIFESTATION', 'idC' => $i_manifestation]); ?>
             </div>
         </div>
     </div>

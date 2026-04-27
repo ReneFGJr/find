@@ -16,13 +16,11 @@
             <tbody>
                 <?php
                 $lastGroup = null;
+                $prop = null;
                 $propLabel = '';
 
                 foreach ($form as $i => $w):
 
-                    if (($w['n_type'] === 'CONCEPT') && ($w['n_name'] != '')) {
-                        $w['n_type'] = 'CONCEPT:EXIST';
-                    }
                     if (empty($w['c_class'])) continue;
 
                     if ($lastGroup !== $w['form_group']):
@@ -37,50 +35,95 @@
                     endif;
 
                     /***************************************************  */
-                    echo '<tr>';
-                    echo '<td class="text-end align-middle">';
-                    echo $w['c_class'];
-                    echo '</td>';
-                    echo '<td>';
+                    if ($prop != $w['c_class']) {
+                        echo '<tr>';
+                        echo '  <td  class="text-end">' . $w['c_class'] . '</td>';
 
-                    switch ($w['n_type']) {
-                        case 'TEXT':
-                            if ($w['n_name'] == ''): ?>
-                                <button type="button" class="btn btn-outline-success btn-sm btn-adicionar-literal" title="Adicionar valor literal" data-bs-toggle="tooltip" data-prop="<?= htmlspecialchars($w['c_class'] ?? '') ?>" data-group="<?= htmlspecialchars($w['form_group'] ?? '') ?>" data-type="<?= htmlspecialchars($w['n_type'] ?? '') ?>" data-range="<?= htmlspecialchars($w['form_range'] ?? '') ?>">
-                                    <i class="bi bi-plus"></i>
-                                </button>
-                            <?php endif;
-                            if ($w['n_name'] != ''): ?>
-                                <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir valor" data-bs-toggle="tooltip" data-id_d="<?= htmlspecialchars($w['id_d'] ?? '') ?>">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                                <button type="button" class="btn btn-outline-primary btn-sm ms-1 btn-editar-literal" id="btn-editar-literal-<?= htmlspecialchars($w['id_n'] ?? '') ?>" data-idn="<?= htmlspecialchars($w['id_n'] ?? '') ?>" data-value="<?= htmlspecialchars($w['n_name'] ?? '') ?>" title="Editar valor literal" data-bs-toggle="tooltip">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-                            <?php endif;
-                            break;
-                        case 'CONCEPT': ?>
-                            <button type="button" class="btn btn-outline-success btn-sm btn-adicionar-atributo" title="Adicionar atributo" data-bs-toggle="tooltip" data-idc="<?= htmlspecialchars($id ?? '') ?>" data-prop="<?= htmlspecialchars($w['c_class'] ?? '') ?>" data-group="<?= htmlspecialchars($w['form_group'] ?? '') ?>" data-type="<?= htmlspecialchars($w['n_type'] ?? '') ?>" data-value="<?= htmlspecialchars($w['n_name'] ?? '') ?>" data-range="<?= htmlspecialchars($w['form_range'] ?? '') ?>">
-                                <i class="bi bi-plus"></i>
-                            </button>
-                        <?php break;
-                        case 'CONCEPT:EXIST': ?>
-                            <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir conceito" data-bs-toggle="tooltip" data-id_d="<?= htmlspecialchars($w['id_d'] ?? '') ?>">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                <?php break;
+                        echo '<td class="text-end">';
+
+                        switch ($w['n_type']) {
+                            case 'TEXT':
+                                if ($w['n_name'] == ''): ?>
+                                    <button type="button" class="btn btn-outline-success btn-sm btn-adicionar-literal" title="Adicionar valor literal" data-bs-toggle="tooltip" data-prop="<?= htmlspecialchars($w['c_class'] ?? '') ?>" data-group="<?= htmlspecialchars($w['form_group'] ?? '') ?>" data-type="<?= htmlspecialchars($w['n_type'] ?? '') ?>" data-range="<?= htmlspecialchars($w['form_range'] ?? '') ?>">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                <?php endif;
+                                if ($w['n_name'] != ''): ?>
+                                    <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir valor" data-bs-toggle="tooltip" data-id_d="<?= htmlspecialchars($w['id_d'] ?? '') ?>">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm ms-1 btn-editar-literal" id="btn-editar-literal-<?= htmlspecialchars($w['id_n'] ?? '') ?>" data-idn="<?= htmlspecialchars($w['id_n'] ?? '') ?>" data-value="<?= htmlspecialchars($w['n_name'] ?? '') ?>" title="Editar valor literal" data-bs-toggle="tooltip">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                <?php endif;
+                                break;
+                            case 'CONCEPT': ?>
+                                <nobr>
+                                    <?php if ($prop != $w['c_class']): ?>
+                                        <button type="button" class="btn btn-outline-success btn-sm btn-adicionar-atributo" title="Adicionar atributo" data-bs-toggle="tooltip" data-idc="<?= htmlspecialchars($id ?? '') ?>" data-prop="<?= htmlspecialchars($w['c_class'] ?? '') ?>" data-group="<?= htmlspecialchars($w['form_group'] ?? '') ?>" data-type="<?= htmlspecialchars($w['n_type'] ?? '') ?>" data-value="<?= htmlspecialchars($w['n_name'] ?? '') ?>" data-range="<?= htmlspecialchars($w['form_range'] ?? '') ?>">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                    <?php endif; ?>
+                                </nobr>
+                            <?php break;
+                        }
+                        echo '</td>';
+                        echo '<td>';
+
+                        /******************************** Mostra as subclasses */
+                        $prop  = $w['c_class'];
+                        $total_i = 0;
+
+                        foreach ($form as $i2 => $w2) {
+                            if ($prop == $w2['c_class']) {
+                                if ($w2['n_name'] != '') {
+                                    if ($total_i > 0) {
+                                        echo '<br>';
+                                    }
+                                    $total_i++;
+                                    echo '
+                                    <button type="button" class="btn btn-outline-danger btn-sm me-2 btn-excluir-conceito" title="Excluir conceito" data-bs-toggle="tooltip" data-id_d="' . htmlspecialchars($w2['id_d'] ?? '') . '">
+                                        <i class="bi bi-trash"></i>
+                                    </button>';
+                                    echo '<strong>' . htmlspecialchars($w2['n_name'] ?? '') . '</strong>';
+                                    if (!empty($w2['n_lang'])):
+                                        echo '<span class="badge bg-secondary ms-2">' . htmlspecialchars($w2['n_lang']) . '</span>';
+                                    endif;
+                                }
+                            }
+                            ?>
+                            <script>
+                                // Função para capturar o clique no botão Excluir conceito
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    $(document).on('click', '.btn-excluir-conceito', function() {
+                                        var id_d = $(this).data('id_d');
+                                        if (confirm('Tem certeza que deseja excluir este conceito?')) {
+                                            $.ajax({
+                                                url: '/form/excluir_rdf_data',
+                                                type: 'POST',
+                                                data: { id_d: id_d },
+                                                success: function(response) {
+                                                    // Sucesso: recarrega a página ou atualiza a tabela
+                                                    location.reload();
+                                                },
+                                                error: function(xhr, status, error) {
+                                                    alert('Erro ao excluir conceito: ' + error);
+                                                }
+                                            });
+                                        }
+                                    });
+                                });
+                            </script>
+                <?php
+                        }
+                        echo '</td>';
+                        echo '</tr>';
                     }
-                    echo '</td>';
-                    echo '<td>';
-                    echo htmlspecialchars($w['n_name'] ?? '');
-                    if (!empty($w['n_lang'])):
-                        echo '<span class="badge bg-secondary ms-2">' . htmlspecialchars($w['n_lang']) . '?></span>';
-                    endif;
-
-                    echo '</td>';
-                    echo '</tr>';
                 endforeach; ?>
             </tbody>
+            <tr>
+                <td colspan=3><?php pre($form, false); ?></td>
+            </tr>
     </table>
 </form>
 <?php endif; ?>

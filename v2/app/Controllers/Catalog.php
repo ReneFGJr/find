@@ -232,6 +232,9 @@ class Catalog extends BaseController
                 'work' => $rdfForm->getForm('W', $id, $libraryID),
                 'expression' => $rdfForm->getForm('E', $id, $libraryID),
                 'manifestation' => $rdfForm->getForm('M', $id, $libraryID),
+                'i_work' => $i_work,
+                'i_expression' => $i_expression,
+                'i_manifestation' => $i_manifestation
             ];
 
             return view('catalog/form_item', $form);

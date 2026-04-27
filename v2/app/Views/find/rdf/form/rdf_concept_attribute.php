@@ -26,7 +26,7 @@
     document.getElementById('formAdicionarAtributo').onsubmit = function(e) {
         e.preventDefault();
         // Pegue os dados do formulário
-        var idC = document.getElementById('atributo-idc').value;
+        var idC = <?= $idC; ?>;
         var prop = document.getElementById('atributo-nome').value;
         var range = document.getElementById('atributo-range').value;
         var selectCandidatos = document.getElementById('atributo-candidatos');
