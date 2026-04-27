@@ -14,7 +14,7 @@
 
     <div class="d-flex justify-content-end">
         <button type="button" class="btn btn-outline-danger me-2" id="btn-novo-conceito" data-bs-dismiss="offcanvas" disabled>
-            <i class="bi bi-plus-circle"></i> Conceito
+            <i class="bi bi-plus-circle"></i> Criar Autoridade
         </button>
         <button type="button" class="btn btn-outline-secondary me-2" data-bs-dismiss="offcanvas">Cancelar</button>
         <button type="submit" class="btn btn-outline-success" id="btn-adicionar-conceito" disabled>Adicionar</button>

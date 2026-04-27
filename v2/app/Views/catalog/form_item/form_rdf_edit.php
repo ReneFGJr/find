@@ -39,7 +39,7 @@
                         echo '<tr>';
                         echo '  <td  class="text-end">' . $w['c_class'] . '</td>';
 
-                        echo '<td class="text-end">';
+                        echo '<td class="text-end" valign="top">';
 
                         switch ($w['n_type']) {
                             case 'TEXT':
@@ -68,7 +68,7 @@
                 <?php break;
                         }
                         echo '</td>';
-                        echo '<td>';
+                        echo '<td valign="top">';
 
                         /******************************** Mostra as subclasses */
                         $prop  = $w['c_class'];
@@ -83,7 +83,7 @@
                                     $total_i++;
                                     echo '
                                     <button type="button"
-                                                class="btn btn-outline-danger btn-sm me-2 btn-excluir-conceito"
+                                                class="btn btn-outline-danger btn-sm me-2 mb-1 btn-excluir-conceito"
                                                 title="Excluir conceito"
                                                 onclick="excluirConceito('.$w2['id_d'].');">
                                         <i class="bi bi-trash"></i>
@@ -92,6 +92,7 @@
                                     if (!empty($w2['n_lang'])):
                                         echo '<span class="badge bg-secondary ms-2">' . htmlspecialchars($w2['n_lang']) . '</span>';
                                     endif;
+
                                 }
                             }
                         }
@@ -100,9 +101,6 @@
                     }
                 endforeach; ?>
             </tbody>
-            <tr>
-                <td colspan=3><?php pre($form, false); ?></td>
-            </tr>
     </table>
 </form>
 <?php endif; ?>
@@ -117,10 +115,11 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-        <?php include(APPPATH . 'Views/find/rdf/form/rdf_concept_attribute.php'); ?>
+        <?php include('form_rdf_concept_attribute.php'); ?>
     </div>
 </div>
 
+<!-- Offcanvas para editar valor literal (fora do loop) -->
 <?php if (!isset($load_scripts)) {
     $load_scripts = true; // Evita recarregar os scripts se a view for incluída várias vezes
 ?>

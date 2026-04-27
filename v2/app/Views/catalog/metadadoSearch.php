@@ -73,21 +73,21 @@
                 </div>
 
             </div>
+            <!---------- Botões para ações adicionais ---------->
             <div class="mb-4 d-flex gap-2">
-
-
-
+                <!-- Botão para Procurar Capa -->
                 <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#coverPanel" aria-controls="coverPanel">
                     <i class="bi bi-file-earmark-arrow-down me-1"></i> Procurar Capa
                 </button>
-
+                <!-- Botão para Verificar Dados -->
                 <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#checkPanel" aria-controls="checkPanel">
                     <i class="bi bi-arrow-clockwise"></i> Verificar Dados
                 </button>
-
+                <!-- Botão para Editar Etiqueta -->
                 <button class="btn btn-outline-warning" type="button" data-bs-toggle="offcanvas" data-bs-target="#labelEditPanel" aria-controls="labelEditPanel">
                     <i class="bi bi-pencil-square"></i> Editar Etiqueta
                 </button>
+                <!-- Offcanvas para Editar Etiqueta -->
                 <?php include(APPPATH . 'Views/components/label_edit.php'); ?>
             </div>
 

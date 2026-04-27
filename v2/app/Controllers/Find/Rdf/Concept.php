@@ -5,16 +5,44 @@ namespace App\Controllers\Find\Rdf;
 use CodeIgniter\Controller;
 use CodeIgniter\API\ResponseTrait;
 
+helper(['sisdoc','nbr']);
+
 class Concept extends Controller
 {
     use ResponseTrait;
 
     function create_concept()
         {
+            $RDF = new \App\Models\Find\Rdf\RDF();
+            $RDF_Class = new \App\Models\Find\Rdf\RDF_Class();
+            $RDF_Name = new \App\Models\Find\Rdf\RDF_Name();
+
+
+            $term = $this->request->getPost('term') ?? $this->request->getGet('term') ?? '';
+            $Class = $this->request->getPost('class') ?? $this->request->getGet('class') ?? '';
+
+            if ($term != '')
+                {
+                    if ($Class == 'Person') {
+                        $term = nbr_author($term,7);
+                    }
+
+                    $RDF->createConcept($Class, $term);
+                    return $this->respond([
+                            'status'  => 200,
+                            'success' => true,
+                            'message' => 'Conceito criado com sucesso',
+                            'data' => [
+                            'Class' => $Class,
+                            'Term' => $term
+                            ]
+                    ]);
+            }
+
             return $this->respond([
-                'status'  => 200,
+                'status'  => 500,
                 'success' => true,
-                'message' => 'Rota create_concept funcionando!'
+                'message' => 'Parametros inválidos term ou class`!'
             ]);
         }
 

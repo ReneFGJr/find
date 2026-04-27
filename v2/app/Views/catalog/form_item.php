@@ -48,6 +48,9 @@
         </div>
     </div>
 </div>
+
+
+
 <script>
     var triggerTabList = [].slice.call(document.querySelectorAll('#itemTab button'));
     triggerTabList.forEach(function(triggerEl) {
@@ -55,7 +58,6 @@
             event.target.classList.add('active');
         });
     });
-
 
     // Garante que o Bootstrap está disponível
     window.addEventListener('DOMContentLoaded', function() {
