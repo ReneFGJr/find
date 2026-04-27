@@ -38,7 +38,7 @@
 
                     /***************************************************  */
                     echo '<tr>';
-                    echo '<td>';
+                    echo '<td class="text-end align-middle">';
                     echo $w['c_class'];
                     echo '</td>';
                     echo '<td>';
