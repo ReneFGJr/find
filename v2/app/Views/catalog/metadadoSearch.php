@@ -1,12 +1,18 @@
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var coverPanel = document.getElementById('coverPanel');
-    if (coverPanel) {
-        coverPanel.addEventListener('hidden.bs.offcanvas', function () {
-            location.reload();
-        });
-    }
-});
+    document.addEventListener('DOMContentLoaded', function() {
+        var coverPanel = document.getElementById('coverPanel');
+        if (coverPanel) {
+            coverPanel.addEventListener('hidden.bs.offcanvas', function() {
+                location.reload();
+            });
+        }
+        var z3950Panel = document.getElementById('z3950Panel');
+        if (z3950Panel) {
+            z3950Panel.addEventListener('hidden.bs.offcanvas', function() {
+                location.reload();
+            });
+        }
+    });
 </script>
 <?php include(APPPATH . 'Views/layout/header.php'); ?>
 <?php include(APPPATH . 'Views/layout/navbar.php'); ?>
@@ -27,18 +33,40 @@ document.addEventListener('DOMContentLoaded', function() {
 
             <!-- Botoes de ação -->
             <div class="mb-4 d-flex gap-2">
-                <form method="post" action="#">
-                    <input type="hidden" name="import_z39_50" value="1">
-                    <button type="submit" class="btn btn-outline-primary">
-                        <i class="bi bi-file-earmark-arrow-down me-1"></i> Importar Z39.50
-                    </button>
-                </form>
-                <form method="post" action="#">
-                    <input type="hidden" name="import_marc21" value="1">
-                    <button type="submit" class="btn btn-outline-primary" disabled>
-                        <i class="bi bi-file-earmark-arrow-down me-1"></i> Importar Marc21
-                    </button>
-                </form>
+
+                <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#z3950Panel" aria-controls="z3950Panel">
+                    <i class="bi bi-file-earmark-arrow-down me-1"></i> Importar Z39.50
+                </button>
+                <!-- Painel lateral para Importar Z39.50 -->
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="z3950Panel" aria-labelledby="z3950PanelLabel" style="width:100%;max-width:700px;">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="z3950PanelLabel">Importar Z39.50</h5>
+                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <iframe src="<?= base_url('/catalog/import_z3950'); ?>?isbn=<?= $isbn; ?>" style="width:100%;height:70vh;border:0;"></iframe>
+                        <div class="mt-3 text-end">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#marc21Panel" aria-controls="marc21Panel" disabled>
+                    <i class="bi bi-file-earmark-arrow-down me-1"></i> Importar Marc21
+                </button>
+                <!-- Painel lateral para Importar Marc21 -->
+                <div class="offcanvas offcanvas-end" tabindex="-1" id="marc21Panel" aria-labelledby="marc21PanelLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="marc21PanelLabel">Importar Marc21</h5>
+                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <iframe src="<?= base_url('/catalog/import_marc21'); ?>" style="width:100%;height:70vh;border:0;"></iframe>
+                        <div class="mt-3 text-end">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Fechar</button>
+                        </div>
+                    </div>
+                </div>
 
 
                 <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#coverPanel" aria-controls="coverPanel">
@@ -52,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <button class="btn btn-outline-warning" type="button" data-bs-toggle="offcanvas" data-bs-target="#labelEditPanel" aria-controls="labelEditPanel">
                     <i class="bi bi-pencil-square"></i> Editar Etiqueta
                 </button>
-            <?php include(APPPATH . 'Views/components/label_edit.php'); ?>
+                <?php include(APPPATH . 'Views/components/label_edit.php'); ?>
             </div>
 
             <!-- Offcanvas Panel -->
@@ -83,24 +111,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
 
-            </div>
+        </div>
 
-            <?php if (!empty($z3950_result)): ?>
-                <div class="alert alert-success">
-                    <h5 class="mb-2"><i class="bi bi-cloud-download me-2"></i>Resultado da consulta Z39.50</h5>
-                    <pre class=" p-2 border rounded small" style="max-height:300px;overflow:auto;">
+        <?php if (!empty($z3950_result)): ?>
+            <div class="alert alert-success">
+                <h5 class="mb-2"><i class="bi bi-cloud-download me-2"></i>Resultado da consulta Z39.50</h5>
+                <pre class=" p-2 border rounded small" style="max-height:300px;overflow:auto;">
                     <?= htmlspecialchars(print_r($z3950_result, true)) ?>
                     </pre>
-                </div>
-            <?php endif; ?>
+            </div>
+        <?php endif; ?>
 
-            <?php if (!empty($cover_result)): ?>
-                <div class="alertx alert-success">
-                    <?= $cover_result ?>
-                </div>
-            <?php endif; ?>
+        <?php if (!empty($cover_result)): ?>
+            <div class="alertx alert-success">
+                <?= $cover_result ?>
+            </div>
+        <?php endif; ?>
 
-        </div>
     </div>
+</div>
 </div>
 <?php include(APPPATH . 'Views/layout/footer.php'); ?>

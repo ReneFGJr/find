@@ -91,6 +91,8 @@ $routes->group('catalog', function ($routes) {
     // Cover
     $routes->match(['get', 'post'], 'upload_cover', 'Find\Rdf\Form::upload_cover');
 
+    $routes->match(['get', 'post'], 'import_z3950', 'Catalog::inport_z3050');
+
     // utilitários //
     $routes->get('util', 'Catalog::util');
 

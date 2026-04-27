@@ -6,7 +6,7 @@ use App\Models\Find\Items\Index as ItemModel;
 use App\Models\Find\Items\Status as StatusModel;
 
 // Necessário para usar get_cookie() e pre()
-helper(['cookie', 'sisdoc']);
+helper(['cookie', 'sisdoc','nbr']);
 
 
 class Catalog extends BaseController
@@ -195,48 +195,54 @@ class Catalog extends BaseController
         }
         $isbn = $itemInfo['i_identifier'] ?? $this->request->getPost('isbn') ?? null;
 
-        // Se for POST e import_z39_50=1, mostra view de loading e dispara consulta
-        if ($this->request->getMethod() === 'post' && $this->request->getPost('import_z39_50') == 1) {
-            // Exibe view auxiliar de loading
-            echo view('catalog/z3950_loading');
-            // Busca ISBN do item (se disponível)
-
-            if ($isbn) {
-                // Chama o model Z3950
-                $z3950 = new \App\Models\Z3950\Index();
-                $resultadoZ39 = $z3950->searchISBN($isbn);
-                // Aqui você pode salvar o resultado em sessão, banco ou redirecionar para mostrar o resultado
-                session()->setFlashdata('z3950_result', $resultadoZ39);
-                return redirect()->to(current_url());
-            }
-            // Se não houver ISBN, apenas retorna
-            return;
-        }
-
-        // Se houver resultado Z39 salvo, passa para a view
-        $z3950_result = session()->getFlashdata('z3950_result');
-        if (isset($z3950_result)) {
-            $ProcessMetadata = new \App\Models\Find\Items\ProcessMetadata();
-            $z3950_result = $ProcessMetadata->processZ3950Result($z3950_result,$isbn);
-            //return redirect()->to(current_url());
-        }
-
-        if ($busca) {
-            // Exemplo: simulação de busca, substitua por consulta real
-            $resultados = [
-                ['titulo' => 'Livro Exemplo 1', 'autor' => 'Autor A', 'isbn' => '1234567890123'],
-                ['titulo' => 'Livro Exemplo 2', 'autor' => 'Autor B', 'isbn' => '9876543210987']
-            ];
-        }
         return view('catalog/metadadoSearch', [
             'isbn' => $isbn,
             'resultados' => $resultados,
             'itemInfo' => $itemInfo,
             'idItem' => $IdItem,
             'busca' => $busca,
-            'z3950_result' => $z3950_result,
             'cover_result' => $cover_result
         ]);
+    }
+
+    public function inport_z3050()
+    {
+        $isbn = $this->request->getPost('isbn') ?? $this->request->getGet('isbn') ?? null;
+
+        // Se houver resultado Z39 salvo, passa para a view
+        $z3950_result = session()->getFlashdata('z3950_result');
+        if (isset($z3950_result)) {
+            $ProcessMetadata = new \App\Models\Find\Items\ProcessMetadata();
+            $z3950_result = $ProcessMetadata->processZ3950Result($z3950_result, $isbn);
+            if ($z3950_result != []) {
+                $data['content'] = view('catalog/z3950_result', ['result' => $z3950_result['data']]);
+            } else {
+                $data['content'] = '<div class="alert alert-danger">' . $z3950_result['message'] . '</div>';
+            }
+            return view('components/content', $data);
+        }
+
+        if ($isbn != '') {
+             // Exibe view auxiliar de loading
+             echo view('catalog/z3950_loading');
+             // Busca ISBN do item (se disponível)
+
+             if ($isbn) {
+                 // Chama o model Z3950
+                 $z3950 = new \App\Models\Z3950\Index();
+                 $resultadoZ39 = $z3950->searchISBN($isbn);
+                 // Aqui você pode salvar o resultado em sessão, banco ou redirecionar para mostrar o resultado
+                 session()->setFlashdata('z3950_result', $resultadoZ39);
+                 return redirect()->to(current_url());
+             }
+             // Se não houver ISBN, apenas retorna
+             return;
+         }
+
+        echo "OK2";
+        exit;
+
+
     }
 
     public function catalogar_phase($status = null)
