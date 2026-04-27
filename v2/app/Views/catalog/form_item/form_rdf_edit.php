@@ -65,7 +65,7 @@
                                         </button>
                                     <?php endif; ?>
                                 </nobr>
-                            <?php break;
+                <?php break;
                         }
                         echo '</td>';
                         echo '<td>';
@@ -82,7 +82,10 @@
                                     }
                                     $total_i++;
                                     echo '
-                                    <button type="button" class="btn btn-outline-danger btn-sm me-2 btn-excluir-conceito" title="Excluir conceito" data-bs-toggle="tooltip" data-id_d="' . htmlspecialchars($w2['id_d'] ?? '') . '">
+                                    <button type="button"
+                                                class="btn btn-outline-danger btn-sm me-2 btn-excluir-conceito"
+                                                title="Excluir conceito"
+                                                onclick="excluirConceito('.$w2['id_d'].');">
                                         <i class="bi bi-trash"></i>
                                     </button>';
                                     echo '<strong>' . htmlspecialchars($w2['n_name'] ?? '') . '</strong>';
@@ -91,30 +94,6 @@
                                     endif;
                                 }
                             }
-                            ?>
-                            <script>
-                                // Função para capturar o clique no botão Excluir conceito
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    $(document).on('click', '.btn-excluir-conceito', function() {
-                                        var id_d = $(this).data('id_d');
-                                        if (confirm('Tem certeza que deseja excluir este conceito?')) {
-                                            $.ajax({
-                                                url: '/form/excluir_rdf_data',
-                                                type: 'POST',
-                                                data: { id_d: id_d },
-                                                success: function(response) {
-                                                    // Sucesso: recarrega a página ou atualiza a tabela
-                                                    location.reload();
-                                                },
-                                                error: function(xhr, status, error) {
-                                                    alert('Erro ao excluir conceito: ' + error);
-                                                }
-                                            });
-                                        }
-                                    });
-                                });
-                            </script>
-                <?php
                         }
                         echo '</td>';
                         echo '</tr>';
@@ -141,3 +120,29 @@
         <?php include(APPPATH . 'Views/find/rdf/form/rdf_concept_attribute.php'); ?>
     </div>
 </div>
+
+<?php if (!isset($load_scripts)) {
+    $load_scripts = true; // Evita recarregar os scripts se a view for incluída várias vezes
+?>
+    <script>
+        // Função para capturar o clique no botão Excluir conceito
+        function excluirConceito(id_d) {
+            if (confirm('Tem certeza que deseja excluir este conceito ('+id_d+')?')) {
+                $.ajax({
+                    url: '<?= base_url('/rdf/form/excluir_rdf_data'); ?>',
+                    type: 'POST',
+                    data: {
+                        id_d: id_d
+                    },
+                    success: function(response) {
+                        // Sucesso: recarrega a página ou atualiza a tabela
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Erro ao excluir conceito: ' + error);
+                    }
+                });
+            }
+        }
+    </script>
+<?php } ?>
