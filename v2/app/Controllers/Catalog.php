@@ -24,6 +24,12 @@ class Catalog extends BaseController
         return redirect()->to('/catalog/catalogar/phase/1');
     }
 
+    function no_isbn()
+    {
+
+        exit;
+    }
+
     public function rebuildModel()
     {
         $offset = $this->request->getGet('offset') ?? 0;
@@ -253,8 +259,9 @@ class Catalog extends BaseController
 
     public function import_marc21()
         {
-            echo "Importação de MARC21 ainda não implementada.";
-            exit;
+            $msg = "Importação de MARC21 ainda não implementada.";
+            $data['content'] = '<div class="alert alert-danger">' . $msg . '</div>';
+            return view('components/content_header', $data);
         }
 
     public function inport_z3050()
@@ -272,13 +279,16 @@ class Catalog extends BaseController
         if (isset($z3950_result)) {
             $ProcessMetadata = new \App\Models\Find\Items\ProcessMetadata();
             $z3950_result = $ProcessMetadata->processZ3950Result($z3950_result, $isbn);
-            pre($z3950_result);
             if ($z3950_result != []) {
                 $data['content'] = view('catalog/z3950_result', ['result' => $z3950_result['data']]);
             } else {
+                $z3950_result['message'] = 'Nenhum resultado encontrado para o ISBN ' . $isbn . ' ou houve um erro ao processar os dados.';
                 $data['content'] = '<div class="alert alert-danger">' . $z3950_result['message'] . '</div>';
+                $RDF_Item = new \App\Models\Find\Items\Index();
+                $dd['i_status'] = 3; // Catalogação manual
+                $RDF_Item->set($dd)->where('i_identifier', $isbn)->where('i_status',1)->update();
             }
-            return view('components/content', $data);
+            return view('components/content_header', $data);
         }
 
         if ($isbn != '') {

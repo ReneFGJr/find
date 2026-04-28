@@ -55,6 +55,10 @@
                                         $url = base_url('/catalog/catalogar/metadadoSearch/' . urlencode($obra['id_i'] ?? ''));
                                         $badgeClass = 'bg-primary';
                                         break;
+                                    case 5:
+                                        $url = base_url('/catalog/catalogar/metadadoSearch/' . urlencode($obra['id_i'] ?? ''));
+                                        $badgeClass = 'bg-primary';
+                                        break;
                                     case 0:
                                         $url = base_url('/catalog/catalogar/metadadoSearch/' . urlencode($obra['id_i'] ?? ''));
                                         break;

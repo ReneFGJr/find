@@ -22,6 +22,7 @@
     <div class="row">
         <div class="col-md-3 mb-4">
             <?php include(APPPATH . 'Views/components/status_actions.php'); ?>
+            <?php include(APPPATH . 'Views/components/status_list.php'); ?>
         </div>
         <div class="col-md-9">
             <div class="card mb-4">

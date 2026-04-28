@@ -241,8 +241,6 @@ class RDF extends Model
                     'd_library' => '',
                     'd_user' => ''
                 ]);
-                echo $RDF_Data->getlastquery();
-                exit;
                 return $RDF_Data->getInsertID();
             } else {
                 echo "OPS, Literal já existe: $term, $lang, $idN";

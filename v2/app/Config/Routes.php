@@ -89,6 +89,8 @@ $routes->group('catalog', function ($routes) {
 
     // Nova rota para redirecionamento sem parâmetro
     $routes->get('catalogar/metadadoSearch', 'Catalog::metadadoSearchRedirect');
+    $routes->get('catalogar/no_isbn', 'Catalog::no_isbn');
+
     // Adicione outras rotas de catalogação aqui se necessário
     $routes->get('check', 'Catalog::checkerModel');
     $routes->get('reindex', 'Catalog::reindexModel');
@@ -96,6 +98,8 @@ $routes->group('catalog', function ($routes) {
 
     // Cover
     $routes->match(['get', 'post'], 'upload_cover', 'Find\Rdf\Form::upload_cover');
+    $routes->match(['get', 'post'], 'upload_cover_link', 'Find\Rdf\Form::upload_cover_link');
+
 
     $routes->match(['get', 'post'], 'import_z3950', 'Catalog::inport_z3050');
     $routes->match(['get', 'post'], 'import_marc21', 'Catalog::import_marc21');

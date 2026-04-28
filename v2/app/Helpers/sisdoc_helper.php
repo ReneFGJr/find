@@ -18,6 +18,7 @@
         return $btn;
     }
 
+
 # [cover_image]
 function cover_image($isbn)
 {

@@ -16,16 +16,17 @@
             </form>
         </div>
 
-        <div>
+        <div class="p-1">
             <?php echo searchGoogle($isbn); ?>
+            <?php require("upload_cover_link.php"); ?>
         </div>
 
         <div>
             <?php if (isset($msg)): ?>
-                <div class="card-footer">
-                    <?= $msg; ?>
-                </div>
-            <?php endif; ?>
+                <div class=" card-footer">
+            <?= $msg; ?>
         </div>
+    <?php endif; ?>
     </div>
+</div>
 </div>

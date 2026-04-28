@@ -61,6 +61,44 @@ class Form extends BaseController
      * Upload de capa de livro por ISBN
      * Salva como _covers/image/{isbn}.jpg
      */
+    public function upload_cover_link()
+    {
+        $isbn = $this->request->getPost('isbn') ?? $this->request->getGet('isbn');
+        $inputUrl = $this->request->getPost('inputUrl') ?? $this->request->getGet('inputUrl');
+        if (!$isbn || !$inputUrl) {
+            $msg = 'ISBN ou URL não fornecidos.';
+            $data['content'] = $msg;
+            return view('components/content', $data);
+        } else {
+            // Garante diretório
+            $dir = FCPATH . '_covers/image/';
+            if (!is_dir($dir)) {
+                mkdir($dir, 0777, true);
+            }
+            $target = $dir . $isbn . '.jpg';
+            $origin = $inputUrl;
+
+            // Baixa a imagem via CURL
+            $ch = curl_init($origin);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // Não checa SSL
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Não checa host SSL
+            $img = curl_exec($ch);
+            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            if ($img && $http_code == 200) {
+                file_put_contents($target, $img);
+                $msg = 'Capa baixada e salva com sucesso.';
+            } else {
+                $msg = 'Erro ao baixar a imagem. Código HTTP: ' . $http_code;
+            }
+
+            $data['content'] = $msg;
+            return view('components/content', $data);
+        }
+    }
     public function upload_cover()
     {
         helper(['filesystem', 'form']);
@@ -75,8 +113,9 @@ class Form extends BaseController
 
         $msg = '';
         if (!$isbn || !$file || !$file->isValid()) {
-            $msg = 'ISBN ou arquivo inválido. ISBN: ' . $isbn . ', File error: ' . ($file ? $file->getErrorString() : 'No file uploaded');
-            return view('catalog/upload_cover', ['isbn'=>$isbn, 'msg' => '<div class="alert alert-danger">' . $msg . '</div>']);
+            $msg = '<div class="alert alert-danger">ISBN ou arquivo inválido. ISBN: ' . $isbn . ', File error: ' . ($file ? $file->getErrorString() : 'No file uploaded</div>');
+            $msg = '';
+            return view('catalog/upload_cover', ['isbn'=>$isbn, 'msg' => $msg]);
         }
 
         // Garante diretório
