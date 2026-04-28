@@ -81,6 +81,11 @@ $routes->group('catalog', function ($routes) {
 
     $routes->get('catalogar/no_action/(:num)', 'Catalog::no_action/$1');
 
+    $routes->group('rdf', function ($routes) {
+        $routes->match(['post','get'], 'concept_add', 'Catalog\\RDF::rdf_concept_add');
+        $routes->match(['post','get'], 'text_add', 'Catalog\\RDF::rdf_text_add');
+    });
+
     // Nova rota para redirecionamento sem parâmetro
     $routes->get('catalogar/metadadoSearch', 'Catalog::metadadoSearchRedirect');
     // Adicione outras rotas de catalogação aqui se necessário

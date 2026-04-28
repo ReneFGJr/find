@@ -21,6 +21,7 @@
             $forms = ['Work', 'Expression', 'Manifestation'];
             foreach ($forms as $f) {
                 $dataf = $dataForm[$f] ?? [];
+                pre($dataf);
             ?>
 
                 <?php if (!empty($dataf)) : ?>
@@ -39,6 +40,7 @@
                                 $lastGroup = null;
                                 $propLabel = '';
                                 foreach ($dataf as $i => $w):
+                                    pre($w,false);
                                     if (($w['n_type'] === 'CONCEPT') and ($w['n_name'] != '')) {
                                         $w['n_type'] = 'CONCEPT:EXIST';
                                     }
@@ -113,11 +115,12 @@
                 title="Editar texto">
                 <i class="bi bi-pencil"></i>
             </button>
-        <?php endif; ?>
-    <?php break;
-                                                    /*********************************************************************************************/
-                                                    case 'CONCEPT': ?>
-        <button type="button" class="btn btn-outline-success btn-sm btn-adicionar-atributo" title="Adicionar"
+        <?php
+            endif;
+        break;
+/*********************************************************************************************/
+case 'CONCEPT': ?>
+            <button type="button" class="btn btn-outline-success btn-sm btn-adicionar-atributo" title="Adicionar"
             data-idc="<?= htmlspecialchars($id ?? '') ?>"
             data-prop="<?= htmlspecialchars($w['c_class'] ?? '') ?>"
             data-group="<?= htmlspecialchars($w['form_group'] ?? '') ?>"
@@ -127,10 +130,10 @@
             <i class="bi bi-plus"></i>
         </button>
     <?php break;
-                                                    /*********************************************************************************************/
-                                                    case 'CONCEPT:EXIST': ?>
+/*********************************************************************************************/
+case 'CONCEPT:EXIST': ?>
         <button type="button" class="btn btn-outline-danger btn-sm" title="Excluir" data-id_d="<?= htmlspecialchars($w['id_d'] ?? '') ?>"><i class="bi bi-trash"></i></button>
-    <?php break; ?>
+        <?php break; ?>
 <?php } ?>
 </nobr>
 </td>

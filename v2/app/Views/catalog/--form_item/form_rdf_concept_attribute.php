@@ -1,16 +1,9 @@
 <form id="formAdicionarAtributo" method="post" action="#" autocomplete="off">
     <div class="mb-3">
-        <label for="atributo-nome" class="form-label">Nome do atributo</label>
-        <input type="text" class="form-control" id="atributo-nome" name="atributo_nome" required readonly>
-    </div>
-    <div class="mb-3">
         <label for="atributo-valor" class="form-label">Autoridade (buscar)</label>
         <input type="text" class="form-control" id="atributo-valor" name="atributo_valor" required>
     </div>
-    <div>
-        <input type="hidden" id="atributo-range" name="atributo_range">
-        <input type="hidden" id="atributo-idc" name="atributo_idc">
-    </div>
+
 
     <div class="d-flex justify-content-end">
         <button type="button" class="btn btn-outline-danger me-2" id="btn-novo-conceito" data-bs-dismiss="offcanvas" disabled>
@@ -25,7 +18,15 @@
         <select class="form-select" id="atributo-candidatos" name="atributo_candidatos" size="10"></select>
     </div>
 
+    <!-- Dados ocultos para controle interno -->
+    <div>
+        <br>RANGE: <input type="text" id="atributo-range" name="atributo_range">
+        <br>IDC: <input type="text" id="atributo-idc" name="atributo_idc">
+        <br>ATRIBUTO: <input type="text" id="atributo-nome" name="atributo_nome" required readonly>
+    </div>
+
 </form>
+
 <div class="alert alert-info p-2 mt-2" id="atributo-debug" style="font-size:0.95em; display:none;"></div>
 <script>
     // Exemplo de envio AJAX (ajuste conforme backend)
@@ -85,8 +86,7 @@
 
     // Função para mostrar os dados recebidos no painel
     function mostrarDebugAtributo(dados) {
-        if (1 ==2)
-        {
+        if (1 == 2) {
             var debug = document.getElementById('atributo-debug');
             if (debug) {
                 debug.innerHTML = '';
@@ -265,30 +265,33 @@
 
     // Função AJAX para criar conceito
     btnNovoConceito.addEventListener('click', function() {
+        alert("OI");
         var classe = document.getElementById('atributo-nome').value;
         var nome = inputValor.value;
         if (!classe || nome.length <= 4) return;
         btnNovoConceito.disabled = true;
         btnNovoConceito.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Conceito';
         fetch('<?= base_url(); ?>/rdf/concept/create_concept', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'classe=' + encodeURIComponent(classe) + '&nome=' + encodeURIComponent(nome)
-        })
-        .then(resp => resp.json())
-        .then(data => {
-            if (data && data.success) {
-                location.reload();
-            } else {
-                alert('Erro ao criar conceito: ' + (data && data.message ? data.message : 'Erro desconhecido.'));
-            }
-        })
-        .catch(err => {
-            alert('Erro na requisição: ' + (err && err.message ? err.message : err));
-        })
-        .finally(() => {
-            btnNovoConceito.disabled = false;
-            btnNovoConceito.innerHTML = '<i class="bi bi-plus-circle"></i> Conceito';
-        });
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: 'classe=' + encodeURIComponent(classe) + '&nome=' + encodeURIComponent(nome)
+            })
+            .then(resp => resp.json())
+            .then(data => {
+                if (data && data.success) {
+                    location.reload();
+                } else {
+                    alert('Erro ao criar conceito: ' + (data && data.message ? data.message : 'Erro desconhecido.'));
+                }
+            })
+            .catch(err => {
+                alert('Erro na requisição: ' + (err && err.message ? err.message : err));
+            })
+            .finally(() => {
+                btnNovoConceito.disabled = false;
+                btnNovoConceito.innerHTML = '<i class="bi bi-plus-circle"></i> Conceito';
+            });
     });
 </script>

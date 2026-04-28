@@ -228,6 +228,7 @@ class Catalog extends BaseController
             }
 
             $form = [
+                'book' => $dt,
                 'item' => $item,
                 'work' => $rdfForm->getForm('W', $id, $libraryID),
                 'expression' => $rdfForm->getForm('E', $id, $libraryID),
@@ -236,7 +237,6 @@ class Catalog extends BaseController
                 'i_expression' => $i_expression,
                 'i_manifestation' => $i_manifestation
             ];
-
             return view('catalog/form_item', $form);
         }
 
