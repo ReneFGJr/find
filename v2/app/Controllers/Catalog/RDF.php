@@ -41,7 +41,7 @@ class RDF extends BaseController
                     // Atualiza o valor da literal
                     $RDF_Name->update($idN, ['n_name' => $textValue]);
 
-                    return redirect()->back();
+                    return $this->response->setBody('<script>window.parent.location.reload();</script>');
                 } else {
                     return redirect()->back()->with('error', 'IDs inválidos para edição da literal.');
                 }
@@ -83,7 +83,7 @@ class RDF extends BaseController
             $RDF = new \App\Models\Find\Rdf\RDF();
             $idL =  $RDF->createLiteral($params['idC'], $params['prop'], $params['textValue'], $params['lang'] ?? '');
 
-            return redirect()->back();
+            return $this->response->setBody('<script>window.parent.location.reload();</script>');
         }
 
         // Renderize uma view simples (ajuste o caminho conforme necessário)
