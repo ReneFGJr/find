@@ -10,25 +10,33 @@ class CheckerModel
      * Checa a tabela find_item e preenche autores/título usando RDF se necessário.
      * @return array Lista de arrays com i_work, i_manifestation, hasTitle, hasAuthor
      */
-    public function checkFindItem($id = 0)
+    public function checkFindItem($isbn = 0)
     {
         $result = [];
         // Usa o Model para buscar itens sem título ou autores
         $itemModel = new \App\Models\Find\Items\Index();
-        $items = $itemModel
-            ->select('id_i, i_work, i_expression, i_manifestation, i_identifier')
-            ->groupStart()
-            ->where('i_titulo', null)
-            ->orWhere('i_titulo', '')
-            ->groupEnd()
-            ->where('i_work >', 0)
-            ->findAll(1000);
+
+        if ($isbn != '') {
+            $items = $itemModel
+                ->select('id_i, i_work, i_expression, i_manifestation, i_identifier, i_titulo, i_autores')
+                ->where('i_identifier', $isbn)
+                ->findAll();
+        } else {
+            $items = $itemModel
+                ->select('id_i, i_work, i_expression, i_manifestation, i_identifier, i_titulo, i_autores')
+                ->groupStart()
+                ->where('i_titulo', null)
+                ->orWhere('i_titulo', '')
+                ->groupEnd()
+                ->where('i_work >', 0)
+                ->findAll();
+        }
 
         $rsp = "Itens encontrados: " . count($items) . '<br>';
 
         foreach ($items as $item) {
 
-            $this->updateDataTitleAuthor($item);
+            $rsp .= '<br>'.$this->updateDataTitleAuthor($item);
             $data['content'] = '<tt>' . $rsp . '</tt>';
             return view('components/content', $data);
 
@@ -57,10 +65,12 @@ class CheckerModel
             $dados1 = $rdf->le($i_work);
             $dados = array_merge($dados, $dados1['data']);
         }
+
         if ($i_expression > 0) {
             $dados2 = $rdf->le($i_expression);
             $dados = array_merge($dados, $dados2['data']);
         }
+
         if ($i_manifestation > 0) {
             $dados3 = $rdf->le($i_manifestation);
             $dados = array_merge($dados, $dados3['data']);
@@ -82,10 +92,10 @@ class CheckerModel
             if ($txt == '') continue;
             switch ($prop) {
                 case 'prefLabel':
-                    $Title = $txt;
+                    $Title .= '{X}' . $txt;
                     break;
                 case 'hasTitle':
-                    $Title = $txt;
+                    $Title .= '{Y}' . $txt;
                     break;
                 case 'hasAuthor':
                     if ($Author != '') {
@@ -97,7 +107,7 @@ class CheckerModel
         }
 
         if ($Title != '') {
-            $rsp = "<span style='color: green;'>Title: " . $i_work . " - " . $Title . "</span><br>";
+            $rsp = "<br><span style='color: green;'>Title: " . $i_work . " - " . $Title . "</span><br>";
         }
 
         if ((strlen($item['i_identifier']) > 10) and ($Title != '')) {
@@ -108,8 +118,9 @@ class CheckerModel
             $dd['i_titulo'] = $Title;
             $dd['i_autores'] = $Author;
 
-            if (($item['i_titulo'] != $Title) or ($item['i_autores'] != $Author) or ($item['i_work'] != $i_work)) {
-                $itemModel->set($dd)->where('i_identifier', $item['i_identifier'])->update();
+            if ((($item['i_titulo'] != $Title) or ($item['i_autores'] != $Author) or ($item['i_work'] != $i_work))==1) {
+                $itemModel2 = new \App\Models\Find\Items\Index();
+                $itemModel2->set($dd)->where('i_identifier', $item['i_identifier'])->update();
                 return $rsp;
             }
             return "";

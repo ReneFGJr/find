@@ -69,6 +69,7 @@ class ProcessMetadata extends Model
 
         // Exemplo de processamento específico para resultado Z39.50
         $titulo = $this->getTitleFromZ3950Result($z3950_result);
+
         if ($titulo) {
             // Atualiza se i_titulo for null ou string vazia
             $dd = [];
@@ -103,6 +104,12 @@ class ProcessMetadata extends Model
         $dd['i_manifestation'] = $Manifestation['id_cc'];
         $RSP[] = "ID da Manifestation criada para ISBN $isbn: " . $Manifestation['id_cc'];
 
+
+        /************************************************** Incluir Título (TEXT) */
+        if ($titulo) {
+            $idTitulo = $RDF->createLiteral($dd['i_work'], 'hasTitle', $titulo);
+            $RSP[] = "Título adicionado para ISBN $isbn: $titulo (id_literal: $idTitulo)";
+        }
 
         /************************************************** Incluir Autores (TEXT) */
         $dd['i_autores'] = '';

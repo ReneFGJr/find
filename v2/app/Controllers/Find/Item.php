@@ -45,6 +45,7 @@ class Item extends BaseController
         $RSP = $Items->update($id_i, $dd);
         return redirect()->to('/catalog/catalogar/metadadoSearch/' . urlencode($id_i));
     }
+
     public function etiquetas($d2 = '', $d3 = '')
     {
         helper('cookie');

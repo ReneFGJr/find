@@ -32,6 +32,14 @@
         // Monta a URL do iframe
     }
 
+    function editItem(id_d) {
+        var url = '/catalog/rdf/text_edit?idD=' + id_d;
+        document.getElementById('iframeAddData').src = url;
+        // Abre o painel lateral
+        var offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasAddData'));
+        offcanvas.show();
+    }
+
     /****************************** Excluir */
     function deleteItem(id_d) {
         if (confirm('Tem certeza que deseja excluir este dado?')) {

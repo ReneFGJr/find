@@ -1,7 +1,7 @@
 <h3><?= htmlspecialchars($f) ?></h3>
 
 <div class="card-header bg-primary text-white">
-    <i class="bi bi-pencil-square me-2"></i> Edição de Metadados RDF
+    <i class="bi bi-pencil-square me-2"></i> Edição XX de Metadados RDF
 </div>
 
 <form method="get" action="">

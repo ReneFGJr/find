@@ -50,7 +50,8 @@ class RDF extends Model
 
     function index($d1, $d2, $d3, $d4, $cab) {}
 
-    function le($id) {
+    function le($id)
+    {
         helper('sisdoc');
         $library = function_exists('get') ? get("library") : '';
         $ItemModel = new \App\Models\Find\Items\Index();
@@ -65,69 +66,66 @@ class RDF extends Model
             ->join('rdf_class', 'cc_class = id_c', 'left')
             ->join('rdf_name', 'cc_pref_term = id_n', 'left')
             ->where('cc_use', $id)
-            ->first() ;
+            ->first();
         $RSP['concept'] = $dt;
         $RSP['data'] = $this->getData($id);
 
 
-
         $Class = $RSP['concept']['Class'];
         $IT = [];
-        switch ($Class)
-            {
-                case 'Subject':
-                    foreach ($RSP['data'] as $id => $line) {
-                        if ($line['Property'] == 'hasSubject') {
-                            $IT[] = $line['ID'];
-                        }
+        switch ($Class) {
+            case 'Subject':
+                foreach ($RSP['data'] as $id => $line) {
+                    if ($line['Property'] == 'hasSubject') {
+                        $IT[] = $line['ID'];
                     }
-                    $TT = $ItemModel
-                            ->select('i_work')
-                            ->wherein('i_manifestation', $IT)
-                            ->where('i_library', $library)
-                            ->groupby('i_work')
-                            ->findAll();
-                    $IT = [];
-                    foreach($TT as $id=>$line)
-                        {
-                            $IT[] = $line['i_work'];
-                        }
+                }
+                $TT = $ItemModel
+                    ->select('i_work')
+                    ->wherein('i_manifestation', $IT)
+                    ->where('i_library', $library)
+                    ->groupby('i_work')
+                    ->findAll();
+                $IT = [];
+                foreach ($TT as $id => $line) {
+                    $IT[] = $line['i_work'];
+                }
                 break;
-                case 'Person':
-                    foreach($RSP['data'] as $id=>$line)
-                        {
-                            if ($line['Property'] == 'hasAuthor')
-                                {
-                                    $IT[] = $line['ID'];
-                                }
-                        }
-                    break;
-            }
+            case 'Person':
+                foreach ($RSP['data'] as $id => $line) {
+                    if ($line['Property'] == 'hasAuthor') {
+                        $IT[] = $line['ID'];
+                    }
+                }
+                break;
+        }
         $cp = 'i_titulo as title, i_work as ID, i_identifier as isbn, i_library, "" as cover, count(*) as exemplares';
         $RSP['items'] = [];
-        if (count($IT) == 0) { return $RSP; }
+        if (count($IT) == 0) {
+            return $RSP;
+        }
 
         $Covers = new \App\Models\Find\Cover\Index();
 
         $Items = $ItemModel
             ->select($cp)
             ->whereIn('i_work', $IT)
-            ->where('i_library',$library)
+            ->where('i_library', $library)
             ->groupby('i_work, i_library')
             ->orderBy('i_titulo')
             ->findAll();
 
-        foreach($Items as $id=>$line)
-            {
-                $cover = $Covers->cover($line['isbn']);
-                $Items[$id]['cover'] = $cover;
-            }
+        foreach ($Items as $id => $line) {
+            $cover = $Covers->cover($line['isbn']);
+            $Items[$id]['cover'] = $cover;
+        }
         $RSP['items'] = $Items;
 
         return $RSP;
     }
 
-    function getRemissive($id) {
+    function getRemissive($id)
+    {
         $dt = $this
             ->select('id_cc as id, n_name as name, n_lang as lang, c_class as Class, c_type as type, cc_use as use')
             ->join('rdf_class', 'cc_class = id_c', 'left')
@@ -135,23 +133,24 @@ class RDF extends Model
             ->where('cc_use', $id)
             ->where('cc_use <> id_cc')
             ->orderBy("n_name")
-            ->findAll() ;
+            ->findAll();
         return $dt;
     }
 
-    function getData($id) {
+    function getData($id)
+    {
         $RSP = [];
         $cp = 'c_class as Property, c_type as type, c2.id_cc as ID, c2.cc_use as use, n_lang as Lang, n_name as Caption, id_c as IDClass, id_d as IDd, id_n as IdN';
         $cp1 = 'c_class as Property, "Literal" as type, id_cc as ID, cc_use as use, n_lang as Lang, n_name as Caption, id_c as IDClass, id_d as IDd, id_n as IdN';
         $dt1 = $this
             ->select($cp)
-            ->join('rdf_data','d_r1 = id_cc')
+            ->join('rdf_data', 'd_r1 = id_cc')
             ->join('rdf_class', 'd_p = id_c')
             ->join('rdf_concept as c2', 'd_r2 = c2.id_cc')
             ->join('rdf_name', 'c2.cc_pref_term = id_n', 'left')
             ->where('rdf_concept.cc_use', $id)
-            ->where('d_literal',0)
-            ->findAll() ;
+            ->where('d_literal', 0)
+            ->findAll();
 
         /* Adaptation for RDF2 */
         $dt2 = $this
@@ -179,27 +178,27 @@ class RDF extends Model
         return $RSP;
     }
 
-    function extract($data,$property)
+    function extract($data, $property)
     {
         $RSP = [];
-        if (!isset($data['data'])) { return $RSP; }
+        if (!isset($data['data'])) {
+            return $RSP;
+        }
 
-        foreach($data['data'] as $id=>$line)
-            {
-                if ($line['Property'] == $property)
-                    {
-                        $dd = [];
-                        $dd['ID'] = $line['ID'];
-                        $dd['use'] = $line['use'];
-                        $dd['Lang'] = $line['Lang'];
-                        $dd['Caption'] = $line['Caption'];
-                        array_push($RSP, $dd);
-                    }
+        foreach ($data['data'] as $id => $line) {
+            if ($line['Property'] == $property) {
+                $dd = [];
+                $dd['ID'] = $line['ID'];
+                $dd['use'] = $line['use'];
+                $dd['Lang'] = $line['Lang'];
+                $dd['Caption'] = $line['Caption'];
+                array_push($RSP, $dd);
             }
+        }
         return $RSP;
     }
     /* ($idDW, 'hasTitle', $idTitulo); */
-    function createLiteral($idC,$property,$term,$lang='')
+    function createLiteral($idC, $property, $term, $lang = '')
     {
         $RDF_Data = new \App\Models\Find\Rdf\RDF_Data();
         $RDF_Class = new \App\Models\Find\Rdf\RDF_Class();
@@ -208,16 +207,30 @@ class RDF extends Model
         $idN = null;
         if (is_numeric($term) && $lang == '') {
             $idN = (int) round($term);
+        } else {
+            $RDF_Name = new \App\Models\Find\Rdf\RDF_Name();
+            $idN = $RDF_Name->createLiteral($term, $lang);
         }
 
         if (!$idN) {
-            echo "OPS, Literal invalido: $term";
+            echo "OPS, Literal invalido: $term, $lang, $idN";
             return null;
         }
 
-        $idP = $RDF_Class->getIdByName($property, 'P');
-        if ($idP > 0)
-            {
+        if (is_numeric($property)) {
+            $idP = (int) round($property);
+        } else {
+            $idP = $RDF_Class->getIdByName($property, 'P');
+        }
+
+        if ($idP > 0) {
+            $data = $RDF_Data->where('d_r1', $idC)
+                ->where('d_p', $idP)
+                ->where('d_r2', 0)
+                ->where('d_literal', $idN)
+                ->first();
+
+            if (!$data) {
                 $RDF_Data->insert([
                     'd_r1' => $idC,
                     'd_p' => $idP,
@@ -228,8 +241,17 @@ class RDF extends Model
                     'd_library' => '',
                     'd_user' => ''
                 ]);
+                echo $RDF_Data->getlastquery();
+                exit;
                 return $RDF_Data->getInsertID();
+            } else {
+                echo "OPS, Literal já existe: $term, $lang, $idN";
+                return $data['id_d'];
             }
+        } else {
+            echo "OPS, Propriedade invalida: $property, $idP";
+            return null;
+        }
     }
 
     function updateRemissive()
@@ -239,7 +261,7 @@ class RDF extends Model
         $db->query($sql);
     }
 
-    function createConcept($Class, $Name, $Lang='pt_BR')
+    function createConcept($Class, $Name, $Lang = 'pt_BR')
     {
         /******* Literal Name */
         $NameModel = new \App\Models\Find\Rdf\RDF_Name();
@@ -272,5 +294,4 @@ class RDF extends Model
 
         return ['status' => '200', 'message' => 'Conceito criado com sucesso', 'id_cc' => $idCC];
     }
-
 }

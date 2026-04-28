@@ -1,4 +1,4 @@
-<?= view('layout/header', ['title' => 'Detalhes da Autoridade • FIND']); ?>
+<?= view('layout/header', ['title' => 'Cadastro da Autoridade • FIND']); ?>
 
 <div class="container my-4">
     <div class="row">
@@ -41,7 +41,7 @@
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
-                        alert('Conceito vinculado com sucesso!');
+                        return true;
                         // Aqui você pode atualizar a interface, fechar painel, etc.
                     } else {
                         alert('Erro: ' + (response.message || 'Não foi possível vincular o conceito.'));

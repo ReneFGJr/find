@@ -17,6 +17,10 @@
         </div>
 
         <div>
+            <?php echo searchGoogle($isbn); ?>
+        </div>
+
+        <div>
             <?php if (isset($msg)): ?>
                 <div class="card-footer">
                     <?= $msg; ?>

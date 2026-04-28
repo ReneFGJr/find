@@ -84,6 +84,7 @@ $routes->group('catalog', function ($routes) {
     $routes->group('rdf', function ($routes) {
         $routes->match(['post','get'], 'concept_add', 'Catalog\\RDF::rdf_concept_add');
         $routes->match(['post','get'], 'text_add', 'Catalog\\RDF::rdf_text_add');
+        $routes->match(['post', 'get'], 'text_edit', 'Catalog\\RDF::rdf_text_edit');
     });
 
     // Nova rota para redirecionamento sem parâmetro
@@ -97,6 +98,7 @@ $routes->group('catalog', function ($routes) {
     $routes->match(['get', 'post'], 'upload_cover', 'Find\Rdf\Form::upload_cover');
 
     $routes->match(['get', 'post'], 'import_z3950', 'Catalog::inport_z3050');
+    $routes->match(['get', 'post'], 'import_marc21', 'Catalog::import_marc21');
 
     // Catalogar Item //
     $routes->get('item/form', 'Catalog::form_item');

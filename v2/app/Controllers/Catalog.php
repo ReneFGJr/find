@@ -77,7 +77,8 @@ class Catalog extends BaseController
     public function checkerModel()
     {
         $CheckerModel = new \App\Models\Find\Check\CheckerModel();
-        return $CheckerModel->checkFindItem();
+        $isbn = $this->request->getGet('isbn') ?? '';
+        return $CheckerModel->checkFindItem($isbn);
     }
 
     private function checkCatalogPermission()
@@ -183,16 +184,25 @@ class Catalog extends BaseController
         $itemModel = new ItemModel();
         $CheckerModel = new \App\Models\Find\Check\CheckerModel();
         $cover_result = null;
+
+
         if ($resp = $this->denyIfNoPermission()) return $resp;
+
+
         $resultados = null;
         $busca = $this->request->getGet('busca');
+
         $itemInfo = null;
+
         if ($IdItem) {
             $itemInfo = $itemModel->find($IdItem);
+            /*
             if ($CheckerModel->updateDataTitleAuthor($itemInfo) != "") {
                 $itemInfo = $itemModel->find($IdItem);
             }
+            */
         }
+
         $isbn = $itemInfo['i_identifier'] ?? $this->request->getPost('isbn') ?? null;
 
         return view('catalog/metadadoSearch', [
@@ -231,9 +241,9 @@ class Catalog extends BaseController
             $form = [
                 'book' => $dt,
                 'item' => $item,
-                'work' => $rdfForm->getForm('W', $id, $libraryID),
-                'expression' => $rdfForm->getForm('E', $id, $libraryID),
-                'manifestation' => $rdfForm->getForm('M', $id, $libraryID),
+                'work' => $rdfForm->getForm('W', $i_work, $libraryID),
+                'expression' => $rdfForm->getForm('E', $i_expression, $libraryID),
+                'manifestation' => $rdfForm->getForm('M', $i_manifestation, $libraryID),
                 'i_work' => $i_work,
                 'i_expression' => $i_expression,
                 'i_manifestation' => $i_manifestation
@@ -241,15 +251,28 @@ class Catalog extends BaseController
             return view('catalog/form_item', $form);
         }
 
+    public function import_marc21()
+        {
+            echo "Importação de MARC21 ainda não implementada.";
+            exit;
+        }
+
     public function inport_z3050()
     {
         $isbn = $this->request->getPost('isbn') ?? $this->request->getGet('isbn') ?? null;
+
+        if (($isbn == null) or ($isbn == '')) {
+            echo view('layout/header', ['title' => 'Erro na busca por ISBN']);
+            echo "<div class='alert alert-danger'>ISBN não fornecido.</div>";
+            exit;
+        }
 
         // Se houver resultado Z39 salvo, passa para a view
         $z3950_result = session()->getFlashdata('z3950_result');
         if (isset($z3950_result)) {
             $ProcessMetadata = new \App\Models\Find\Items\ProcessMetadata();
             $z3950_result = $ProcessMetadata->processZ3950Result($z3950_result, $isbn);
+            pre($z3950_result);
             if ($z3950_result != []) {
                 $data['content'] = view('catalog/z3950_result', ['result' => $z3950_result['data']]);
             } else {
@@ -269,13 +292,13 @@ class Catalog extends BaseController
                  $resultadoZ39 = $z3950->searchISBN($isbn);
                  // Aqui você pode salvar o resultado em sessão, banco ou redirecionar para mostrar o resultado
                  session()->setFlashdata('z3950_result', $resultadoZ39);
-                 return redirect()->to(current_url());
+                 return redirect()->to(base_url('/catalog/import_z3950') . '?isbn=' . urlencode($isbn));
              }
              // Se não houver ISBN, apenas retorna
              return;
          }
 
-        echo "OK2";
+        echo "NÃO DEVERIA CHEGAR AQUI";
         exit;
 
 
