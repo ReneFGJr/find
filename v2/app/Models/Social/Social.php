@@ -222,7 +222,7 @@ class Social extends Model
 
         if (is_array($dt)) {
             $token = $this->apiKey($dt, true);
-            $from = 'no-reply@find.local';
+            $from = "";
             $subject = 'Cadastro de nova senha';
             $link = base_url('/reset-password/' . $token);
             $text = '<p>Olá, ' . esc($dt['us_nome'] ?? 'usuário') . '.</p>';
@@ -252,6 +252,10 @@ class Social extends Model
     {
         $email = \Config\Services::email();
 
+        if ($from == '') {
+            $from = getenv('email.user.username') ?: 'no-reply@find.local';
+        }
+
         $email->setFrom($from, 'FIND');
         $email->setTo($to);
         $email->setSubject($subject);
@@ -261,7 +265,11 @@ class Social extends Model
             return true;
         }
 
-        $this->data = $email->printDebugger(['headers']);
+        // Exibe o erro detalhado na tela
+        echo '<div class="alert alert-danger"><b>Não foi possível enviar o e-mail:</b><br><pre>';
+        echo htmlspecialchars($email->printDebugger(['headers', 'subject', 'body']));
+        echo '</pre></div>';
+        exit;
         return false;
     }
 }
