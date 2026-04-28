@@ -41,7 +41,7 @@ class RDF extends BaseController
                     // Atualiza o valor da literal
                     $RDF_Name->update($idN, ['n_name' => $textValue]);
 
-                    return redirect()->back()->with('success', 'Literal editada com sucesso!');
+                    return redirect()->back();
                 } else {
                     return redirect()->back()->with('error', 'IDs inválidos para edição da literal.');
                 }
@@ -82,11 +82,10 @@ class RDF extends BaseController
             // Aqui você pode processar o valor da literal, por exemplo, salvando no banco de dados
             $RDF = new \App\Models\Find\Rdf\RDF();
             $idL =  $RDF->createLiteral($params['idC'], $params['prop'], $params['textValue'], $params['lang'] ?? '');
-            pre($idL);
-            return redirect()->back()->with('success', 'Literal adicionada com sucesso!');
+
+            return redirect()->back();
         }
 
-        pre($params, false); // Debug: exibe os parâmetros recebidos
         // Renderize uma view simples (ajuste o caminho conforme necessário)
         return view('catalog/rdf/text_add', $params);
     }

@@ -89,7 +89,7 @@ $routes->group('catalog', function ($routes) {
 
     // Nova rota para redirecionamento sem parâmetro
     $routes->get('catalogar/metadadoSearch', 'Catalog::metadadoSearchRedirect');
-    $routes->get('catalogar/no_isbn', 'Catalog::no_isbn');
+    $routes->match(['post', 'get'],'catalogar/no_isbn', 'Catalog::no_isbn');
 
     // Adicione outras rotas de catalogação aqui se necessário
     $routes->get('check', 'Catalog::checkerModel');

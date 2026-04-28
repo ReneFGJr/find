@@ -240,8 +240,6 @@ class Form extends BaseController
                 $dataForm['Manifestation'] = $rdfForm->getForm('M', $id, $library);
                 break;
         }
-        //echo '<h1>'.$Class.'</h1>';
-        //pre($dataForm);
 
         return view('find/rdf/form/rdf_edit_concept', [
             'concept' => $concept,

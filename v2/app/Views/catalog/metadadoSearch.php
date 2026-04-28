@@ -85,7 +85,8 @@
                     <i class="bi bi-arrow-clockwise"></i> Verificar Dados
                 </button>
                 <!-- Botão para Editar Etiqueta -->
-                <button class="btn btn-outline-warning" type="button" data-bs-toggle="offcanvas" data-bs-target="#labelEditPanel" aria-controls="labelEditPanel">
+                <button class="btn btn-outline-warning" type="button" data-bs-toggle="offcanvas" data-bs-target="#labelEditPanel" aria-controls="labelEditPanel"
+                    disabled="<?php if ($itemInfo['i_titulo'] == '') { echo 'true'; } else { echo 'false'; } ?>"
                     <i class="bi bi-pencil-square"></i> Editar Etiqueta
                 </button>
 

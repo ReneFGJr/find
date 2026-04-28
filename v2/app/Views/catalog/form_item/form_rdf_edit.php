@@ -44,7 +44,6 @@ foreach ($form as $key => $xdata) {
     //echo "<p><strong>" . htmlspecialchars($key) . ":</strong> " . htmlspecialchars($value) . "</p>";
 }
 echo '</table>';
-pre($form, false);
 
 if (!isset($loadRDFPlus)) {
     require("form_rdf_plus_apoio.php");

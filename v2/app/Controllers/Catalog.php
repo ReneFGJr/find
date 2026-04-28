@@ -26,8 +26,23 @@ class Catalog extends BaseController
 
     function no_isbn()
     {
+        $Cover = new \App\Models\Find\Cover\Index();
+        $search = $this->request->getPost('titleWork');
+        if ($search) {
+            $itemModel = new ItemModel();
+            $cp = 'i_titulo, i_identifier, i_autores, max(id_i) as id';
+            $search = strtolower(ascii($search));
 
-        exit;
+            $results = $itemModel
+                ->select($cp)
+                ->like('i_titulo', $search)->orLike('i_autores', $search)
+                ->groupBy('i_titulo, i_identifier, i_autores')
+                ->findAll(20);
+            foreach ($results as $id=>$result) {
+                $results[$id]['cover'] = $Cover->cover($result['i_identifier']);
+            }
+        }
+        return view('catalog/no_isbn',['titleWork'=> $search, 'results'=>$results ?? []]);
     }
 
     public function rebuildModel()

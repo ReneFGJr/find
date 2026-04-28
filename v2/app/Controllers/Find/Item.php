@@ -52,7 +52,6 @@ class Item extends BaseController
         $data = [];
 
         $library = get_cookie('library') ?: get_cookie('library_code');
-        // pre($_COOKIE); // Removido para produção, descomente para debug
         if (!$library) {
             return redirect()->to('/bibliotecas');
         }

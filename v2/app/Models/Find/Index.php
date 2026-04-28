@@ -136,14 +136,13 @@ class Index extends Model
 
                     if ($dt['valid'] == 1)
                         {
-                            $url = URL . '/api/find/isbn/' . $isbn.'/add';
+                            $url = base_url('/api/find/isbn/' . $isbn.'/add');
                             $url .= '?library=1';
                             $url .= '&apikey=ff63a314d1ddd425517550f446e4175e';
                             $sx .=  anchor($url);
                             $sx .= '<hr>';
                             $dta = file_get_contents($url);
                             $dta = (array)json_decode($dta);
-                            pre($dta,false);
                         }
                         else {
                             $sx .= bsmessage("ERRO NO Número do ISBN ".$isbn,3);
