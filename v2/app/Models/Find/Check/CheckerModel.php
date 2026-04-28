@@ -92,10 +92,16 @@ class CheckerModel
             if ($txt == '') continue;
             switch ($prop) {
                 case 'prefLabel':
-                    $Title .= '{X}' . $txt;
+                    if ($Title != '') {
+                        $Title .= ' | ';
+                    }
+                    $Title .= $txt;
                     break;
                 case 'hasTitle':
-                    $Title .= '{Y}' . $txt;
+                    if ($Title != '') {
+                        $Title .= ' | ';
+                    }
+                    $Title .= $txt;
                     break;
                 case 'hasAuthor':
                     if ($Author != '') {
