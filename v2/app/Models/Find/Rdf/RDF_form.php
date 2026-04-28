@@ -91,6 +91,8 @@ class RDF_Form extends Model
             ) AS all_forms
             ORDER BY form_order
         ";
+
+        echo $sql; // Debug: exibe a consulta SQL
         $params = [
             $conceptId, $frbr, $library, // 1º SELECT
             $conceptId, $frbr, $library, // 2º SELECT

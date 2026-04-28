@@ -15,7 +15,7 @@ class RDF extends BaseController
     {
         pre("OI - concept",false);
         $params = $this->request->getGet() ?? $this->request->getPost() ?? [];
-        pre($params,false); // Debug: exibe os parâmetros recebidos
+        //pre($params,false); // Debug: exibe os parâmetros recebidos
         // Renderize uma view simples (ajuste o caminho conforme necessário)
         return view('catalog/rdf/concept_add', $params);
     }
@@ -23,7 +23,7 @@ class RDF extends BaseController
     public function rdf_text_add()
     {
         // Pegue os parâmetros GET
-        pre("OI - text",false);
+        //pre("OI - text",false);
         pre($_POST, false);
         pre($_GET, false);
         exit;

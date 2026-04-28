@@ -108,14 +108,14 @@ class Concept extends Controller
 
         // ✅ insere
         $RDF_Data->set($dd)->insert();
-        $RDF_Data->getlastquery();
-        pre($dd);
+        $query = $RDF_Data->getlastquery();
 
         // ✅ resposta SEMPRE retornada
         return $this->respond([
             'status'  => 200,
             'success' => true,
-            'data'    => ['idc' => $idc, 'property' => $property, 'value' => $value]
+            'data'    => ['idc' => $idc, 'property' => $property, 'value' => $value],
+            'query'   => $query
         ]);
     }
 }

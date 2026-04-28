@@ -29,18 +29,28 @@
 
 <script>
     function formAddNewData(conceptId, idC, type, prop, formID) {
-        // Recupera o valor selecionado do select conceptResults
         var select = document.getElementById('conceptResults');
         var idS = select ? select.value : '';
-        // Opcional: alert para debug
-        // alert('idS selecionado: ' + idS);
         if (type == 'CONCEPT') {
             var url = '/rdf/concept/add_link_concept?idc=' + encodeURIComponent(idC) + '&property=' + encodeURIComponent(prop) + '&value=' + encodeURIComponent(idS);
             alert(url);
-            // Aqui você pode abrir o painel lateral ou fazer o que desejar
-            // document.getElementById('iframeAddData').src = url;
-            // var offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasAddData'));
-            // offcanvas.show();
+            // AJAX para adicionar o conceito
+            $.ajax({
+                url: url,
+                method: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.success) {
+                        alert('Conceito vinculado com sucesso!');
+                        // Aqui você pode atualizar a interface, fechar painel, etc.
+                    } else {
+                        alert('Erro: ' + (response.message || 'Não foi possível vincular o conceito.'));
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Erro na requisição: ' + error);
+                }
+            });
         }
     }
 
@@ -50,7 +60,7 @@
             range = <?= json_encode($range) ?>;
         <?php } ?>
         var url = '<?= base_url(); ?>/rdf/searchConcept?term=' + encodeURIComponent(termo) + '&range=' + encodeURIComponent(range);
-        alert(url);
+
         $.get(url, function(data) {
             if (typeof data === 'string') {
                 try {
@@ -74,5 +84,10 @@
                 $('#conceptResults').html('<option value="">Nenhum conceito encontrado</option>');
             }
         });
+    }
+
+    function showConceptDetails(conceptId) {
+        // Função placeholder para evitar erro. Implemente conforme necessário.
+        // Exemplo: console.log('Conceito selecionado:', conceptId);
     }
 </script>
