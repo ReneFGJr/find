@@ -51,18 +51,22 @@ class Concept extends Controller
         $RDF_Data = new \App\Models\Find\Rdf\RDF_Data();
         $RDF_Class = new \App\Models\Find\Rdf\RDF_Class();
 
-        $idc      = $this->request->getPost('idc');
-        $property = $this->request->getPost('property');
-        $value    = $this->request->getPost('value');
+        $idc      = $this->request->getPost('idc') ?? $this->request->getGet('idc');
+        $property = $this->request->getPost('property') ?? $this->request->getGet('property');
+        $value    = $this->request->getPost('value') ?? $this->request->getGet('value');
 
-        $idp = $RDF_Class->where('c_class', $property)->first();
-        if ($idp) {
-            $idp = $idp['id_c'];
+        if (is_numeric($property)) {
+            $idp = $property;
         } else {
+            // Busca o id_c da propriedade pelo nome
+            $idp = $RDF_Class->where('c_class', $property)->first();
+        }
+
+        if (!$idp) {
             return $this->respond([
                 'status'  => 400,
                 'success' => false,
-                'message' => 'Propriedade não encontrada'
+                'message' => 'Propriedade não encontrada (' . ($property) . ')'
             ], 400);
         }
 
@@ -72,11 +76,13 @@ class Concept extends Controller
             'd_p'  => $idp,
             'd_r2' => $value
         ])->first();
+
         if ($existing) {
             return $this->respond([
                 'status'  => 400,
                 'success' => false,
-                'message' => 'Link já existe'
+                'message' => 'Link já existe',
+                'data'    => ['idc' => $idc, 'property' => $property, 'value' => $value]
             ], 400);
         }
 
@@ -85,7 +91,7 @@ class Concept extends Controller
             return $this->respond([
                 'status'  => 400,
                 'success' => false,
-                'message' => 'Parâmetros obrigatórios ausentes'
+                'message' => "Parâmetros obrigatórios ausentes ($idc, $property, $value)"
             ], 400);
         }
 
@@ -101,12 +107,15 @@ class Concept extends Controller
         ];
 
         // ✅ insere
-        $RDF_Data->insert($dd);
+        $RDF_Data->set($dd)->insert();
+        $RDF_Data->getlastquery();
+        pre($dd);
 
         // ✅ resposta SEMPRE retornada
         return $this->respond([
             'status'  => 200,
-            'success' => true
+            'success' => true,
+            'data'    => ['idc' => $idc, 'property' => $property, 'value' => $value]
         ]);
     }
 }

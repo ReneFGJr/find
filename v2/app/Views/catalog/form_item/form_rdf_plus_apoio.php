@@ -10,10 +10,11 @@
 </div>
 
 <script>
-    function formAddNewData(idC, type, formID) {
+    function formAddNewData(idC, idP, type, formID, range) {
 
         if (type == 'TEXT') {
-            var url = '/catalog/rdf/text_add?idC='+idC+'&type=' + encodeURIComponent(type) + '&formID=' + encodeURIComponent(formID);
+            var url = '/catalog/rdf/text_add?idC=' + idC + '&prop=' + idP + '&type=' + encodeURIComponent(type) + '&formID=' + encodeURIComponent(formID) + '&range=' + encodeURIComponent(range);
+
             document.getElementById('iframeAddData').src = url;
             // Abre o painel lateral
             var offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasAddData'));
@@ -22,8 +23,7 @@
         }
 
         if (type == 'CONCEPT') {
-            alert('Adicionar conceito: ' + type + ' para o formID: ' + formID);
-            var url = '/catalog/rdf/concept_add?type=' + encodeURIComponent(type) + '&formID=' + encodeURIComponent(formID);
+            var url = '/catalog/rdf/concept_add?idC=' + idC + '&prop=' + idP + '&type=' + encodeURIComponent(type) + '&formID=' + encodeURIComponent(formID) + '&range=' + encodeURIComponent(range);
             document.getElementById('iframeAddData').src = url;
             // Abre o painel lateral
             var offcanvas = new bootstrap.Offcanvas(document.getElementById('offcanvasAddData'));
@@ -35,7 +35,9 @@
     /****************************** Excluir */
     function deleteItem(id_d) {
         if (confirm('Tem certeza que deseja excluir este dado?')) {
-            $.post('/rdf/form/excluir_rdf_data', { id_d: id_d }, function(response) {
+            $.post('/rdf/form/excluir_rdf_data', {
+                id_d: id_d
+            }, function(response) {
                 alert(response.message);
                 // Recarrega a página para atualizar os dados
                 location.reload();

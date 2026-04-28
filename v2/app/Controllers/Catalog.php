@@ -205,6 +205,7 @@ class Catalog extends BaseController
         ]);
     }
 
+    /***************************************************************** Editor de Item */
     public function form_item()
         {
             $libraryID = get_cookie('library') ?? get_cookie('library_code') ?? '';
