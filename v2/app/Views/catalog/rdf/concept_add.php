@@ -33,7 +33,7 @@
         var idS = select ? select.value : '';
         if (type == 'CONCEPT') {
             var url = '/rdf/concept/add_link_concept?idc=' + encodeURIComponent(idC) + '&property=' + encodeURIComponent(prop) + '&value=' + encodeURIComponent(idS);
-            alert(url);
+
             // AJAX para adicionar o conceito
             $.ajax({
                 url: url,

@@ -46,7 +46,7 @@
             $.post('/rdf/form/excluir_rdf_data', {
                 id_d: id_d
             }, function(response) {
-                alert(response.message);
+                //alert(response.message);
                 // Recarrega a página para atualizar os dados
                 location.reload();
             });
