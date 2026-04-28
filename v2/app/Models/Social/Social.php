@@ -4,6 +4,8 @@ namespace App\Models\Social;
 
 use CodeIgniter\Model;
 
+helper('sisdoc');
+
 class Social extends Model
 {
     protected $DBGroup          = 'default';

@@ -24,9 +24,16 @@ class Email extends BaseConfig
     public $recipients = '';
 
     public $SMTPHost = 'smtp.ufrgs.br';
-    public $SMTPUser = '00282381@ufrgs.br';
-    public $SMTPPass = 'aNDRE@2023';
+    public $SMTPUser;
+    public $SMTPPass;
     public $SMTPPort = 587;  // Porta SMTP (por exemplo, 587 para TLS ou 465 para SSL)
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->SMTPUser = getenv('email.user.username') ?: '';
+        $this->SMTPPass = getenv('email.user.password') ?: '';
+    }
     public $SMTPCrypto = 'tls';  // Pode ser 'ssl' ou 'tls'
 
     public $protocol = 'smtp';
