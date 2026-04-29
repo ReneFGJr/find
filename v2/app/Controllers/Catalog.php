@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
@@ -6,7 +7,7 @@ use App\Models\Find\Items\Index as ItemModel;
 use App\Models\Find\Items\Status as StatusModel;
 
 // Necessário para usar get_cookie() e pre()
-helper(['cookie', 'sisdoc','nbr']);
+helper(['cookie', 'sisdoc', 'nbr']);
 
 
 class Catalog extends BaseController
@@ -38,11 +39,11 @@ class Catalog extends BaseController
                 ->like('i_titulo', $search)->orLike('i_autores', $search)
                 ->groupBy('i_titulo, i_identifier, i_autores')
                 ->findAll(20);
-            foreach ($results as $id=>$result) {
+            foreach ($results as $id => $result) {
                 $results[$id]['cover'] = $Cover->cover($result['i_identifier']);
             }
         }
-        return view('catalog/no_isbn',['titleWork'=> $search, 'results'=>$results ?? []]);
+        return view('catalog/no_isbn', ['titleWork' => $search, 'results' => $results ?? []]);
     }
 
     public function rebuildModel()
@@ -52,23 +53,22 @@ class Catalog extends BaseController
         $total = $ItemModel->countAll();
         $limit = 500;
 
-        if ($ItemModel->rebuildAllFields($offset))
-            {
-                $url = base_url('/catalog/rebuild_fields?offset=') . ($offset + $limit);
-                echo view('layout/header', ['title' => 'Rebuild em andamento...']);
-                echo '<div class="p-5">';
-                echo $url;
-                echo '<br>'.date("Y-m-d H:i:s");
-                echo '<br>'.$total.'/'.$offset.' registros - limit '.$limit;
-                echo '<br>'.round(($offset / $total) * 100, 2).'% processado';
-                echo '</div>';
-                echo '<meta http-equiv="refresh" content="0;url=' . $url . '">';
-                exit;
-            } else {
-                $dd['content'] = 'Rebuild concluído com sucesso!';
-                echo view('components/content', $dd);
-                exit;
-            }
+        if ($ItemModel->rebuildAllFields($offset)) {
+            $url = base_url('/catalog/rebuild_fields?offset=') . ($offset + $limit);
+            echo view('layout/header', ['title' => 'Rebuild em andamento...']);
+            echo '<div class="p-5">';
+            echo $url;
+            echo '<br>' . date("Y-m-d H:i:s");
+            echo '<br>' . $total . '/' . $offset . ' registros - limit ' . $limit;
+            echo '<br>' . round(($offset / $total) * 100, 2) . '% processado';
+            echo '</div>';
+            echo '<meta http-equiv="refresh" content="0;url=' . $url . '">';
+            exit;
+        } else {
+            $dd['content'] = 'Rebuild concluído com sucesso!';
+            echo view('components/content', $dd);
+            exit;
+        }
     }
 
     public function reindexModel()
@@ -77,7 +77,7 @@ class Catalog extends BaseController
         $ItemModel = new ItemModel();
         $total = $ItemModel->countAll();
         $limit = 500;
-        if ($ItemModel->reindexAll($offset,$limit)) {
+        if ($ItemModel->reindexAll($offset, $limit)) {
             $url = base_url('/catalog/reindex?offset=') . ($offset + $limit);
             echo view('layout/header', ['title' => 'Reindex em andamento...']);
             echo '<div class="p-5">';
@@ -89,9 +89,9 @@ class Catalog extends BaseController
             echo '<meta http-equiv="refresh" content="0;url=' . $url . '">';
             exit;
         } else {
-           $dd['content'] = 'Reindex concluído com sucesso!';
-           echo view('components/content', $dd);
-           exit;
+            $dd['content'] = 'Reindex concluído com sucesso!';
+            echo view('components/content', $dd);
+            exit;
         }
     }
 
@@ -132,7 +132,7 @@ class Catalog extends BaseController
         if ($resp = $this->denyIfNoPermission()) return $resp;
         // Exemplo: Resumo dos itens por status
         $itemModel = new ItemModel();
-        $itemModel->set(['i_status' => 1])->where('i_status',0)->update();
+        $itemModel->set(['i_status' => 1])->where('i_status', 0)->update();
 
         $statusModel = new StatusModel();
         // Obtém o código da biblioteca (GET ou cookie, conforme padrão do sistema)
@@ -238,12 +238,12 @@ class Catalog extends BaseController
 
     /***************************************************************** Editor de Item */
     public function form_item()
-        {
+    {
 
-            $libraryID = get_cookie('library') ?? get_cookie('library_code') ?? '';
-            if (!$libraryID) {
-                return redirect()->to('/bibliotecas')->with('msg', 'Escolha uma biblioteca antes de continuar.')->with('msg_type', 'warning');
-            }
+        $libraryID = get_cookie('library') ?? get_cookie('library_code') ?? '';
+        if (!$libraryID) {
+            return redirect()->to('/bibliotecas')->with('msg', 'Escolha uma biblioteca antes de continuar.')->with('msg_type', 'warning');
+        }
 
 
         $rdfForm = new \App\Models\Find\Rdf\RDF_Form();
@@ -251,37 +251,37 @@ class Catalog extends BaseController
         $item = $this->request->getGet('item') ?? $this->request->getPost('item') ?? null;
 
         $Item = new \App\Models\Find\Items\Index();
-            $dt = $Item->where('id_i', $item)->first();
-            $id = $dt['id_i'] ?? 0;
-            $i_work = $dt['i_work'] ?? 0;
-            $i_expression = $dt['i_expression'] ?? 0;
-            $i_manifestation = $dt['id_i'] ?? 0;
+        $dt = $Item->where('id_i', $item)->first();
+        $id = $dt['id_i'] ?? 0;
+        $i_work = $dt['i_work'] ?? 0;
+        $i_expression = $dt['i_expression'] ?? 0;
+        $i_manifestation = $dt['id_i'] ?? 0;
 
-            if ($i_work == 0 || $i_expression == 0 || $i_manifestation == 0) {
-                echo "<div class='alert alert-danger'>Item não encontrado ou com dados incompletos (Work: $i_work, Expression: $i_expression, Manifestation: $i_manifestation).</div>";
-                exit;
-            }
+        if ($i_work == 0 || $i_expression == 0 || $i_manifestation == 0) {
+            echo "<div class='alert alert-danger'>Item não encontrado ou com dados incompletos (Work: $i_work, Expression: $i_expression, Manifestation: $i_manifestation).</div>";
+            exit;
+        }
 
         $form = [
-                'book' => $dt,
-                'item' => $item,
-                'work' => $rdfForm->getForm('W', $i_work, $libraryID),
-                'expression' => $rdfForm->getForm('E', $i_expression, $libraryID),
-                'manifestation' => $rdfForm->getForm('M', $i_manifestation, $libraryID),
-                'i_work' => $i_work,
-                'i_expression' => $i_expression,
-                'i_manifestation' => $i_manifestation
-            ];
+            'book' => $dt,
+            'item' => $item,
+            'work' => $rdfForm->getForm('W', $i_work, $libraryID),
+            'expression' => $rdfForm->getForm('E', $i_expression, $libraryID),
+            'manifestation' => $rdfForm->getForm('M', $i_manifestation, $libraryID),
+            'i_work' => $i_work,
+            'i_expression' => $i_expression,
+            'i_manifestation' => $i_manifestation
+        ];
 
-            return view('catalog/form_item', $form);
-        }
+        return view('catalog/form_item', $form);
+    }
 
     public function import_marc21()
-        {
-            $msg = "Importação de MARC21 ainda não implementada.";
-            $data['content'] = '<div class="alert alert-danger">' . $msg . '</div>';
-            return view('components/content_header', $data);
-        }
+    {
+        $msg = "Importação de MARC21 ainda não implementada.";
+        $data['content'] = '<div class="alert alert-danger">' . $msg . '</div>';
+        return view('components/content_header', $data);
+    }
 
     public function inport_z3050()
     {
@@ -305,32 +305,30 @@ class Catalog extends BaseController
                 $data['content'] = '<div class="alert alert-danger">' . $z3950_result['message'] . '</div>';
                 $RDF_Item = new \App\Models\Find\Items\Index();
                 $dd['i_status'] = 3; // Catalogação manual
-                $RDF_Item->set($dd)->where('i_identifier', $isbn)->where('i_status',1)->update();
+                $RDF_Item->set($dd)->where('i_identifier', $isbn)->where('i_status', 1)->update();
             }
             return view('components/content_header', $data);
         }
 
         if ($isbn != '') {
-             // Exibe view auxiliar de loading
-             echo view('catalog/z3950_loading');
-             // Busca ISBN do item (se disponível)
+            // Exibe view auxiliar de loading
+            echo view('catalog/z3950_loading');
+            // Busca ISBN do item (se disponível)
 
-             if ($isbn) {
-                 // Chama o model Z3950
-                 $z3950 = new \App\Models\Z3950\Index();
-                 $resultadoZ39 = $z3950->searchISBN($isbn);
-                 // Aqui você pode salvar o resultado em sessão, banco ou redirecionar para mostrar o resultado
-                 session()->setFlashdata('z3950_result', $resultadoZ39);
-                 return redirect()->to(base_url('/catalog/import_z3950') . '?isbn=' . urlencode($isbn));
-             }
-             // Se não houver ISBN, apenas retorna
-             return;
-         }
+            if ($isbn) {
+                // Chama o model Z3950
+                $z3950 = new \App\Models\Z3950\Index();
+                $resultadoZ39 = $z3950->searchISBN($isbn);
+                // Aqui você pode salvar o resultado em sessão, banco ou redirecionar para mostrar o resultado
+                session()->setFlashdata('z3950_result', $resultadoZ39);
+                return redirect()->to(base_url('/catalog/import_z3950') . '?isbn=' . urlencode($isbn));
+            }
+            // Se não houver ISBN, apenas retorna
+            return;
+        }
 
         echo "NÃO DEVERIA CHEGAR AQUI";
         exit;
-
-
     }
 
     public function catalogar_phase($status = null)
@@ -554,5 +552,55 @@ class Catalog extends BaseController
     public function no_action($id = null)
     {
         return view('catalog/no_action', ['id' => $id]);
+    }
+
+    public function tombo()
+    {
+        $message = '';
+        $book = [];
+        $cookieCode = trim((string) (get_cookie('library_code') ?? get_cookie('library') ?? ''));
+        if ($cookieCode === '') {
+            return redirect()->to('/bibliotecas')->with('msg', 'Escolha uma biblioteca antes de continuar.')->with('msg_type', 'warning');
+        }
+        $libraryID = $cookieCode;
+
+        $id_item = $this->request->getGet('numeroTombo');
+        if ($id_item) {
+            $rdf = new \App\Models\Find\Rdf\RDF();
+            $itemsModel = new \App\Models\Find\Items\Index();
+            $row = $itemsModel
+                ->where('i_library', $libraryID)
+                ->where('i_tombo', $id_item)
+                ->first();
+            if (!$row) {
+                $message = 'Item não encontrado para o número de tombo informado.';
+            } else {
+                $isbn = $row['i_identifier'];
+                $lib = $row['i_library'];
+
+                $book = $itemsModel->getISBN($isbn, $lib);
+
+                if (empty($book)) {
+                    return redirect()->to('/library')->with('msg', 'Item não encontrado.')->with('msg_type', 'danger');
+                }
+
+                $libModel = new \App\Models\Find\Library\Index();
+                $library = $libModel->getSelectedLibrary((string) $lib);
+
+                $meta = [];
+
+                if ($row['i_work'] > 0) {
+                    $meta['work'] = $rdf->le($row['i_work']);
+                }
+                if ($row['i_expression'] > 0) {
+                    $meta['expression'] = $rdf->le($row['i_expression']);
+                }
+                if ($row['i_manifestation'] > 0) {
+                    $meta['manifestation'] = $rdf->le($row['i_manifestation']);
+                }
+            }
+        }
+
+        return view('catalog/tombo', ['book' => $book, 'msg'=>$message, 'row' => $row ?? null, 'library' => $library ?? null, 'meta' => $meta ?? []]);
     }
 }

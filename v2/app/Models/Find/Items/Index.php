@@ -543,6 +543,15 @@ class Index extends Model
                 $dtM = [];
             }
             $meta = [];
+            if (!isset($dtM['data'])) {
+                $dtM['data'] = [];
+            }
+            if (!isset($dtW['data'])) {
+                $dtW['data'] = [];
+            }
+            if (!isset($dtE['data'])) {
+                $dtE['data'] = [];
+            }
             $meta['data'] = array_merge($dtM['data'], $dtW['data'], $dtE['data']);
 
             $Metadata = new \App\Models\Find\Metadata\Index();

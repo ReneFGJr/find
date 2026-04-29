@@ -123,6 +123,8 @@ $routes->group('catalog', function ($routes) {
     $routes->post('authority/(:num)/save', 'Catalog\\Authority::save_remissive/$1');
     $routes->get('authority/form_remissive', 'Catalog\\Authority::form_remissive');
     $routes->post('authority/form_remissive', 'Catalog\\Authority::form_remissive');
+
+    $routes->get('tombo', 'Catalog::tombo');
 });
 
 
