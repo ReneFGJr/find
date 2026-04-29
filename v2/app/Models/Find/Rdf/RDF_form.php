@@ -47,7 +47,11 @@ class RDF_Form extends Model
 
         $db = \Config\Database::connect();
         $sql = "
-            SELECT DISTINCT * FROM (
+            SELECT DISTINCT id_d,
+                    id_form, form_frbr, form_group, form_group_subgroup, form_order,
+                    id_c, c_class, c_order, id_n,
+                    id_cc, cc_use, n_name, n_lang, 'CONCEPT' AS n_type, form_range
+            FROM (
                 SELECT
                     id_d,
                     id_form, form_frbr, form_group, form_group_subgroup, form_order,
@@ -98,9 +102,6 @@ class RDF_Form extends Model
             $conceptId, $frbr, $library  // 3º SELECT
         ];
         $query = $db->query($sql, $params);
-        //echo '<pre>';
-        //echo $db->getLastQuery(); // Debug: exibe a consulta SQL gerada
-        //exit;
         return $query->getResultArray();
     }
 

@@ -1,6 +1,17 @@
 <?php include(APPPATH . 'Views/layout/header.php'); ?>
 <?php include(APPPATH . 'Views/layout/navbar.php'); ?>
 
+<!-- Offcanvas lateral para adicionar dado -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAddData" aria-labelledby="offcanvasAddDataLabel" style="width:600px;">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasAddDataLabel">Adicionar Dado</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+    </div>
+    <div class="offcanvas-body p-0" style="height:100%;">
+        <iframe id="iframeAddData" src="" style="border:0;width:100%;height:100%;min-height:400px;"></iframe>
+    </div>
+</div>
+
 <div class="container py-4">
     <h2 class="mb-4"><i class="bi bi-pencil-square me-2"></i>Formulário do Item</h2>
     <ul class="nav nav-tabs" id="itemTab" role="tablist">

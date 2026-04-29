@@ -32,7 +32,7 @@
         var select = document.getElementById('conceptResults');
         var idS = select ? select.value : '';
         if (type == 'CONCEPT') {
-            var url = '/rdf/concept/add_link_concept?idc=' + encodeURIComponent(idC) + '&property=' + encodeURIComponent(prop) + '&value=' + encodeURIComponent(idS);
+            var url = '<?= base_url(); ?>/rdf/concept/add_link_concept?idc=' + encodeURIComponent(idC) + '&property=' + encodeURIComponent(prop) + '&value=' + encodeURIComponent(idS);
 
             // AJAX para adicionar o conceito
             $.ajax({

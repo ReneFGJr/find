@@ -239,15 +239,18 @@ class Catalog extends BaseController
     /***************************************************************** Editor de Item */
     public function form_item()
         {
+
             $libraryID = get_cookie('library') ?? get_cookie('library_code') ?? '';
             if (!$libraryID) {
                 return redirect()->to('/bibliotecas')->with('msg', 'Escolha uma biblioteca antes de continuar.')->with('msg_type', 'warning');
             }
 
-            $rdfForm = new \App\Models\Find\Rdf\RDF_Form();
 
-            $item = $this->request->getGet('item') ?? $this->request->getPost('item') ?? null;
-            $Item = new \App\Models\Find\Items\Index();
+        $rdfForm = new \App\Models\Find\Rdf\RDF_Form();
+
+        $item = $this->request->getGet('item') ?? $this->request->getPost('item') ?? null;
+
+        $Item = new \App\Models\Find\Items\Index();
             $dt = $Item->where('id_i', $item)->first();
             $id = $dt['id_i'] ?? 0;
             $i_work = $dt['i_work'] ?? 0;
@@ -259,7 +262,7 @@ class Catalog extends BaseController
                 exit;
             }
 
-            $form = [
+        $form = [
                 'book' => $dt,
                 'item' => $item,
                 'work' => $rdfForm->getForm('W', $i_work, $libraryID),
@@ -269,6 +272,7 @@ class Catalog extends BaseController
                 'i_expression' => $i_expression,
                 'i_manifestation' => $i_manifestation
             ];
+
             return view('catalog/form_item', $form);
         }
 
