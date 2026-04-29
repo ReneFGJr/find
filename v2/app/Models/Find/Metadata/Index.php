@@ -40,6 +40,14 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+    function array_unico($RSP, $field, $value)
+        {
+            if (!in_array($value, $RSP[$field])) {
+                array_push($RSP[$field], $value);
+            }
+            return $RSP;
+        }
+
     function metadata($dt, $RSP = [])
     {
         $fld = ['Title','Authors', 'Publisher',
@@ -90,7 +98,7 @@ class Index extends Model
                     array_push($RSP['PublisherPlace'], $value);
                     break;
                 case 'hasColorclassification':
-                    array_push($RSP['ColorClassification'], $value);
+                    $RSP = $this->array_unico($RSP, 'ColorClassification', $value);
                     break;
                 case 'hasClassificationCDD':
                     array_push($RSP['CDD'], $value);
