@@ -1,4 +1,5 @@
-<?= view('layout/header', ['title' => 'Consulta por Tombo • FIND']); ?>
+<?= view('layout/header', ['title' => esc($book['title'] ?? 'Item') . ' • FIND']); ?>
+<?= view('layout/navbar'); ?>
 
 <div class="container my-4">
     <div class="row justify-content-center">
@@ -19,7 +20,7 @@
         <div class="col-md-10">
             <?php
             if (isset($library)) {
-                echo  view('Libraries/item', [
+                echo  view('Libraries/item_details', [
                     'book' => $book,
                     'library' => $library,
                     'itemInfo' => $row,
@@ -32,3 +33,9 @@
             ?>
         </div>
     </div>
+</div>
+<?= view('layout/footer'); ?>
+
+<script>
+    document.getElementById('numeroTombo').focus();
+</script>
