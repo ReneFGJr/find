@@ -40,7 +40,6 @@ class CheckerModel
             $rsp .= '<br>'.$this->updateDataTitleAuthor($item);
             $data['content'] = $data['content'] .'<tt>' . $rsp . '</tt><br>';
         }
-        pre($data);
         return view('components/content', $data);
     }
 

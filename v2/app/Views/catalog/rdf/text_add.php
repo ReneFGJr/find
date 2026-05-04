@@ -3,7 +3,7 @@
     <div class="row">
         <div class="col-md-12">
             <h1>Cadastro da Literal</h1>
-            <form method="post" action="/catalog/rdf/text_add">
+            <form method="post" action="<?= base_url();  ?>/catalog/rdf/text_add">
                 <div class="mb-3">
                     <label for="textValue" class="form-label">Valor da Literal</label>
                     <textarea class="form-control" id="textValue" rows="6" name="textValue" required><?= isset($textValue) ? $textValue : ''; ?></textarea>
