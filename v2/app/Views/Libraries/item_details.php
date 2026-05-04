@@ -25,7 +25,12 @@
         <div class="col-md-3 text-center">
             <img src="<?= esc($book['cover'] ?? ''); ?>"
                 alt="<?= esc($book['title'] ?? ''); ?>"
-                class="img-fluid rounded item-cover">
+                class="img-fluid rounded item-cover mb-2">
+            <?php if ($perfil[2] == 1) { ?>
+                <a href="<?= base_url('catalog/item/form?item=' .$id); ?>" class="btn btn-primary w-100">
+                    <i class="bi bi-journal-check me-1"></i> Catalogar
+                </a>
+            <?php } ?>
         </div>
 
         <!-- Detalhes -->

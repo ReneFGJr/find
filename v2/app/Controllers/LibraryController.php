@@ -10,6 +10,52 @@ helper(['sisdoc','url', 'cookie']);
 
 class LibraryController extends BaseController
 {
+    protected $perfil = [];
+
+    private function loadPerfilForLibrary(string $libraryCode): array
+    {
+        $userId = (int) (session()->get('id_us') ?? 0);
+        $perfil = [
+            'admin' => false,
+            'catalogador' => false,
+            'groups' => [],
+            'library' => $libraryCode,
+        ];
+
+        if ($userId <= 0 || $libraryCode === '') {
+            return $perfil;
+        }
+
+        $db = \Config\Database::connect();
+        $rows = $db->table('users_group_members m')
+            ->select('g.gr_name, g.gr_hash')
+            ->join('users_group g', 'g.id_gr = m.grm_group', 'left')
+            ->where('m.grm_user', $userId)
+            ->where('m.grm_library', $libraryCode)
+            ->where('(m.grm_status = 1 OR m.grm_status IS NULL)')
+            ->get()
+            ->getResultArray();
+
+        foreach ($rows as $row) {
+            $groupName = strtolower(trim((string) ($row['gr_name'] ?? '')));
+            $groupHash = strtoupper(trim((string) ($row['gr_hash'] ?? '')));
+
+            $perfil['groups'][] = [
+                'name' => $row['gr_name'] ?? '',
+                'hash' => $row['gr_hash'] ?? '',
+            ];
+
+            if ($groupHash === '#ADM' || $groupName === 'administrador' || $groupName === 'admin') {
+                $perfil['admin'] = true;
+            }
+            if ($groupHash === '#CAT' || $groupName === 'catalogadores' || $groupName === 'catalogador') {
+                $perfil['catalogador'] = true;
+            }
+        }
+
+        return $perfil;
+    }
+
     public function bibliotecas()
     {
         $model = new LibraryIndex();
@@ -117,6 +163,9 @@ class LibraryController extends BaseController
 
         $libModel = new LibraryIndex();
         $library = $libModel->getSelectedLibrary((string) $lib);
+        $UserGroupMember = new \App\Models\User\UserGroupMember();
+        $userId = (int) (session()->get('id_us') ?? 0);
+        $this->perfil = $UserGroupMember->getGroupsByLibrary($lib,$userId);
 
         $meta = [];
 
@@ -131,6 +180,7 @@ class LibraryController extends BaseController
         }
 
         return view('Libraries/item', [
+            'id' => $id,
             'book' => $book,
             'library' => $library,
             'itemInfo' => $row,

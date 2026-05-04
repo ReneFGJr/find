@@ -70,9 +70,9 @@ class RDF extends Model
         $RSP['concept'] = $dt;
         $RSP['data'] = $this->getData($id);
 
-
         $Class = $RSP['concept']['Class'];
         $IT = [];
+
         switch ($Class) {
             case 'Subject':
                 foreach ($RSP['data'] as $id => $line) {
@@ -99,8 +99,10 @@ class RDF extends Model
                 }
                 break;
         }
+
         $cp = 'i_titulo as title, i_work as ID, i_identifier as isbn, i_library, "" as cover, count(*) as exemplares';
         $RSP['items'] = [];
+
         if (count($IT) == 0) {
             return $RSP;
         }

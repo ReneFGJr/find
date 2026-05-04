@@ -1,4 +1,5 @@
 <?php
+
 /**
  * View simples para exibir dados de um livro
  * Espera um array $book
@@ -41,6 +42,53 @@
 
       <dt class="col-sm-3">Expression</dt>
       <dd class="col-sm-9"><?= htmlspecialchars($book['i_expression'] ?? '') ?></dd>
+
+      <dt class="col-sm-3">Ações</dt>
+      <dd class="col-sm-9">
+        <button
+          type="button"
+          class="btn btn-outline-primary btn-sm"
+          onclick="openCheckPopup('<?= base_url('/catalog/check?isbn=' . rawurlencode((string) ($book['i_identifier'] ?? ''))) ?>')"
+        >
+          Atualizar dados
+        </button>
+      </dd>
     </dl>
   </div>
 </div>
+
+<script>
+  function openCheckPopup(url) {
+    var popup = window.open(url, 'findCatalogCheck', 'width=980,height=760,resizable=yes,scrollbars=yes');
+
+    if (!popup) {
+      alert('Não foi possível abrir o popup. Verifique o bloqueador de pop-up.');
+      return;
+    }
+
+    var reloaded = false;
+    var reloadPage = function() {
+      if (reloaded) return;
+      reloaded = true;
+      window.location.reload();
+    };
+
+    // Tenta fechar automaticamente após a chamada e recarrega a tela.
+    setTimeout(function() {
+      try {
+        if (!popup.closed) {
+          popup.close();
+        }
+      } catch (e) {
+        // Ignora falha no fechamento e segue observando.
+      }
+    }, 3500);
+
+    var watcher = setInterval(function() {
+      if (popup.closed) {
+        clearInterval(watcher);
+        reloadPage();
+      }
+    }, 300);
+  }
+</script>

@@ -33,15 +33,15 @@ class CheckerModel
         }
 
         $rsp = "Itens encontrados: " . count($items) . '<br>';
+        $data[] = [];
+        $data['content'] = '';
 
         foreach ($items as $item) {
-
             $rsp .= '<br>'.$this->updateDataTitleAuthor($item);
-            $data['content'] = '<tt>' . $rsp . '</tt>';
-            return view('components/content', $data);
-
-            return $result;
+            $data['content'] = $data['content'] .'<tt>' . $rsp . '</tt><br>';
         }
+        pre($data);
+        return view('components/content', $data);
     }
 
     function updateDataTitleAuthor($item)
@@ -73,8 +73,12 @@ class CheckerModel
 
         if ($i_manifestation > 0) {
             $dados3 = $rdf->le($i_manifestation);
+            pre($dados3);
             $dados = array_merge($dados, $dados3['data']);
         }
+
+
+
 
         $Title = '';
         $Author = '';

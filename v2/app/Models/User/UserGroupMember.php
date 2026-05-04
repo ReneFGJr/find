@@ -46,6 +46,20 @@ class UserGroupMember extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
+    function getGroupsByLibrary($library = null, $userId = null)
+    {
+        if ($library === null) {
+            return [];
+        }
+        $dt = $this->where('grm_library', $library)->where('grm_user', $userId)->findAll();
+        $perfil = [0,0,0,0,0,0,0,0];
+        foreach ($dt as $row) {
+            $id = $row['grm_group'] -1;
+            $perfil[$id] = 1;
+        }
+        return $perfil;
+    }
+
     function addToGroup($us, $group, $library)
     {
         $RSP = [];
