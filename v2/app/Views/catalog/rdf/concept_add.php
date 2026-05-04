@@ -28,6 +28,48 @@
 </div>
 
 <script>
+    function closePanelAndReload() {
+        // Tenta recarregar a janela pai (quando aberto em modal/iframe/popup).
+        var targetWindow = (window.opener && !window.opener.closed) ? window.opener : window.parent;
+
+        if (targetWindow && targetWindow !== window) {
+            try {
+                if (targetWindow.location && typeof targetWindow.location.reload === 'function') {
+                    targetWindow.location.reload();
+                }
+            } catch (e) {
+                // Ignora erro de mesma-origem e segue com fechamento local.
+            }
+        }
+
+        // Fecha componentes Bootstrap, se existirem.
+        try {
+            var modalEl = document.querySelector('.modal.show');
+            if (modalEl && window.bootstrap && bootstrap.Modal) {
+                var modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                modal.hide();
+            }
+
+            var offcanvasEl = document.querySelector('.offcanvas.show');
+            if (offcanvasEl && window.bootstrap && bootstrap.Offcanvas) {
+                var offcanvas = bootstrap.Offcanvas.getInstance(offcanvasEl) || new bootstrap.Offcanvas(offcanvasEl);
+                offcanvas.hide();
+            }
+        } catch (e) {
+            // Se não houver Bootstrap disponível, continua fluxo.
+        }
+
+        // Se for popup, tenta fechar.
+        try {
+            window.close();
+        } catch (e) {
+            // Ignora falha de fechamento.
+        }
+
+        // Garantia final: recarrega a própria tela.
+        window.location.reload();
+    }
+
     function formAddNewData(conceptId, idC, type, prop, formID) {
         var select = document.getElementById('conceptResults');
         var idS = select ? select.value : '';
@@ -41,8 +83,7 @@
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
-                        return true;
-                        // Aqui você pode atualizar a interface, fechar painel, etc.
+                        closePanelAndReload();
                     } else {
                         alert('Erro: ' + (response.message || 'Não foi possível vincular o conceito.'));
                     }
