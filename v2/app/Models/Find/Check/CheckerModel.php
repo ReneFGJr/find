@@ -72,7 +72,6 @@ class CheckerModel
 
         if ($i_manifestation > 0) {
             $dados3 = $rdf->le($i_manifestation);
-            pre($dados3);
             $dados = array_merge($dados, $dados3['data']);
         }
 
