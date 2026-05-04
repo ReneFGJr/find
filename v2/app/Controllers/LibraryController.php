@@ -134,7 +134,8 @@ class LibraryController extends BaseController
             'book' => $book,
             'library' => $library,
             'itemInfo' => $row,
-            'meta' => $meta
+            'meta' => $meta,
+            'perfil' => $this->perfil,
         ]);
     }
 

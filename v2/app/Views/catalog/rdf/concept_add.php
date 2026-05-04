@@ -15,6 +15,7 @@ if (empty($rangeClasses) && isset($range)) {
     }
 }
 $rangeClasses = array_values(array_unique($rangeClasses));
+$singleRangeClass = count($rangeClasses) === 1 ? (string) $rangeClasses[0] : '';
 ?>
 
 <div class="container my-4">
@@ -42,9 +43,9 @@ $rangeClasses = array_values(array_unique($rangeClasses));
             <div class="input-group m-2 mb-3">
                 <span class="input-group-text">Classe</span>
                 <select class="form-select" id="conceptClass">
-                    <option value="">Selecione a classe</option>
+                    <option value="" <?= $singleRangeClass !== '' ? '' : 'selected' ?>>Selecione a classe</option>
                     <?php foreach ($rangeClasses as $className) { ?>
-                        <option value="<?= esc($className) ?>"><?= esc($className) ?></option>
+                        <option value="<?= esc($className) ?>" <?= $singleRangeClass === (string) $className ? 'selected' : '' ?>><?= esc($className) ?></option>
                     <?php } ?>
                 </select>
                 <button class="btn btn-outline-success" type="button" id="btnCreateConcept" title="Criar conceito" onclick="createConcept()">
@@ -225,4 +226,12 @@ $rangeClasses = array_values(array_unique($rangeClasses));
         // Função placeholder para evitar erro. Implemente conforme necessário.
         // Exemplo: console.log('Conceito selecionado:', conceptId);
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var classSelect = document.getElementById('conceptClass');
+        var onlyRangeClass = <?= json_encode($singleRangeClass) ?>;
+        if (classSelect && onlyRangeClass && classSelect.options.length > 1) {
+            classSelect.value = onlyRangeClass;
+        }
+    });
 </script>

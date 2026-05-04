@@ -32,8 +32,31 @@
     <div class="tab-content border border-top-0 p-4 bg-white" id="itemTabContent">
         <div class="tab-pane fade <?= $activeTab === 'item' ? 'show active' : '' ?>" id="tabItem" role="tabpanel" aria-labelledby="tab-item">
             <div class="mb-3">
-                <input type="text" class="form-control" value="<?= htmlspecialchars($item ?? '') ?>" readonly>
-                <?= view('Libraries/item_simple', ['book' => $book]); ?>
+                <input type="text" class="form-control mb-3" value="<?= htmlspecialchars($item ?? '') ?>" readonly>
+                <?php
+                $isbn = $book['i_identifier'] ?? '';
+                $coverSrc = function_exists('cover_image') ? cover_image($isbn) : base_url('assets/img/no_cover.png');
+                ?>
+                <div class="row g-3 align-items-start">
+                    <div class="col-lg-9 col-md-8">
+                        <?= view('Libraries/item_simple', ['book' => $book]); ?>
+                    </div>
+                    <div class="col-lg-3 col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-light">Capa</div>
+                            <div class="card-body text-center">
+                                <img src="<?= esc($coverSrc) ?>" alt="Capa do item" class="img-fluid rounded border" style="max-height: 320px; object-fit: contain;">
+                                <?php if (!empty($canCatalogItem) && !empty($book['id_i'])) { ?>
+                                    <div class="mt-3 d-grid">
+                                        <a href="<?= base_url('item/' . (int) $book['id_i']) ?>" class="btn btn-primary">
+                                            <i class="bi bi-journal-check me-1"></i> Catalogar
+                                        </a>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="tab-pane fade <?= $activeTab === 'work' ? 'show active' : '' ?>" id="tabWork" role="tabpanel" aria-labelledby="tab-work">
