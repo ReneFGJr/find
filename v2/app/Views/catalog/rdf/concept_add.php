@@ -27,6 +27,18 @@ $rangeClasses = array_values(array_unique($rangeClasses));
                 </button>
             </div>
 
+            <select class="form-select mb-3 mt-3" id="conceptResults" size="8" onchange="showConceptDetails(this.value)">
+                <option value="">Selecione um conceito</option>
+            </select>
+
+            <button class="btn btn-outline-danger mb-3" type="button" id="btnAddConcept" title="Adicionar Novo Conceito" onclick="formAddNewData(document.getElementById('conceptResults').value,'<?= $idC; ?>','CONCEPT','<?= $prop ?>','<?= $formID; ?>', true)">
+                <i class="bi bi-plus"></i> Adicionar  Conceito
+            </button>
+
+            <button class="btn btn-outline-primary mb-3" type="button" id="btnAddConceptContinue" title="Adicionar e continuar" onclick="formAddNewData(document.getElementById('conceptResults').value,'<?= $idC; ?>','CONCEPT','<?= $prop ?>','<?= $formID; ?>', false)">
+                <i class="bi bi-plus-circle"></i> Adicionar e continuar
+            </button>
+
             <div class="input-group m-2 mb-3">
                 <span class="input-group-text">Classe</span>
                 <select class="form-select" id="conceptClass">
@@ -39,18 +51,6 @@ $rangeClasses = array_values(array_unique($rangeClasses));
                     <i class="bi bi-node-plus"></i> Criar conceito
                 </button>
             </div>
-
-            <select class="form-select mb-3 mt-3" id="conceptResults" size="8" onchange="showConceptDetails(this.value)">
-                <option value="">Selecione um conceito</option>
-            </select>
-
-            <button class="btn btn-outline-secondary mb-3" type="button" id="btnAddConcept" title="Adicionar Novo Conceito" onclick="formAddNewData(document.getElementById('conceptResults').value,'<?= $idC; ?>','CONCEPT','<?= $prop ?>','<?= $formID; ?>', true)">
-                <i class="bi bi-plus"></i> Adicionar Novo Conceito
-            </button>
-
-            <button class="btn btn-outline-primary mb-3" type="button" id="btnAddConceptContinue" title="Adicionar e continuar" onclick="formAddNewData(document.getElementById('conceptResults').value,'<?= $idC; ?>','CONCEPT','<?= $prop ?>','<?= $formID; ?>', false)">
-                <i class="bi bi-plus-circle"></i> Adicionar e continuar
-            </button>
 
             <button class="btn btn-outline-secondary mb-3" type="button" id="btnBack" title="Voltar" onclick="closePanelAndReload()">
                 <i class="bi bi-arrow-left"></i> Voltar
