@@ -16,6 +16,7 @@
                     <i class="bi bi-search"></i> Buscar
                 </button>
             </form>
+
         </div>
         <div class="col-md-10">
             <?php
