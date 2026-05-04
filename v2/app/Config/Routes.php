@@ -106,6 +106,7 @@ $routes->group('catalog', function ($routes) {
 
     // Catalogar Item //
     $routes->get('item/form', 'Catalog::form_item');
+    $routes->match(['get', 'post'], 'item/tab', 'Catalog::set_form_item_tab');
 
     // utilitários //
     $routes->get('util', 'Catalog::util');

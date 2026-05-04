@@ -262,6 +262,12 @@ class Catalog extends BaseController
             exit;
         }
 
+        $activeTab = (string) session()->get('catalog_form_item_tab');
+        $allowedTabs = ['item', 'work', 'expression', 'manifestation'];
+        if (!in_array($activeTab, $allowedTabs, true)) {
+            $activeTab = 'item';
+        }
+
         $form = [
             'book' => $dt,
             'item' => $item,
@@ -270,10 +276,27 @@ class Catalog extends BaseController
             'manifestation' => $rdfForm->getForm('M', $i_manifestation, $libraryID),
             'i_work' => $i_work,
             'i_expression' => $i_expression,
-            'i_manifestation' => $i_manifestation
+            'i_manifestation' => $i_manifestation,
+            'activeTab' => $activeTab
         ];
 
         return view('catalog/form_item', $form);
+    }
+
+    public function set_form_item_tab()
+    {
+        $tab = strtolower((string) ($this->request->getPost('tab') ?? $this->request->getGet('tab') ?? ''));
+        $allowedTabs = ['item', 'work', 'expression', 'manifestation'];
+        if (!in_array($tab, $allowedTabs, true)) {
+            $tab = 'item';
+        }
+
+        session()->set('catalog_form_item_tab', $tab);
+
+        return $this->response->setJSON([
+            'success' => true,
+            'tab' => $tab,
+        ]);
     }
 
     public function import_marc21()
