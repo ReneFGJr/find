@@ -14,8 +14,12 @@
                 <option value="">Selecione um conceito</option>
             </select>
 
-            <button class="btn btn-outline-secondary mb-3" type="button" id="btnAddConcept" title="Adicionar Novo Conceito" onclick="formAddNewData(document.getElementById('conceptResults').value,'<?= $idC; ?>','CONCEPT','<?= $prop ?>','<?= $formID; ?>')">
+            <button class="btn btn-outline-secondary mb-3" type="button" id="btnAddConcept" title="Adicionar Novo Conceito" onclick="formAddNewData(document.getElementById('conceptResults').value,'<?= $idC; ?>','CONCEPT','<?= $prop ?>','<?= $formID; ?>', true)">
                 <i class="bi bi-plus"></i> Adicionar Novo Conceito
+            </button>
+
+            <button class="btn btn-outline-primary mb-3" type="button" id="btnAddConceptContinue" title="Adicionar e continuar" onclick="formAddNewData(document.getElementById('conceptResults').value,'<?= $idC; ?>','CONCEPT','<?= $prop ?>','<?= $formID; ?>', false)">
+                <i class="bi bi-plus-circle"></i> Adicionar e continuar
             </button>
 
             <button class="btn btn-outline-secondary mb-3" type="button" id="btnBack" title="Voltar" onclick="window.history.back()">
@@ -70,7 +74,22 @@
         window.location.reload();
     }
 
-    function formAddNewData(conceptId, idC, type, prop, formID) {
+    function resetConceptForm() {
+        var searchInput = document.getElementById('searchConcept');
+        var select = document.getElementById('conceptResults');
+
+        if (searchInput) {
+            searchInput.value = '';
+            searchInput.focus();
+        }
+
+        if (select) {
+            select.innerHTML = '<option value="">Selecione um conceito</option>';
+            select.value = '';
+        }
+    }
+
+    function formAddNewData(conceptId, idC, type, prop, formID, closeAfterAdd) {
         var select = document.getElementById('conceptResults');
         var idS = select ? select.value : '';
         if (type == 'CONCEPT') {
@@ -83,7 +102,11 @@
                 dataType: 'json',
                 success: function(response) {
                     if (response.success) {
-                        closePanelAndReload();
+                        if (closeAfterAdd === false) {
+                            resetConceptForm();
+                        } else {
+                            closePanelAndReload();
+                        }
                     } else {
                         alert('Erro: ' + (response.message || 'Não foi possível vincular o conceito.'));
                     }
