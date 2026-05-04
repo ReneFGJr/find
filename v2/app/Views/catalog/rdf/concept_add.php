@@ -22,7 +22,7 @@
                 <i class="bi bi-plus-circle"></i> Adicionar e continuar
             </button>
 
-            <button class="btn btn-outline-secondary mb-3" type="button" id="btnBack" title="Voltar" onclick="window.history.back()">
+            <button class="btn btn-outline-secondary mb-3" type="button" id="btnBack" title="Voltar" onclick="closePanelAndReload()">
                 <i class="bi bi-arrow-left"></i> Voltar
             </button>
         </div>

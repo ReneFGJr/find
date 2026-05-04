@@ -36,8 +36,16 @@
                 id_d: id_d
             }, function(response) {
                 alert(response.message);
-                // Recarrega a página para atualizar os dados
-                location.reload();
+                // Recarrega a tela na mesma aba (mesmo se estiver em iframe/painel).
+                try {
+                    if (window.top && window.top.location) {
+                        window.top.location.reload();
+                        return;
+                    }
+                } catch (e) {
+                    // Ignora e faz fallback local.
+                }
+                window.location.reload();
             });
         }
     }
