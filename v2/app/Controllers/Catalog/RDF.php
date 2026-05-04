@@ -15,6 +15,46 @@ class RDF extends BaseController
     {
         pre("OI - concept",false);
         $params = $this->request->getGet() ?? $this->request->getPost() ?? [];
+
+        $rangeRaw = $params['range'] ?? [];
+        if (is_string($rangeRaw)) {
+            $decoded = json_decode($rangeRaw, true);
+            if (is_array($decoded)) {
+                $rangeList = $decoded;
+            } else {
+                $tmp = str_replace(['[', ']', '"', "'"], '', $rangeRaw);
+                $tmp = str_replace(['|', ';'], ',', $tmp);
+                $rangeList = array_map('trim', explode(',', $tmp));
+            }
+        } elseif (is_array($rangeRaw)) {
+            $rangeList = $rangeRaw;
+        } else {
+            $rangeList = [];
+        }
+
+        $rangeList = array_values(array_filter(array_map('strval', $rangeList), static function ($v) {
+            return trim($v) !== '';
+        }));
+
+        $params['range'] = $rangeList;
+
+        $rangeClassNames = [];
+        if (!empty($rangeList)) {
+            $RDF_Class = new \App\Models\Find\Rdf\RDF_Class();
+            foreach ($rangeList as $entry) {
+                if (is_numeric($entry)) {
+                    $row = $RDF_Class->select('c_class')->where('id_c', (int) $entry)->first();
+                    if (!empty($row['c_class'])) {
+                        $rangeClassNames[] = $row['c_class'];
+                    }
+                } else {
+                    $row = $RDF_Class->select('c_class')->where('c_class', $entry)->first();
+                    $rangeClassNames[] = !empty($row['c_class']) ? $row['c_class'] : $entry;
+                }
+            }
+        }
+        $params['rangeClassNames'] = array_values(array_unique(array_filter($rangeClassNames)));
+
         //pre($params,false); // Debug: exibe os parâmetros recebidos
         // Renderize uma view simples (ajuste o caminho conforme necessário)
         return view('catalog/rdf/concept_add', $params);

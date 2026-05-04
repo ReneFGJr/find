@@ -1,4 +1,21 @@
 <?= view('layout/header', ['title' => 'Cadastro da Autoridade • FIND']); ?>
+<?php
+$rangeClasses = isset($rangeClassNames) && is_array($rangeClassNames) ? $rangeClassNames : [];
+if (empty($rangeClasses) && isset($range)) {
+    if (is_array($range)) {
+        $rangeClasses = $range;
+    } else {
+        $rangeRaw = (string) $range;
+        $rangeRaw = str_replace(['[', ']', '"', "'"], '', $rangeRaw);
+        $rangeRaw = str_replace(['|', ';'], ',', $rangeRaw);
+        $parts = array_map('trim', explode(',', $rangeRaw));
+        $rangeClasses = array_values(array_filter($parts, static function ($v) {
+            return $v !== '';
+        }));
+    }
+}
+$rangeClasses = array_values(array_unique($rangeClasses));
+?>
 
 <div class="container my-4">
     <div class="row">
@@ -7,6 +24,19 @@
                 <input type="text" id="searchConcept" class="form-control" placeholder="Buscar conceito..." oninput="searchConcepts(this.value)">
                 <button class="btn btn-outline-secondary" type="button" id="btnSearchConcept" title="Buscar" onclick="searchConcepts(document.getElementById('searchConcept').value)">
                     <i class="bi bi-search"></i>
+                </button>
+            </div>
+
+            <div class="input-group m-2 mb-3">
+                <span class="input-group-text">Classe</span>
+                <select class="form-select" id="conceptClass">
+                    <option value="">Selecione a classe</option>
+                    <?php foreach ($rangeClasses as $className) { ?>
+                        <option value="<?= esc($className) ?>"><?= esc($className) ?></option>
+                    <?php } ?>
+                </select>
+                <button class="btn btn-outline-success" type="button" id="btnCreateConcept" title="Criar conceito" onclick="createConcept()">
+                    <i class="bi bi-node-plus"></i> Criar conceito
                 </button>
             </div>
 
@@ -87,6 +117,47 @@
             select.innerHTML = '<option value="">Selecione um conceito</option>';
             select.value = '';
         }
+    }
+
+    function createConcept() {
+        var termInput = document.getElementById('searchConcept');
+        var classSelect = document.getElementById('conceptClass');
+
+        var term = termInput ? termInput.value.trim() : '';
+        var conceptClass = classSelect ? classSelect.value : '';
+
+        if (!term) {
+            alert('Informe o termo para criar o conceito.');
+            if (termInput) termInput.focus();
+            return;
+        }
+
+        if (!conceptClass) {
+            alert('Selecione a classe do conceito.');
+            if (classSelect) classSelect.focus();
+            return;
+        }
+
+        $.ajax({
+            url: '<?= base_url(); ?>/rdf/concept/create_concept',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                term: term,
+                class: conceptClass
+            },
+            success: function(response) {
+                if (response && response.success) {
+                    alert(response.message || 'Conceito criado com sucesso.');
+                    searchConcepts(term);
+                } else {
+                    alert('Erro: ' + ((response && response.message) ? response.message : 'Não foi possível criar o conceito.'));
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('Erro na requisição: ' + error);
+            }
+        });
     }
 
     function formAddNewData(conceptId, idC, type, prop, formID, closeAfterAdd) {
