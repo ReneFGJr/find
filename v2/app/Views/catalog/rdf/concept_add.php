@@ -31,7 +31,7 @@ $rangeClasses = array_values(array_unique($rangeClasses));
                 <option value="">Selecione um conceito</option>
             </select>
 
-            <button class="btn btn-outline-danger mb-3" type="button" id="btnAddConcept" title="Adicionar Novo Conceito" onclick="formAddNewData(document.getElementById('conceptResults').value,'<?= $idC; ?>','CONCEPT','<?= $prop ?>','<?= $formID; ?>', true)">
+            <button class="btn btn-outline-success mb-3" type="button" id="btnAddConcept" title="Adicionar Novo Conceito" onclick="formAddNewData(document.getElementById('conceptResults').value,'<?= $idC; ?>','CONCEPT','<?= $prop ?>','<?= $formID; ?>', true)">
                 <i class="bi bi-plus"></i> Adicionar  Conceito
             </button>
 
