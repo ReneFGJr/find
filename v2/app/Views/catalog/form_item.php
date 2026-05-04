@@ -28,6 +28,9 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link <?= $activeTab === 'manifestation' ? 'active' : '' ?>" id="tab-manifestation" data-bs-toggle="tab" data-bs-target="#tabManifestation" type="button" role="tab" aria-controls="tabManifestation" aria-selected="<?= $activeTab === 'manifestation' ? 'true' : 'false' ?>">Manifestation</button>
         </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link <?= $activeTab === 'rdf' ? 'active' : '' ?>" id="tab-rdf" data-bs-toggle="tab" data-bs-target="#tabRdf" type="button" role="tab" aria-controls="tabRdf" aria-selected="<?= $activeTab === 'rdf' ? 'true' : 'false' ?>">RDF</button>
+        </li>
     </ul>
     <div class="tab-content border border-top-0 p-4 bg-white" id="itemTabContent">
         <div class="tab-pane fade <?= $activeTab === 'item' ? 'show active' : '' ?>" id="tabItem" role="tabpanel" aria-labelledby="tab-item">
@@ -72,6 +75,23 @@
         <div class="tab-pane fade <?= $activeTab === 'manifestation' ? 'show active' : '' ?>" id="tabManifestation" role="tabpanel" aria-labelledby="tab-manifestation">
             <div class="mb-3">
                 <?= view('catalog/form_item/form_rdf_edit', ['form' => $manifestation, 'f' => 'MANIFESTATION', 'idC' => $i_manifestation]); ?>
+            </div>
+        </div>
+        <div class="tab-pane fade <?= $activeTab === 'rdf' ? 'show active' : '' ?>" id="tabRdf" role="tabpanel" aria-labelledby="tab-rdf">
+            <div class="mb-3">
+                <div class="card">
+                    <div class="card-header bg-light">RDF do Item</div>
+                    <div class="card-body">
+                        <pre class="mb-0" style="max-height:400px;overflow:auto;white-space:pre-wrap;word-break:break-word;"><?= htmlspecialchars($rdf ?? ''); ?></pre>
+
+                        <h3>Work</h3>
+                        <?php pre($work, false); ?>
+                        <h3>Expression</h3>
+                        <?php pre($expression, false); ?>
+                        <h3>Manifestation</h3>
+                        <?php pre($manifestation, false); ?>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
