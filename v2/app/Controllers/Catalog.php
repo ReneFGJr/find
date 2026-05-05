@@ -200,6 +200,46 @@ class Catalog extends BaseController
         ]);
     }
 
+    public function metadadoSearchLocal($item)
+    {
+        if ($item['i_work'] == 0) {
+            $RDF = new \App\Models\Find\Rdf\RDF();
+            $isbn = 'ISBN:' . $item['i_identifier'];
+
+            $dt = $RDF->getWorkByItem($isbn);
+            foreach ($dt as $d) {
+                if ($d['c_class'] == 'Manifestation') {
+                    $i_manifestation = $d['id_cc'];
+                    $dt = $RDF->le($i_manifestation);
+                    $i_expression = $RDF->recoverMetadata($dt, 'isAppellationOfManifestation');
+                    if ($i_expression) {
+                        $dt = $RDF->le($i_expression);
+                        $i_work = $RDF->recoverMetadata($dt, 'isAppellationOfExpression');
+
+                        if (($i_work > 0) and ($i_expression > 0) and ($i_manifestation > 0)) {
+                            $RDF_Item = new \App\Models\Find\Items\Index();
+                            $dd['i_work'] = $i_work;
+                            $dd['i_expression'] = $i_expression;
+                            $dd['i_manifestation'] = $i_manifestation;
+                            $RDF_Item->set($dd)->where('id_i', $item['id_i'])->update();
+                            $item = $RDF_Item->find($item['id_i']);
+
+                            $CheckerModel = new \App\Models\Find\Check\CheckerModel();
+                            $isbn = $item['i_identifier'] ?? '';
+                            return $CheckerModel->checkFindItem($isbn);
+
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+
+
+
     public function metadadoSearch($IdItem = null)
     {
         $itemModel = new ItemModel();
@@ -209,7 +249,6 @@ class Catalog extends BaseController
 
         if ($resp = $this->denyIfNoPermission()) return $resp;
 
-
         $resultados = null;
         $busca = $this->request->getGet('busca');
 
@@ -217,6 +256,12 @@ class Catalog extends BaseController
 
         if ($IdItem) {
             $itemInfo = $itemModel->find($IdItem);
+
+            if ($this->metadadoSearchLocal($itemInfo))
+                {
+                    $itemInfo = $itemModel->find($IdItem);
+                }
+
             /*
             if ($CheckerModel->updateDataTitleAuthor($itemInfo) != "") {
                 $itemInfo = $itemModel->find($IdItem);
@@ -420,7 +465,9 @@ class Catalog extends BaseController
         $libraryCode = get_cookie('library_code') ?? get_cookie('library') ?? '';
 
         /* Recupera local do COOKIE para pré-selecionar no formulário, se disponível */
-        $local = get_cookie($libraryCode . 'local') ?? '';
+        $cookieName = 'libraryPlace' . $libraryCode;
+        $local = get_cookie($cookieName) ?? '';
+
         $places = [];
         $statusResumo = [];
         if ($libraryCode) {
@@ -456,17 +503,16 @@ class Catalog extends BaseController
             $auto_gerar = $this->request->getPost('auto_gerar') !== null ? true : false;
             $local = $this->request->getPost('local');
 
-            if ($local != '')
-                {
-                    // Salva em cookie permanente (1 ano) o valor de $local para a biblioteca
-                    $cookieName = $libraryCode . 'local';
-                    set_cookie([
-                        'name'   => $cookieName,
-                        'value'  => is_array($local) ? json_encode($local) : $local,
-                        'expire' => 60*60*24*365, // 1 ano
-                        'path'   => '/',
-                    ]);
-                }
+            if ($local != '') {
+                // Salva em cookie permanente (1 ano) o valor de $local para a biblioteca
+                $cookieName = 'libraryPlace' . $libraryCode;
+                set_cookie([
+                    'name'   => $cookieName,
+                    'value'  => $local,
+                    'expire' => 60 * 60 * 24 * 365, // 1 ano
+                    'path'   => '/',
+                ]);
+            }
 
             // Funções auxiliares para ISBN
             $isbn = $this->normalizeIsbn($isbn);
@@ -504,7 +550,7 @@ class Catalog extends BaseController
                             'item' => $item,
                             'patrimonio' => '',
                             'auto_gerar' => true,
-                            'local' => '',
+                            'local' => $local,
                             'places' => $places,
                             'statusResumo' => $statusResumo
                         ]);
@@ -642,6 +688,6 @@ class Catalog extends BaseController
             }
         }
 
-        return view('catalog/tombo', ['book' => $book, 'msg'=>$message, 'row' => $row ?? null, 'library' => $library ?? null, 'meta' => $meta ?? []]);
+        return view('catalog/tombo', ['book' => $book, 'msg' => $message, 'row' => $row ?? null, 'library' => $library ?? null, 'meta' => $meta ?? []]);
     }
 }

@@ -81,7 +81,7 @@ class Item extends BaseController
                 break;
             default:
                 $data['nr_etiquetas'] = count($Labels->getLabels(2));
-                return view('Find/Labels/index',$data);
+                return view('find/Labels/index',$data);
                 break;
         }
         echo json_encode($RSP);

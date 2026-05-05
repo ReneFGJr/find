@@ -218,8 +218,36 @@ class Index extends Model
         return $LT;
     }
 
+    public function changeData()
+        {
+            $RDF_Data = new \App\Models\Find\Rdf\RDF_Data();
+            $dt = $RDF_Data
+                ->select('id_d, d_r1, d_r2, d_p, id_cc, cc_class')
+                ->join('rdf_concept', 'd_r1 = id_cc')
+                ->join('rdf_class', 'id_c = cc_class')
+                ->where('d_p', 5)
+                ->where('id_c', 16)
+                ->findAll(1000);
+            $dd = [];
+            $dd['d_p'] = 17;
+
+            foreach ($dt as $line) {
+                $id = $line['id_d'];
+                $RDF_Data->set($dd)->where('id_d', $id)->update();
+            }
+            if (count($dt) > 0) {
+                echo "Processados " . count($dt) . " registros. Continuando...";
+                echo '<meta http-equiv="refresh" content="0;">';
+                exit;
+            }
+            return count($dt);
+        }
+
     public function rebuildAllFields($offset, $limit = 100)
     {
+        if ($offset == 0) {
+            $this->changeData();
+        }
         $CheckerModel = new CheckerModel();
 
         $dt = $this

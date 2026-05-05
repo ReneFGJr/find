@@ -126,6 +126,38 @@ class RDF extends Model
         return $RSP;
     }
 
+    function recoverMetadata($dt, $prop) {
+        if (isset($dt['data'])) {
+            $dt = $dt['data'];
+        } else {
+            return null;
+        }
+        $ID = 0;
+        foreach ($dt as $id => $line) {
+
+            if ($line['Property'] == $prop) {
+                $ID = $line['ID'];
+            }
+        }
+        if ($ID > 0) {
+            return $ID;
+        } else {
+            return null;
+        }
+    }
+
+
+    function getWorkByItem($name, $Class = 'Work')
+    {
+        $RDF_Name = new \App\Models\Find\Rdf\RDF_Name();
+        $dt = $RDF_Name
+            ->join('rdf_concept', 'cc_pref_term = id_n', 'left')
+            ->join('rdf_class', 'cc_class = id_c', 'left')
+            ->where('n_name', $name)
+            ->findAll();
+        return $dt;
+    }
+
     function getRemissive($id)
     {
         $dt = $this

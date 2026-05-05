@@ -84,4 +84,7 @@ class Autoload extends AutoloadConfig
      * @var array<int, string>
      */
     public $files = [];
+
+
+    public $helpers = ['sisdoc', 'nbr', 'url', 'session','cookie'];
 }

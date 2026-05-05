@@ -11,6 +11,29 @@ class Concept extends Controller
 {
     use ResponseTrait;
 
+    function view_concept($idc=0)
+    {
+        if ($idc <= 0) {
+            return $this->respond([
+                'status'  => 400,
+                'success' => false,
+                'message' => 'ID do conceito é obrigatório e deve ser maior que zero'
+            ], 400);
+        }
+        $RDF = new \App\Models\Find\Rdf\RDF();
+        $concept = $RDF->le($idc);
+
+        if (!$concept) {
+            return $this->respond([
+                'status'  => 404,
+                'success' => false,
+                'message' => 'Conceito não encontrado'
+            ], 404);
+        }
+
+        return view('find/rdf/concept_view', ['concept' => $concept]);
+    }
+
     function create_concept()
         {
             $RDF = new \App\Models\Find\Rdf\RDF();

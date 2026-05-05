@@ -155,6 +155,7 @@ $routes->group('rdf', function ($routes) {
     $routes->get('concept/add_link_concept', 'Find\\Rdf\\Concept::add_link_concept');
     // Adiciona literal RDF
     $routes->post('form/adicionar_literal', 'Find\\Rdf\\Form::adicionar_literal');
+    $routes->get('v/(:num)', 'Find\\Rdf\\Concept::view_concept/$1');
 });
 
 $routes->group('admin', function ($routes) {

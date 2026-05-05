@@ -2,8 +2,6 @@
 
 namespace App\Models\Find\Check;
 
-helper(['sisdoc','nbr']);
-
 class CheckerModel
 {
     /**
