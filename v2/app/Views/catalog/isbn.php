@@ -22,7 +22,7 @@ include(APPPATH.'Views/layout/header.php'); ?>
                     <input type="text" class="form-control" id="patrimonio" name="patrimonio" placeholder="Definir manualmente" value="<?= htmlspecialchars($patrimonio ?? '') ?>" <?= (isset($auto_gerar) && $auto_gerar) ? 'readonly' : '' ?> >
                 </div>
                 <div class="mb-3">
-                    <label for="local" class="form-label">Local de catalogação</label>
+                    <label for="local" class="form-label">Local de catalogação</label> -- <?= htmlspecialchars($local ?? 'XXXX') ?>
                     <select class="form-select" id="local" name="local" required>
                         <option value="">Selecione o local</option>
                         <?php if (!empty($places)) : foreach($places as $p) : ?>

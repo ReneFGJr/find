@@ -417,6 +417,9 @@ class Catalog extends BaseController
 
         // Buscar locais de catalogação (todas as bibliotecas ou da biblioteca atual)
         $libraryCode = get_cookie('library_code') ?? get_cookie('library') ?? '';
+
+        /* Recupera local do COOKIE para pré-selecionar no formulário, se disponível */
+        $local = get_cookie($libraryCode . 'local') ?? '';
         $places = [];
         $statusResumo = [];
         if ($libraryCode) {
@@ -445,11 +448,24 @@ class Catalog extends BaseController
             }
         }
 
+
         if ($this->request->getMethod() === 'post') {
             $isbn = preg_replace('/[^0-9Xx]/', '', strtoupper($this->request->getPost('isbn')));
             $patrimonio = $this->request->getPost('patrimonio');
             $auto_gerar = $this->request->getPost('auto_gerar') !== null ? true : false;
             $local = $this->request->getPost('local');
+
+            if ($local != '')
+                {
+                    // Salva em cookie permanente (1 ano) o valor de $local para a biblioteca
+                    $cookieName = $libraryCode . 'local';
+                    set_cookie([
+                        'name'   => $cookieName,
+                        'value'  => is_array($local) ? json_encode($local) : $local,
+                        'expire' => 60*60*24*365, // 1 ano
+                        'path'   => '/',
+                    ]);
+                }
 
             // Funções auxiliares para ISBN
             $isbn = $this->normalizeIsbn($isbn);
@@ -517,6 +533,7 @@ class Catalog extends BaseController
         } else {
             $auto_gerar = true; // default checked
         }
+
         // Mensagem de sucesso por GET
         if (empty($msg) && $this->request->getGet('msg')) {
             $msg = '<div class="alert alert-success">' . htmlspecialchars($this->request->getGet('msg')) . '</div>';
@@ -527,7 +544,7 @@ class Catalog extends BaseController
             'item' => null,
             'patrimonio' => '',
             'auto_gerar' => true,
-            'local' => '',
+            'local' => $local,
             'places' => $places,
             'statusResumo' => $statusResumo
         ]);
