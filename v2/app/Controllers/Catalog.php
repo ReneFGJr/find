@@ -253,9 +253,10 @@ class Catalog extends BaseController
         $Item = new \App\Models\Find\Items\Index();
         $dt = $Item->where('id_i', $item)->first();
         $id = $dt['id_i'] ?? 0;
+
         $i_work = $dt['i_work'] ?? 0;
         $i_expression = $dt['i_expression'] ?? 0;
-        $i_manifestation = $dt['id_i'] ?? 0;
+        $i_manifestation = $dt['i_manifestation'] ?? 0;
 
         if ($i_work == 0 || $i_expression == 0 || $i_manifestation == 0) {
             echo "<div class='alert alert-danger'>Item não encontrado ou com dados incompletos (Work: $i_work, Expression: $i_expression, Manifestation: $i_manifestation).</div>";

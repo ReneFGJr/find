@@ -75,9 +75,9 @@ function linkRDF($id)
                         <tr>
                             <th class="text-end">IDs</th>
                             <td class="small text-secondary">
-                                Work: <?= linkRDF(htmlspecialchars($itemInfo['i_work'] ?? '')) ?></br>
-                                Expression: <?= linkRDF(htmlspecialchars($itemInfo['i_expression'] ?? '')) ?></br>
-                                Manifestation: <?= linkRDF(htmlspecialchars($itemInfo['i_manifestation'] ?? '')) ?></br>
+                                Work: <?= (htmlspecialchars($itemInfo['i_work'] ?? '')) ?></br>
+                                Expression: <?= (htmlspecialchars($itemInfo['i_expression'] ?? '')) ?></br>
+                                Manifestation: <?= (htmlspecialchars($itemInfo['i_manifestation'] ?? '')) ?></br>
                         </tr>
                     </tbody>
                 </table>
