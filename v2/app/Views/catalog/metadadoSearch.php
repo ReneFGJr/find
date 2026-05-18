@@ -32,68 +32,81 @@
             </div>
 
 
+            <?php
+            $semWork = (int)($itemInfo['i_work'] ?? 0) === 0 && (int)($itemInfo['i_expression'] ?? 0) === 0;
+            $isbnProcessavel = strpos((string)($itemInfo['i_identifier'] ?? ''), '100') === 0;
+            ?>
             <!-- Botoes de ação -->
             <div class="mb-4 d-flex gap-2">
 
-                <a href="<?= base_url('catalog/item/form') ?>?item=<?= $itemInfo['id_i']; ?>" class="btn btn-outline-warning" type="button">
-                    <i class="bi bi-file-earmark-arrow-down me-1"></i> Catalogar
-                </a>
-                <!------------------------ Importar Z39.50 ------------------------>
-                <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#z3950Panel" aria-controls="z3950Panel">
-                    <i class="bi bi-file-earmark-arrow-down me-1"></i> Importar Z39.50
-                </button>
-                <!-- Painel lateral para Importar Z39.50 -->
-                <div class="offcanvas offcanvas-end" tabindex="-1" id="z3950Panel" aria-labelledby="z3950PanelLabel" style="width:100%;max-width:700px;">
-                    <div class="offcanvas-header">
-                        <h5 class="offcanvas-title" id="z3950PanelLabel">Importar Z39.50</h5>
-                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
-                    </div>
-                    <div class="offcanvas-body">
-                        <iframe id="z3950Iframe" style="width:100%;height:70vh;border:0;"></iframe>
-                        <div class="mt-3 text-end">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Fechar</button>
+                <?php if ($semWork && $isbnProcessavel): ?>
+                    <a href="<?= base_url('catalog/catalogar/processar_obra/' . (int)$itemInfo['id_i']) ?>" class="btn btn-outline-success" type="button">
+                        <i class="bi bi-gear me-1"></i> Processar obra
+                    </a>
+               <?php endif; ?>
+                    <a href="<?= base_url('catalog/item/form') ?>?item=<?= $itemInfo['id_i']; ?>"
+                        class="btn btn-outline-warning<?= $semWork ? ' disabled' : '' ?>"
+                        <?= $semWork ? 'aria-disabled="true" tabindex="-1"' : '' ?>>
+                        <i class="bi bi-file-earmark-arrow-down me-1"></i>
+                        <?= empty(trim((string)($itemInfo['i_titulo'] ?? ''))) ? 'Cadastrar obra' : 'Catalogar' ?>
+                    </a>
+                    <!------------------------ Importar Z39.50 ------------------------>
+                    <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#z3950Panel" aria-controls="z3950Panel">
+                        <i class="bi bi-file-earmark-arrow-down me-1"></i> Importar Z39.50
+                    </button>
+                    <!-- Painel lateral para Importar Z39.50 -->
+                    <div class="offcanvas offcanvas-end" tabindex="-1" id="z3950Panel" aria-labelledby="z3950PanelLabel" style="width:100%;max-width:700px;">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title" id="z3950PanelLabel">Importar Z39.50</h5>
+                            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <iframe id="z3950Iframe" style="width:100%;height:70vh;border:0;"></iframe>
+                            <div class="mt-3 text-end">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Fechar</button>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!------------------------ Importar MARC21 ------------------------>
-                <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#marc21Panel" aria-controls="marc21Panel">
-                    <i class="bi bi-file-earmark-arrow-down me-1"></i> Importar MARC21
-                </button>
-                <!-- Painel lateral para Importar MARC21 -->
-                <div class="offcanvas offcanvas-end" tabindex="-1" id="marc21Panel" aria-labelledby="marc21PanelLabel" style="width:100%;max-width:700px;">
-                    <div class="offcanvas-header">
-                        <h5 class="offcanvas-title" id="marc21PanelLabel">Importar MARC21</h5>
-                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
-                    </div>
-                    <div class="offcanvas-body">
-                        <iframe id="marc21Iframe" style="width:100%;height:70vh;border:0;"></iframe>
-                        <div class="mt-3 text-end">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Fechar</button>
+                    <!------------------------ Importar MARC21 ------------------------>
+                    <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#marc21Panel" aria-controls="marc21Panel" <?= $semWork ? 'disabled' : '' ?>>
+                        <i class="bi bi-file-earmark-arrow-down me-1"></i> Importar MARC21
+                    </button>
+                    <!-- Painel lateral para Importar MARC21 -->
+                    <div class="offcanvas offcanvas-end" tabindex="-1" id="marc21Panel" aria-labelledby="marc21PanelLabel" style="width:100%;max-width:700px;">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title" id="marc21PanelLabel">Importar MARC21</h5>
+                            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <iframe id="marc21Iframe" style="width:100%;height:70vh;border:0;"></iframe>
+                            <div class="mt-3 text-end">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Fechar</button>
+                            </div>
                         </div>
                     </div>
-                </div>
             </div>
             <!---------- Botões para ações adicionais ---------->
             <div class="mb-4 d-flex gap-2">
                 <!-- Botão para Procurar Capa -->
-                <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#coverPanel" aria-controls="coverPanel">
+                <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#coverPanel" aria-controls="coverPanel" <?= $semWork ? 'disabled' : '' ?>>
                     <i class="bi bi-file-earmark-arrow-down me-1"></i> Procurar Capa
                 </button>
                 <!-- Botão para Verificar Dados -->
-                <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#checkPanel" aria-controls="checkPanel">
+                <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#checkPanel" aria-controls="checkPanel" <?= $semWork ? 'disabled' : '' ?>>
                     <i class="bi bi-arrow-clockwise"></i> Verificar Dados
                 </button>
                 <!-- Botão para Editar Etiqueta -->
                 <button class="btn btn-outline-warning" type="button"
-                        data-bs-toggle="offcanvas"
-                        data-bs-target="#labelEditPanel"
-                        aria-controls="labelEditPanel"
-                        style="display: <?php if ($itemInfo['i_titulo'] == '') {
-                                            echo 'none';
-                                        } else {
-                                            echo 'block';
-                                        } ?>;">
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#labelEditPanel"
+                    aria-controls="labelEditPanel"
+                    <?= $semWork ? 'disabled' : '' ?>
+                    style="display: <?php if ($itemInfo['i_titulo'] == '') {
+                                        echo 'none';
+                                    } else {
+                                        echo 'block';
+                                    } ?>;">
                     <i class="bi bi-pencil-square"></i> Editar Etiqueta
                 </button>
 

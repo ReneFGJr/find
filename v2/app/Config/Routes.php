@@ -77,6 +77,8 @@ $routes->group('catalog', function ($routes) {
     $routes->get('catalogar/phase/(:num)', 'Catalog::catalogar_phase/$1');
     $routes->get('catalogar/metadadoSearch/(:num)', 'Catalog::metadadoSearch/$1');
     $routes->post('catalogar/metadadoSearch/(:num)', 'Catalog::metadadoSearch/$1');
+    $routes->get('catalogar/processar_obra/(:num)', 'Catalog::processar_obra/$1');
+    $routes->get('catalogar/criar_exemplar/(:num)', 'Catalog::criar_exemplar/$1');
     $routes->post('catalogar/excluir', 'Catalog::excluir_exemplar');
 
     $routes->get('catalogar/no_action/(:num)', 'Catalog::no_action/$1');
@@ -90,6 +92,7 @@ $routes->group('catalog', function ($routes) {
     // Nova rota para redirecionamento sem parâmetro
     $routes->get('catalogar/metadadoSearch', 'Catalog::metadadoSearchRedirect');
     $routes->match(['post', 'get'],'catalogar/no_isbn', 'Catalog::no_isbn');
+    $routes->post('catalogar/no_isbn_create', 'Catalog::no_isbn_create');
 
     // Adicione outras rotas de catalogação aqui se necessário
     $routes->get('check', 'Catalog::checkerModel');

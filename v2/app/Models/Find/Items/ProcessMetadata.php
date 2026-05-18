@@ -59,6 +59,13 @@ class ProcessMetadata extends Model
         return $idDW;
     }
 
+    public function processNoISBN(string $title, $isbn = null)
+        {
+            $data = [];
+            $data['data']['gasTitle'] = $title;
+            $this->processZ3950Result($data, $isbn);
+        }
+
     public function processZ3950Result($z3950_result, $isbn = null)
     {
         $RSP = [];

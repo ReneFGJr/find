@@ -29,21 +29,89 @@ class Catalog extends BaseController
     {
         $Cover = new \App\Models\Find\Cover\Index();
         $search = $this->request->getPost('titleWork');
+        $titleWork = $search;
+        $results = [];
+
         if ($search) {
             $itemModel = new ItemModel();
-            $cp = 'i_titulo, i_identifier, i_autores, max(id_i) as id';
+            $cp = 'id_i, i_titulo, i_identifier, i_autores';
             $search = strtolower(ascii($search));
+            // Remove caracteres especiais para busca consistente
+            $search = preg_replace('/[^\p{L}0-9 ]/u', '', $search);
+            // Divide por espaços para busca por palavras
+            $words = array_filter(explode(' ', trim($search)));
 
-            $results = $itemModel
-                ->select($cp)
-                ->like('i_titulo', $search)->orLike('i_autores', $search)
-                ->groupBy('i_titulo, i_identifier, i_autores')
-                ->findAll(20);
+            $query = $itemModel->select($cp);
+
+            // Adiciona condition para cada palavra com AND
+            if (!empty($words)) {
+                foreach ($words as $word) {
+                    $query = $query->like('i_search', $word);
+                }
+            }
+
+            $results = $query->findAll(20);
+
             foreach ($results as $id => $result) {
                 $results[$id]['cover'] = $Cover->cover($result['i_identifier']);
             }
         }
-        return view('catalog/no_isbn', ['titleWork' => $search, 'results' => $results ?? []]);
+        return view('catalog/no_isbn', ['titleWork' => $titleWork, 'results' => $results]);
+    }
+
+    public function no_isbn_create()
+    {
+        if ($resp = $this->denyIfNoPermission()) return $resp;
+
+        $titleWork = trim((string) ($this->request->getPost('titleWork') ?? ''));
+        if ($titleWork === '') {
+            return redirect()->to('/catalog/catalogar/no_isbn')->with('msg', 'Informe o título da obra.');
+        }
+
+        $libraryCode = get_cookie('library_code') ?? get_cookie('library') ?? '';
+        if (!$libraryCode) {
+            return redirect()->to('/bibliotecas')->with('msg', 'Escolha uma biblioteca antes de continuar.');
+        }
+
+        $itemModel = new ItemModel();
+
+        // Gera identificador: "100" + hash numérico do título padronizado (sem acentos, caixa baixa)
+        $normalized = strtolower(ascii($titleWork));
+        $baseIdentifier = '100' . abs(crc32($normalized));
+
+        // Garante unicidade: incrementa sufixo numérico se já existir
+        $identifier = $baseIdentifier;
+        $suffix = 1;
+        while ($itemModel->where('i_identifier', $identifier)->first()) {
+            $identifier = $baseIdentifier . $suffix;
+            $suffix++;
+        }
+
+        $data = [
+            'i_identifier'     => $identifier,
+            'i_titulo'         => $titleWork,
+            'i_library'        => $libraryCode,
+            'i_tombo'          => $itemModel->nextTombo($libraryCode),
+            'i_exemplar'       => 1,
+            'i_status'         => 1,
+            'i_created'        => date('Y-m-d H:i:s'),
+            'i_ip'             => $this->request->getIPAddress(),
+            'i_search'         => strtolower(ascii($titleWork)),
+            'i_work'           => 0,
+            'i_expression'     => 0,
+            'i_manifestation'  => 0,
+            'i_dt_emprestimo'  => '0000-00-00',
+            'i_dt_prev'        => 0,
+            'i_dt_renovavao'   => 0,
+        ];
+
+        $newId = $itemModel->insert($data);
+
+        if (!$newId) {
+            return redirect()->to('/catalog/catalogar/no_isbn')->with('msg', 'Erro ao cadastrar obra.');
+        }
+
+        return redirect()->to('/catalog/catalogar/metadadoSearch/' . (int) $newId);
     }
 
     public function rebuildModel()
@@ -239,6 +307,92 @@ class Catalog extends BaseController
 
 
 
+
+    public function criar_exemplar($id = null)
+    {
+        if ($resp = $this->denyIfNoPermission()) return $resp;
+
+        if (!$id) {
+            return redirect()->to('/catalog/catalogar/no_isbn')->with('msg', 'Item não informado.');
+        }
+
+        $itemModel = new ItemModel();
+        $sourceItem = $itemModel->find((int) $id);
+
+        if (!$sourceItem) {
+            return redirect()->to('/catalog/catalogar/no_isbn')->with('msg', 'Item não encontrado.');
+        }
+
+        $libraryCode = get_cookie('library_code') ?? get_cookie('library') ?? '';
+        if (!$libraryCode) {
+            return redirect()->to('/bibliotecas')->with('msg', 'Escolha uma biblioteca antes de continuar.');
+        }
+
+        // Verifica se o item já existe nesta biblioteca
+        $existsInLibrary = $itemModel
+            ->where('i_identifier', $sourceItem['i_identifier'])
+            ->where('i_library', $libraryCode)
+            ->first();
+
+        if ($existsInLibrary) {
+            // Item já existe na biblioteca, cria novo exemplar
+            $newExemplar = $itemModel->nextExemplar($sourceItem['i_identifier'], $libraryCode);
+            $newTombo = $itemModel->nextTombo($libraryCode);
+        } else {
+            // Primeiro exemplar na biblioteca
+            $newExemplar = 1;
+            $newTombo = $itemModel->nextTombo($libraryCode);
+        }
+
+        $newData = [
+            'i_identifier'     => $sourceItem['i_identifier'],
+            'i_titulo'         => $sourceItem['i_titulo'],
+            'i_autores'        => $sourceItem['i_autores'],
+            'i_library'        => $libraryCode,
+            'i_tombo'          => $newTombo,
+            'i_exemplar'       => $newExemplar,
+            'i_status'         => $sourceItem['i_status'] ?? 1,
+            'i_created'        => date('Y-m-d H:i:s'),
+            'i_ip'             => $this->request->getIPAddress(),
+            'i_search'         => $sourceItem['i_search'] ?? strtolower(ascii($sourceItem['i_titulo'] ?? '')),
+            'i_work'           => $sourceItem['i_work'] ?? 0,
+            'i_expression'     => $sourceItem['i_expression'] ?? 0,
+            'i_manifestation'  => $sourceItem['i_manifestation'] ?? 0,
+            'i_dt_emprestimo'  => '0000-00-00',
+            'i_dt_prev'        => 0,
+            'i_dt_renovavao'   => 0,
+        ];
+
+        $newId = $itemModel->insert($newData);
+
+        if (!$newId) {
+            return redirect()->to('/catalog/catalogar/no_isbn')->with('msg', 'Erro ao criar novo exemplar.');
+        }
+
+        return redirect()->to('/catalog/catalogar/metadadoSearch/' . (int) $newId)->with('msg', 'Novo exemplar criado com sucesso!');
+    }
+
+    public function processar_obra($id = null)
+    {
+        if ($resp = $this->denyIfNoPermission()) return $resp;
+
+        if ($id) {
+            $itemModel = new ItemModel();
+            $itemInfo = $itemModel->find((int) $id);
+            if ($itemInfo) {
+                // Normaliza o título com nbr_title
+                $title = $itemInfo['i_titulo'] ?? '';
+                $title = nbr_title($title);
+                $isbn = $itemInfo['i_identifier'] ?? '';
+
+                // Chama processNoISBN com título normalizado e ISBN
+                $ProcessMetadata = new \App\Models\Find\Items\ProcessMetadata();
+                $ProcessMetadata->processNoISBN($title, $isbn);
+            }
+        }
+
+        return redirect()->to('/catalog/catalogar/metadadoSearch/' . (int) $id);
+    }
 
     public function metadadoSearch($IdItem = null)
     {
