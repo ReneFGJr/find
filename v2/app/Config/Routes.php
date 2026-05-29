@@ -55,6 +55,17 @@ $routes->get('/busca-avancada', 'BuscaAvancada::index');
 
 $routes->get('/perfil', 'Perfil::index');
 
+$routes->group(
+    'emprestimo',
+    function ($routes) {
+    $routes->match(['get', 'post'], '/', 'Emprestimo::index');
+    $routes->post('bind-library', 'Emprestimo::bindLibrary');
+    $routes->post('unbind-library', 'Emprestimo::unbindLibrary');
+    $routes->match(['get', 'post'], 'loan', 'Emprestimo::loan');
+    $routes->match(['get', 'post'], 'return', 'Emprestimo::returnLoan');
+    }
+);
+
 /*************** About */
 $routes->group('about', function ($routes) {
     $routes->get('us', 'PagesController::about');
@@ -82,6 +93,12 @@ $routes->group('catalog', function ($routes) {
     $routes->post('catalogar/excluir', 'Catalog::excluir_exemplar');
 
     $routes->get('catalogar/no_action/(:num)', 'Catalog::no_action/$1');
+
+    $routes->group('emprestimo', function ($routes) {
+        $routes->match(['post', 'get'], '/', 'Emprestimo::rdf_concept_add');
+        $routes->match(['post', 'get'], 'loan', 'Emprestimo::loan');
+        $routes->match(['post', 'get'], 'return', 'Emprestimo::returnLoan');
+    });
 
     $routes->group('rdf', function ($routes) {
         $routes->match(['post','get'], 'concept_add', 'Catalog\\RDF::rdf_concept_add');

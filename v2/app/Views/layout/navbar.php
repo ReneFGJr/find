@@ -2,10 +2,46 @@
 helper('cookie');
 $isLoggedIn = (bool) session()->get('logged_in');
 $firstName = session()->get('first_name') ?: 'Usuário';
+$isAdmin = false;
+$isCatalogador = false;
+$isCatalogador = false;
 
 $library = get_cookie('library_code') ?? get_cookie('library') ?? '';
 $LibraryLogo = new \App\Models\Find\Library\Index();
 $logo = $LibraryLogo->logotype($library ?? '');
+
+if ($isLoggedIn) {
+    $userId = (int) (session()->get('id_us') ?? 0);
+
+    if ($userId > 0) {
+        $db = \Config\Database::connect();
+        $builder = $db->table('users_group_members m')
+            ->select('g.gr_name, g.gr_hash')
+            ->join('users_group g', 'g.id_gr = m.grm_group', 'left')
+            ->where('m.grm_user', $userId)
+            ->where('(m.grm_status = 1 OR m.grm_status IS NULL)');
+
+        if ($library !== '') {
+            $builder->where('m.grm_library', $library);
+        }
+
+        $rows = $builder->get()->getResultArray();
+
+        foreach ($rows as $row) {
+            $groupName = strtolower(trim((string) ($row['gr_name'] ?? '')));
+            $groupHash = strtoupper(trim((string) ($row['gr_hash'] ?? '')));
+
+            if ($groupHash === '#ADM' || $groupName === 'administrador' || $groupName === 'admin') {
+                $isAdmin = true;
+                break;
+            }
+            if ($groupHash === '#CAT' || $groupName === 'catalogador' || $groupName === 'cataloger') {
+                $isCatalogador = true;
+                break;
+            }
+        }
+    }
+}
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm sticky-top">
     <div class="container">
@@ -30,7 +66,7 @@ $logo = $LibraryLogo->logotype($library ?? '');
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
                 <li class="nav-item"><a class="nav-link active" href="<?= base_url('/'); ?>">Início</a></li>
                 <li class="nav-item d-lg-none"><a class="nav-link" href="<?= base_url('/bibliotecas'); ?>"><i class="bi bi-buildings me-1"></i> Bibliotecas</a></li>
-                <?php if ($isLoggedIn): ?>
+                <?php if ($isAdmin): ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="catalogacaoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Catalogação
@@ -44,6 +80,18 @@ $logo = $LibraryLogo->logotype($library ?? '');
                                 <hr class="dropdown-divider">
                             </li>
                             <li><a class="dropdown-item" href="<?= base_url('catalog/util'); ?>">Utilitários</a></li>
+                        </ul>
+                    </li>
+                <?php endif; ?>
+                <?php if ($isAdmin): ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="emprestimoDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Empréstimo
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="emprestimoDropdown">
+                            <li><a class="dropdown-item" href="<?= base_url('/emprestimo'); ?>">Usuários</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url('/emprestimo'); ?>">Empréstimo</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url('/emprestimo/return'); ?>">Devolução</a></li>
                         </ul>
                     </li>
                 <?php endif; ?>
