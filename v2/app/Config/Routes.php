@@ -62,6 +62,7 @@ $routes->group(
     $routes->post('bind-library', 'Emprestimo::bindLibrary');
     $routes->post('unbind-library', 'Emprestimo::unbindLibrary');
     $routes->match(['get', 'post'], 'loan', 'Emprestimo::loan');
+    $routes->match(['get', 'post'], 'relatorio', 'Emprestimo::relatorio');
     $routes->match(['get', 'post'], 'return', 'Emprestimo::returnLoan');
     }
 );

@@ -89,9 +89,8 @@ if ($isLoggedIn) {
                             Empréstimo
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="emprestimoDropdown">
-                            <li><a class="dropdown-item" href="<?= base_url('/emprestimo'); ?>">Usuários</a></li>
-                            <li><a class="dropdown-item" href="<?= base_url('/emprestimo'); ?>">Empréstimo</a></li>
-                            <li><a class="dropdown-item" href="<?= base_url('/emprestimo/return'); ?>">Devolução</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url('/emprestimo'); ?>">Empréstimo/Devolução</a></li>
+                            <li><a class="dropdown-item" href="<?= base_url('/emprestimo/relatorio'); ?>">Relatório</a></li>
                         </ul>
                     </li>
                 <?php endif; ?>

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\Find\Items\Historic as ItemHistoric;
 use App\Models\User\UserLibrary;
 
 helper('cookie');
@@ -29,11 +30,25 @@ class Emprestimo extends BaseController
         session()->remove($this->loanSessionKey($userId, $libraryCode));
     }
 
+    private function itemStatusLabel(int $status): string
+    {
+        $map = [
+            1 => 'Disponível',
+            2 => 'Reservado',
+            3 => 'Em processamento',
+            4 => 'Em restauração',
+            5 => 'Indisponível',
+            6 => 'Emprestado',
+        ];
+
+        return $map[$status] ?? 'Status desconhecido';
+    }
+
     private function getItemByTombo(string $libraryCode, int $tombo): ?array
     {
         $db = \Config\Database::connect();
         $row = $db->table('find_item')
-            ->select('id_i, i_tombo, i_titulo, i_identifier, i_status, i_library, i_library_place')
+            ->select('id_i, i_tombo, i_titulo, i_identifier, i_status, i_library, i_library_place, i_usuario, i_dt_prev')
             ->where('i_library', $libraryCode)
             ->where('i_tombo', $tombo)
             ->get()
@@ -270,6 +285,146 @@ class Emprestimo extends BaseController
         return $this->index();
     }
 
+    public function relatorio()
+    {
+        if ($resp = $this->denyIfNoPermission()) {
+            return $resp;
+        }
+
+        $libraryCode = trim((string) (get_cookie('library_code') ?? get_cookie('library') ?? ''));
+        if ($libraryCode === '') {
+            return redirect()->to('/bibliotecas')->with('msg', 'Selecione uma biblioteca.')->with('msg_type', 'warning');
+        }
+
+        $libraryModel = new \App\Models\Find\Library\Index();
+        $library = $libraryModel->getSelectedLibrary($libraryCode);
+        $libraryId = (int) ($library['id'] ?? 0);
+        $historyLibraryId = is_numeric($libraryCode) ? (int) $libraryCode : $libraryId;
+
+        $db = \Config\Database::connect();
+        $todayYmd = (int) date('Ymd');
+
+        $summaryRow = $db->table('find_item')
+            ->select('COUNT(*) AS total_emprestados', false)
+            ->select('SUM(CASE WHEN i_dt_prev > 0 AND i_dt_prev < ' . $todayYmd . ' THEN 1 ELSE 0 END) AS total_atrasados', false)
+            ->where('i_library', $libraryCode)
+            ->where('i_status', 6)
+            ->get()
+            ->getRowArray();
+
+        $totalEmprestados = (int) ($summaryRow['total_emprestados'] ?? 0);
+        $totalAtrasados = (int) ($summaryRow['total_atrasados'] ?? 0);
+        $totalEmDia = max(0, $totalEmprestados - $totalAtrasados);
+
+        $historyMeta = $this->resolveHistoryMeta($db);
+        $loanPeriods = [
+            '7' => 0,
+            '14' => 0,
+            '28' => 0,
+        ];
+        $topBorrowers = [];
+
+        if (!empty($historyMeta['table']) && !empty($historyMeta['code_col']) && !empty($historyMeta['date_col'])) {
+            $table = (string) $historyMeta['table'];
+            $codeCol = (string) $historyMeta['code_col'];
+            $dateCol = (string) $historyMeta['date_col'];
+            $libraryCol = (string) ($historyMeta['library_col'] ?? '');
+            $userCol = (string) ($historyMeta['user_col'] ?? '');
+
+            foreach ([7, 14, 28] as $days) {
+                $from = date('Y-m-d 00:00:00', strtotime('-' . $days . ' days'));
+
+                $builder = $db->table($table . ' h')
+                    ->select('COUNT(*) AS total', false)
+                    ->where('h.' . $codeCol, 701)
+                    ->where('h.' . $dateCol . ' >=', $from);
+
+                if ($libraryCol !== '') {
+                    $builder->where('h.' . $libraryCol, $historyLibraryId);
+                }
+
+                $row = $builder->get()->getRowArray();
+                $loanPeriods[(string) $days] = (int) ($row['total'] ?? 0);
+            }
+
+            if ($userCol !== '') {
+                $builderTop = $db->table($table . ' h')
+                    ->select('h.' . $userCol . ' AS id_us, u.us_nome, COUNT(*) AS total', false)
+                    ->join('users u', 'u.id_us = h.' . $userCol, 'left')
+                    ->where('h.' . $codeCol, 701)
+                    ->groupBy('h.' . $userCol)
+                    ->groupBy('u.us_nome')
+                    ->orderBy('total', 'DESC')
+                    ->limit(5);
+
+                if ($libraryCol !== '') {
+                    $builderTop->where('h.' . $libraryCol, $historyLibraryId);
+                }
+
+                $topRows = $builderTop->get()->getResultArray();
+                foreach ($topRows as $row) {
+                    $topBorrowers[] = [
+                        'id_us' => (int) ($row['id_us'] ?? 0),
+                        'us_nome' => trim((string) ($row['us_nome'] ?? '')) !== '' ? (string) $row['us_nome'] : 'Usuário #' . (int) ($row['id_us'] ?? 0),
+                        'total' => (int) ($row['total'] ?? 0),
+                    ];
+                }
+            }
+        }
+
+        return view('Emprestimo/relatorio', [
+            'library' => $library,
+            'totalEmprestados' => $totalEmprestados,
+            'totalAtrasados' => $totalAtrasados,
+            'totalEmDia' => $totalEmDia,
+            'loanPeriods' => $loanPeriods,
+            'topBorrowers' => $topBorrowers,
+        ]);
+    }
+
+    private function resolveHistoryMeta($db): array
+    {
+        $table = '';
+        if ($db->tableExists('find_item_historic')) {
+            $table = 'find_item_historic';
+        } elseif ($db->tableExists('itens_historico')) {
+            $table = 'itens_historico';
+        }
+
+        if ($table === '') {
+            return [
+                'table' => '',
+                'code_col' => '',
+                'date_col' => '',
+                'library_col' => '',
+                'user_col' => '',
+            ];
+        }
+
+        $fields = $db->getFieldNames($table);
+        $fields = is_array($fields) ? $fields : [];
+
+        return [
+            'table' => $table,
+            'code_col' => $this->firstExistingColumn($fields, ['h_code', 'ih_code', 'fih_code', 'code', 'status', 'action_code']),
+            'date_col' => $this->firstExistingColumn($fields, ['h_datetime', 'ih_datetime', 'fih_datetime', 'created_at', 'date', 'datetime']),
+            'library_col' => $this->firstExistingColumn($fields, ['h_library', 'ih_library', 'fih_library', 'library_id', 'id_library', 'library']),
+            'user_col' => $this->firstExistingColumn($fields, ['h_user', 'ih_user', 'fih_user', 'user_id', 'id_user']),
+        ];
+    }
+
+    private function firstExistingColumn(array $fields, array $candidates): string
+    {
+        foreach ($candidates as $candidate) {
+            if (in_array($candidate, $fields, true)) {
+                return $candidate;
+            }
+        }
+
+        return '';
+    }
+
+
     public function loan()
     {
         if ($resp = $this->denyIfNoPermission()) {
@@ -333,16 +488,50 @@ class Emprestimo extends BaseController
                     return redirect()->to('/emprestimo/loan?id_us=' . $userId)->with('msg', 'Tombo não encontrado para esta biblioteca.')->with('msg_type', 'warning');
                 }
 
-                // Livro sem localização cadastrada.
-                echo '<pre>';
-                print_r($item);
-                echo '</pre>';
+                // Se já está emprestado para o mesmo usuário, marcar para devolução.
+                if ((int) ($item['i_status'] ?? 0) === 6 && (int) ($item['i_usuario'] ?? 0) === $userId) {
+                    $item['loan_action'] = 'return';
+                    $cart[] = $item;
+                    $this->setLoanCart($userId, $libraryCode, $cart);
 
-                // Disponível para empréstimo somente quando status for 1.
-                if ((int) ($item['i_status'] ?? 0) > 5) {
-                    return redirect()->to('/emprestimo/loan?id_us=' . $userId)->with('msg', 'Livro não está disponível para empréstimo no momento.')->with('msg_type', 'warning');
+                    return redirect()->to('/emprestimo/loan?id_us=' . $userId)->with('msg', 'Tombo marcado para devolução.')->with('msg_type', 'info');
                 }
 
+                // Bloquear empréstimo somente quando status for superior a 5.
+                if ((int) ($item['i_status'] ?? 0) > 5) {
+                    $status = (int) ($item['i_status'] ?? 0);
+                    $msg = 'Livro não está disponível para empréstimo no momento. ';
+                    $msg .= 'Status atual: ' . $this->itemStatusLabel($status) . ' (' . $status . ').';
+
+                    if ($status === 6) {
+                        $holderId = (int) ($item['i_usuario'] ?? 0);
+                        $holderName = 'Usuário não identificado';
+                        if ($holderId > 0) {
+                            $holder = $db->table('users')
+                                ->select('us_nome')
+                                ->where('id_us', $holderId)
+                                ->get()
+                                ->getRowArray();
+                            $holderName = trim((string) ($holder['us_nome'] ?? ''));
+                            if ($holderName === '') {
+                                $holderName = 'Usuário #' . $holderId;
+                            }
+                        }
+
+                        $due = (int) ($item['i_dt_prev'] ?? 0);
+                        $dueText = 'não informada';
+                        if ($due > 0) {
+                            $dueStr = str_pad((string) $due, 8, '0', STR_PAD_LEFT);
+                            $dueText = substr($dueStr, 6, 2) . '/' . substr($dueStr, 4, 2) . '/' . substr($dueStr, 0, 4);
+                        }
+
+                        $msg .= ' Emprestado para: ' . $holderName . '. Previsão de devolução: ' . $dueText . '.';
+                    }
+
+                    return redirect()->to('/emprestimo/loan?id_us=' . $userId)->with('msg', $msg)->with('msg_type', 'warning');
+                }
+
+                $item['loan_action'] = 'loan';
                 $cart[] = $item;
                 $this->setLoanCart($userId, $libraryCode, $cart);
 
@@ -372,24 +561,62 @@ class Emprestimo extends BaseController
                     return redirect()->to('/emprestimo/loan?id_us=' . $userId)->with('msg', 'Nenhum item na lista para emprestar.')->with('msg_type', 'warning');
                 }
 
+                $hasLoanItems = false;
+                foreach ($cart as $it) {
+                    if ((string) ($it['loan_action'] ?? 'loan') === 'loan') {
+                        $hasLoanItems = true;
+                        break;
+                    }
+                }
+
                 $todayDate = date('Y-m-d');
                 $dueDate = trim((string) ($this->request->getPost('due_date') ?? ''));
-                if ($dueDate === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dueDate)) {
-                    $dueDate = date('Y-m-d', strtotime('+7 days'));
-                }
-                if ($dueDate < $todayDate) {
-                    return redirect()->to('/emprestimo/loan?id_us=' . $userId)->with('msg', 'A data de devolução não pode ser anterior a hoje.')->with('msg_type', 'warning');
+                if ($hasLoanItems) {
+                    if ($dueDate === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $dueDate)) {
+                        $dueDate = date('Y-m-d', strtotime('+7 days'));
+                    }
+                    if ($dueDate < $todayDate) {
+                        return redirect()->to('/emprestimo/loan?id_us=' . $userId)->with('msg', 'A data de devolução não pode ser anterior a hoje.')->with('msg_type', 'warning');
+                    }
                 }
 
                 $today = (int) date('Ymd');
-                $due = (int) date('Ymd', strtotime($dueDate));
+                $due = $hasLoanItems ? (int) date('Ymd', strtotime($dueDate)) : 0;
+                $sendEmail = (int) ($this->request->getPost('send_email') ?? 0) === 1;
+                $historyLibraryId = is_numeric($libraryCode) ? (int) $libraryCode : $libraryId;
+                $historyModel = new ItemHistoric();
+
+                $loanCount = 0;
+                $returnCount = 0;
 
                 $db->transBegin();
 
                 foreach ($cart as $it) {
                     $itemId = (int) ($it['id_i'] ?? 0);
                     $tombo = (int) ($it['i_tombo'] ?? 0);
+                    $itemAction = (string) ($it['loan_action'] ?? 'loan');
                     if ($itemId <= 0 || $tombo <= 0) {
+                        continue;
+                    }
+
+                    if ($itemAction === 'return') {
+                        $db->table('find_item')
+                            ->where('id_i', $itemId)
+                            ->where('i_tombo', $tombo)
+                            ->where('i_library', $libraryCode)
+                            ->where('i_usuario', $userId)
+                            ->where('i_status', 6)
+                            ->update([
+                                'i_status' => 1,
+                                'i_usuario' => 0,
+                                'i_dt_emprestimo' => 0,
+                                'i_dt_prev' => 0,
+                                'i_dt_renovavao' => 0,
+                            ]);
+                        $returnCount++;
+
+                        $historyModel->registerMovement(702, $userId, $tombo, $historyLibraryId, $itemId);
+
                         continue;
                     }
 
@@ -404,16 +631,9 @@ class Emprestimo extends BaseController
                             'i_dt_prev' => $due,
                             'i_dt_renovavao' => 0,
                         ]);
+                    $loanCount++;
 
-                    if ($db->tableExists('itens_historico')) {
-                        $db->table('itens_historico')->insert([
-                            'ih_code' => 701,
-                            'ih_datetime' => date('Y-m-d H:i:s'),
-                            'ih_user' => $userId,
-                            'ih_tombo' => $tombo,
-                            'ih_library' => is_numeric($libraryCode) ? (int) $libraryCode : $libraryId,
-                        ]);
-                    }
+                    $historyModel->registerMovement(701, $userId, $tombo, $historyLibraryId, $itemId);
                 }
 
                 if ($db->transStatus() === false) {
@@ -424,7 +644,12 @@ class Emprestimo extends BaseController
                 $db->transCommit();
                 $this->clearLoanCart($userId, $libraryCode);
 
-                return redirect()->to('/emprestimo')->with('msg', 'Empréstimo finalizado com sucesso.')->with('msg_type', 'success');
+                $msg = 'Finalização concluída: ' . $loanCount . ' empréstimo(s) e ' . $returnCount . ' devolução(ões).';
+                if ($sendEmail) {
+                    $msg .= ' Envio de e-mail solicitado.';
+                }
+
+                return redirect()->to('/emprestimo')->with('msg', $msg)->with('msg_type', 'success');
             }
         }
 
