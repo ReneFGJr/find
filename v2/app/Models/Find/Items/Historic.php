@@ -68,6 +68,29 @@ class Historic extends Model
         return null;
     }
 
+    private function strContainsCompat(string $haystack, string $needle): bool
+    {
+        if ($needle === '') {
+            return true;
+        }
+
+        return strpos($haystack, $needle) !== false;
+    }
+
+    private function strEndsWithCompat(string $haystack, string $needle): bool
+    {
+        if ($needle === '') {
+            return true;
+        }
+
+        $needleLen = strlen($needle);
+        if ($needleLen > strlen($haystack)) {
+            return false;
+        }
+
+        return substr($haystack, -$needleLen) === $needle;
+    }
+
     private function getClientIp(): string
     {
         try {
@@ -128,31 +151,31 @@ class Historic extends Model
 
             $colL = strtolower($col);
 
-            if ((str_contains($colL, 'date') || str_contains($colL, 'time') || str_ends_with($colL, '_dt')) && !str_contains($colL, 'update')) {
+            if (($this->strContainsCompat($colL, 'date') || $this->strContainsCompat($colL, 'time') || $this->strEndsWithCompat($colL, '_dt')) && !$this->strContainsCompat($colL, 'update')) {
                 $payload[$col] = $now;
                 continue;
             }
-            if (str_contains($colL, 'user')) {
+            if ($this->strContainsCompat($colL, 'user')) {
                 $payload[$col] = $userId;
                 continue;
             }
-            if (str_contains($colL, 'tombo')) {
+            if ($this->strContainsCompat($colL, 'tombo')) {
                 $payload[$col] = $tombo;
                 continue;
             }
-            if (str_contains($colL, 'library')) {
+            if ($this->strContainsCompat($colL, 'library')) {
                 $payload[$col] = $libraryId;
                 continue;
             }
-            if ((str_contains($colL, '_ip') || $colL === 'ip') && $clientIp !== '') {
+            if (($this->strContainsCompat($colL, '_ip') || $colL === 'ip') && $clientIp !== '') {
                 $payload[$col] = $clientIp;
                 continue;
             }
-            if ((str_contains($colL, 'item') || str_contains($colL, 'exemplar')) && $itemId !== null) {
+            if (($this->strContainsCompat($colL, 'item') || $this->strContainsCompat($colL, 'exemplar')) && $itemId !== null) {
                 $payload[$col] = $itemId;
                 continue;
             }
-            if (str_contains($colL, 'code') || str_contains($colL, 'status') || str_contains($colL, 'action')) {
+            if ($this->strContainsCompat($colL, 'code') || $this->strContainsCompat($colL, 'status') || $this->strContainsCompat($colL, 'action')) {
                 $payload[$col] = $code;
                 continue;
             }
