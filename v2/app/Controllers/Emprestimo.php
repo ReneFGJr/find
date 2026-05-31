@@ -285,6 +285,155 @@ class Emprestimo extends BaseController
         return $this->index();
     }
 
+    public function userForm(int $id = 0)
+    {
+        if ($resp = $this->denyIfNoPermission()) {
+            return $resp;
+        }
+
+        $libraryCode = trim((string) (get_cookie('library_code') ?? get_cookie('library') ?? ''));
+        if ($libraryCode === '') {
+            return redirect()->to('/bibliotecas')->with('msg', 'Selecione uma biblioteca.')->with('msg_type', 'warning');
+        }
+
+        $libraryModel = new \App\Models\Find\Library\Index();
+        $library = $libraryModel->getSelectedLibrary($libraryCode);
+        $libraryId = (int) ($library['id'] ?? 0);
+
+        $db = \Config\Database::connect();
+        $user = [
+            'id_us' => 0,
+            'us_nome' => '',
+            'us_email' => '',
+            'us_login' => '',
+        ];
+
+        if ($id > 0) {
+            $row = $db->table('users')
+                ->select('id_us, us_nome, us_email, us_login')
+                ->where('id_us', $id)
+                ->get()
+                ->getRowArray();
+
+            if (!$row) {
+                return redirect()->to('/emprestimo')->with('msg', 'Usuário não encontrado para edição.')->with('msg_type', 'warning');
+            }
+
+            $user = $row;
+        }
+
+        return view('Emprestimo/user_form', [
+            'library' => $library,
+            'libraryCode' => $libraryCode,
+            'libraryId' => $libraryId,
+            'user' => $user,
+            'isEdit' => $id > 0,
+        ]);
+    }
+
+    public function saveUser()
+    {
+        if ($resp = $this->denyIfNoPermission()) {
+            return $resp;
+        }
+
+        $libraryCode = trim((string) (get_cookie('library_code') ?? get_cookie('library') ?? ''));
+        $libraryModel = new \App\Models\Find\Library\Index();
+        $library = $libraryModel->getSelectedLibrary($libraryCode);
+        $libraryId = (int) ($library['id'] ?? 0);
+
+        if ($libraryId <= 0) {
+            return redirect()->to('/bibliotecas')->with('msg', 'Biblioteca não identificada.')->with('msg_type', 'warning');
+        }
+
+        $id = (int) ($this->request->getPost('id_us') ?? 0);
+        $name = trim((string) ($this->request->getPost('us_nome') ?? ''));
+        $email = trim((string) ($this->request->getPost('us_email') ?? ''));
+        $login = trim((string) ($this->request->getPost('us_login') ?? ''));
+        $password = (string) ($this->request->getPost('us_password') ?? '');
+
+        if ($name === '' || $email === '') {
+            return redirect()->back()->withInput()->with('msg', 'Nome e e-mail são obrigatórios.')->with('msg_type', 'warning');
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return redirect()->back()->withInput()->with('msg', 'E-mail inválido.')->with('msg_type', 'warning');
+        }
+
+        if ($login === '') {
+            $login = $email;
+        }
+
+        $db = \Config\Database::connect();
+
+        if ($id > 0) {
+            $exists = $db->table('users')
+                ->select('id_us')
+                ->where('id_us', $id)
+                ->get()
+                ->getRowArray();
+
+            if (!$exists) {
+                return redirect()->to('/emprestimo')->with('msg', 'Usuário não encontrado para atualização.')->with('msg_type', 'warning');
+            }
+
+            $loginConflict = $db->table('users')
+                ->select('id_us')
+                ->where('us_login', $login)
+                ->where('id_us !=', $id)
+                ->get()
+                ->getRowArray();
+
+            if ($loginConflict) {
+                return redirect()->back()->withInput()->with('msg', 'Login já utilizado por outro usuário.')->with('msg_type', 'warning');
+            }
+
+            $data = [
+                'us_nome' => $name,
+                'us_email' => $email,
+                'us_login' => $login,
+            ];
+            if (trim($password) !== '') {
+                $data['us_password'] = $password;
+            }
+
+            $db->table('users')->where('id_us', $id)->update($data);
+            $userId = $id;
+            $msg = 'Usuário atualizado com sucesso.';
+        } else {
+            $loginConflict = $db->table('users')
+                ->select('id_us')
+                ->where('us_login', $login)
+                ->get()
+                ->getRowArray();
+
+            if ($loginConflict) {
+                return redirect()->back()->withInput()->with('msg', 'Login já utilizado por outro usuário.')->with('msg_type', 'warning');
+            }
+
+            if (trim($password) === '') {
+                return redirect()->back()->withInput()->with('msg', 'Informe a senha para criar o usuário.')->with('msg_type', 'warning');
+            }
+
+            $db->table('users')->insert([
+                'us_nome' => $name,
+                'us_email' => $email,
+                'us_login' => $login,
+                'us_password' => $password,
+            ]);
+
+            $userId = (int) $db->insertID();
+            $msg = 'Usuário criado com sucesso.';
+        }
+
+        if ($userId > 0) {
+            $userLibrary = new UserLibrary();
+            $userLibrary->updateUserLibrary($userId, $libraryId);
+        }
+
+        return redirect()->to('/emprestimo')->with('msg', $msg)->with('msg_type', 'success');
+    }
+
     public function relatorio()
     {
         if ($resp = $this->denyIfNoPermission()) {

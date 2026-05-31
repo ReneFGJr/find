@@ -59,6 +59,9 @@ $routes->group(
     'emprestimo',
     function ($routes) {
     $routes->match(['get', 'post'], '/', 'Emprestimo::index');
+    $routes->get('user', 'Emprestimo::userForm');
+    $routes->get('user/(:num)', 'Emprestimo::userForm/$1');
+    $routes->post('user/save', 'Emprestimo::saveUser');
     $routes->post('bind-library', 'Emprestimo::bindLibrary');
     $routes->post('unbind-library', 'Emprestimo::unbindLibrary');
     $routes->match(['get', 'post'], 'loan', 'Emprestimo::loan');

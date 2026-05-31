@@ -5,6 +5,12 @@
 <div class="container my-4">
     <h2 class="mb-3">Usuários vinculados à biblioteca</h2>
 
+    <div class="d-flex justify-content-end mb-3">
+        <a href="<?= base_url('/emprestimo/user'); ?>" class="btn btn-outline-success">
+            <i class="bi bi-person-plus me-1"></i>Novo usuário
+        </a>
+    </div>
+
     <form class="row g-2 mb-3" method="get" action="">
         <div class="col-12 col-md-6">
             <input type="text" class="form-control" name="q" value="<?= esc($q ?? ''); ?>" placeholder="Pesquisar por nome ou e-mail">
@@ -30,6 +36,7 @@
                         <th>Nome</th>
                         <th>E-mail</th>
                         <th>Perfis</th>
+                        <th class="text-center">Editar</th>
                         <th class="text-center">Vínculo</th>
                     </tr>
                 </thead>
@@ -44,6 +51,11 @@
                             </td>
                             <td><?= esc($user['us_email']); ?></td>
                             <td><?= esc(implode(', ', $user['grupos'] ?? [])); ?></td>
+                            <td class="text-center">
+                                <a href="<?= base_url('/emprestimo/user/' . (int) $user['id_us']); ?>" class="btn btn-sm btn-outline-secondary" title="Editar usuário">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            </td>
                             <td class="text-center">
                                 <?php if (!empty($user['vinculado'])): ?>
                                     <form method="post" action="<?= base_url('/emprestimo/unbind-library'); ?>" class="d-inline">

@@ -3,6 +3,11 @@
 
 <div class="container my-4">
     <h2 class="mb-4">Usuários do Sistema</h2>
+    <div class="d-flex justify-content-end mb-3">
+        <a href="<?= base_url('/emprestimo/user'); ?>" class="btn btn-outline-success">
+            <i class="bi bi-person-plus me-1"></i>Cadastrar novo usuário
+        </a>
+    </div>
     <form class="row g-2 mb-3" method="get" action="">
         <div class="col-auto">
             <input type="text" class="form-control" name="q" value="<?= esc($q ?? '') ?>" placeholder="Buscar usuário...">
