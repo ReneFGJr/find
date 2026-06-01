@@ -15,6 +15,6 @@
             <input type="text" class="form-control" id="us_login" name="us_login" value="<?= esc($user['us_login']) ?>" required>
         </div>
         <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Salvar</button>
-        <a href="/admin/users" class="btn btn-secondary">Cancelar</a>
+        <a href="<?= base_url('/admin/users') ?>" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>

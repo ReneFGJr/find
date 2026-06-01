@@ -47,8 +47,8 @@
                         ?>
                     </td>
                     <td>
-                        <a href="/admin/user/profile/<?= esc($user['id_us']) ?>" class="btn btn-outline-info btn-sm" title="Ver perfil"><i class="bi bi-person"></i></a>
-                        <a href="/admin/user/edit/<?= esc($user['id_us']) ?>" class="btn btn-outline-primary btn-sm" title="Editar"><i class="bi bi-pencil"></i></a>
+                        <a href="<?= base_url() ?>/admin/user/profile/<?= esc($user['id_us']) ?>" class="btn btn-outline-info btn-sm" title="Ver perfil"><i class="bi bi-person"></i></a>
+                        <a href="<?= base_url() ?>/admin/user/edit/<?= esc($user['id_us']) ?>" class="btn btn-outline-primary btn-sm" title="Editar"><i class="bi bi-pencil"></i></a>
                     </td>
                 </tr>
             <?php endforeach; ?>

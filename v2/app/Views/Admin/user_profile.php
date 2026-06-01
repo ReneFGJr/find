@@ -23,7 +23,7 @@
             <!-- Adicione mais campos conforme necessário -->
         </div>
     </div>
-    <a href="/admin/users" class="btn btn-secondary">Voltar para lista</a>
+    <a href="<?= base_url('/admin/users') ?>" class="btn btn-secondary">Voltar para lista</a>
 </div>
 
 <?php include(APPPATH.'Views/layout/footer.php'); ?>
