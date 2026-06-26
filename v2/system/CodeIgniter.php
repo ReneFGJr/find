@@ -306,6 +306,8 @@ class CodeIgniter
 
         $this->spoofRequestMethod();
 
+        echo "OL"; exit;
+
         if ($this->request instanceof IncomingRequest && strtolower($this->request->getMethod()) === 'cli') {
             $this->response->setStatusCode(405)->setBody('Method Not Allowed');
 
