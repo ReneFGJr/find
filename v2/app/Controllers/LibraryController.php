@@ -100,7 +100,8 @@ class LibraryController extends BaseController
     {
         $cookieId = trim((string) (get_cookie('library_id') ?? ''));
         $cookieCode = trim((string) (get_cookie('library_code') ?? get_cookie('library') ?? ''));
-
+        echo "OK";
+        exit;
         if ($cookieId === '' && $cookieCode === '') {
             return redirect()->to('/bibliotecas')->with('msg', 'Escolha uma biblioteca antes de continuar.')->with('msg_type', 'warning');
         }
