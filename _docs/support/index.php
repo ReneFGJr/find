@@ -1,3 +1,3 @@
 <?php
-header("Location: http://ufrgs.br/find/v2", true, 301); // permanente
+header("Location: https://find.brapci.inf.br", true, 301); // permanente
 exit;
