@@ -14,8 +14,6 @@ class LibraryController extends BaseController
 
     private function loadPerfilForLibrary(string $libraryCode): array
     {
-        echo "OK";
-        exit;
         $userId = (int) (session()->get('id_us') ?? 0);
         $perfil = [
             'admin' => false,
@@ -60,8 +58,6 @@ class LibraryController extends BaseController
 
     public function bibliotecas()
     {
-        echo "OK";
-        exit;
         $model = new LibraryIndex();
         $libraries = $model->listAll();
         $selectedId = get_cookie('library') ?: get_cookie('library_code') ?: get_cookie('library_id');
@@ -74,8 +70,6 @@ class LibraryController extends BaseController
 
     public function select()
     {
-        echo "OK";
-        exit;
         $selection = trim((string) $this->request->getPost('library_id'));
         if ($selection === '') {
             $selection = trim((string) $this->request->getGet('library_id'));
@@ -104,11 +98,9 @@ class LibraryController extends BaseController
 
     public function library()
     {
-        echo "OK";
-        exit;
         $cookieId = trim((string) (get_cookie('library_id') ?? ''));
         $cookieCode = trim((string) (get_cookie('library_code') ?? get_cookie('library') ?? ''));
-        echo "OK"; exit;
+
         if ($cookieId === '' && $cookieCode === '') {
             return redirect()->to('/bibliotecas')->with('msg', 'Escolha uma biblioteca antes de continuar.')->with('msg_type', 'warning');
         }
@@ -147,8 +139,6 @@ class LibraryController extends BaseController
 
     public function item($id)
     {
-        echo "OK";
-        exit;
         $rdf = new \App\Models\Find\Rdf\RDF();
         $cookieCode = trim((string) (get_cookie('library_code') ?? get_cookie('library') ?? ''));
         if ($cookieCode === '') {
@@ -201,8 +191,6 @@ class LibraryController extends BaseController
 
     public function buscaResultado()
     {
-        echo "OK";
-        exit;
         $itemsModel = new ItemsIndex();
         $cookieId = trim((string) (get_cookie('library_id') ?? ''));
         $cookieCode = trim((string) (get_cookie('library_code') ?? get_cookie('library') ?? ''));
@@ -223,8 +211,6 @@ class LibraryController extends BaseController
 
     public function indexes($type='')
     {
-        echo "OK";
-        exit;
         $cookieCode = trim((string) (get_cookie('library_code') ?? get_cookie('library') ?? ''));
         if ($cookieCode === '') {
             return redirect()->to('/bibliotecas')->with('msg', 'Escolha uma biblioteca antes de continuar.')->with('msg_type', 'warning');
