@@ -294,6 +294,7 @@ class CodeIgniter
         if ($this->context === null) {
             throw new LogicException('Context must be set before run() is called. If you are upgrading from 4.1.x, you need to merge `public/index.php` and `spark` file from `vendor/codeigniter4/framework`.');
         }
+        echo "OK"; exit;
 
         static::$cacheTTL = 0;
 

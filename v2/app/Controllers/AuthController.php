@@ -9,8 +9,6 @@ class AuthController extends BaseController
 {
     public function index()
     {
-        echo "OK";
-        exit;
         return redirect()->to('/login');
     }
 
