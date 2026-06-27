@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 class Index extends Model
 {
     protected $DBGroup          = 'rdf2';
-    protected $table            = 'rdf_name';
+    protected $table            = 'RDF_name';
     protected $primaryKey       = 'id_n';
     protected $useAutoIncrement = true;
     protected $insertID         = 0;

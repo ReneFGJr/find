@@ -43,14 +43,14 @@ class Autocomplete extends Controller
             rdf_concept.id_cc,
             rdf_concept.cc_class,
             rdf_class.c_class,
-            rdf_name.n_name,
-            rdf_name.n_lang
+            RDF_name.n_name,
+            RDF_name.n_lang
         ");
 
         // 🔗 JOIN com nome preferido
         $builder->join(
-            "rdf_name",
-            "rdf_name.id_n = rdf_concept.cc_pref_term",
+            "RDF_name",
+            "RDF_name.id_n = rdf_concept.cc_pref_term",
             "inner"
         );
 
@@ -63,14 +63,14 @@ class Autocomplete extends Controller
 
         // 🔥 AND entre termos (precisão)
         foreach ($terms as $t) {
-            $builder->like("rdf_name.n_name", $t);
+            $builder->like("RDF_name.n_name", $t);
         }
 
         // 🔥 Prioridade para prefixo
         /*
         $builder->groupStart()
-            ->like("rdf_name.n_name", $term, 'after')
-            ->orLike("rdf_name.n_name", $term)
+            ->like("RDF_name.n_name", $term, 'after')
+            ->orLike("RDF_name.n_name", $term)
             ->groupEnd();
         */
 
@@ -78,7 +78,7 @@ class Autocomplete extends Controller
         $builder->whereIn("rdf_concept.cc_class", $range);
 
         // 🧠 Ordenação inteligente
-        $builder->orderBy("rdf_name.n_name", "ASC");
+        $builder->orderBy("RDF_name.n_name", "ASC");
 
         // 🚀 Limite
         $builder->limit(20);

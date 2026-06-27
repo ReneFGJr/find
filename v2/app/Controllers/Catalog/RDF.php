@@ -63,7 +63,7 @@ class RDF extends BaseController
     public function rdf_text_edit()
     {
         $RDF_Data = new \App\Models\Find\Rdf\RDF_Data();
-        $RDF_Name = new \App\Models\Find\Rdf\RDF_Name();
+        $RDF_name = new \App\Models\Find\Rdf\RDF_name();
 
         /************************* Salvar  */
         $action = $this->request->getPost('action');
@@ -79,7 +79,7 @@ class RDF extends BaseController
                     $idN = (int)$idN;
 
                     // Atualiza o valor da literal
-                    $RDF_Name->update($idN, ['n_name' => $textValue]);
+                    $RDF_name->update($idN, ['n_name' => $textValue]);
 
                     return $this->response->setBody('<script>window.parent.location.reload();</script>');
                 } else {
@@ -96,7 +96,7 @@ class RDF extends BaseController
             if ($data['d_literal'] == null) {
                 return redirect()->back()->with('error', 'O registro selecionado não é uma literal válida para edição.');
             }
-            $dataN = $RDF_Name->where('id_n', $data['d_literal'])->first();
+            $dataN = $RDF_name->where('id_n', $data['d_literal'])->first();
             $textValue = $dataN['n_name'] ?? '';
             $lang = $dataN['n_lang'] ?? '';
             $idD = $id;

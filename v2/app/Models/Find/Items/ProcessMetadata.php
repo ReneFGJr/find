@@ -37,8 +37,8 @@ class ProcessMetadata extends Model
     public function updateTitle($idW, $title, $isbn)
     {
         $RDF = new \App\Models\Find\Rdf\RDF();
-        $RDF_Name = new \App\Models\Find\Rdf\RDF_Name();
-        $idTitulo = $RDF_Name->createLiteral($title);
+        $RDF_name = new \App\Models\Find\Rdf\RDF_name();
+        $idTitulo = $RDF_name->createLiteral($title);
 
         /***** Checa propriedade */
         $data = $RDF->le($idW);
@@ -70,7 +70,7 @@ class ProcessMetadata extends Model
     {
         $RSP = [];
         $Item = new \App\Models\Find\Items\Index();
-        $RDF_Name = new \App\Models\Find\Rdf\RDF_Name();
+        $RDF_name = new \App\Models\Find\Rdf\RDF_name();
         $RDF = new \App\Models\Find\Rdf\RDF();
         $RDFdata = new \App\Models\Find\Rdf\RDF_Data();
 

@@ -106,7 +106,7 @@ class Index extends Model
     function clear_catalog()
         {
             $sx = '';
-            $sqlDB = ["books","rdf_data", "rdf_name", "rdf_concept", "rdf_concept", "books_expression"];
+            $sqlDB = ["books","rdf_data", "RDF_name", "rdf_concept", "rdf_concept", "books_expression"];
             foreach($sqlDB as $id=>$sql)
                 {
                     $sql = 'TRUNCATE find.'.$sql;

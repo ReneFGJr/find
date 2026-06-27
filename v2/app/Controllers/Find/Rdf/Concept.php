@@ -38,7 +38,7 @@ class Concept extends Controller
         {
             $RDF = new \App\Models\Find\Rdf\RDF();
             $RDF_Class = new \App\Models\Find\Rdf\RDF_Class();
-            $RDF_Name = new \App\Models\Find\Rdf\RDF_Name();
+            $RDF_name = new \App\Models\Find\Rdf\RDF_name();
 
 
             $term = $this->request->getPost('term') ?? $this->request->getGet('term') ?? '';

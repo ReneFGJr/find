@@ -61,7 +61,7 @@ class RDF_Form extends Model
                 INNER JOIN rdf_class ON form_property = id_c
                 LEFT JOIN rdf_data ON d_p = id_c and d_r1 = ?
                 LEFT JOIN rdf_concept ON id_cc = d_r2
-                LEFT JOIN rdf_name ON cc_pref_term = id_n
+                LEFT JOIN RDF_name ON cc_pref_term = id_n
                 WHERE form_frbr = ? and (form_library = ? or form_library = '1000')
                 AND form_range <> '[\"132\"]'
 
@@ -75,7 +75,7 @@ class RDF_Form extends Model
                 FROM rdf_form_class_2
                 INNER JOIN rdf_class ON form_property = id_c
                 LEFT JOIN rdf_data ON d_p = id_c and d_r2 = 0 and d_r1 = ?
-                LEFT JOIN rdf_name ON d_literal = id_n
+                LEFT JOIN RDF_name ON d_literal = id_n
                 WHERE form_frbr = ? and (form_library = ? or form_library = '1000' or form_library = '0') AND (form_range = '[\"132\"]')
             ) AS all_forms
             ORDER BY form_order

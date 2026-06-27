@@ -208,11 +208,11 @@ class Index extends Model
         $PREFIX = 'find.';
 
         $RDFConcept->select('rdf_class.c_class, rdf_class.id_c, rdf_class.c_type, rdf_class.c_url, rdf_class.c_equivalent');
-        $RDFConcept->select('rdf_name.n_name, rdf_name.n_lang, rdf_name.id_n');
+        $RDFConcept->select('RDF_name.n_name, RDF_name.n_lang, RDF_name.id_n');
         $RDFConcept->select('rdf_prefix.prefix_ref, rdf_prefix.prefix_url');
         $RDFConcept->select('rdf_concept.*');
 
-        $RDFConcept->join($PREFIX . 'rdf_name', 'cc_pref_term = rdf_name.id_n', 'LEFT');
+        $RDFConcept->join($PREFIX . 'RDF_name', 'cc_pref_term = RDF_name.id_n', 'LEFT');
         $RDFConcept->join($PREFIX . 'rdf_class', 'rdf_concept.cc_class = rdf_class.id_c', 'LEFT');
         $RDFConcept->join($PREFIX . 'rdf_prefix', 'rdf_class.c_prefix = rdf_prefix.id_prefix', 'LEFT');
         $RDFConcept->where('id_cc', $idx);
@@ -225,7 +225,7 @@ class Index extends Model
         $PREFIX = 'find.';
         $sql = "select ";
         $sql .= " DISTINCT
-    		rdf_name.id_n, rdf_name.n_name, rdf_name.n_lang,
+    		RDF_name.id_n, RDF_name.n_name, RDF_name.n_lang,
 			rdf_class.c_class, rdf_class.c_prefix, rdf_class.c_type,
 			rdf_prefix.prefix_ref, rdf_prefix.prefix_url,
     		rdf_data.*,
@@ -237,13 +237,13 @@ class Index extends Model
 
 			";
         $sql .= "from " . $PREFIX . "rdf_data ";
-        $sql .= "left join " . $PREFIX . "rdf_name ON d_literal = rdf_name.id_n ";
+        $sql .= "left join " . $PREFIX . "RDF_name ON d_literal = RDF_name.id_n ";
         $sql .= "left join " . $PREFIX . "rdf_class ON rdf_data.d_p = rdf_class.id_c ";
         $sql .= "left join " . $PREFIX . "rdf_prefix ON rdf_class.c_prefix = rdf_prefix.id_prefix ";
 
         $sql .= "left join " . $PREFIX . "rdf_concept as rc2 ON rdf_data.d_r2 = rc2.id_cc ";
         $sql .= "left join " . $PREFIX . "rdf_class as rc4 ON rc2.cc_class = rc4.id_c ";
-        $sql .= "left join " . $PREFIX . "rdf_name as n2 ON n2.id_n = rc2.cc_pref_term ";
+        $sql .= "left join " . $PREFIX . "RDF_name as n2 ON n2.id_n = rc2.cc_pref_term ";
 
 
         $sql .= "where (d_r1 = $idx) OR (d_r2 = $idx)";
@@ -257,7 +257,7 @@ class Index extends Model
         $Data = new \App\Models\Find\BooksOld\Data();
         $dd = $Data
             ->select('d_r1 as id_cc, n_name,n_lang, c_class,c_prefix,c_equivalent')
-            ->join('rdf_name', 'd_literal = id_n', 'LEFT')
+            ->join('RDF_name', 'd_literal = id_n', 'LEFT')
             ->join('rdf_class', 'd_p = id_c')
             ->where('d_r1', $idx)
             ->where('d_literal <> 0')
@@ -273,7 +273,7 @@ class Index extends Model
             ->select($cp)
             ->join('rdf_data', 'id_cc = d_r1')
             ->join('rdf_class', 'd_p = id_c')
-            ->join('rdf_name', 'd_literal = id_n', 'LEFT')
+            ->join('RDF_name', 'd_literal = id_n', 'LEFT')
             ->where('cc_class', 16)
             ->where('id_c', 5)
             ->findAll(0, 10);

@@ -4,11 +4,11 @@ namespace App\Models\Find\Rdf;
 use CodeIgniter\Model;
 
 /**
- * Model para a tabela rdf_name
+ * Model para a tabela RDF_name
  */
-class RDF_Name extends Model
+class RDF_name extends Model
 {
-    protected $table = 'rdf_name';
+    protected $table = 'RDF_name';
     protected $primaryKey = 'id_n';
     protected $allowedFields = [
         'n_name',
@@ -23,7 +23,7 @@ class RDF_Name extends Model
     protected $returnType = 'array';
 
     /**
-     * Cria ou retorna o id_n de um literal (nome) na tabela rdf_name
+     * Cria ou retorna o id_n de um literal (nome) na tabela RDF_name
      * - Remove espaços extras
      * - Busca case sensitive
      * - Garante não duplicidade
