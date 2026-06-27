@@ -208,7 +208,7 @@ class Index extends Model
         $PREFIX = 'find.';
 
         $RDFConcept->select('rdf_class.c_class, rdf_class.id_c, rdf_class.c_type, rdf_class.c_url, rdf_class.c_equivalent');
-        $RDFConcept->select('RDF_name.n_name, RDF_name.n_lang, RDF_name.id_n');
+        $RDFConcept->select('rdf_name.n_name, RDF_name.n_lang, RDF_name.id_n');
         $RDFConcept->select('rdf_prefix.prefix_ref, rdf_prefix.prefix_url');
         $RDFConcept->select('rdf_concept.*');
 
