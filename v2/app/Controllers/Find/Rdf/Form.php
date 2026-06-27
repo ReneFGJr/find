@@ -47,7 +47,7 @@ class Form extends BaseController
         }
 
         /**************************/
-        $RDF_Data = new \-App\Models\Find\Rdf\RDF_data();
+        $RDF_Data = new \App\Models\Find\Rdf\RDF_data();
 
         $RDF_Data->createLink($IDc, $property, 0, $id_n);
 
@@ -192,7 +192,7 @@ class Form extends BaseController
                 'message' => 'ID não informado.'
             ]);
         }
-        $RDF_Data = new \-App\Models\Find\Rdf\RDF_data();
+        $RDF_Data = new \App\Models\Find\Rdf\RDF_data();
         $deleted = $RDF_Data->delete($id_d);
         if ($deleted) {
             return $this->response->setJSON([

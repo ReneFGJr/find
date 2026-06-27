@@ -71,7 +71,7 @@ class Concept extends Controller
 
     function add_link_concept()
     {
-        $RDF_Data = new \-App\Models\Find\Rdf\RDF_data();
+        $RDF_Data = new \App\Models\Find\Rdf\RDF_data();
         $RDF_Class = new \App\Models\Find\Rdf\RDF_Class();
 
         $idc      = $this->request->getPost('idc') ?? $this->request->getGet('idc');

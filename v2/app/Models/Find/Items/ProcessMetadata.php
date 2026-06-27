@@ -72,7 +72,7 @@ class ProcessMetadata extends Model
         $Item = new \App\Models\Find\Items\Index();
         $RDF_name = new \App\Models\Find\Rdf\RDF_name();
         $RDF = new \App\Models\Find\Rdf\RDF();
-        $RDFdata = new \-App\Models\Find\Rdf\RDF_data();
+        $RDFdata = new \App\Models\Find\Rdf\RDF_data();
 
         // Exemplo de processamento específico para resultado Z39.50
         $titulo = $this->getTitleFromZ3950Result($z3950_result);

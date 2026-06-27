@@ -233,7 +233,7 @@ class RDF extends Model
     /* ($idDW, 'hasTitle', $idTitulo); */
     function createLiteral($idC, $property, $term, $lang = '')
     {
-        $RDF_Data = new \-App\Models\Find\Rdf\RDF_data();
+        $RDF_Data = new \App\Models\Find\Rdf\RDF_data();
         $RDF_Class = new \App\Models\Find\Rdf\RDF_Class();
 
         /* Literal */
