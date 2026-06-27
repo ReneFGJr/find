@@ -148,10 +148,7 @@ class RDF extends Model
 
     function getWorkByItem($name, $Class = 'Work')
     {
-        echo "OI";
-        $RDF_name = new \App\Models\Find\Rdf\RDF_name();
-        echo "OK";
-        exit;
+        $RDF_name = new \App\Models\Find\Rdf\RDF_name;
         $dt = $RDF_name
             ->join('rdf_concept', 'cc_pref_term = id_n', 'left')
             ->join('rdf_class', 'cc_class = id_c', 'left')
