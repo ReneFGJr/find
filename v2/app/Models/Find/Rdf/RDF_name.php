@@ -9,7 +9,7 @@ use CodeIgniter\Model;
  */
 class RDF_name extends Model
 {
-    protected $table = 'rdf_name2';
+    protected $table = 'rdf_name';
     protected $primaryKey = 'id_n';
     protected $allowedFields = [
         'n_name',
