@@ -220,7 +220,7 @@ class Index extends Model
 
     public function changeData()
         {
-            $RDF_Data = new \App\Models\Find\Rdf\RDF_Data();
+            $RDF_Data = new \-App\Models\Find\Rdf\RDF_data();
             $dt = $RDF_Data
                 ->select('id_d, d_r1, d_r2, d_p, id_cc, cc_class')
                 ->join('rdf_concept', 'd_r1 = id_cc')

@@ -62,7 +62,7 @@ class RDF extends BaseController
 
     public function rdf_text_edit()
     {
-        $RDF_Data = new \App\Models\Find\Rdf\RDF_Data();
+        $RDF_Data = new \-App\Models\Find\Rdf\RDF_data();
         $RDF_name = new \App\Models\Find\Rdf\RDF_name();
 
         /************************* Salvar  */
