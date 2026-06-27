@@ -4,7 +4,7 @@ namespace App\Controllers\Find\Rdf;
 
 use CodeIgniter\Controller;
 use CodeIgniter\API\ResponseTrait;
-use App\Models\Find\Rdf\RDF_Concept;
+use App\Models\Find\Rdf\RDF_concept;
 
 helper("sisdoc");
 

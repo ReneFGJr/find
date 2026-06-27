@@ -40,7 +40,7 @@ class Authority extends BaseController
 
     public function save_remissive($id)
     {
-        $RDF_Concept = new \App\Models\Find\Rdf\RDF_Concept();
+        $RDF_Concept = new \App\Models\Find\Rdf\RDF_concept();
         $use = $this->request->getPost('remissiveSelect');
         $id = $this->request->getPost('id');
         $RDF_Concept->update($use, ['cc_use' => $id]);
