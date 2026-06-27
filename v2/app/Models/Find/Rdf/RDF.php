@@ -149,7 +149,7 @@ class RDF extends Model
 
     function getWorkByItem($name, $Class = 'Work')
     {
-        $RDF_name = new \App\Models\Find\Rdf\RDF_name();
+        $RDF_name = new \App\Models\Find\Rdf\RDF_name2();
         $dt = $RDF_name
             ->join('rdf_concept', 'cc_pref_term = id_n', 'left')
             ->join('rdf_class', 'cc_class = id_c', 'left')
@@ -242,7 +242,7 @@ class RDF extends Model
         if (is_numeric($term) && $lang == '') {
             $idN = (int) round($term);
         } else {
-            $RDF_name = new \App\Models\Find\Rdf\RDF_name();
+            $RDF_name = new \App\Models\Find\Rdf\RDF_name2();
             $idN = $RDF_name->createLiteral($term, $lang);
         }
 
@@ -296,7 +296,7 @@ class RDF extends Model
     function createConcept($Class, $Name, $Lang = 'pt_BR')
     {
         /******* Literal Name */
-        $NameModel = new \App\Models\Find\Rdf\RDF_name();
+        $NameModel = new \App\Models\Find\Rdf\RDF_name2();
         $ClassModel =  new \App\Models\Find\Rdf\RDF_Class();
         $idN = $NameModel->createLiteral($Name, $Lang);
 
