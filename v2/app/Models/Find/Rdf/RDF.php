@@ -146,7 +146,6 @@ class RDF extends Model
         }
     }
 
-
     function getWorkByItem($name, $Class = 'Work')
     {
         $RDF_name = new \App\Models\Find\Rdf\RDF_name();
