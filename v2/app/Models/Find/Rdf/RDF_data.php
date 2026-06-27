@@ -27,7 +27,7 @@ class RDF_data extends Model
     // Adicione métodos customizados conforme necessário
     function createLink($IDc, $property, $IDd, $literal)
     {
-        $RDF_Class = new \App\Models\Find\Rdf\RDF_Class();
+        $RDF_Class = new \App\Models\Find\Rdf\RDF_class();
         if (!is_numeric($property)) {
             $idp = $RDF_Class->where('c_class', $property)->first();
             if ($idp) {

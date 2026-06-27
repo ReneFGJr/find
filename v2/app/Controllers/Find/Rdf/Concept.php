@@ -37,7 +37,7 @@ class Concept extends Controller
     function create_concept()
         {
             $RDF = new \App\Models\Find\Rdf\RDF();
-            $RDF_Class = new \App\Models\Find\Rdf\RDF_Class();
+            $RDF_Class = new \App\Models\Find\Rdf\RDF_class();
             $RDF_name = new \App\Models\Find\Rdf\RDF_name();
 
 
@@ -72,7 +72,7 @@ class Concept extends Controller
     function add_link_concept()
     {
         $RDF_Data = new \App\Models\Find\Rdf\RDF_data();
-        $RDF_Class = new \App\Models\Find\Rdf\RDF_Class();
+        $RDF_Class = new \App\Models\Find\Rdf\RDF_class();
 
         $idc      = $this->request->getPost('idc') ?? $this->request->getGet('idc');
         $property = $this->request->getPost('property') ?? $this->request->getGet('property');

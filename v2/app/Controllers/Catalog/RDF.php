@@ -40,7 +40,7 @@ class RDF extends BaseController
 
         $rangeClassNames = [];
         if (!empty($rangeList)) {
-            $RDF_Class = new \App\Models\Find\Rdf\RDF_Class();
+            $RDF_Class = new \App\Models\Find\Rdf\RDF_class();
             foreach ($rangeList as $entry) {
                 if (is_numeric($entry)) {
                     $row = $RDF_Class->select('c_class')->where('id_c', (int) $entry)->first();

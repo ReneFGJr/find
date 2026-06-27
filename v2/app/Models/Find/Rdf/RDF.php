@@ -234,7 +234,7 @@ class RDF extends Model
     function createLiteral($idC, $property, $term, $lang = '')
     {
         $RDF_Data = new \App\Models\Find\Rdf\RDF_data();
-        $RDF_Class = new \App\Models\Find\Rdf\RDF_Class();
+        $RDF_Class = new \App\Models\Find\Rdf\RDF_class();
 
         /* Literal */
         $idN = null;
@@ -296,7 +296,7 @@ class RDF extends Model
     {
         /******* Literal Name */
         $NameModel = new \App\Models\Find\Rdf\RDF_name();
-        $ClassModel =  new \App\Models\Find\Rdf\RDF_Class();
+        $ClassModel =  new \App\Models\Find\Rdf\RDF_class();
         $idN = $NameModel->createLiteral($Name, $Lang);
 
         /******* Check Exist Concept */

@@ -82,7 +82,7 @@ class Form_edit extends BaseController
     public function index()
     {
         $form = $this->getFormData();
-        $classModel = new \App\Models\Find\Rdf\RDF_Class();
+        $classModel = new \App\Models\Find\Rdf\RDF_class();
 
         // Coletar todos os IDs de range e propriedades usados
         $rangeIds = [];

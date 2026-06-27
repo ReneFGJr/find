@@ -134,7 +134,7 @@ class Index extends Model
 
     public function getAuthorsByLibrary($library,$search = '')
     {
-        $Class = new \App\Models\Find\Rdf\RDF_Class();
+        $Class = new \App\Models\Find\Rdf\RDF_class();
         $prop1 = $Class->getIdByName('hasAuthor');
         $prop2 = $Class->getIdByName('hasTranslator');
 
