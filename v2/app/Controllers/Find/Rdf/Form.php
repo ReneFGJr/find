@@ -26,7 +26,7 @@ class Form extends BaseController
         }
 
         // Insere novo literal
-        $RDF_name = new \App\Models\Find\Rdf\RDF_name2();
+        $RDF_name = new \App\Models\Find\Rdf\RDF_name();
         $lang = 'pt_BR'; // ou defina conforme necessário
         $DTname = $RDF_name->where(['n_name' => $n_name, 'n_lang' => $lang])->first();
         if ($DTname) {
@@ -260,7 +260,7 @@ class Form extends BaseController
                 'message' => 'Parâmetros obrigatórios não informados.'
             ]);
         }
-        $model = new \App\Models\Find\Rdf\RDF_name2();
+        $model = new \App\Models\Find\Rdf\RDF_name();
 
         /************************* Atualização */
         $ok = $model->update($id_n, ['n_name' => $n_name]);
