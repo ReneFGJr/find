@@ -9,7 +9,7 @@ helper('cookie');
 /**
  * Model para a tabela rdf_form_class_2
  */
-class RDF_Form extends Model
+class RDF_form extends Model
 {
     protected $table = 'rdf_form_class_2';
     protected $primaryKey = 'id_form';

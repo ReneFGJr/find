@@ -7,7 +7,7 @@ use CodeIgniter\Model;
 /**
  * Model para a tabela rdf_class
  */
-class RDF_Class extends Model
+class RDF_class extends Model
 {
     protected $table = 'rdf_class';
     protected $primaryKey = 'id_c';
