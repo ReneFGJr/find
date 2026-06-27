@@ -162,7 +162,7 @@ class Form extends BaseController
         }
 
         // (Removido debug JS para garantir resposta JSON válida)
-        $model = new \App\Models\Find\Rdf\RDF_Form();
+        $model = new \App\Models\Find\Rdf\RDF_form();
         $msg = '';
         if ($id_form < 1) {
             $msg = 'ID do formulário inválido. ['.$id_form.']';
@@ -209,7 +209,7 @@ class Form extends BaseController
 
     public function index($id = null)
     {
-        $rdfForm = new \App\Models\Find\Rdf\RDF_Form();
+        $rdfForm = new \App\Models\Find\Rdf\RDF_form();
         $rdfModel = new \App\Models\Find\Rdf\RDF();
 
         // Buscar conceito e propriedades reais pelo ID

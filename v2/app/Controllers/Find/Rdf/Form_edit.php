@@ -21,7 +21,7 @@ class Form_edit extends BaseController
                 'message' => 'ID não informado 2.'
             ]);
         }
-        $formModel = new \App\Models\Find\Rdf\RDF_Form();
+        $formModel = new \App\Models\Find\Rdf\RDF_form();
         try {
             $formModel->delete($id);
             return $this->response->setJSON(['success' => true]);
@@ -59,7 +59,7 @@ class Form_edit extends BaseController
             ]);
         }
 
-        $formModel = new \App\Models\Find\Rdf\RDF_Form();
+        $formModel = new \App\Models\Find\Rdf\RDF_form();
         try {
             if ($id_form) {
                 $formModel->update($id_form, $data);
@@ -147,7 +147,7 @@ class Form_edit extends BaseController
      */
     private function getFormData()
     {
-        $formModel = new \App\Models\Find\Rdf\RDF_Form();
+        $formModel = new \App\Models\Find\Rdf\RDF_form();
         $result = $formModel->orderBy('form_order', 'asc')->findAll();
         $formData = [];
         foreach ($result as $row) {

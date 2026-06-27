@@ -445,7 +445,7 @@ class Catalog extends BaseController
         }
 
 
-        $rdfForm = new \App\Models\Find\Rdf\RDF_Form();
+        $rdfForm = new \App\Models\Find\Rdf\RDF_form();
 
         $item = $this->request->getGet('item') ?? $this->request->getPost('item') ?? null;
 

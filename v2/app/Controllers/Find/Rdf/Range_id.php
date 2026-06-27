@@ -9,7 +9,7 @@ class Range_id extends BaseController
 {
     public function index()
     {
-        $RDF_form_model = new \App\Models\Find\Rdf\RDF_Form();
+        $RDF_form_model = new \App\Models\Find\Rdf\RDF_form();
         $RDF_Class = new \App\Models\Find\Rdf\RDF_class();
 
         $Classes = $RDF_Class->where('c_type','C')->findAll();
