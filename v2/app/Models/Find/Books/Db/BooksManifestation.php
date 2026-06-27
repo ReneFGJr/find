@@ -49,7 +49,7 @@ class BooksManifestation extends Model
                 ->select($cp)
                 ->join('rdf_class as prop','d_p = prop.id_c','LEFT')
                 ->join('rdf_concept as concept','concept.id_cc = d_r2', 'LEFT')
-                ->join('RDF_name','cc_pref_term = id_n', 'LEFT')
+                ->join(rdf_name,'cc_pref_term = id_n', 'LEFT')
                 ->where('d_r1',$id)
                 ->where('c_class <> "hasAuthor"')
                 ->orderBy('c_order, c_class')

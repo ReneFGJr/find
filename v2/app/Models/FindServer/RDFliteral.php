@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class RDFliteral extends Model
 {
-    protected $table            = 'RDF_name';
+    protected $table            = rdf_name;
     protected $primaryKey       = 'id_n';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';

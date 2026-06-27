@@ -143,7 +143,7 @@ class Index extends Model
             ->select('d_r2, n_name, cc_use as id_cc')
             ->join('rdf_data', 'rdf_data.d_p in (' . $prop1 . ',' . $prop2 . ') and (rdf_data.d_r1 = find_item.i_manifestation or rdf_data.d_r1 = find_item.i_work)')
             ->join('rdf_concept', 'rdf_concept.id_cc = rdf_data.d_r2')
-            ->join('RDF_name', 'rdf_concept.cc_pref_term = RDF_name.id_n');
+            ->join(rdf_name, 'rdf_concept.cc_pref_term = RDF_name.id_n');
 
         if ($library != '') {
             $this->where('i_library', $library);

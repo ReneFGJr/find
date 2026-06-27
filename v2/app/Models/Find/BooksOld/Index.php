@@ -212,7 +212,7 @@ class Index extends Model
         $RDFConcept->select('rdf_prefix.prefix_ref, rdf_prefix.prefix_url');
         $RDFConcept->select('rdf_concept.*');
 
-        $RDFConcept->join($PREFIX . 'RDF_name', 'cc_pref_term = RDF_name.id_n', 'LEFT');
+        $RDFConcept->join($PREFIX . rdf_name, 'cc_pref_term = RDF_name.id_n', 'LEFT');
         $RDFConcept->join($PREFIX . 'rdf_class', 'rdf_concept.cc_class = rdf_class.id_c', 'LEFT');
         $RDFConcept->join($PREFIX . 'rdf_prefix', 'rdf_class.c_prefix = rdf_prefix.id_prefix', 'LEFT');
         $RDFConcept->where('id_cc', $idx);
@@ -257,7 +257,7 @@ class Index extends Model
         $Data = new \App\Models\Find\BooksOld\Data();
         $dd = $Data
             ->select('d_r1 as id_cc, n_name,n_lang, c_class,c_prefix,c_equivalent')
-            ->join('RDF_name', 'd_literal = id_n', 'LEFT')
+            ->join(rdf_name, 'd_literal = id_n', 'LEFT')
             ->join('rdf_class', 'd_p = id_c')
             ->where('d_r1', $idx)
             ->where('d_literal <> 0')
@@ -273,7 +273,7 @@ class Index extends Model
             ->select($cp)
             ->join('rdf_data', 'id_cc = d_r1')
             ->join('rdf_class', 'd_p = id_c')
-            ->join('RDF_name', 'd_literal = id_n', 'LEFT')
+            ->join(rdf_name, 'd_literal = id_n', 'LEFT')
             ->where('cc_class', 16)
             ->where('id_c', 5)
             ->findAll(0, 10);

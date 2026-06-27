@@ -72,7 +72,7 @@ class RDFform2 extends Model
 
         $RDFconcept
             ->select($cp)
-            ->join('RDF_name', 'cc_pref_term = id_n')
+            ->join(rdf_name, 'cc_pref_term = id_n')
             ->join('rdf_class', 'id_c = cc_class')
             ->whereIn('cc_class', $class)
             ->groupStart();

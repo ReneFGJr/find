@@ -64,7 +64,7 @@ class RDF extends Model
         $dt = $this
             ->select('cc_use as id, n_name as name, n_lang as lang, c_class as Class, c_type as type, cc_use as use')
             ->join('rdf_class', 'cc_class = id_c', 'left')
-            ->join('RDF_name', 'cc_pref_term = id_n', 'left')
+            ->join(rdf_name, 'cc_pref_term = id_n', 'left')
             ->where('cc_use', $id)
             ->first();
         $RSP['concept'] = $dt;
@@ -163,7 +163,7 @@ class RDF extends Model
         $dt = $this
             ->select('id_cc as id, n_name as name, n_lang as lang, c_class as Class, c_type as type, cc_use as use')
             ->join('rdf_class', 'cc_class = id_c', 'left')
-            ->join('RDF_name', 'cc_pref_term = id_n', 'left')
+            ->join(rdf_name, 'cc_pref_term = id_n', 'left')
             ->where('cc_use', $id)
             ->where('cc_use <> id_cc')
             ->orderBy("n_name")
@@ -181,7 +181,7 @@ class RDF extends Model
             ->join('rdf_data', 'd_r1 = id_cc')
             ->join('rdf_class', 'd_p = id_c')
             ->join('rdf_concept as c2', 'd_r2 = c2.id_cc')
-            ->join('RDF_name', 'c2.cc_pref_term = id_n', 'left')
+            ->join(rdf_name, 'c2.cc_pref_term = id_n', 'left')
             ->where('rdf_concept.cc_use', $id)
             ->where('d_literal', 0)
             ->findAll();
@@ -192,7 +192,7 @@ class RDF extends Model
             ->join('rdf_data', 'd_r2 = id_cc')
             ->join('rdf_class', 'd_p = id_c')
             ->join('rdf_concept as c2', 'd_r1 = c2.id_cc')
-            ->join('RDF_name', 'c2.cc_pref_term = id_n', 'left')
+            ->join(rdf_name, 'c2.cc_pref_term = id_n', 'left')
             ->where('rdf_concept.cc_use', $id)
             ->where('d_literal', 0)
             ->findAll();
@@ -202,7 +202,7 @@ class RDF extends Model
             ->select($cp1)
             ->join('rdf_data', 'd_r1 = id_cc')
             ->join('rdf_class', 'd_p = id_c')
-            ->join('RDF_name', 'd_literal = id_n', 'left')
+            ->join(rdf_name, 'd_literal = id_n', 'left')
             ->where('rdf_concept.cc_use', $id)
             ->where('d_literal <> 0')
             ->findAll();
@@ -303,7 +303,7 @@ class RDF extends Model
         /******* Check Exist Concept */
         $dt = $this
             ->select('id_cc')
-            ->join('RDF_name', 'cc_pref_term = id_n', 'left')
+            ->join(rdf_name, 'cc_pref_term = id_n', 'left')
             ->where('cc_pref_term', $idN)
             ->first();
 
