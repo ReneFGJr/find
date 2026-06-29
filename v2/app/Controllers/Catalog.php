@@ -456,6 +456,7 @@ class Catalog extends BaseController
         $i_work = $dt['i_work'] ?? 0;
         $i_expression = $dt['i_expression'] ?? 0;
         $i_manifestation = $dt['i_manifestation'] ?? 0;
+        $i_analitic = $dt['i_work'] ?? 0;
 
         if ($i_work == 0 || $i_expression == 0 || $i_manifestation == 0) {
             echo "<div class='alert alert-danger'>Item não encontrado ou com dados incompletos (Work: $i_work, Expression: $i_expression, Manifestation: $i_manifestation).</div>";
@@ -474,9 +475,11 @@ class Catalog extends BaseController
             'work' => $rdfForm->getForm('W', $i_work, $libraryID),
             'expression' => $rdfForm->getForm('E', $i_expression, $libraryID),
             'manifestation' => $rdfForm->getForm('M', $i_manifestation, $libraryID),
+            'analitic' => $rdfForm->getForm('A', $i_analitic, $libraryID),
             'i_work' => $i_work,
             'i_expression' => $i_expression,
             'i_manifestation' => $i_manifestation,
+            'i_analitic' => $i_analitic,
             'activeTab' => $activeTab
         ];
 
@@ -838,6 +841,9 @@ class Catalog extends BaseController
                 }
                 if ($row['i_manifestation'] > 0) {
                     $meta['manifestation'] = $rdf->le($row['i_manifestation']);
+                }
+                if ($row['i_analitic'] > 0) {
+                    $meta['analitic'] = $rdf->le($row['i_analitic']);
                 }
             }
         }

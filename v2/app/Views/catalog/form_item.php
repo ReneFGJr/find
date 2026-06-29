@@ -28,6 +28,9 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link <?= $activeTab === 'manifestation' ? 'active' : '' ?>" id="tab-manifestation" data-bs-toggle="tab" data-bs-target="#tabManifestation" type="button" role="tab" aria-controls="tabManifestation" aria-selected="<?= $activeTab === 'manifestation' ? 'true' : 'false' ?>">Manifestation</button>
         </li>
+        <li class="nav-item" role="analitic">
+            <button class="nav-link <?= $activeTab === 'analitic' ? 'active' : '' ?>" id="tab-analitic" data-bs-toggle="tab" data-bs-target="#tabAnalitic" type="button" role="tab" aria-controls="tabAnalitic" aria-selected="<?= $activeTab === 'analitic' ? 'true' : 'false' ?>">Analitic</button>
+        </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link <?= $activeTab === 'rdf' ? 'active' : '' ?>" id="tab-rdf" data-bs-toggle="tab" data-bs-target="#tabRdf" type="button" role="tab" aria-controls="tabRdf" aria-selected="<?= $activeTab === 'rdf' ? 'true' : 'false' ?>">RDF</button>
         </li>
@@ -77,6 +80,11 @@
                 <?= view('catalog/form_item/form_rdf_edit', ['form' => $manifestation, 'f' => 'MANIFESTATION', 'idC' => $i_manifestation]); ?>
             </div>
         </div>
+        <div class="tab-pane fade <?= $activeTab === 'analitic' ? 'show active' : '' ?>" id="tabAnalitic" role="tabpanel" aria-labelledby="tab-analitic">
+            <div class="mb-3">
+                <?= view('catalog/form_item/form_rdf_edit', ['form' => $analitic, 'f' => 'ANALITIC', 'idC' => $i_analitic]); ?>
+            </div>
+        </div>
         <div class="tab-pane fade <?= $activeTab === 'rdf' ? 'show active' : '' ?>" id="tabRdf" role="tabpanel" aria-labelledby="tab-rdf">
             <div class="mb-3">
                 <div class="card">
@@ -90,6 +98,8 @@
                         <?php pre($expression, false); ?>
                         <h3>Manifestation</h3>
                         <?php pre($manifestation, false); ?>
+                        <h3>Analitic</h3>
+                        <?php pre($analitic, false); ?>
                     </div>
                 </div>
             </div>

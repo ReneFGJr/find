@@ -29,6 +29,7 @@
                         <option value="W">Work</option>
                         <option value="E">Expression</option>
                         <option value="M">Manifestation</option>
+                        <option value="A">Analítica</option>
                     </select>
                 </div>
                 <div class="mb-3">
