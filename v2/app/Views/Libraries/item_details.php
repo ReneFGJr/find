@@ -101,7 +101,6 @@
                     <?php if (!empty($book['meta']['Page'])): ?>
                         <th class="text-secondary">Páginas</th>
                         <td>
-                        <?php pre($book);?>
                             <?php foreach ($book['meta']['Page'] as $p): ?>
                                 <?= esc($p['name']); ?>
                             <?php endforeach; ?>
