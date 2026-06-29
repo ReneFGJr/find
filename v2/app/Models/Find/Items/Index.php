@@ -601,17 +601,53 @@ class Index extends Model
                     $META = $Metadata->metadata($dtW, $META);
                 }
             }
-
             $META = $Metadata->metadata($dtM, $META);
-
-
             $META = $this->prepara_classe_colors($META);
+            $META = $this->removeDuplicados($META);
             $RSP['meta'] = $META;
         } else {
             $RSP = [];
         }
         return $RSP;
     }
+
+    function removeDuplicados($META)
+    {
+        if (!is_array($META)) {
+            return $META;
+        }
+
+        foreach ($META as $group => $items) {
+            if (!is_array($items)) {
+                continue;
+            }
+
+            $clean = [];
+            $seen = [];
+
+            foreach ($items as $item) {
+                if (is_array($item)) {
+                    $signature = json_encode([
+                        'ID' => $item['ID'] ?? null,
+                        'name' => $item['name'] ?? null,
+                        'lang' => $item['lang'] ?? null,
+                    ]);
+                } else {
+                    $signature = (string) $item;
+                }
+
+                if (!isset($seen[$signature])) {
+                    $seen[$signature] = true;
+                    $clean[] = $item;
+                }
+            }
+
+            $META[$group] = array_values($clean);
+        }
+
+        return $META;
+    }
+
     function prepara_classe_colors($META)
     {
         if (isset($META['ColorClassification'])) {
