@@ -25,7 +25,8 @@
                     'book' => $book,
                     'library' => $library,
                     'itemInfo' => $row,
-                    'meta' => $meta
+                    'meta' => $meta,
+                    'perfil' => [],
                 ]);
             }
             ?>
