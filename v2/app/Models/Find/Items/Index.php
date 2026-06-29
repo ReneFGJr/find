@@ -610,6 +610,7 @@ class Index extends Model
         } else {
             $RSP = [];
         }
+        pre($RSP);
         return $RSP;
     }
     function prepara_classe_colors($META)
