@@ -26,7 +26,7 @@
                     'library' => $library,
                     'itemInfo' => $row,
                     'meta' => $meta,
-                    'perfil' => [],
+                    'perfil' => [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
                 ]);
             }
             ?>
