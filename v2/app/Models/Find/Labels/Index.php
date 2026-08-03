@@ -140,7 +140,7 @@ class Index extends Model
         $labelSpace = 25.5;
         $labelLine = 6;
 
-        $posYini = 16;
+        $posYini = 15;
         $posY = $posYini;
         $labelCols = 3;
         $labelCol = 0;
