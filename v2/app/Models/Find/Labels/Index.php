@@ -135,7 +135,7 @@ class Index extends Model
         //echo $this->getlastquery();
         //exit;
 
-        $posXini = 23;
+        $posXini = 25;
         $posX = $posXini;
         $labelSpace = 25.5;
         $labelLine = 6;
