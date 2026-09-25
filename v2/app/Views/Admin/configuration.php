@@ -8,7 +8,26 @@
         <p class="text-secondary mb-4">Biblioteca: <strong><?= esc($library['name'] ?? ''); ?></strong></p>
     <?php endif; ?>
 
+    <?php if (session()->getFlashdata('msg')): ?>
+        <div class="alert alert-<?= esc(session()->getFlashdata('msg_type') ?: 'info'); ?>" role="alert"><?= esc(session()->getFlashdata('msg')); ?></div>
+    <?php endif; ?>
+
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div class="col">
+            <a href="<?= base_url('/admin/export/marc21'); ?>" class="text-decoration-none">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="bg-primary bg-opacity-10 rounded-3 p-3">
+                            <i class="bi bi-download fs-3 text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-1 text-dark">Exportar para MARC21 no formato ISO 2709</h5>
+                            <p class="card-text small text-secondary mb-0">Baixar o acervo da biblioteca em um único arquivo UTF-8</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
 
         <!-- Nome da Biblioteca -->
         <div class="col">

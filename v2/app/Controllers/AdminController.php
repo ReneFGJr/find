@@ -186,6 +186,47 @@ class AdminController extends BaseController
         ]);
     }
 
+    public function exportMarc21()
+    {
+        helper(['url', 'cookie']);
+        if (!session()->get('logged_in')) {
+            return redirect()->to('/login');
+        }
+        $library = (new \App\Models\Find\Library\Index())->getSelectedLibrary((string) $this->getLibraryCode());
+        if (!$library) {
+            return redirect()->to('/bibliotecas')->with('msg', 'Selecione uma biblioteca.')->with('msg_type', 'warning');
+        }
+        $path = tempnam(sys_get_temp_dir(), 'find_marc_');
+        $handle = $path !== false ? fopen($path, 'wb') : false;
+        if ($handle === false) {
+            if ($path !== false) { unlink($path); }
+            return redirect()->to('/admin/configuration')->with('msg', 'Não foi possível criar o arquivo de exportação.')->with('msg_type', 'danger');
+        }
+        register_shutdown_function(static function () use ($path) {
+            if (is_file($path)) { unlink($path); }
+        });
+        try {
+            $count = 0;
+            $export = new \App\Models\Find\Items\MarcExport();
+            foreach ($export->records((string) $library['code']) as $record) {
+                if (fwrite($handle, $record) !== strlen($record)) {
+                    throw new \RuntimeException('Falha ao gravar o arquivo MARC21.');
+                }
+                $count++;
+            }
+        } catch (\Throwable $error) {
+            log_message('error', 'Exportação MARC21: {message}', ['message' => $error->getMessage()]);
+            return redirect()->to('/admin/configuration')->with('msg', 'Não foi possível exportar o acervo. Verifique os registros e o log do sistema.')->with('msg_type', 'danger');
+        } finally {
+            fclose($handle);
+        }
+        if ($count === 0) {
+            return redirect()->to('/admin/configuration')->with('msg', 'A biblioteca não possui registros para exportar.')->with('msg_type', 'warning');
+        }
+        $filename = 'acervo-' . preg_replace('/[^a-zA-Z0-9_-]/', '_', (string) $library['code']) . '-' . date('Ymd-His') . '.mrc';
+        return $this->response->download($path, null)->setFileName($filename)->setContentType('application/marc', 'UTF-8');
+    }
+
     private function getLibraryCode()
     {
         helper(['url', 'cookie']);
