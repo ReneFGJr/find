@@ -1,5 +1,33 @@
 <h3><?= htmlspecialchars($f) ?></h3>
 
+<?php
+$propertyLabels = [
+    'hasAbstract' => 'Resumo',
+    'hasAuthor' => 'Autor',
+    'hasClassificationCDD' => 'Classificação CDD',
+    'hasClassificationCDU' => 'Classificação CDU',
+    'hasClassificationCountry' => 'País de classificação',
+    'hasColorclassification' => 'Classificação de cor',
+    'hasCover' => 'Capa',
+    'hasCutter' => 'Cutter',
+    'hasEditora' => 'Editora',
+    'hasFormExpression' => 'Forma de expressão',
+    'hasLanguageExpression' => 'Idioma',
+    'hasOrganizator' => 'Organizador',
+    'hasPage' => 'Página',
+    'hasSerieName' => 'Série',
+    'hasSubject' => 'Assuntos',
+    'hasTitle' => 'Título',
+    'hasTitleChapter' => 'Título do capítulo',
+    'hasTranslator' => 'Tradutor',
+    'hasVolumeNumber' => 'Número do volume',
+    'isEdition' => 'Edição',
+    'isPlaceOfPublication' => 'Local de publicação',
+    'isPublisher' => 'Editora',
+    'dateOfPublication' => 'Data da edição',
+];
+?>
+
 <div class="card-header bg-primary text-white">
     <i class="bi bi-pencil-square me-2"></i> Edição de Metadados RDF (<?= htmlspecialchars($idC) ?>)
 </div>
@@ -21,7 +49,7 @@ foreach ($form as $key => $xdata) {
         echo '<tr>';
         // Propriedade
         echo '<td class="text-end">';
-        echo $prop;
+        echo htmlspecialchars($propertyLabels[$prop] ?? $prop);
         echo '</td>';
 
         // Botão incluir

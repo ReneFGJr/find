@@ -1,6 +1,10 @@
 <?php include(APPPATH . 'Views/layout/header.php'); ?>
 <?php include(APPPATH . 'Views/layout/navbar.php'); ?>
-<?php $activeTab = $activeTab ?? 'item'; ?>
+<?php
+$activeTab = $activeTab ?? 'item';
+$isbn = $book['i_identifier'] ?? '';
+$coverSrc = function_exists('cover_image') ? cover_image($isbn) : base_url('assets/img/no_cover.png');
+?>
 
 <!-- Offcanvas lateral para adicionar dado -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAddData" aria-labelledby="offcanvasAddDataLabel" style="width:600px;">
@@ -10,6 +14,20 @@
     </div>
     <div class="offcanvas-body p-0" style="height:100%;">
         <iframe id="iframeAddData" src="" style="border:0;width:100%;height:100%;min-height:400px;"></iframe>
+    </div>
+</div>
+
+<!-- Painel lateral para procurar ou enviar a capa -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="coverPanel" aria-labelledby="coverPanelLabel" style="width:100%;max-width:700px;">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="coverPanelLabel">Procurar Capa</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
+    </div>
+    <div class="offcanvas-body">
+        <iframe src="<?= base_url('/catalog/upload_cover') ?>?isbn=<?= rawurlencode($isbn) ?>" title="Procurar Capa" style="width:100%;height:70vh;border:0;"></iframe>
+        <div class="mt-3 text-end">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Fechar</button>
+        </div>
     </div>
 </div>
 
@@ -37,21 +55,28 @@
     </ul>
     <div class="tab-content border border-top-0 p-4 bg-white" id="itemTabContent">
         <div class="tab-pane fade <?= $activeTab === 'item' ? 'show active' : '' ?>" id="tabItem" role="tabpanel" aria-labelledby="tab-item">
-            <div class="mb-3">
-                <input type="text" class="form-control mb-3" value="<?= htmlspecialchars($item ?? '') ?>" readonly>
-                <?php
-                $isbn = $book['i_identifier'] ?? '';
-                $coverSrc = function_exists('cover_image') ? cover_image($isbn) : base_url('assets/img/no_cover.png');
-                ?>
+            <div class="py-2">
                 <div class="row g-3 align-items-start">
                     <div class="col-lg-9 col-md-8">
                         <?= view('Libraries/item_simple', ['book' => $book]); ?>
                     </div>
                     <div class="col-lg-3 col-md-4">
-                        <div class="card">
-                            <div class="card-header bg-light">Capa</div>
-                            <div class="card-body text-center">
-                                <img src="<?= esc($coverSrc) ?>" alt="Capa do item" class="img-fluid rounded border" style="max-height: 320px; object-fit: contain;">
+                        <aside class="card border-0 shadow-sm overflow-hidden">
+                            <div class="card-header bg-dark text-white border-0 py-3">
+                                <i class="bi bi-image me-2"></i>Capa da obra
+                            </div>
+                            <div class="card-body text-center p-4">
+                                <div class="bg-light border rounded-3 p-3 mb-3 d-flex align-items-center justify-content-center" style="min-height:300px;">
+                                    <img id="itemCoverImage" src="<?= esc($coverSrc) ?>" alt="Capa de <?= esc($book['i_titulo'] ?? 'obra') ?>" class="img-fluid rounded shadow-sm" style="max-height:320px;object-fit:contain;">
+                                </div>
+                                <div class="small text-muted text-break mb-3">
+                                    ISBN: <?= esc($isbn !== '' ? $isbn : 'Não informado') ?>
+                                </div>
+                                <div class="mt-3 d-grid">
+                                    <button class="btn btn-outline-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#coverPanel" aria-controls="coverPanel">
+                                        <i class="bi bi-search me-1"></i> Procurar capa
+                                    </button>
+                                </div>
                                 <?php if (!empty($canCatalogItem) && !empty($book['id_i'])) { ?>
                                     <div class="mt-3 d-grid">
                                         <a href="<?= base_url('item/' . (int) $book['id_i']) ?>" class="btn btn-primary">
@@ -60,7 +85,7 @@
                                     </div>
                                 <?php } ?>
                             </div>
-                        </div>
+                        </aside>
                     </div>
                 </div>
             </div>
@@ -109,6 +134,40 @@
 
 <script>
     (function() {
+        var coverPanel = document.getElementById('coverPanel');
+        if (coverPanel) {
+            coverPanel.addEventListener('hidden.bs.offcanvas', function() {
+                var coverImage = document.getElementById('itemCoverImage');
+                if (coverImage) {
+                    var coverUrl = new URL(coverImage.src, window.location.href);
+                    coverUrl.searchParams.set('_cover_updated', Date.now());
+                    coverImage.src = coverUrl.toString();
+                }
+            });
+        }
+
+        var updateItemData = document.getElementById('updateItemData');
+        if (updateItemData) {
+            updateItemData.addEventListener('click', function() {
+                var button = this;
+                var originalContent = button.innerHTML;
+                button.disabled = true;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm me-1" aria-hidden="true"></span>Atualizando...';
+
+                fetch(button.dataset.updateUrl, {
+                    method: 'GET',
+                    credentials: 'same-origin'
+                }).then(function(response) {
+                    if (!response.ok) throw new Error('Não foi possível atualizar os dados.');
+                    window.location.reload();
+                }).catch(function(error) {
+                    button.disabled = false;
+                    button.innerHTML = originalContent;
+                    alert(error.message);
+                });
+            });
+        }
+
         var tabMap = {
             'tab-item': 'item',
             'tab-work': 'work',

@@ -12,12 +12,16 @@ $results = $results ?? [];
         <div class="col-md-8 col-lg-6">
             <h3 class="mb-4">Catalogar Obra Sem ISBN</h3>
             <form method="post" action="">
+                <?= csrf_field() ?>
                 <div class="mb-3">
                     <label for="tituloObra" class="form-label">Título da Obra</label>
                     <input type="text" class="form-control" id="titleWork" name="titleWork" value="<?= $titleWork; ?>" placeholder="Digite o título da obra" required></input>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">
                     <i class="bi bi-save"></i> Pesquisar e Catalogar
+                </button>
+                <button type="submit" class="btn btn-outline-warning w-100 mt-2" formaction="<?= base_url('/catalog/catalogar/no_isbn_create') ?>">
+                    <i class="bi bi-plus-circle me-1"></i> Inserir nova obra
                 </button>
             </form>
             <?php if ($hasSearch && empty($results)): ?>

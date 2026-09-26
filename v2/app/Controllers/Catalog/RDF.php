@@ -67,19 +67,22 @@ class RDF extends BaseController
 
         /************************* Salvar  */
         $action = $this->request->getPost('action');
-        echo '===>'.$action;
         if ($action != '')
             {
                 $textValue = $this->request->getPost('textValue');
                 $idD = $this->request->getPost('idD');
-                $idN = $this->request->getPost('idN');
 
-                if (is_numeric($idD) && is_numeric($idN)) {
+                if (is_numeric($idD) && trim((string) $textValue) !== '') {
                     $idD = (int)$idD;
-                    $idN = (int)$idN;
+                    $rdfData = $RDF_Data->find($idD);
+                    $idN = (int) ($rdfData['d_literal'] ?? 0);
+
+                    if ($idN < 1) {
+                        return redirect()->back()->with('error', 'O registro selecionado não é uma literal válida para edição.');
+                    }
 
                     // Atualiza o valor da literal
-                    $RDF_name->update($idN, ['n_name' => $textValue]);
+                    $RDF_name->update($idN, ['n_name' => trim((string) $textValue)]);
 
                     return $this->response->setBody('<script>window.parent.location.reload();</script>');
                 } else {

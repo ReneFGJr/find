@@ -1,94 +1,121 @@
 <?php
 
 /**
- * View simples para exibir dados de um livro
- * Espera um array $book
+ * Ficha resumida de um exemplar do acervo.
+ * Espera um array $book.
  */
-?>
-<div class="card mb-3">
-  <div class="card-header bg-primary text-white">
-    <i class="bi bi-book me-2"></i> Livro: <strong><?= htmlspecialchars($book['i_titulo'] ?? '') ?></strong>
-    <div class="small mt-1 fst-italic">
-      <i class="bi bi-person me-1"></i><?= htmlspecialchars($book['i_autores'] ?? '') ?>
-    </div>
-  </div>
-  <div class="card-body">
-    <dl class="row mb-0">
-      <dt class="col-sm-3">Tombo</dt>
-      <dd class="col-sm-9"><?= htmlspecialchars($book['i_tombo'] ?? '') ?></dd>
+$displayValue = static function ($value): string {
+    $value = trim((string) ($value ?? ''));
+    return $value !== '' ? esc($value) : '<span class="text-muted">Não informado</span>';
+};
 
-      <dt class="col-sm-3">Autores</dt>
-      <dd class="col-sm-9"><?= htmlspecialchars($book['i_autores'] ?? '') ?></dd>
+$classification = trim(implode(' ', array_filter([
+    $book['i_ln1'] ?? '',
+    $book['i_ln2'] ?? '',
+    $book['i_ln3'] ?? '',
+    $book['i_ln4'] ?? '',
+], static fn($value) => trim((string) $value) !== '')));
 
-      <dt class="col-sm-3">Ano</dt>
-      <dd class="col-sm-9"><?= htmlspecialchars($book['i_year'] ?? '') ?></dd>
-
-      <dt class="col-sm-3">ISBN</dt>
-      <dd class="col-sm-9"><?= htmlspecialchars($book['i_identifier'] ?? '') ?></dd>
-
-      <dt class="col-sm-3">Classificação</dt>
-      <dd class="col-sm-9">
-        <?= htmlspecialchars($book['i_ln1'] ?? '') ?> <?= htmlspecialchars($book['i_ln2'] ?? '') ?> <?= htmlspecialchars($book['i_ln3'] ?? '') ?> <?= htmlspecialchars($book['i_ln4'] ?? '') ?>
-      </dd>
-
-      <dt class="col-sm-3">Exemplar</dt>
-      <dd class="col-sm-9"><?= htmlspecialchars($book['i_exemplar'] ?? '') ?></dd>
-
-      <dt class="col-sm-3">Manifestation</dt>
-      <dd class="col-sm-9"><?= htmlspecialchars($book['i_manifestation'] ?? '') ?></dd>
-
-      <dt class="col-sm-3">Work</dt>
-      <dd class="col-sm-9"><?= htmlspecialchars($book['i_work'] ?? '') ?></dd>
-
-      <dt class="col-sm-3">Expression</dt>
-      <dd class="col-sm-9"><?= htmlspecialchars($book['i_expression'] ?? '') ?></dd>
-
-      <dt class="col-sm-3">Ações</dt>
-      <dd class="col-sm-9">
-        <button
-          type="button"
-          class="btn btn-outline-primary btn-sm"
-          onclick="openCheckPopup('<?= base_url('/catalog/check?isbn=' . rawurlencode((string) ($book['i_identifier'] ?? ''))) ?>')"
-        >
-          Atualizar dados
-        </button>
-      </dd>
-    </dl>
-  </div>
-</div>
-
-<script>
-  function openCheckPopup(url) {
-    var popup = window.open(url, 'findCatalogCheck', 'width=980,height=760,resizable=yes,scrollbars=yes');
-
-    if (!popup) {
-      alert('Não foi possível abrir o popup. Verifique o bloqueador de pop-up.');
-      return;
+$statusName = '';
+if (!empty($book['i_status'])) {
+    try {
+        $status = (new \App\Models\Find\Items\Status())->find($book['i_status']);
+        $statusName = trim((string) ($status['is_name'] ?? ''));
+    } catch (\Throwable $e) {
+        $statusName = '';
     }
+}
+?>
 
-    var reloaded = false;
-    var reloadPage = function() {
-      if (reloaded) return;
-      reloaded = true;
-      window.location.reload();
-    };
+<article class="card h-100 border-0 shadow-sm overflow-hidden">
+    <header class="card-header bg-primary text-white border-0 p-4">
+        <div class="d-flex align-items-start gap-3">
+            <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-white bg-opacity-25 flex-shrink-0" style="width:48px;height:48px;">
+                <i class="bi bi-book fs-4"></i>
+            </span>
+            <div class="flex-grow-1">
+                <div class="d-flex flex-wrap align-items-start justify-content-between gap-2">
+                    <div>
+                        <div class="small text-white-50 text-uppercase fw-semibold mb-1">Registro bibliográfico</div>
+                        <h3 class="h5 mb-1"><?= $displayValue($book['i_titulo'] ?? '') ?></h3>
+                    </div>
+                    <?php if ($statusName !== '' || !empty($book['i_status'])): ?>
+                        <span class="badge rounded-pill bg-light text-primary px-3 py-2">
+                            <i class="bi bi-check-circle me-1"></i><?= esc($statusName !== '' ? $statusName : 'Status ' . $book['i_status']) ?>
+                        </span>
+                    <?php endif; ?>
+                </div>
+                <p class="mb-0 mt-2 text-white-50">
+                    <i class="bi bi-person me-1"></i><?= $displayValue($book['i_autores'] ?? '') ?>
+                </p>
+            </div>
+        </div>
+    </header>
 
-    // Tenta fechar automaticamente após a chamada e recarrega a tela.
-    setTimeout(function() {
-      try {
-        if (!popup.closed) {
-          popup.close();
-        }
-      } catch (e) {
-        // Ignora falha no fechamento e segue observando.
-      }
-    }, 3500);
+    <div class="card-body p-4">
+        <section aria-labelledby="copy-data-title">
+            <h4 id="copy-data-title" class="h6 text-uppercase text-secondary fw-bold mb-3">
+                <i class="bi bi-upc-scan me-2"></i>Identificação do exemplar
+            </h4>
+            <div class="row g-3">
+                <?php
+                $summaryFields = [
+                    ['Tombo', $book['i_tombo'] ?? '', 'fs-5'],
+                    ['Exemplar', $book['i_exemplar'] ?? '', 'fs-5'],
+                    ['ISBN / Identificador', $book['i_identifier'] ?? '', 'text-break'],
+                    ['Ano', $book['i_year'] ?? '', 'fs-5'],
+                ];
+                foreach ($summaryFields as [$label, $value, $class]):
+                ?>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="border rounded-3 p-3 h-100 bg-light">
+                            <div class="small text-muted mb-1"><?= esc($label) ?></div>
+                            <div class="fw-semibold <?= esc($class) ?>"><?= $displayValue($value) ?></div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </section>
 
-    var watcher = setInterval(function() {
-      if (popup.closed) {
-        clearInterval(watcher);
-        reloadPage();
-      }
-    }, 300);
-  }
-</script>
+        <hr class="my-4">
+
+        <div class="row g-4">
+            <section class="col-md-6" aria-labelledby="location-title">
+                <h4 id="location-title" class="h6 text-uppercase text-secondary fw-bold mb-3">
+                    <i class="bi bi-bookshelf me-2"></i>Localização no acervo
+                </h4>
+                <dl class="row mb-0">
+                    <dt class="col-sm-5 text-muted fw-normal">Classificação</dt>
+                    <dd class="col-sm-7 fw-semibold"><?= $displayValue($classification) ?></dd>
+                    <dt class="col-sm-5 text-muted fw-normal">Localização</dt>
+                    <dd class="col-sm-7"><?= $displayValue($book['i_localization'] ?? '') ?></dd>
+                    <dt class="col-sm-5 text-muted fw-normal">Biblioteca</dt>
+                    <dd class="col-sm-7"><?= $displayValue($book['i_library'] ?? '') ?></dd>
+                </dl>
+            </section>
+
+            <section class="col-md-6" aria-labelledby="rdf-links-title">
+                <h4 id="rdf-links-title" class="h6 text-uppercase text-secondary fw-bold mb-3">
+                    <i class="bi bi-diagram-3 me-2"></i>Vínculos bibliográficos
+                </h4>
+                <dl class="row mb-0">
+                    <dt class="col-sm-5 text-muted fw-normal">Obra</dt>
+                    <dd class="col-sm-7"><?= $displayValue($book['i_work'] ?? '') ?></dd>
+                    <dt class="col-sm-5 text-muted fw-normal">Expressão</dt>
+                    <dd class="col-sm-7"><?= $displayValue($book['i_expression'] ?? '') ?></dd>
+                    <dt class="col-sm-5 text-muted fw-normal">Manifestação</dt>
+                    <dd class="col-sm-7"><?= $displayValue($book['i_manifestation'] ?? '') ?></dd>
+                </dl>
+            </section>
+        </div>
+    </div>
+
+    <footer class="card-footer bg-white border-top p-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <small class="text-muted">
+            <i class="bi bi-hash me-1"></i>ID do item: <?= $displayValue($book['id_i'] ?? '') ?>
+        </small>
+        <button type="button" class="btn btn-outline-primary btn-sm" id="updateItemData" data-update-url="<?= base_url('/catalog/check?isbn=' . rawurlencode((string) ($book['i_identifier'] ?? ''))) ?>">
+            <i class="bi bi-arrow-clockwise me-1"></i>Atualizar dados
+        </button>
+    </footer>
+</article>
