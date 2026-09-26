@@ -266,10 +266,14 @@ class Index extends Model
             }
     }
 
-    public function reindexAll($offset = 0, $limit = 100)
+    public function reindexAll($offset = 0, $limit = 100, $itemId = null)
     {
-        $dt = $this->where('i_titulo !=', '')
-            ->findAll($limit, $offset);
+        $query = $this->where('i_titulo !=', '');
+        if ($itemId !== null) {
+            $query->where('id_i', (int) $itemId);
+        }
+
+        $dt = $query->findAll($limit, $offset);
 
         foreach ($dt as $line) {
 
@@ -414,11 +418,6 @@ class Index extends Model
         $dt = $builder->groupBy('i_titulo, i_identifier')
             ->orderBy('id_i desc')
             ->findAll($limit, $offset);
-
-        if (count($dt) == 0) {
-            echo '<div class="alert alert-warning">Nenhum resultado encontrado para "' . htmlspecialchars($termo) . '"</div>';
-            echo '<div class="alert alert-warning"><tt>' . $this->getlastquery() . '</tt></div>';
-        }
 
         return $this->prepare_record($dt);
     }

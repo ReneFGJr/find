@@ -10,6 +10,7 @@
 ?>
 <div class="search-component">
     <form method="get" action="<?= base_url('busca/resultado') ?>">
+        <input type="hidden" name="library_id" value="<?= esc($libraryId ?? $libraryCode ?? '') ?>">
         <div class="row g-2 align-items-end">
             <div class="col-md-7">
                 <h2 class="col-md-12 h3">O que quer ler hoje?</h2>

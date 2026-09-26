@@ -126,6 +126,7 @@ class LibraryController extends BaseController
         // Componente de busca avançada
         $searchComponent = view('widgets/bibliofind/bibliofind_search_advanced', [
             'libraryCode' => $library['code'],
+            'libraryId' => $library['id'],
             'places' => (new \App\Models\Find\Library\LibraryPlace())->listByLibrary($library['code'])
         ]);
 
@@ -198,14 +199,30 @@ class LibraryController extends BaseController
         // Recebe parâmetros do formulário
         $termo = $this->request->getVar('q');
         $place = $this->request->getVar('place');
-        $library = get_cookie('library_code') ?? get_cookie('library') ?? '';
+        $requestedLibraryId = trim((string) ($this->request->getGet('library_id') ?? ''));
+        $libraryReference = $requestedLibraryId !== '' ? $requestedLibraryId : ($cookieId !== '' ? $cookieId : $cookieCode);
+        $library = (new LibraryIndex())->getSelectedLibrary($libraryReference);
 
-        $vitrine = $itemsModel->buscaAvancada($termo, $place, $cookieCode);
+        if (!$library) {
+            return redirect()->to('/bibliotecas')->with('msg', 'Biblioteca não encontrada.')->with('msg_type', 'warning');
+        }
+
+        $libraryCode = (string) $library['code'];
+        $libraryId = (string) $library['id'];
+        $vitrine = $itemsModel->buscaAvancada($termo, $place, $libraryCode);
+        $searchComponent = view('widgets/bibliofind/bibliofind_search_advanced', [
+            'libraryCode' => $libraryCode,
+            'libraryId' => $libraryId,
+            'places' => (new \App\Models\Find\Library\LibraryPlace())->listByLibrary($libraryCode)
+        ]);
 
         return view('Libraries/library', [
             'library' => $library,
-            'cookieId' => $cookieId !== '' ? $cookieId : $cookieCode,
-            'vitrine' => $vitrine
+            'cookieId' => $libraryId,
+            'vitrine' => $vitrine,
+            'searchComponent' => $searchComponent,
+            'isSearch' => true,
+            'searchTerm' => trim((string) $termo),
         ]);
     }
 

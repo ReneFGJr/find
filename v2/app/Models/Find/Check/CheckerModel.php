@@ -33,9 +33,11 @@ class CheckerModel
         $rsp = "Itens encontrados: " . count($items) . '<br>';
         $data[] = [];
         $data['content'] = '';
+        $searchIndexModel = new \App\Models\Find\Items\Index();
 
         foreach ($items as $item) {
             $rsp .= '<br>'.$this->updateDataTitleAuthor($item);
+            $searchIndexModel->reindexAll(0, 1, (int) $item['id_i']);
             $data['content'] = $data['content'] .'<tt>' . $rsp . '</tt><br>';
         }
         return view('components/content', $data);
