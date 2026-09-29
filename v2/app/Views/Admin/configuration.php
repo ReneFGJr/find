@@ -13,22 +13,6 @@
     <?php endif; ?>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        <div class="col">
-            <a href="<?= base_url('/admin/export/marc21'); ?>" class="text-decoration-none">
-                <div class="card h-100 border-0 shadow-sm">
-                    <div class="card-body d-flex align-items-center gap-3">
-                        <div class="bg-primary bg-opacity-10 rounded-3 p-3">
-                            <i class="bi bi-download fs-3 text-primary"></i>
-                        </div>
-                        <div>
-                            <h5 class="card-title mb-1 text-dark">Exportar para MARC21 no formato ISO 2709</h5>
-                            <p class="card-text small text-secondary mb-0">Baixar o acervo da biblioteca em um único arquivo UTF-8</p>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-
         <!-- Nome da Biblioteca -->
         <div class="col">
             <a href="<?= base_url('/admin/library'); ?>" class="text-decoration-none">
@@ -142,6 +126,22 @@
                         <div>
                             <h5 class="card-title mb-1 text-dark">Cadastro dos Status</h5>
                             <p class="card-text small text-secondary mb-0">Gerenciar os status do sistema</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col">
+            <a href="<?= base_url('/admin/export/marc21'); ?>" class="text-decoration-none">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="bg-primary bg-opacity-10 rounded-3 p-3">
+                            <i class="bi bi-download fs-3 text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-1 text-dark">Exportação ISO2709</h5>
+                            <p class="card-text small text-secondary mb-0">Baixar o acervo da biblioteca em um único arquivo UTF-8</p>
                         </div>
                     </div>
                 </div>
