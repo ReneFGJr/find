@@ -12,6 +12,11 @@ class MarcExport
         $seen = [];
         $lastId = 0;
         do {
+            // Large collections can take longer than PHP's request time limit.
+            // Renew it per batch without changing the limit for other requests.
+            if (is_callable('set_time_limit')) {
+                set_time_limit(120);
+            }
             $batch = $items->where('i_library', $library)->where('id_i >', $lastId)
                 ->orderBy('id_i')->findAll(200);
             foreach ($batch as $item) {
@@ -51,7 +56,16 @@ class MarcExport
                         }
                     }
                 }
-                yield $encoder->record($item, $metadataModel->metadata(['data' => $data]), $copies);
+                try {
+                    $record = $encoder->record($item, $metadataModel->metadata(['data' => $data]), $copies);
+                } catch (\Throwable $error) {
+                    throw new \RuntimeException(
+                        'Item ' . $item['id_i'] . ': ' . $error->getMessage(),
+                        0,
+                        $error
+                    );
+                }
+                yield $record;
             }
         } while (count($batch) === 200);
     }

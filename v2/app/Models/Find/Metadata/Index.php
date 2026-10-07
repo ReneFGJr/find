@@ -143,7 +143,7 @@ class Index extends Model
         {
             $ID = $line['ID'];
             $name = $line['Caption'];
-            $lang = $line['Lang'];
+            $lang = (string) ($line['Lang'] ?? '');
             $dd = [];
             $dd['name'] = $name;
             $dd['lang'] = substr($lang,0,2);
