@@ -68,13 +68,27 @@ class Index extends Model
     // Callbacks
     protected $allowCallbacks = true;
     protected $beforeInsert   = [];
-    protected $afterInsert    = [];
+    protected $afterInsert    = ['requestZ3950Metadata'];
     protected $beforeUpdate   = [];
     protected $afterUpdate    = [];
     protected $beforeFind     = [];
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    protected function requestZ3950Metadata(array $event): array
+    {
+        if (!empty($event['result']) && !empty($event['id'])) {
+            try {
+                (new \App\Libraries\Z3950Outbox())->enqueue(
+                    (string) ($event['data']['i_identifier'] ?? ''), (int) $event['id']
+                );
+            } catch (\Throwable $e) {
+                log_message('error', 'Pedido Z39.50 do item {id}: {error}', ['id' => $event['id'], 'error' => $e->getMessage()]);
+            }
+        }
+        return $event;
+    }
 
     function index($d1 = '', $d2 = '', $d3 = '')
     {

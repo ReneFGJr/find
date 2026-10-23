@@ -730,7 +730,7 @@ class Catalog extends BaseController
                     $itemModel->insert($data);
                 }
                 // Redirect para zerar o formulário
-                return redirect()->to(current_url() . '?msg=' . urlencode($msgRedirect));
+                return redirect()->to(current_url() . '?msg=' . urlencode($msgRedirect))->withCookies();
             } else {
                 $msg = '<div class="alert alert-danger">Informe um ISBN-13 válido.</div>';
             }
