@@ -185,6 +185,7 @@ class LibraryController extends BaseController
             'book' => $book,
             'library' => $library,
             'itemInfo' => $row,
+            'canCatalogItem' => (new \App\Libraries\CatalogPermissions())->canCatalog((string) $row['i_library']),
             'meta' => $meta,
             'perfil' => $this->perfil,
         ]);

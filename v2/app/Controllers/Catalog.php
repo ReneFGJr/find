@@ -438,19 +438,22 @@ class Catalog extends BaseController
     /***************************************************************** Editor de Item */
     public function form_item()
     {
-
-        $libraryID = get_cookie('library') ?? get_cookie('library_code') ?? '';
-        if (!$libraryID) {
-            return redirect()->to('/bibliotecas')->with('msg', 'Escolha uma biblioteca antes de continuar.')->with('msg_type', 'warning');
+        if (!session()->get('id_us')) {
+            return redirect()->to('/login')->with('msg', 'Entre para acessar a catalogação.');
         }
-
-
-        $rdfForm = new \App\Models\Find\Rdf\RDF_form();
 
         $item = $this->request->getGet('item') ?? $this->request->getPost('item') ?? null;
 
         $Item = new \App\Models\Find\Items\Index();
         $dt = $Item->where('id_i', $item)->first();
+        if (!$dt) {
+            return $this->response->setStatusCode(404)->setBody('Item não encontrado.');
+        }
+        $libraryID = (string) ($dt['i_library'] ?? '');
+        if (!(new \App\Libraries\CatalogPermissions())->canCatalog($libraryID)) {
+            return $this->response->setStatusCode(403)->setBody('Acesso restrito aos catalogadores e administradores desta biblioteca.');
+        }
+        $rdfForm = new \App\Models\Find\Rdf\RDF_form();
         $id = $dt['id_i'] ?? 0;
 
         $i_work = $dt['i_work'] ?? 0;

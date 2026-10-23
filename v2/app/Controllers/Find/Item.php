@@ -21,13 +21,21 @@ class Item extends BaseController
             return $this->response->setJSON(['status' => 'error', 'message' => 'ID do item não informado.']);
         }
 
+        $Items = new \App\Models\Find\Items\Index();
+        $item = $Items->find($id_i);
+        if (!$item) {
+            return $this->response->setStatusCode(404)->setJSON(['status' => 'error', 'message' => 'Item não encontrado.']);
+        }
+        if (!(new \App\Libraries\CatalogPermissions())->canCatalog((string) ($item['i_library'] ?? ''))) {
+            return $this->response->setStatusCode(403)->setJSON(['status' => 'error', 'message' => 'Acesso restrito aos catalogadores e administradores desta biblioteca.']);
+        }
+
         $data = [
             'i_ln1' => $ln1,
             'i_ln2' => $ln2,
             'i_ln3' => $ln3,
             'i_ln4' => $ln4,
         ];
-        $Items = new \App\Models\Find\Items\Index();
         $updated = $Items->update($id_i, $data);
 
         if ($updated) {

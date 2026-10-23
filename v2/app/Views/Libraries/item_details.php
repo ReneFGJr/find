@@ -26,7 +26,7 @@
             <img src="<?= esc($book['cover'] ?? ''); ?>"
                 alt="<?= esc($book['title'] ?? ''); ?>"
                 class="img-fluid rounded item-cover mb-2">
-            <?php if ($perfil[2] == 1) { ?>
+            <?php if (!empty($canCatalogItem)) { ?>
                 <a href="<?= base_url('catalog/item/form?item=' .$id); ?>" class="btn btn-primary w-100">
                     <i class="bi bi-journal-check me-1"></i> Catalogar
                 </a>
