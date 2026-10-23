@@ -116,17 +116,23 @@ class RDF extends BaseController
         $LanguageModel = new \App\Models\Language\LanguageModel();
         $langs = $LanguageModel->getAllLanguages();
 
-        $params = $this->request->getGet() ?? [];
-        if ($params == []) $params = $this->request->getPost() ?? [];
+        $isPost = strtolower($this->request->getMethod()) === 'post';
+        $params = ($isPost ? $this->request->getPost() : $this->request->getGet()) ?? [];
         $params['langs'] = $langs;
-
-        if (isset($params['textValue']) && (!empty($params['textValue'])) && isset($params['idC']) && isset($params['prop']) && isset($params['lang']) && $params['lang'] != '')
-        {
-            // Aqui você pode processar o valor da literal, por exemplo, salvando no banco de dados
-            $RDF = new \App\Models\Find\Rdf\RDF();
-            $idL =  $RDF->createLiteral($params['idC'], $params['prop'], $params['textValue'], $params['lang'] ?? '');
-
-            return $this->response->setBody('<script>window.parent.location.reload();</script>');
+        if ($isPost) {
+            $text = trim((string) ($params['textValue'] ?? ''));
+            if ($text === '' || !ctype_digit((string) ($params['idC'] ?? '')) || (int) $params['idC'] < 1
+                || !ctype_digit((string) ($params['prop'] ?? '')) || (int) $params['prop'] < 1
+                || !in_array($params['lang'] ?? '', array_column($langs, 'lg_code'), true)) {
+                $params['error'] = 'Informe o texto, o idioma e uma propriedade válida.';
+            } else {
+                $RDF = new \App\Models\Find\Rdf\RDF();
+                $idL = $RDF->createTextLiteral($params['idC'], $params['prop'], $text, $params['lang']);
+                if ($idL) {
+                    return $this->response->setBody('<script>window.parent.location.reload();</script>');
+                }
+                $params['error'] = 'Não foi possível salvar o texto. Tente novamente.';
+            }
         }
 
         // Renderize uma view simples (ajuste o caminho conforme necessário)

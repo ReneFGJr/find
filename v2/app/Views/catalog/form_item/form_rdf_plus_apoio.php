@@ -50,5 +50,3 @@
         }
     }
 </script>
-
-####### Carga do JavaScript para o formulário RDF Plus (form_rdf_plus.php) #######

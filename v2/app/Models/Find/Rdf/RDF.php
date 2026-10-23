@@ -231,11 +231,14 @@ class RDF extends Model
         return $RSP;
     }
     /* ($idDW, 'hasTitle', $idTitulo); */
+    public function createTextLiteral($idC, $property, string $text, string $lang = 'pt_BR')
+    {
+        $idN = (new \App\Models\Find\Rdf\RDF_name())->createLiteral($text, $lang);
+        return $this->linkLiteral($idC, $property, $idN);
+    }
+
     function createLiteral($idC, $property, $term, $lang = '')
     {
-        $RDF_Data = new \App\Models\Find\Rdf\RDF_data();
-        $RDF_Class = new \App\Models\Find\Rdf\RDF_class();
-
         /* Literal */
         $idN = null;
         if (is_numeric($term) && $lang == '') {
@@ -245,10 +248,14 @@ class RDF extends Model
             $idN = $RDF_name->createLiteral($term, $lang);
         }
 
-        if (!$idN) {
-            echo "OPS, Literal invalido: $term, $lang, $idN";
-            return null;
-        }
+        return $this->linkLiteral($idC, $property, $idN);
+    }
+
+    protected function linkLiteral($idC, $property, $idN)
+    {
+        if (!$idN) return null;
+        $RDF_Data = new \App\Models\Find\Rdf\RDF_data();
+        $RDF_Class = new \App\Models\Find\Rdf\RDF_class();
 
         if (is_numeric($property)) {
             $idP = (int) round($property);
@@ -264,23 +271,21 @@ class RDF extends Model
                 ->first();
 
             if (!$data) {
-                $RDF_Data->insert([
+                $insertId = $RDF_Data->insert([
                     'd_r1' => $idC,
                     'd_p' => $idP,
                     'd_r2' => 0,
                     'd_literal' => $idN,
                     'd_creadted' => date('Y-m-d H:i:s'),
                     'd_update' => date('Y-m-d H:i:s'),
-                    'd_library' => '',
-                    'd_user' => ''
+                    'd_library' => 0,
+                    'd_user' => 0
                 ]);
-                return $RDF_Data->getInsertID();
+                return $insertId ?: null;
             } else {
-                echo "OPS, Literal já existe: $term, $lang, $idN";
                 return $data['id_d'];
             }
         } else {
-            echo "OPS, Propriedade invalida: $property, $idP";
             return null;
         }
     }
