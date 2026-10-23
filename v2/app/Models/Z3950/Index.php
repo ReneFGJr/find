@@ -40,19 +40,31 @@ class Index extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    function searchISBN($isbn)
+    public static function consultationEndpoint(string $isbn): string
+    {
+        return 'https://cip.brapci.inf.br/api/find/getISBN?query=' . rawurlencode($isbn);
+    }
+
+    function searchISBN($isbn, bool $throwOnError = false)
     {
         // https://cip.brapci.inf.br/api/find/getISBN?query=9786589167501
-        $url = 'https://cip.brapci.inf.br/api/find/getISBN?query=' . urlencode($isbn);
+        $url = self::consultationEndpoint((string) $isbn);
 
         try {
-            $res = $this->api_request('GET', $url, ['query' => $isbn]);
-            if ($res['status'] === 200 && $res['json']) {
-                return $res['json'];
-            } else {
-                return [];
+            $res = $this->api_request('GET', $url);
+            $payload = $res['json'] ?? json_decode((string) $res['body'], true);
+            $apiMessage = is_array($payload) ? ($payload['error'] ?? $payload['message'] ?? '') : '';
+            $apiMessage = is_string($apiMessage) ? $apiMessage : '';
+            if ($res['status'] !== 200) {
+                throw new RuntimeException('A API de metadados retornou HTTP ' . $res['status'] . ($apiMessage !== '' ? ': ' . $apiMessage : '.'));
             }
+            if (!is_array($payload)) throw new RuntimeException('A API de metadados retornou uma resposta JSON inválida.');
+            if (!empty($payload['error']) || ($payload['success'] ?? true) === false || ($payload['status'] ?? '') === 'error') {
+                throw new RuntimeException($apiMessage !== '' ? $apiMessage : 'A API informou uma falha na consulta Z39.50.');
+            }
+            return $payload;
         } catch (RuntimeException $e) {
+            if ($throwOnError) throw $e;
             return [];
         }
     }

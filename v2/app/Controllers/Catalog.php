@@ -522,9 +522,14 @@ class Catalog extends BaseController
             exit;
         }
 
+        try {
         // Se houver resultado Z39 salvo, passa para a view
         $z3950_result = session()->getFlashdata('z3950_result');
         if (isset($z3950_result)) {
+            if (!empty($z3950_result['error']) || empty($z3950_result['data'])) {
+                $message = $z3950_result['error'] ?? $z3950_result['message'] ?? 'Nenhum metadado encontrado para este ISBN.';
+                throw new \RuntimeException(is_string($message) ? $message : 'Erro retornado pela API Z39.50.');
+            }
             $ProcessMetadata = new \App\Models\Find\Items\ProcessMetadata();
             $z3950_result = $ProcessMetadata->processZ3950Result($z3950_result, $isbn);
             if ($z3950_result != []) {
@@ -540,14 +545,15 @@ class Catalog extends BaseController
         }
 
         if ($isbn != '') {
-            // Exibe view auxiliar de loading
-            echo view('catalog/z3950_loading');
             // Busca ISBN do item (se disponível)
 
             if ($isbn) {
                 // Chama o model Z3950
                 $z3950 = new \App\Models\Z3950\Index();
-                $resultadoZ39 = $z3950->searchISBN($isbn);
+                $resultadoZ39 = $z3950->searchISBN($isbn, true);
+                if (empty($resultadoZ39['data'])) {
+                    throw new \RuntimeException($resultadoZ39['message'] ?? 'Nenhum metadado encontrado para este ISBN.');
+                }
                 // Aqui você pode salvar o resultado em sessão, banco ou redirecionar para mostrar o resultado
                 session()->setFlashdata('z3950_result', $resultadoZ39);
                 return redirect()->to(base_url('/catalog/import_z3950') . '?isbn=' . urlencode($isbn));
@@ -556,8 +562,9 @@ class Catalog extends BaseController
             return;
         }
 
-        echo "NÃO DEVERIA CHEGAR AQUI";
-        exit;
+        } catch (\Throwable $e) {
+            return view('catalog/z3950_error', ['isbn' => $isbn, 'message' => $e->getMessage()]);
+        }
     }
 
     public function catalogar_phase($status = null)

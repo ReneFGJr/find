@@ -61,7 +61,16 @@
                             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
                         </div>
                         <div class="offcanvas-body">
-                            <iframe id="z3950Iframe" style="width:100%;height:70vh;border:0;"></iframe>
+                            <div class="alert alert-secondary small text-break">
+                                <strong>Endpoint da consulta (provisório):</strong>
+                                <code class="d-block mt-1"><?= esc(\App\Models\Z3950\Index::consultationEndpoint((string) ($isbn ?? ''))) ?></code>
+                            </div>
+                            <div id="z3950Loading" class="d-none text-center py-5" role="status" aria-live="polite">
+                                <div class="spinner-border text-primary mb-3" aria-hidden="true"></div>
+                                <p class="fw-semibold mb-1">Consultando e importando metadados Z39.50...</p>
+                                <p class="text-muted">Aguarde. Tempo decorrido: <span id="z3950Elapsed">0</span> s</p>
+                            </div>
+                            <iframe id="z3950Iframe" title="Resultado da importação Z39.50" style="width:100%;height:70vh;border:0;"></iframe>
                             <div class="mt-3 text-end">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="offcanvas">Fechar</button>
                             </div>
@@ -189,12 +198,34 @@
 
         var z3950Panel = document.getElementById('z3950Panel');
         var z3950Iframe = document.getElementById('z3950Iframe');
-        var z3950Url = "<?= base_url('/catalog/import_z3950'); ?>?isbn=<?= $isbn; ?>";
+        var z3950Url = <?= json_encode(base_url('/catalog/import_z3950') . '?isbn=' . rawurlencode((string) ($isbn ?? '')), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
         if (z3950Panel && z3950Iframe) {
+            var z3950Loading = document.getElementById('z3950Loading');
+            var z3950Elapsed = document.getElementById('z3950Elapsed');
+            var z3950Timer;
+            function finishZ3950Loading() {
+                clearInterval(z3950Timer);
+                z3950Loading.classList.add('d-none');
+                z3950Iframe.classList.remove('d-none');
+                z3950Panel.setAttribute('aria-busy', 'false');
+            }
+            z3950Iframe.addEventListener('load', function() {
+                if (z3950Iframe.getAttribute('src')) finishZ3950Loading();
+            });
             z3950Panel.addEventListener('show.bs.offcanvas', function() {
+                clearInterval(z3950Timer);
+                z3950Loading.classList.remove('d-none');
+                z3950Iframe.classList.add('d-none');
+                z3950Panel.setAttribute('aria-busy', 'true');
+                var startedAt = Date.now();
+                z3950Elapsed.textContent = '0';
+                z3950Timer = setInterval(function() {
+                    z3950Elapsed.textContent = Math.floor((Date.now() - startedAt) / 1000);
+                }, 1000);
                 z3950Iframe.src = z3950Url;
             });
             z3950Panel.addEventListener('hidden.bs.offcanvas', function() {
+                clearInterval(z3950Timer);
                 z3950Iframe.src = '';
                 location.reload();
             });
