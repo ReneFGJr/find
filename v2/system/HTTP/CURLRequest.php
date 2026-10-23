@@ -655,7 +655,7 @@ class CURLRequest extends Request
             throw HTTPException::forCurlError((string) curl_errno($ch), curl_error($ch));
         }
 
-        curl_close($ch);
+        unset($ch);
 
         return $output;
     }

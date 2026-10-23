@@ -75,10 +75,10 @@ function download_cover($isbn, $urls)
                     continue;
                 }
                 file_put_contents($path, $data);
-                curl_close($ch);
+                unset($ch);
                 return true;
             }
-            curl_close($ch);
+            unset($ch);
         }
         $fileO = FCPATH . 'public/assets/img/no_cover.png';
         if (file_exists($fileO)) {

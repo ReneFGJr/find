@@ -86,7 +86,7 @@ class Form extends BaseController
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false); // Não checa host SSL
             $img = curl_exec($ch);
             $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
+            unset($ch);
 
             if ($img && $http_code == 200) {
                 file_put_contents($target, $img);

@@ -143,7 +143,7 @@ class Index extends Model
         $errno  = curl_errno($ch);
         $error  = curl_error($ch);
         $status = curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-        curl_close($ch);
+        unset($ch);
 
         if ($errno) {
             throw new RuntimeException("Erro cURL ($errno): $error");
