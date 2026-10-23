@@ -74,7 +74,7 @@ class Index extends Model
         string $url,
         array $data = [],
         array $headers = [],
-        int $timeout = 15
+        int $timeout = 120
     ): array {
         $method = strtoupper($method);
         $ch = curl_init();
