@@ -5,6 +5,7 @@ $activeTab = $activeTab ?? 'item';
 $isbn = $book['i_identifier'] ?? '';
 $coverSrc = function_exists('cover_image') ? cover_image($isbn) : base_url('assets/img/no_cover.png');
 ?>
+<?= view('components/label_edit', ['itemInfo' => $book]); ?>
 
 <!-- Offcanvas lateral para adicionar dado -->
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasAddData" aria-labelledby="offcanvasAddDataLabel" style="width:600px;">
@@ -59,6 +60,17 @@ $coverSrc = function_exists('cover_image') ? cover_image($isbn) : base_url('asse
                 <div class="row g-3 align-items-start">
                     <div class="col-lg-9 col-md-8">
                         <?= view('Libraries/item_simple', ['book' => $book]); ?>
+                        <section class="card border-0 shadow-sm mt-3" aria-labelledby="item-label-title">
+                            <div class="card-body p-4">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-3">
+                                    <h3 class="h6 mb-0" id="item-label-title"><i class="bi bi-tag me-2"></i>Etiqueta do exemplar</h3>
+                                    <button class="btn btn-outline-primary btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#labelEditPanel" aria-controls="labelEditPanel">
+                                        <i class="bi bi-pencil-square me-1"></i>Editar etiqueta
+                                    </button>
+                                </div>
+                                <?= view('components/label_view', ['itemInfo' => $book]); ?>
+                            </div>
+                        </section>
                     </div>
                     <div class="col-lg-3 col-md-4">
                         <aside class="card border-0 shadow-sm overflow-hidden">

@@ -7,10 +7,13 @@
     <div class="offcanvas-body">
         <div class="book-label mb-2 full">
             <form id="labelEditForm" novalidate class="d-flex flex-column gap-2">
-                <input type="hidden" id="id_i" name="id_i" value="<?= $itemInfo['id_i'] ?? '' ?>">--<?= $itemInfo['id_i'] ?? '' ?>--
-                <input id="ln1" name="i_ln1" class="form-control p-0" style="width: 80%;" placeholder="Classificação" value="<?= $itemInfo['i_ln1'] ?? '' ?>">
+                <?= csrf_field() ?>
+                <input type="hidden" id="id_i" name="id_i" value="<?= esc($itemInfo['id_i'] ?? '', 'attr') ?>">
+                <label for="ln1">Classificação</label>
+                <input id="ln1" name="i_ln1" class="form-control p-0" style="width: 80%;" placeholder="Classificação" value="<?= esc($itemInfo['i_ln1'] ?? '', 'attr') ?>">
+                <label for="ln2">Cutter</label>
                 <div class="input-group mb-2" style="width: 80%;">
-                    <input id="ln2" name="i_ln2" class="form-control p-0" placeholder="Cutter" value="<?= $itemInfo['i_ln2'] ?? '' ?>">
+                    <input id="ln2" name="i_ln2" class="form-control p-0" placeholder="Cutter" value="<?= esc($itemInfo['i_ln2'] ?? '', 'attr') ?>">
                     <button type="button" class="btn btn-outline-primary" id="generateCutterBtn" title="Gerar Cutter">
                         <i class="bi bi-magic"></i> Cutter
                     </button>
@@ -61,16 +64,17 @@
                     </script>
                 <?php else: ?>
                     <?php $author = ""; ?>
-                    <input id="ln3" name="i_ln3" class="form-control p-0" style="width: 80%;" placeholder="Ano/Exemplar" value="<?= $itemInfo['i_ln2'] ?? '' ?>">
                 <?php endif; ?>
 
-                <input id="ln3" name="i_ln3" class="form-control p-0" style="width: 80%;" placeholder="Ano/Exemplar" value="<?= $itemInfo['i_ln3'] ?? '' ?>">
-                <input id="ln4" name="i_ln4" class="form-control p-0" style="width: 80%;" placeholder="Ano/Exemplar" value="<?= $itemInfo['i_ln4'] ?? '' ?>">
+                <label for="ln3">Linha 3 — Ano/Exemplar</label>
+                <input id="ln3" name="i_ln3" class="form-control p-0" style="width: 80%;" placeholder="Ano/Exemplar" value="<?= esc($itemInfo['i_ln3'] ?? '', 'attr') ?>">
+                <label for="ln4">Linha 4 — Complemento</label>
+                <input id="ln4" name="i_ln4" class="form-control p-0" style="width: 80%;" placeholder="Complemento" value="<?= esc($itemInfo['i_ln4'] ?? '', 'attr') ?>">
                 <button type="submit" class="btn btn-outline-success align-self-start mt-2">
                     <i class="bi bi-arrow-right-square"></i> Atualizar
                 </button>
             </form>
-            <div id="labelEditMsg" class="mt-2">Autor princial:<?=  $author; ?></div>
+            <div id="labelEditMsg" class="mt-2" role="status" aria-live="polite"></div>
         </div>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -102,5 +106,4 @@
             });
         </script>
     </div>
-</div>
 </div>

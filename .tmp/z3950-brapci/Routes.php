@@ -1,0 +1,527 @@
+<?php
+
+use CodeIgniter\Router\RouteCollection;
+
+$routes->post('api/find/z3950/queue', 'Z3950Queue::create');
+$routes->get('api/find/z3950/queue/(:segment)', 'Z3950Queue::show/$1');
+
+/**
+ * @var RouteCollection $routes
+ */
+
+$routes->setDefaultNamespace('App\Controllers');
+$routes->setDefaultController('MainPages');
+$routes->setDefaultMethod('index');
+$routes->setTranslateURIDashes(false);
+$routes->set404Override();
+
+/*************************** NewPass */
+$routes->match(['get', 'post', 'options'], '/auth/newpass/(:any)', 'Auth::newpass/$1');
+$routes->match(['get', 'post', 'options'], '/social/login', 'Auth::index/login');
+
+$routes->match(['get', 'post', 'options'], '/auth/callback', 'Auth::callback');
+
+
+// Browser session validation uses the API token, independent of the PHP session cookie.
+$routes->match(['post', 'options'], '/api/socials/oauth2', 'Auth::index/oauth2');
+$routes->match(['get', 'post', 'options'], '/api/socials/(:any)', 'Auth::index/$1');
+$routes->match(['get', 'post', 'options'], '/auth/(:any)', 'Auth::index/$1');
+$routes->match(['get', 'post', 'options'], '/api/socials/signup', 'Auth::signup');
+$routes->match(['get', 'post'], '/auth/forgot-password', 'Auth::forgot');
+
+$routes->get('/logout', 'Auth::logout');
+$routes->get('/pdfHarvesting', 'MainPages::index/pdfHarvesting');
+
+$routes->get('/screensaver', 'MainPages::screensaver');
+
+$routes->get('/api', 'Api::index');
+
+$routes->group('api/ai', ['filter' => 'aiApiAuth'], static function ($routes) {
+    $routes->get('models', 'Ai\\ModelController::index');
+    $routes->resource('projects', ['controller' => 'Ai\\ProjectController', 'except' => 'new,edit']);
+    $routes->get('chats', 'Ai\\ChatController::index');
+    $routes->post('chats', 'Ai\\ChatController::create');
+    $routes->get('chats/(:num)', 'Ai\\ChatController::show/$1');
+    $routes->put('chats/(:num)', 'Ai\\ChatController::update/$1');
+    $routes->delete('chats/(:num)', 'Ai\\ChatController::delete/$1');
+    $routes->get('chats/(:num)/messages', 'Ai\\ChatController::messages/$1');
+    $routes->get('chats/(:num)/message', 'Ai\\ChatController::streamMethodNotAllowed/$1');
+    $routes->get('chats/(:num)/regenerate', 'Ai\\ChatController::streamMethodNotAllowed/$1');
+    $routes->post('chats/(:num)/message', 'Ai\\ChatController::message/$1');
+    $routes->post('chats/(:num)/regenerate', 'Ai\\ChatController::regenerate/$1');
+});
+
+$routes->match(['get', 'options'], '/api/bugs/user/(:segment)', 'BugReport::user/$1');
+$routes->match(['get', 'post', 'options'], '/api/bugs/form', 'BugReport::form');
+$routes->options('/api/(:any)', 'Api::index/$1');
+$routes->post('/api/cite/halflive', 'Api::index/cite/halflive');
+$routes->get('/api/(:any)', 'Api::index/$1');
+$routes->post('/api/(:any)', 'Api::index/$1');
+$routes->put('/api/(:any)', 'Api::index/$1');
+
+$routes->get('/capes', 'Dci::capes');
+$routes->get('/capes(:any)', 'Dci::capes/$1');
+$routes->post('/capes(:any)', 'Dci::capes/$1');
+
+/* Original */
+/********* CRAWLER */
+$routes->get('/dci/', 'Dci::index/');
+$routes->get('/dci/(:any)', 'Dci::index/$1');
+$routes->post('/dci/(:any)', 'Dci::index/$1');
+
+$routes->get('/wp/', 'Wp::index/');
+$routes->get('/wp/(:any)', 'Wp::index/$1');
+
+/********** CHATBOOT */
+$routes->get('/chat/', 'Chatbot::index/');
+$routes->get('/chatbot/', 'Chatbot::index/');
+
+
+
+
+/********** CDU */
+$routes->get('/cdu', 'Cdu::index');
+$routes->get('/cdu/(:any)', 'Cdu::index/$1');
+$routes->post('/cdu/(:any)', 'Cdu::index/$1');
+
+/********** DOWNLOAD */
+$routes->get('/download', 'Download::index');
+$routes->get('/download/(:any)', 'Download::download/$1');
+
+/********** DOWNLOAD */
+$routes->get('/bibliofind', 'Bibliofind::index');
+$routes->get('/bibliofind/(:any)', 'Bibliofind::index/$1');
+
+/*********** DOI */
+$routes->get('/doi/(:any)', 'Doi::index/$1');
+
+/*********** OAI-PMH */
+$routes->get('/oai/(:any)', 'Oai::index/$1');
+$routes->get('/oai/', 'Oai::index');
+
+/*********** OAI-SERVER */
+$routes->get('/oai-server', 'OaiServer::index');
+$routes->get('/oai-server/(:any)', 'OaiServer::index/$1');
+$routes->post('/oai-server', 'OaiServer::index');
+$routes->post('/oai-server/(:any)', 'OaiServer::index/$1');
+
+/********** BOTS */
+$routes->get('/bots', 'Bots::index');
+$routes->get('/bots/(:any)', 'Bots::index/$1');
+
+/********** BOTS */
+$routes->get('/guide', 'Guide::index');
+$routes->get('/guide/(:any)', 'Guide::index/$1');
+$routes->post('/guide/(:any)', 'Guide::index/$1');
+
+/********* AJAX */
+$routes->get('/ajax/(:any)', 'Ajax::index/$1');
+$routes->post('/ajax/(:any)', 'Ajax::index/$1');
+$routes->post('/ajax/(:any)/', 'Ajax::index/$1');
+$routes->post('/ajax/(:any)/(:any)', 'Ajax::index/$1/$2');
+
+/********* API */
+$routes->get('/ws', 'Api::index');
+$routes->get('/ws/api', 'Api::index');
+$routes->get('/ws/api/(:any)', 'Api::index/$1');
+$routes->get('/ws/(:any)/(:any)', 'Api::index/$1/$2');
+$routes->get('/api', 'Api::index');
+$routes->get('/api/(:any)', 'Api::index/$1');
+$routes->post('/api/(:any)', 'Api::index/$1');
+$routes->put('/api/(:any)', 'Api::index/$1');
+
+/********* SOCIAL */
+$routes->get('/social', 'Social::index');
+$routes->post('/social/ajax/(:any)', 'Social::ajax/$1');
+$routes->get('/social/(:any)', 'Social::index/$1');
+$routes->post('/social/(:any)', 'Social::index/$1');
+
+$sc = ['pq', 'tools', 'ai', 'authoriry', 'autoridade', 'bibliofind', 'parecer', 'patente', 'guide'];
+foreach ($sc as $id => $nm) {
+    $routes->post('/' . $nm . '/social/(:any)', 'Social::index/$1');
+    $routes->get('/' . $nm . '/social/(:any)', 'Social::index/$1');
+
+    $routes->post('/' . $nm . '/a/(:any)', 'MainPages::index/a/$1');
+    $routes->get('/' . $nm . '/a/(:any)', 'MainPages::index/a/$1');
+}
+
+/********* MANUAL */
+$routes->get('/manual/', 'Manuais::index/$1/$2');
+$routes->post('/manual/(:any)/(:any)', 'Manuais::index/$1/$2');
+$routes->get('/manual/(:any)/(:any)', 'Manuais::index/$1/$2');
+
+/********* BENANCIB */
+$routes->get('/benancib/(:any)/(:any)', 'Benancib::index/$1/$2');
+$routes->post('/benancib/(:any)/(:any)', 'Benancib::index/$1/$2');
+$routes->get('/benancib/(:any)', 'Benancib::index/$1');
+$routes->post('/benancib/(:any)', 'Benancib::index/$1');
+$routes->get('/benancib', 'Benancib::index');
+
+/********* Proceedings */
+$routes->get('/proceedings/(:any)/(:any)', 'Proceedings::index/$1/$2');
+$routes->post('/proceedings/(:any)/(:any)', 'Proceedings::index/$1/$2');
+$routes->get('/proceedings/(:any)', 'Proceedings::index/$1');
+$routes->post('/proceedings/(:any)', 'Proceedings::index/$1');
+$routes->get('/proceedings', 'Proceedings::index');
+
+/********* AI */
+$routes->get('/ai', 'Ai::index');
+$routes->get('/ai/(:any)', 'Ai::index/$1');
+$routes->get('/ai/(:any)/(:any)', 'Ai::index/$1/$2');
+
+$routes->post('/ai/(:any)', 'Ai::index/$1');
+$routes->post('/ai/(:any)/(:any)', 'Ai::index/$1/$2');
+
+/********* CRAWLER */
+$routes->get('/crawler', 'Crawler::index');
+$routes->get('/crawler/(:any)', 'Crawler::index/$1');
+$routes->get('/crawler/(:any)/(:any)', 'Crawler::index/$1/$2');
+
+$routes->post('/crawler/(:any)', 'Crawler::index/$1');
+$routes->post('/crawler/(:any)/(:any)', 'Crawler::index/$1/$2');
+
+/********* DADOS */
+$routes->get('/data', 'Dados::index');
+$routes->get('/dataverse', 'Dados::index/dataverse');
+$routes->get('/dataverse/(:any)', 'Dados::index/dataverse/(:any)');
+$routes->get('/dados', 'Dados::index');
+$routes->get('/dados/(:any)', 'Dados::index/$1');
+$routes->get('/dados/(:any)/(:any)', 'DAdos::index/$1/$2');
+$routes->post('/dados/(:any)', 'Dados::index/$1');
+
+
+/********* Books */
+$routes->get('/books/(:any)/(:any)', 'Books::index/$1/$2');
+$routes->post('/books/(:any)/(:any)', 'Books::index/$1/$2');
+$routes->get('/books/(:any)/(:any)/(:any)', 'Books::index/$1/$2/$3');
+$routes->post('/books/(:any)/(:any)/(:any)', 'Books::index/$1/$2/$3');
+$routes->get('/books/(:any)', 'Books::index/$1');
+$routes->post('/books/(:any)', 'Books::index/$1');
+$routes->get('/books', 'Books::index');
+
+/********* Notepad */
+$routes->get('/notepad', 'Notepad::index');
+$routes->post('/notepad', 'Notepad::create');
+$routes->get('/notepad/(:segment)', 'Notepad::pad/$1');
+$routes->post('/notepad/(:segment)', 'Notepad::save/$1');
+
+/********* TOOLS */
+//$routes->get('/rdf', 'Rdf::index');
+$routes->get('/rdf/', 'Rdf::index/');
+$routes->match(['get', 'post'], '/rdf/Class/create', 'Rdf::index/Class/create');
+$routes->match(['get', 'post'], '/rdf/Class/edit/(:num)', 'Rdf::index/Class/edit/$1');
+$routes->post('/rdf/Class/delete/(:num)', 'Rdf::index/Class/delete/$1');
+$routes->match(['get', 'post'], '/rdf/Property/create', 'Rdf::index/Property/create');
+$routes->match(['get', 'post'], '/rdf/Property/edit/(:num)', 'Rdf::index/Property/edit/$1');
+$routes->post('/rdf/Property/delete/(:num)', 'Rdf::index/Property/delete/$1');
+$routes->match(['get', 'post'], '/rdf/rules/edit/(:num)', 'Rdf::index/rules/edit/$1');
+$routes->get('/rdf/(:any)', 'Rdf::index/$1');
+$routes->get('/rdf/(:any)/(:any)', 'Rdf::index/$1/$2');
+$routes->post('/rdf/(:any)', 'Rdf::index/$1');
+$routes->post('/rdf/(:any)/(:any)', 'Rdf::index/$1/$2');
+$routes->post('/rdf/(:any)/(:any)/(:any)', 'Rdf::index/$1/$2/$3');
+$routes->post('/rdf/(:any)/(:any)/(:any)/(:any)', 'Rdf::index/$1/$2/$3/#4');
+
+/********* TOOLS */
+$routes->get('/elasticsearch/(:any)/(:any)', 'Elasticsearch::index/$1/$2');
+$routes->get('/elasticsearch/(:any)/', 'Elasticsearch::index/$1');
+$routes->get('/elasticsearch', 'Elasticsearch::index');
+
+$routes->post('/elasticsearch/(:any)/(:any)', 'Elasticsearch::index/$1/$2');
+$routes->post('/elasticsearch/(:any)/', 'Elasticsearch::index/$1');
+
+/********* POPUP */
+$routes->get('/popup/(:any)', 'Popup::index/$1');
+$routes->post('/popup/(:any)', 'Popup::index/$1');
+
+/********* ADMIN */
+$routes->get('/admin/(:any)', 'Admin::index/$1');
+$routes->post('/admin/(:any)', 'Admin::index/$1');
+$routes->get('/admin/(:any)/(:any)/(:num)', 'Admin::index/$1/$2/$3');
+$routes->post('/admin/(:any)/(:any)/(:num)', 'Admin::index/$1/$2/$3');
+$routes->get('/admin/(:any)/(:any)', 'Admin::index/$1/$2');
+$routes->post('/admin/(:any)/(:any)', 'Admin::index/$1/$2');
+$routes->get('/admin', 'Admin::index');
+
+
+/********* OJS */
+$routes->group('ojs', function($routes) {
+    $routes->get('/', 'Ojs::index');
+    $routes->get('journals', 'Ojs::journals');
+    $routes->get('journals/new', 'Ojs::journalNew');
+    $routes->get('journals/view/(:num)', 'Ojs::journalView/$1');
+    $routes->post('journals', 'Ojs::journalCreate', ['filter' => 'csrf']);
+    $routes->get('journals/edit/(:num)', 'Ojs::journalEdit/$1');
+    $routes->post('journals/select/(:num)', 'Ojs::journalSelect/$1', ['filter' => 'csrf']);
+    $routes->post('journals/(:num)', 'Ojs::journalUpdate/$1', ['filter' => 'csrf']);
+    $routes->post('journals/delete/(:num)', 'Ojs::journalDelete/$1', ['filter' => 'csrf']);
+    $routes->get('submissoes', 'Ojs::submissoes');
+    $routes->get('issues', 'Ojs::issues');
+    $routes->get('articles_to_submit', 'Ojs::articlesToSubmit');
+    $routes->get('articles_submied', 'Ojs::articlesSubmied');
+    $routes->get('avaliation_in', 'Ojs::evaluationIn');
+    $routes->get('articles_submied/view/(:num)', 'Ojs::submittedArticleView/$1');
+    $routes->get('view/(:num)', 'Ojs::submittedArticleView/$1');
+    $routes->get('action/(:num)/(:num)', 'Ojs::submissionAction/$1/$2');
+    $routes->post('action/(:num)/(:num)/execute', 'Ojs::executeSubmissionAction/$1/$2', ['filter' => 'csrf']);
+    $routes->get('articles_submied/pdf/(:num)', 'Ojs::submittedArticlePdf/$1');
+    $routes->post('articles_submied/update_ojs/(:num)', 'Ojs::updateSubmittedArticleOjs/$1', ['filter' => 'csrf']);
+    $routes->post('articles_submied/finalize/(:num)', 'Ojs::finalizeSubmittedArticle/$1', ['filter' => 'csrf']);
+    $routes->post('articles_submied/send_review/(:num)', 'Ojs::sendSubmittedArticleToReview/$1', ['filter' => 'csrf']);
+    $routes->post('articles_submied/accept_submission/(:num)', 'Ojs::sendSubmittedArticleToCopyediting/$1', ['filter' => 'csrf']);
+    $routes->post('articles_submied/send_copyediting/(:num)', 'Ojs::sendSubmittedArticleToCopyediting/$1', ['filter' => 'csrf']);
+    $routes->post('articles_submied/send_pdf/(:num)', 'Ojs::uploadSubmittedArticlePdf/$1', ['filter' => 'csrf']);
+    $routes->post('articles_submied/update_article/(:num)', 'Ojs::updateSubmittedArticleLocal/$1', ['filter' => 'csrf']);
+    $routes->get('submit', 'Ojs::submissionSummary');
+    $routes->get('submit/export/xml/(:num)', 'Ojs::exportArticleXml/$1');
+    $routes->get('submit/(:num)', 'Ojs::submissionSummaryByStatus/$1');
+    $routes->post('submit', 'Ojs::submit', ['filter' => 'csrf']);
+    $routes->get('submit/edit/(:num)', 'Ojs::editSubmittedArticle/$1');
+    $routes->post('submit/edit/(:num)', 'Ojs::saveSubmittedArticle/$1', ['filter' => 'csrf']);
+    $routes->get('nova', 'Ojs::nova');
+    $routes->match(['get', 'post'], 'send', 'Ojs::send');
+    $routes->match(['get', 'post'], 'send/0', 'Ojs::send0');
+    $routes->match(['get', 'post'], 'send/1', 'Ojs::send1');
+    $routes->match(['get', 'post'], 'send/2', 'Ojs::send2');
+    $routes->match(['get', 'post'], 'send/3', 'Ojs::send3');
+    $routes->match(['get', 'post'], 'send/4', 'Ojs::send4');
+    $routes->match(['get', 'post'], 'send/5', 'Ojs::send5');
+    $routes->get('journal', 'Ojs::journal');
+    $routes->get('csv', 'Ojs::csv');
+    // Outras rotas relacionadas ao OJS podem ser adicionadas aqui
+});
+
+
+$routes->group('events', function ($routes) {
+    $routes->get('/', 'Event::index');
+    $routes->get('create', 'Event::create');
+    $routes->post('store', 'Event::store');
+    $routes->get('edit/(:num)', 'Event::edit/$1');
+    $routes->post('update/(:num)', 'Event::update/$1');
+    $routes->get('delete/(:num)', 'Event::delete/$1');
+});
+
+/********* BrapciLAB */
+//$routes->group('lab', ['filter' => 'auth'], function ($routes) {
+//$routes->group('labs', function ($routes) {
+$routes->group('labs', ['filter' => 'auth'], function ($routes) {
+    $routes->get('', 'BrapciLab::home');
+    $routes->get('profile', 'BrapciLab::profile');
+    $routes->get('thinkers', 'BrapciLab::thinkers');
+    $routes->get('cite_work/(:num)', 'BrapciLab::cite_work/$1');
+    $routes->get('thinkers/new', 'BrapciLab::thinkers_new');
+    $routes->get('thinkers/(:num)', 'BrapciLab::thinkers_view/$1');
+    $routes->post('thinkers/(:num)/recalculate', 'BrapciLab::thinkers_recalculate/$1', ['filter' => 'csrf']);
+    $routes->get('thinkers/(:num)/select', 'BrapciLab::thinkers_select/$1');
+    $routes->post('thinkers/(:num)/select', 'BrapciLab::thinkers_link/$1', ['filter' => 'csrf']);
+    $routes->post('thinkers/(:num)/wiki/wikidata', 'BrapciLab::thinkers_import/$1/wikidata', ['filter' => 'csrf']);
+    $routes->post('thinkers/(:num)/wiki/wikipedia', 'BrapciLab::thinkers_import/$1/wikipedia', ['filter' => 'csrf']);
+    $routes->post('thinkers/(:num)/brapci/import', 'BrapciLab::thinkers_import_brapci/$1', ['filter' => 'csrf']);
+    $routes->post('thinkers/(:num)/photo/upload', 'BrapciLab::thinkers_upload_photo/$1', ['filter' => 'csrf']);
+    $routes->post('thinkers/(:num)/delete', 'BrapciLab::thinkers_delete/$1', ['filter' => 'csrf']);
+    $routes->get('thinkers/(:num)/edit', 'BrapciLab::thinkers_edit/$1');
+    $routes->get('thinkers/(:num)/works/(:num)/edit', 'BrapciLab::thinkers_work_edit/$1/$2');
+    $routes->get('thinkers/(:num)/works/(:num)', 'BrapciLab::thinkers_work_view/$1/$2');
+    $routes->post('thinkers/(:num)/works/(:num)/edit', 'BrapciLab::thinkers_work_edit/$1/$2', ['filter' => 'csrf']);
+    $routes->post('thinkers/(:num)/works/(:num)/unlink', 'BrapciLab::thinkers_work_unlink/$1/$2', ['filter' => 'csrf']);
+    $routes->get('thinkers/(:num)/group', 'BrapciLab::thinkers_group/$1');
+    $routes->post('thinkers/(:num)/group', 'BrapciLab::thinkers_group/$1', ['filter' => 'csrf']);
+    $routes->post('thinkers/(:num)/group/confirm', 'BrapciLab::thinkers_group_confirm/$1', ['filter' => 'csrf']);
+    $routes->post('thinkers/(:num)/update', 'BrapciLab::thinkers_update/$1', ['filter' => 'csrf']);
+    $routes->post('thinkers', 'BrapciLab::thinkers_store', ['filter' => 'csrf']);
+    $routes->get('view/(:num)', 'BrapciLab::doi_view/$1');
+    $routes->post('view/(:num)/save', 'BrapciLab::doi_save/$1', ['filter' => 'csrf']);
+    $routes->post('view/(:num)/delete/(:num)', 'BrapciLab::doi_delete/$1/$2', ['filter' => 'csrf']);
+    $routes->get('cited_process', 'BrapciLab::cited_process');
+    $routes->post('cited_process/importar_dois', 'BrapciLab::cited_import_dois');
+    $routes->post('cited_process/reprocessar', 'BrapciLab::cited_reprocess');
+    $routes->post('cited_process/reprocessar/(:num)', 'BrapciLab::cited_reprocess/$1', ['filter' => 'csrf']);
+    $routes->get('cited_process/(:num)', 'BrapciLab::cited_process_status/$1');
+    $routes->get('import', 'BrapciLab::cited_import');
+    $routes->post('import', 'BrapciLab::cited_import_save', ['filter' => 'csrf']);
+    $routes->get('dois', 'BrapciLab::dois');
+    $routes->get('journals', 'BrapciLab::journals');
+    $routes->get('journals/', 'BrapciLab::journals');
+    $routes->get('journals/(:num)', 'BrapciLab::journal/$1');
+
+    /********* Compat cited VC (public) */
+    $routes->get('cited/cluter', 'BrapciLab::cited/cluter', ['filter' => 'csrf']);
+    $routes->post('cited/cluter/prepare', 'BrapciLab::cited_cluster_prepare', ['filter' => 'csrf']);
+    $routes->post('cited/cluter/group', 'BrapciLab::cited_cluster_group', ['filter' => 'csrf']);
+    $routes->post('cited/work/(:num)/delete/(:num)', 'BrapciLab::cited_reference_delete/$1/$2', ['filter' => 'csrf']);
+    $routes->get('cited/', 'BrapciLab::cited2');
+    $routes->get('cited/(:any)', 'BrapciLab::cited/$1');
+    $routes->match(['get', 'post'], 'cited/(:any)/(:any)', 'BrapciLab::cited/$1/$2');
+
+    /********* Compat Labs VC (public) */
+    $routes->get('viewVC/(:any)', 'BrapciLabAbs::index/viewVC/$1');
+
+    $routes->group('authority', function ($routes) {
+        $routes->post('save/(:num)', 'BrapciLab::index_authority/save/$1');
+        $routes->get('(:any)', 'BrapciLab::index_authority/$1');
+        $routes->get('(:any)/(:any)', 'BrapciLab::index_authority/$1/$2');
+        $routes->get('(:any)/(:any)/(:any)', 'BrapciLab::index_authority/$1/$2/$3');
+        $routes->get('', 'BrapciLab::index_authority');
+    });
+
+    $routes->group('works', function ($routes) {
+        $routes->post('search', 'BrapciLab::index_works/search');
+        $routes->get('(:any)', 'BrapciLab::index_works/$1');
+        $routes->get('(:any)/(:any)', 'BrapciLab::index_works/$1/$2');
+        $routes->get('(:any)/(:any)/(:any)', 'BrapciLab::index_works/$1/$2/$3');
+        $routes->get('', 'BrapciLab::index_works');
+    });
+
+    $routes->group('projects', function ($routes) {
+        $routes->get('select', 'BrapciLab::selectProject');
+        $routes->post('set', 'BrapciLab::setProject');
+        $routes->get('new', 'BrapciLab::new');
+        $routes->get('edit/(:num)', 'BrapciLab::edit/$1');
+        $routes->post('update/(:num)', 'BrapciLab::update/$1');
+        $routes->post('create', 'BrapciLab::create');
+    });
+
+    $routes->group('oai', function ($routes) {
+        $routes->get('', 'BrapciLab::OAIwelcome');
+        $routes->get('select', 'BrapciLab::selectRepository');
+        $routes->get('select/(:num)', 'BrapciLab::setRepository/$1');
+        $routes->get('identify', 'BrapciLab::OAIidentify');
+        $routes->get('sets', 'BrapciLab::OAIlistarSets');
+    });
+
+    $routes->group('ai', function ($routes) {
+        $routes->get('', 'BrapciLab::AIwelcome');
+        $routes->get('(:any)', 'BrapciLab::AIwelcome/$1');
+        $routes->get('(:any)/(:any)', 'BrapciLab::AIwelcome/$1/$2');
+        $routes->get('(:any)/(:any)/(:any)', 'BrapciLab::AIwelcome/$1/$2/$3');
+        $routes->get('(:any)/(:any)/(:any)/(:any)', 'BrapciLab::AIwelcome/$1/$2/$3/$4');
+    });
+
+
+
+    $routes->get('importRIS', 'BrapciLab::uploadRIS');
+    $routes->post('importRIS', 'BrapciLab::importRIS');
+    $routes->post('importIDs', 'BrapciLab::importIDs');
+
+    $routes->group('api-library', function ($routes) {
+        $routes->get('/', 'BrapciLabsApiLibrary::index');
+        $routes->get('create', 'BrapciLabsApiLibrary::create');
+        $routes->post('store', 'BrapciLabsApiLibrary::store');
+        $routes->get('edit/(:num)', 'BrapciLabsApiLibrary::edit/$1');
+        $routes->post('update/(:num)', 'BrapciLabsApiLibrary::update/$1');
+        $routes->get('delete/(:num)', 'BrapciLabsApiLibrary::delete/$1');
+        $routes->get('show/(:num)', 'BrapciLabsApiLibrary::show/$1');
+    });
+
+    $routes->group('project', ['filter' => 'projectRequired'], function ($routes) {
+        $routes->get('codebook', 'BrapciLab::codebook');
+        $routes->get('codebook/view/(:num)', 'BrapciLab::codebook_view/$1');
+        $routes->get('codebook/new', 'BrapciLab::newCodebook');
+        $routes->post('codebook/create', 'BrapciLab::createCodebook');
+        $routes->get('codebook/edit/(:num)', 'BrapciLab::editCodebook/$1');
+        $routes->post('codebook/update/(:num)', 'BrapciLab::updateCodebook/$1');
+        $routes->post('codebook/delete/(:num)', 'BrapciLab::deleteCodebook/$1');
+
+        $routes->get('collaborators', 'BrapciLab::index_project');
+        $routes->get('collaborators/(:any)', 'BrapciLab::index_project/$1');
+        $routes->post('collaborators/(:any)', 'BrapciLab::index_project/$1');
+        $routes->post('collaborators/(:any)/(:any)', 'BrapciLab::index_project/$1/$2');
+        $routes->post('collaborators/(:any)/(:any)/(:any)', 'BrapciLab::index_project/$1/$2/$3');
+
+        /******* Authors */
+        $routes->get('authors', 'BrapciLab::authors');
+        $routes->get('authors/import', 'BrapciLab::authors_import');
+        $routes->post('authors/import', 'BrapciLab::authors_import');
+        $routes->get('authors/deduplicate', 'BrapciLab::authors_deduplicate');
+        $routes->get('authors/check-ids', 'BrapciLab::check_ids');
+
+        /******* Workds */
+        $routes->get('works', 'BrapciLab::works');
+
+    });
+});
+
+
+/********* BOOKMARKS */
+$routes->get('bookmarks/search', 'Bookmarks::search');
+$routes->get('bookmarks/import', 'Bookmarks::import');
+$routes->get('bookmarks/folder', 'Bookmarks::folder');
+$routes->get('/bookmarks/site/new/(:any)', 'Bookmarks::siteNew/$1');
+$routes->post('bookmarks/site/save', 'Bookmarks::siteSave');
+$routes->get('bookmarks/site/delete/(:num)', 'Bookmarks::siteDelete/$1');
+$routes->post('bookmarks/folder/save', 'Bookmarks::folderSave');
+$routes->get('bookmarks/folders/new', 'Bookmarks::folderNew');
+$routes->get('bookmarks/folders/view/(:any)', 'Bookmarks::folderView/$1');
+$routes->get('bookmarks/link/(:any)', 'Bookmarks::link/$1');
+$routes->get('bookmarks', 'Bookmarks::index');
+$routes->get('bookmark', 'Bookmarks::index');
+
+/* ********* KANBAN */
+$routes->get('/kanban', 'Kanban::index');
+$routes->post('/kanban/store', 'Kanban::store');
+$routes->post('/kanban/update/(:num)', 'Kanban::update/$1');
+$routes->post('/kanban/(:any)/comment', 'Kanban::addComment/$1');
+
+/* G3event */
+$routes->get('event/pessoas', 'G3vent::pessoas');
+$routes->get('event/import', 'G3vent::import');
+$routes->get('event/events', 'G3vent::events');
+$routes->get('event/event/edit/(:any)', 'G3vent::events_edit/$1');
+$routes->get('event/event/view/(:any)', 'G3vent::events_view/$1');
+$routes->get('event/event/register/(:any)', 'G3vent::events_register/$1');
+$routes->post('event/event/register/(:any)', 'G3vent::events_register/$1');
+$routes->post('event/event/update/(:any)', 'G3vent::events_update/$1');
+$routes->post('event/import', 'G3vent::importRun');
+$routes->get('event', 'G3vent::index');
+
+/********* PQ */
+$routes->get('/pq/(:any)', 'Pq::index/$1');
+$routes->get('/pq', 'Pq::index');
+
+/********* Patent */
+$routes->get('/patente/(:any)', 'Patente::index/$1');
+$routes->get('/patente', 'Patente::index');
+$routes->post('/patente/(:any)', 'Patente::index/$1');
+
+/********* Observatorio */
+$routes->get('/autoridade/(:any)', 'Authority::index/$1');
+$routes->get('/autoridade', 'Authority::index');
+$routes->post('/autoridade/(:any)', 'Authority::index/$1');
+$routes->post('/autoridade', 'Authority::index/');
+
+/********* Observatorio */
+$routes->get('/observatorio/(:any)', 'Observatorio::index/$1');
+$routes->get('/observatorio', 'Observatorio::index');
+$routes->post('/observatorio/(:any)', 'Observatorio::index/$1');
+
+/********* Parecer */
+$routes->get('/parecer/(:any)', 'Parecer::index/$1');
+$routes->get('/parecer', 'Parecer::index');
+$routes->post('/parecer/(:any)', 'Parecer::index/$1');
+
+/********* Tools */
+$routes->get('/tools/nlp/(:any)', 'Tools::nlp/$1');
+$routes->get('/tools/nlp/(:any)/(:any)', 'Tools::nlp/$1/$2');
+$routes->get('/tools/(:any)', 'Tools::index/$1');
+$routes->get('/tools', 'Tools::index');
+$routes->post('/tools/(:any)', 'Tools::index/$1');
+
+/********* Thesa */
+$routes->get('/thesa/(:any)', 'Thesa::index/$1');
+$routes->get('/thesa', 'Thesa::index');
+
+/********* ABS */
+$routes->get('/abs', 'Abs::index');
+$routes->get('/abs/(:any)', 'Abs::index/$1');
+$routes->get('/abs/(:any)/(:any)', 'Abs::index/$1/$2');
+$routes->get('/abs/(:any)/(:any)/(:any)', 'Abs::index/$1/$2/$3');
+
+/********** Others */
+//$routes->get('(:any)', 'MainPages::index/$1');
+$routes->get('(:any)', 'MainPages::index/$1');
+$routes->get('(:any)/(:any)', 'MainPages::index/$1/$2');
+$routes->get('(:any)/(:any)/(:any)', 'MainPages::index/$1/$2/$3');
+
+/********** DEFAULT */
+$routes->get('/', 'MainPages::index');
+$routes->post('/', 'MainPages::index');
