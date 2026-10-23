@@ -112,7 +112,6 @@ class File extends SplFileInfo
 
         $finfo    = finfo_open(FILEINFO_MIME_TYPE);
         $mimeType = finfo_file($finfo, $this->getRealPath() ?: $this->__toString());
-        finfo_close($finfo);
 
         return $mimeType;
     }
