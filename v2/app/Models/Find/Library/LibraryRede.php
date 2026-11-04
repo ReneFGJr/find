@@ -27,7 +27,14 @@ class LibraryRede extends Model
     // Métodos utilitários
     public function listAllActive()
     {
-        return $this->where('lr_active', 1)->orderBy('rd_name', 'ASC')->findAll();
+        // Older databases do not have an activation field for networks.
+        if ($this->db->fieldExists('rd_active', $this->table)) {
+            $this->where('rd_active', 1);
+        } elseif ($this->db->fieldExists('lr_active', $this->table)) {
+            $this->where('lr_active', 1);
+        }
+
+        return $this->orderBy('rd_name', 'ASC')->findAll();
     }
 
     public function getByName($name)
