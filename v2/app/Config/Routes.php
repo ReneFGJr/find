@@ -54,6 +54,8 @@ $routes->get('/item/(:num)', 'LibraryController::item/$1');
 $routes->get('/busca-avancada', 'BuscaAvancada::index');
 
 $routes->get('/perfil', 'Perfil::index');
+$routes->get('/perfil/senha', 'Perfil::password', ['filter' => 'csrf']);
+$routes->post('/perfil/senha', 'Perfil::password', ['filter' => 'csrf']);
 
 $routes->group(
     'emprestimo',

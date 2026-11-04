@@ -4,6 +4,9 @@
     <h2 class="mb-4"><i class="bi bi-person-lines-fill me-2"></i>Meu Perfil</h2>
     <div class="card mb-4">
         <div class="card-body">
+            <?php if ($message = session()->getFlashdata('password_success')): ?>
+                <div class="alert alert-success" role="status"><?= esc($message); ?></div>
+            <?php endif; ?>
             <dl class="row mb-0">
                 <dt class="col-sm-3">Nome</dt>
                 <dd class="col-sm-9"><?= esc(session()->get('us_nome') ?? ''); ?></dd>
@@ -14,6 +17,7 @@
                 <dt class="col-sm-3">Grupo(s)</dt>
                 <dd class="col-sm-9"><?= esc(session()->get('us_groups') ?? ''); ?></dd>
             </dl>
+            <a href="<?= base_url('/perfil/senha'); ?>" class="btn btn-outline-primary mt-3"><i class="bi bi-key me-1"></i>Trocar senha</a>
         </div>
     </div>
     <h4 class="mt-4 mb-3"><i class="bi bi-person-badge me-2"></i>Meus Perfis nas Bibliotecas</h4>
