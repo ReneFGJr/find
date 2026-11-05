@@ -73,6 +73,10 @@ class Index extends Model
 
         foreach ($dt['data'] as $id => $line) {
             $Prop = $line['Property'];
+            // As propriedades numeradas pertencem ao mesmo grupo de cores.
+            if (preg_match('/^hasColorclassification[0-9]*$/i', $Prop)) {
+                $Prop = 'hasColorclassification';
+            }
             $value = $this->getValue($line);
 
             switch ($Prop) {
