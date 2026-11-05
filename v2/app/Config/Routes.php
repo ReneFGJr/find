@@ -192,6 +192,8 @@ $routes->group('admin', function ($routes) {
 
     $routes->get('configuration', 'AdminController::configuration');
     $routes->get('rdf-classes', 'AdminRdfController::index');
+    $routes->get('rdf-classes/create', 'AdminRdfController::create');
+    $routes->post('rdf-classes/create', 'AdminRdfController::create', ['filter' => 'csrf']);
     $routes->get('rdf-classes/(:num)/edit', 'AdminRdfController::edit/$1');
     $routes->post('rdf-classes/(:num)/edit', 'AdminRdfController::edit/$1', ['filter' => 'csrf']);
     $routes->get('export/marc21', 'AdminController::exportMarc21');

@@ -14,6 +14,9 @@ class RDF_class extends Model
     protected $allowedFields = [
         'c_class',
         'c_type',
+        'c_prefix',
+        'c_url',
+        'c_url_update',
         'c_status',
         'c_created',
         'c_updated',

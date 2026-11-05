@@ -20,7 +20,12 @@ class AdminRdfController extends BaseController
         ]);
     }
 
-    public function edit($id)
+    public function create()
+    {
+        return $this->edit();
+    }
+
+    public function edit($id = null)
     {
         helper(['url', 'form']);
         if (!session()->get('logged_in')) {
@@ -28,7 +33,9 @@ class AdminRdfController extends BaseController
         }
 
         $model = new RDF_class();
-        $record = $model->find($id);
+        $record = $id === null
+            ? ['id_c' => null, 'c_class' => '', 'c_type' => $this->request->getGet('type') === 'P' ? 'P' : 'C']
+            : $model->find($id);
         if (!$record) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound();
         }
@@ -46,12 +53,17 @@ class AdminRdfController extends BaseController
             ]);
             if (!$validation->run($data)) {
                 $errors = $validation->getErrors();
-            } elseif ($model->where('c_class', $data['c_class'])->where('id_c !=', $id)->first()) {
+            } elseif ($model->where('c_class', $data['c_class'])->where('id_c !=', $id ?? 0)->first()) {
                 $errors[] = 'Já existe um registro com esse nome.';
             } else {
                 try {
-                    if ($model->update($id, $data)) {
-                        return redirect()->to('/admin/rdf-classes')->with('msg', 'Registro RDF atualizado com sucesso.');
+                    if ($id === null) {
+                        // Campos obrigatórios sem padrão no esquema original.
+                        $data += ['c_prefix' => 0, 'c_url' => '', 'c_url_update' => '1900-01-01'];
+                    }
+                    $saved = $id === null ? $model->insert($data) : $model->update($id, $data);
+                    if ($saved !== false) {
+                        return redirect()->to('/admin/rdf-classes')->with('msg', $id === null ? 'Registro RDF criado com sucesso.' : 'Registro RDF atualizado com sucesso.');
                     }
                     $errors[] = 'Não foi possível salvar o registro.';
                 } catch (\CodeIgniter\Database\Exceptions\DatabaseException $error) {
