@@ -13,6 +13,21 @@
     <?php endif; ?>
 
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div class="col">
+            <a href="<?= base_url('/admin/rdf-classes'); ?>" class="text-decoration-none">
+                <div class="card h-100 border-0 shadow-sm">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="bg-primary bg-opacity-10 rounded-3 p-3">
+                            <i class="bi bi-diagram-3 fs-3 text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-1 text-dark">Classes e Propriedades RDF</h5>
+                            <p class="card-text small text-secondary mb-0">Editar classes e propriedades da tabela rdf_class</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
         <!-- Nome da Biblioteca -->
         <div class="col">
             <a href="<?= base_url('/admin/library'); ?>" class="text-decoration-none">
