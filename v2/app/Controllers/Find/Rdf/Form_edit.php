@@ -81,7 +81,12 @@ class Form_edit extends BaseController
      */
     public function index()
     {
-        $form = $this->getFormData();
+        helper(['cookie', 'url']);
+        $library = trim((string) (get_cookie('library_code') ?: get_cookie('library')));
+        if ($library === '') {
+            return redirect()->to('/bibliotecas')->with('msg', 'Selecione uma biblioteca.')->with('msg_type', 'warning');
+        }
+        $form = $this->getFormData($library);
         $classModel = new \App\Models\Find\Rdf\RDF_class();
 
         // Coletar todos os IDs de range e propriedades usados
@@ -142,13 +147,16 @@ class Form_edit extends BaseController
     }
 
     /**
-     * Busca todos os registros da tabela rdf_form_class_2
+     * Busca os registros da biblioteca selecionada e os da biblioteca padrão.
      * @return array
      */
-    private function getFormData()
+    private function getFormData(string $library)
     {
         $formModel = new \App\Models\Find\Rdf\RDF_form();
-        $result = $formModel->orderBy('form_order', 'asc')->findAll();
+        $result = $formModel
+            ->whereIn('form_library', array_unique(['1000', $library]))
+            ->orderBy('form_order', 'asc')
+            ->findAll();
         $formData = [];
         foreach ($result as $row) {
             $formData[] = [
