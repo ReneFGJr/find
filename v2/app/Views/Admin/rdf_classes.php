@@ -4,6 +4,11 @@
 <main class="container py-5">
     <a href="<?= base_url('/admin/configuration'); ?>" class="btn btn-outline-secondary mb-3">Voltar às Configurações</a>
     <h1 class="h3 fw-bold mb-3">Classes e Propriedades RDF</h1>
+    <div class="d-flex gap-2 mb-4">
+        <a href="<?= base_url('/admin/rdf-classes/create'); ?>" class="btn btn-primary">
+            <i class="bi bi-plus-circle me-2" aria-hidden="true"></i>Cadastrar nova classe/propriedade
+        </a>
+    </div>
     <?php if (session()->getFlashdata('msg')): ?>
         <div class="alert alert-success" role="alert"><?= esc(session()->getFlashdata('msg')); ?></div>
     <?php endif; ?>

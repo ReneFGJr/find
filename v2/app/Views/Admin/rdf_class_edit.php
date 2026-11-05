@@ -1,14 +1,15 @@
-<?= view('layout/header', ['title' => 'Editar registro RDF • FIND']); ?>
+<?php $isNew = empty($record['id_c']); ?>
+<?= view('layout/header', ['title' => ($isNew ? 'Criar' : 'Editar') . ' registro RDF • FIND']); ?>
 <?= view('layout/navbar'); ?>
 
 <main class="container py-5">
-    <h1 class="h3 fw-bold mb-3">Editar registro RDF #<?= esc($record['id_c']); ?></h1>
+    <h1 class="h3 fw-bold mb-3"><?= $isNew ? 'Criar registro RDF' : 'Editar registro RDF #' . esc($record['id_c']); ?></h1>
     <?php if ($errors): ?>
         <div class="alert alert-danger" role="alert">
             <ul class="mb-0"><?php foreach ($errors as $error): ?><li><?= esc($error); ?></li><?php endforeach; ?></ul>
         </div>
     <?php endif; ?>
-    <form method="post" action="<?= base_url('/admin/rdf-classes/' . $record['id_c'] . '/edit'); ?>" class="card card-body shadow-sm">
+    <form method="post" action="<?= base_url('/admin/rdf-classes/' . ($isNew ? 'create' : $record['id_c'] . '/edit')); ?>" class="card card-body shadow-sm">
         <?= csrf_field(); ?>
         <div class="mb-3">
             <label for="c_class" class="form-label">Nome</label>
