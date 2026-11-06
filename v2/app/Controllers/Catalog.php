@@ -453,6 +453,38 @@ class Catalog extends BaseController
         if (!(new \App\Libraries\CatalogPermissions())->canCatalog($libraryID)) {
             return $this->response->setStatusCode(403)->setBody('Acesso restrito aos catalogadores e administradores desta biblioteca.');
         }
+        $missingConcepts = [];
+        foreach (['i_work' => 'Work', 'i_expression' => 'Expression', 'i_manifestation' => 'Manifestation'] as $field => $class) {
+            if ((int) ($dt[$field] ?? 0) === 0) {
+                $missingConcepts[$field] = $class;
+            }
+        }
+        if ($missingConcepts) {
+            $db = \Config\Database::connect();
+            $db->transBegin();
+            try {
+                $rdf = new \App\Models\Find\Rdf\RDF();
+                $conceptIds = [];
+                foreach ($missingConcepts as $field => $class) {
+                    $concept = $rdf->createConcept($class, 'ITEM:' . (int) $dt['id_i'] . ':' . $class);
+                    $conceptIds[$field] = (int) ($concept['id_cc'] ?? 0);
+                    if ($conceptIds[$field] <= 0) {
+                        throw new \RuntimeException('Falha ao criar conceito ' . $class);
+                    }
+                }
+                if (!$Item->update($dt['id_i'], $conceptIds) || $db->transStatus() === false) {
+                    throw new \RuntimeException('Falha ao salvar conceitos do item');
+                }
+                if ($db->transCommit() === false) {
+                    throw new \RuntimeException('Falha ao confirmar conceitos do item');
+                }
+                $dt = array_replace($dt, $conceptIds);
+            } catch (\Throwable $e) {
+                $db->transRollback();
+                log_message('error', 'Erro ao criar conceitos do item {item}: {error}', ['item' => $dt['id_i'], 'error' => $e->getMessage()]);
+                return $this->response->setStatusCode(500)->setBody('Não foi possível criar os conceitos do item. Tente novamente.');
+            }
+        }
         $rdfForm = new \App\Models\Find\Rdf\RDF_form();
         $id = $dt['id_i'] ?? 0;
 
@@ -460,11 +492,6 @@ class Catalog extends BaseController
         $i_expression = $dt['i_expression'] ?? 0;
         $i_manifestation = $dt['i_manifestation'] ?? 0;
         $i_analitic = $dt['i_work'] ?? 0;
-
-        if ($i_work == 0 || $i_expression == 0 || $i_manifestation == 0) {
-            echo "<div class='alert alert-danger'>Item não encontrado ou com dados incompletos (Work: $i_work, Expression: $i_expression, Manifestation: $i_manifestation).</div>";
-            exit;
-        }
 
         $activeTab = (string) session()->get('catalog_form_item_tab');
         $allowedTabs = ['item', 'work', 'expression', 'manifestation'];
