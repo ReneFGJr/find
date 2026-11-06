@@ -34,6 +34,9 @@
 
             <?php
             $semWork = (int)($itemInfo['i_work'] ?? 0) === 0 && (int)($itemInfo['i_expression'] ?? 0) === 0;
+            $faltamConceitos = (int)($itemInfo['i_work'] ?? 0) === 0
+                || (int)($itemInfo['i_expression'] ?? 0) === 0
+                || (int)($itemInfo['i_manifestation'] ?? 0) === 0;
             $isbnProcessavel = strpos((string)($itemInfo['i_identifier'] ?? ''), '100') === 0;
             ?>
             <!-- Botoes de ação -->
@@ -45,6 +48,9 @@
                     </a>
                <?php endif; ?>
                     <a href="<?= base_url('catalog/item/form') ?>?item=<?= $itemInfo['id_i']; ?>"
+                        <?php if ($faltamConceitos): ?>
+                            onclick="return window.confirm('Antes de continuar, clique primeiro em Importar Z39.50 (Protocolo Z39.50) para verificar se a obra já existe em outra biblioteca. Deseja continuar com a catalogação e criar os conceitos faltantes?');"
+                        <?php endif; ?>
                         class="btn btn-outline-warning">
                         <i class="bi bi-file-earmark-arrow-down me-1"></i>
                         <?= empty(trim((string)($itemInfo['i_titulo'] ?? ''))) ? 'Cadastrar obra' : 'Catalogar' ?>
