@@ -41,6 +41,7 @@
                 <button class="btn btn-outline-info btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#itemInfoPanel" aria-controls="itemInfoPanel" title="Mais informações">
                     <i class="bi bi-info-circle"></i>
                 </button>
+                <?= view('components/item_resource_links', ['meta' => $meta ?? []]); ?>
             </div>
 
             <!-- Painel lateral de informações do item -->
