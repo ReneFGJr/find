@@ -45,8 +45,7 @@
                     </a>
                <?php endif; ?>
                     <a href="<?= base_url('catalog/item/form') ?>?item=<?= $itemInfo['id_i']; ?>"
-                        class="btn btn-outline-warning<?= $semWork ? ' disabled' : '' ?>"
-                        <?= $semWork ? 'aria-disabled="true" tabindex="-1"' : '' ?>>
+                        class="btn btn-outline-warning">
                         <i class="bi bi-file-earmark-arrow-down me-1"></i>
                         <?= empty(trim((string)($itemInfo['i_titulo'] ?? ''))) ? 'Cadastrar obra' : 'Catalogar' ?>
                     </a>
